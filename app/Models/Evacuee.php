@@ -36,22 +36,7 @@ class Evacuee extends Model
     ];
 
     public $timestamps = false;
-
-    public function retrieveAll()
-    {
-        return $this->all();
-    }
-
-    public function countEvacueeOnEvacuation()
-    {
-        return $this->whereNull('date_out')->count();
-    }
-
-    public function countEvacueeReturned()
-    {
-        return $this->whereNotNull('date_out')->count();
-    }
-
+    
     public function countEvacuee($disaster, $sex)
     {
         return $this->where('disaster_type', $disaster)->where('sex', $sex)->count();
@@ -62,18 +47,8 @@ class Evacuee extends Model
         return $this->selectRaw('SUM(`4Ps`) AS `4Ps`, SUM(`PWD`) AS `PWD`, SUM(`pregnant`) AS `pregnant`, SUM(`lactating`) AS `lactating`, SUM(`student`) AS `student`, SUM(`working`) AS `working`')->where('disaster_type', $disaster)->get();
     }
 
-    public function recordEvacueeObject($newEvacueeInfo)
-    {
-        return $this->insert($newEvacueeInfo);
-    }
-
     public function updateEvacueeDateOut($id, $dateout)
     {
         $this->find($id)->update($dateout);
-    }
-
-    public function updateEvacueeInfo($id, $evacueeInfo)
-    {
-        $this->find($id)->update($evacueeInfo);
     }
 }

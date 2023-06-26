@@ -10,6 +10,7 @@ use App\Http\Controllers\AuthenticationController;
 use App\Http\Controllers\ReportAccidentController;
 use App\Http\Controllers\EvacuationCenterController;
 use App\Http\Controllers\EvacueeController;
+use App\Http\Controllers\UserAccountsController;
 
 Route::controller(AuthenticationController::class)->group(function () {
     Route::post('/', 'authUser')->name('login');
@@ -64,7 +65,7 @@ Route::group(['middleware' => 'auth'], function () {
                 Route::delete('/removeReport/{reportId}', 'removeAccidentReport')->name('remove.accident.report.cdrrmo');
             });
         });
-        
+
         Route::controller(CdrrmoController::class)->group(function () {
             Route::get('/dashboard', 'dashboard')->name('dashboard.cdrrmo');
             Route::get('/hotlineNumbers', 'hotlineNumbers')->name('hotline.number.cdrrmo');
@@ -119,11 +120,21 @@ Route::group(['middleware' => 'auth'], function () {
         Route::controller(CswdController::class)->group(function () {
             Route::get('/dashboard', 'dashboard')->name('dashboard.cswd');
             Route::get('/evacuee', 'manageEvacueeInformation')->name('manage.evacuee.record.cswd');
-            Route::get('/eligtasGuideline', 'eligtasGuideline')->name('guideline.cswd');
-            Route::get('/eligtasGuideline/guide/{guidelineId}', 'guide')->name('guide.cswd');
             Route::get('/disaster', 'disaster')->name('disaster.cswd');
             Route::get('/evacuationManage', 'evacuationManage')->name('manage.evacuation.cswd');
             Route::get('/evacuationCenter', 'evacuationCenter')->name('evacuation.center.locator.cswd');
         });
     });
+
+    Route::group(['prefix' => 'accounts'], function () {
+        Route::controller(UserAccountsController::class)->group(function () {
+            Route::get('/userProfile/{userId}', 'displayUserDetails')->name('user.details');
+            Route::put('/restrictUser/{userId}', 'restrictUserAccount')->name('restrict.account');
+            Route::put('/unRestrictUser/{userId}', 'unRestrictUserAccount')->name('unrestrict.account');
+            Route::put('/editAccount/{userId}', 'updateUserAccount')->name('update.account');
+            Route::get('/', 'userProfile')->name('display.user.profile');
+            Route::get('/userAccounts', 'userAccounts')->name('display.user.accounts');
+        });
+    });
+    
 });
