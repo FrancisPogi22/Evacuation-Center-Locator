@@ -23,8 +23,8 @@ class CdrrmoController extends Controller
         $activeEvacuation = $this->evacuation->isActive();
         $inActiveEvacuation = $this->evacuation->isInactive();
 
-        $inEvacuationCenter = $this->evacuee->countEvacueeOnEvacuation();
-        $isReturned = $this->evacuee->countEvacueeReturned();
+        $inEvacuationCenter = $this->evacuee->whereNull('date_out')->count();
+        $isReturned = $this->evacuee->whereNotNull('date_out')->count();
 
         $typhoonMaleData = $this->evacuee->countEvacuee(1, 'Male');
         $typhoonFemaleData = $this->evacuee->countEvacuee(1, 'Female');

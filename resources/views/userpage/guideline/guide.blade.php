@@ -28,7 +28,7 @@
             @endif
         </div>
 
-        <div class="main-content pt-8 pr-8 pl-28">
+        <div class="main-content">
             @foreach ($guide as $guide)
                 <div class="guide-container">
                     <div class="guide-content relative mx-2.5 my-2">

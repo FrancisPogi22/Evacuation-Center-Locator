@@ -6,34 +6,29 @@ use App\Models\Evacuee;
 use App\Models\Disaster;
 use App\Models\Typhoon;
 use App\Models\Flashflood;
-use App\Models\Guideline;
-use Illuminate\Support\Str;
 use Illuminate\Http\Request;
-use App\Events\ActiveEvacuees;
-use App\Models\ActivityUserLog;
 use App\Models\EvacuationCenter;
 use Yajra\DataTables\DataTables;
 
 class CswdController extends Controller
 {
-    private $disaster, $typhoon, $flashflood, $evacuee, $evacuationCenter, $guideline, $guide;
+    private $disaster, $typhoon, $flashflood, $evacuee, $evacuationCenter;
 
     function __construct()
     {
-        $this->disaster = new Disaster;
         $this->typhoon = new Typhoon;
-        $this->flashflood = new Flashflood;
         $this->evacuee = new Evacuee;
         $this->disaster = new Disaster;
+        $this->flashflood = new Flashflood;
         $this->evacuationCenter = new EvacuationCenter;
     }
 
     public function dashboard()
     {
-        $activeEvacuation = $this->evacuationCenter->isActive();
-        $inActiveEvacuation = $this->evacuationCenter->isInactive();
-        $inEvacuationCenter = $this->evacuee->countEvacueeOnEvacuation();
-        $isReturned = $this->evacuee->countEvacueeReturned();
+        $activeEvacuation = $this->evacuationCenter->where('status', 'Active')->count();
+        $inActiveEvacuation = $this->evacuationCenter->where('status', 'Inactive')->count();
+        $inEvacuationCenter = $this->evacuee->whereNull('date_out')->count();
+        $isReturned = $this->evacuee->whereNotNull('date_out')->count();
         $typhoonMaleData = $this->evacuee->countEvacuee('Typhoon', 'Male');
         $typhoonFemaleData = $this->evacuee->countEvacuee('Typhoon', 'Female');
         $floodingMaleData = $this->evacuee->countEvacuee('Flashflood', 'Male');
@@ -78,30 +73,18 @@ class CswdController extends Controller
 
     public function manageEvacueeInformation(Request $request)
     {
-        $evacuationList = $this->evacuationCenter->retrieveAllEvacuation();
-        $typhoonList =  $this->typhoon->retrieveAllActiveTyphoon();
-        $flashfloodList = $this->flashflood->retrieveAllActiveFlashflood();
+        $evacuationList = $this->evacuationCenter->all();
+        $typhoonList =  $this->typhoon->all();
+        $flashfloodList = $this->flashflood->all()->where('status', 'Rising');
         $disasterList = null;
         if ($typhoonList->isNotEmpty() && $flashfloodList->isNotEmpty()) {
-            $disasterList = $this->disaster->retrieveAllDisaster();
+            $disasterList = $this->disaster->all();
         } else if ($typhoonList->isNotEmpty() && $flashfloodList->isEmpty()) {
-            $disasterList = $this->disaster->retrieveSpecificDisaster(1);
+            $disasterList = $this->disaster->find(1)->get();
         } else if ($flashfloodList->isNotEmpty() && $typhoonList->isEmpty()) {
-            $disasterList = $this->disaster->retrieveSpecificDisaster(2);
+            $disasterList = $this->disaster->find(2)->get();
         }
         return view('userpage.evacuee.evacuee', compact('evacuationList', 'disasterList', 'typhoonList', 'flashfloodList'));
-    }
-
-    public function eligtasGuideline()
-    {
-        $guideline = $this->guideline->retrieveAll();
-        return view('userpage.guideline.eligtasGuideline', compact('guideline'));
-    }
-
-    public function guide($guidelineId)
-    {
-        $guide = $this->guide->retreiveAllGuide($guidelineId);
-        return view('userpage.guideline.guide', compact('guide', 'guidelineId'));
     }
 
     public function evacuationCenter()
@@ -143,7 +126,7 @@ class CswdController extends Controller
 
     public function disaster(Request $request)
     {
-        $disaster = $this->disaster->retrieveAllDisaster();
+        $disaster = $this->disaster->all();
         if ($request->ajax()) {
             return DataTables::of($disaster)
                 ->addIndexColumn()
