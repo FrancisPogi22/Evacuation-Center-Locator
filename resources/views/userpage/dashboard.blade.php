@@ -23,11 +23,11 @@
         @include('partials.sidebar')
         <x-messages />
 
-        <div class="main-content pt-8 pr-8 pl-28">
+        <div class="main-content">
             <div class="dashboard-logo relative mb-14">
                 <i class="bi bi-speedometer2 text-2xl p-2 bg-slate-600 text-white rounded"></i>
                 <span class="text-2xl font-bold tracking-wider mx-2">DASHBOARD</span>
-                <hr class="mt-3">
+                <hr class="horizontal-line">
                 <button
                     class="float-right bg-green-700 hover:bg-green-800 p-2 mt-2 rounded font-medium text-white drop-shadow-xl transition ease-in-out delay-150 hover:scale-105 duration-100">
                     <i class="bi bi-printer pr-2"></i>
@@ -37,9 +37,9 @@
 
             <div class="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-5 gap-4">
                 <div class="widget bg-green-400 drop-shadow-lg rounded max-w-full">
-                    <div class="widget-logo flex justify-center items-center">
+                    {{-- <div class="widget-logo flex justify-center items-center">
                         <img class="pt-52" src="{{ asset('assets/img/cdrrmo-logo.png') }}">
-                    </div>
+                    </div> --}}
                     <div class="content-logo flex justify-between my-3 p-1">
                         <div class="content-description px-2">
                             <h5 class="font-semibold tracking-wide">Evacuation Center (Active)</h5>
@@ -51,10 +51,10 @@
                     </div>
                 </div>
                 <div class="widget bg-red-400 drop-shadow-lg rounded max-w-full">
-                    <div class="widget-logo flex justify-center items-center">
+                    {{-- <div class="widget-logo flex justify-center items-center">
                         <img class="pt-52" src="{{ asset('assets/img/cdrrmo-logo.png') }}">
-                    </div>
-                    <div class="content-logo flex justify-between my-3 p-1">
+                    </div> --}}
+                    <div class="content-logo flex justify-between my-3 p-1">    
                         <div class="content-description px-2">
                             <h5 class="font-semibold tracking-wide">Evacuation Center (Inactive)</h5>
                             <span class="text-4xl font-bold">{{ $inActiveEvacuation }} </span>
@@ -65,9 +65,9 @@
                     </div>
                 </div>
                 <div class="widget bg-yellow-300 drop-shadow-lg rounded max-w-full">
-                    <div class="widget-logo flex justify-center items-center">
+                    {{-- <div class="widget-logo flex justify-center items-center">
                         <img class="pt-52" src="{{ asset('assets/img/cdrrmo-logo.png') }}">
-                    </div>
+                    </div> --}}
                     <div class="content-logo flex justify-between my-3 p-1">
                         <div class="content-description px-2">
                             <h5 class="font-semibold tracking-wide">Evacuee (On Evacuation Center)</h5>
@@ -79,9 +79,9 @@
                     </div>
                 </div>
                 <div class="widget bg-blue-300 drop-shadow-lg rounded max-w-full">
-                    <div class="widget-logo flex justify-center items-center">
+                    {{-- <div class="widget-logo flex justify-center items-center">
                         <img class="pt-52" src="{{ asset('assets/img/cdrrmo-logo.png') }}">
-                    </div>
+                    </div> --}}
                     <div class="content-logo flex justify-between my-3 p-1">
                         <div class="content-description px-2">
                             <h5 class="font-semibold tracking-wide">Evacuee(Returned)</h5>
