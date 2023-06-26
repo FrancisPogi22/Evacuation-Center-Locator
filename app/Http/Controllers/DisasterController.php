@@ -54,7 +54,7 @@ class DisasterController extends Controller
             ];
 
             try {
-                $this->disaster->updateDisasterObject($disasterData, $disasterId);
+                $this->disaster->find($disasterId)->update($disasterData);
                 $this->logActivity->generateLog('Updating Disaster Information');
 
                 return response()->json(['status' => 1]);
@@ -69,8 +69,8 @@ class DisasterController extends Controller
     public function removeDisaster($disasterId)
     {
         try {
-            $this->disaster->removeDisasterObject($disasterId);
-            $this->logActivity->generateLog('Deleting Disaster Information');
+            $this->disaster->find($disasterId)->delete();
+            $this->logActivity->generateLog('Removing Disaster Information');
 
             return response()->json();
         } catch (\Exception $e) {

@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use Carbon\Carbon;
 use App\Models\Evacuee;
-use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
+use Illuminate\Http\Request;
 use App\Models\ActivityUserLog;
 use Yajra\DataTables\DataTables;
+use Illuminate\Support\Facades\Validator;
 
 class EvacueeController extends Controller
 {
@@ -22,7 +22,7 @@ class EvacueeController extends Controller
 
     public function loadEvacueeTable()
     {
-        $data = Evacuee::all();
+        $data = $this->evacuee->all();
         return DataTables::of($data)
             ->addIndexColumn()
             ->addColumn('action', function ($row) {
@@ -40,6 +40,7 @@ class EvacueeController extends Controller
         $validatedEvacueeForm = Validator::make($request->all(), [
             'fullName' => 'required',
         ]);
+
         if ($validatedEvacueeForm->passes()) {
             $disasterId = null;
             $is4Ps = $request->has('fourps') ? 1 : 0;
@@ -70,7 +71,7 @@ class EvacueeController extends Controller
                 'evacuation_assigned' => $request->evacuationAssigned
             ];
             try {
-                $this->evacuee->recordEvacueeObject($evacueeInfo);
+                $this->evacuee->create($evacueeInfo);
                 $this->logActivity->generateLog('Recorded new evacuee information');
                 return response()->json(['condition' => 1]);
             } catch (\Exception $e) {
@@ -85,6 +86,7 @@ class EvacueeController extends Controller
         $validatedEvacueeForm = Validator::make($request->all(), [
             'fullName' => 'required',
         ]);
+
         if ($validatedEvacueeForm->passes()) {
             $disasterId = null;
             $is4Ps = $request->has('fourps') ? 1 : 0;
@@ -116,7 +118,7 @@ class EvacueeController extends Controller
                 'evacuation_assigned' => $request->evacuationAssigned
             ];
             try {
-                $this->evacuee->updateEvacueeInfo($evacueeId, $evacueeInfo);
+                $this->evacuee->find($evacueeId)->update($evacueeInfo);
                 $this->logActivity->generateLog('Updated an evacuee information');
                 return response()->json(['condition' => 1]);
             } catch (\Exception $e) {
@@ -130,7 +132,7 @@ class EvacueeController extends Controller
     {
         $evacueeIds = $request->evacueeIds;
         foreach ($evacueeIds as $evacueeId)
-            $this->evacuee->updateEvacueeDateOut(intval($evacueeId), ['date_out' => Carbon::now()->toDayDateTimeString()]);
+            $this->evacuee->find(intval($evacueeId))->update(['date_out' => Carbon::now()->toDayDateTimeString()]);
         $this->logActivity->generateLog('Updated evacuee/s date out');
         return response()->json();
     }

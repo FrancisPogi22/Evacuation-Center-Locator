@@ -18,9 +18,4 @@ class Typhoon extends Model
         'disaster_id',
         'status'
     ];
-
-    public function retrieveAllActiveTyphoon()
-    {
-        return $this->all();
-    }
 }

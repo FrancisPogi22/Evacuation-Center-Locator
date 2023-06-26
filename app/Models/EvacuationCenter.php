@@ -23,10 +23,6 @@ class EvacuationCenter extends Model
 
     public $timestamps = false;
 
-    public function retrieveAllEvacuation(){
-        return $this->all();
-    }
-
     public function isActive(){
         return $this->where('status', 'Active')->count();
     }

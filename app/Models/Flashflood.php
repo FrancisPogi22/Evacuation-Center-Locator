@@ -20,9 +20,4 @@ class Flashflood extends Model
         'longitude',
         'latitude',
     ];
-
-    public function retrieveAllActiveFlashflood()
-    {
-        return $this->all()->where('status', 'Rising');
-    }
 }

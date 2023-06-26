@@ -31,7 +31,7 @@ class ResidentController extends Controller
 
     public function residentEligtasGuide($guidelineId)
     {
-        $guide = $this->guide->find(Crypt::decryptString($guidelineId))->get();
+        $guide = $this->guide->where('guideline_id', Crypt::decryptString($guidelineId))->get();
 
         return view('userpage.guideline.guide', compact('guide', 'guidelineId'));
     }

@@ -16,14 +16,12 @@
 
 <body id="login-container">
     <div class="wrapper">
-        <div class="header-section drop-shadow-lg">
-            {{-- <img class="w-22 m-auto h-full" src="{{ asset('assets/img/cdrrmo-logo.png') }}" alt="logo"> --}}
-        </div>
+        <div class="header-section drop-shadow-lg"></div>
 
-        <div class="login-section">
-            <div class="login-content">
-                <div class="header-desc">
-                    <h1>{{ config('app.name') }}</h1>
+        <div class="login-section relative m-auto">
+            <div class="login-content flex justify-around">
+                <div class="header-desc pt-5">
+                    <h1 class="text-white tracking-wide font-bold">{{ config('app.name') }}</h1>
                     <div class="pt-4">
                         <p class="text-slate-400">E-LIGTAS help you to locate evacuation center and to share
                             knowledge about disaster preparedness.</p>
@@ -43,14 +41,14 @@
                             <i class="bi bi-eye-slash absolute cursor-pointer text-2xl " id="show-password"></i>
                         </div>
                         <div class="login-btn">
-                            <button type="submit" class="btn-submit">Login</button>
+                            <button type="submit" class="btn-submit text-white rounded w-full font-extrabold bg-slate-700 hover:bg-slate-800">Login</button>
                         </div>
                     </form>
                     <form action="{{ route('guideline.resident') }}" method="POST" class="py-2 px-3">
                         @method('GET')
                         @csrf
                         <button type="submit"
-                            class="btn-resident">
+                            class="btn-resident text-white rounded w-full font-extrabold bg-red-600 hover:bg-red-700 ">
                             Continue as resident
                         </button>
                     </form>
@@ -61,7 +59,7 @@
                 </div>
             </div>
         </div>
-        <div class="bottom-section">
+        <div class="bottom-section text-white l-0 w-full pb-5">
             <hr>
             <p id="year" class="text-slate-400"></p>
         </div>
