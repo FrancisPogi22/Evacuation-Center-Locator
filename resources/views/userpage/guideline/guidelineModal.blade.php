@@ -16,7 +16,11 @@
                                     <input type="text" name="type" class="form-control" autocomplete="off"
                                         placeholder="Enter Guideline Type" id="guidelineType">
                                 </div>
+<<<<<<< Updated upstream
                                 <div class="w-full p-4">
+=======
+                                <div class="w-full px-4 pt-3 pb-4">
+>>>>>>> Stashed changes
                                     <button id="submitGuidelineBtn" class="btn-submit p-2 float-right">Create</button>
                                 </div>
                             </div>

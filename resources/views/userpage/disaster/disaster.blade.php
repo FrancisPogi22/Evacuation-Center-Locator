@@ -32,14 +32,20 @@
             @endif
             <div class="table-container p-3 shadow-lg rounded-lg">
                 <header class="text-2xl font-semibold mb-3">Disaster Information Table</header>
-                <div class="block w-full overflow-auto">
+                <div class="block w-full overflow-auto pb-2">
                     <table class="table disasterTable" width="100%">
                         <thead class="thead-light">
                             <tr>
+<<<<<<< Updated upstream
                                 <th></th>
                                 <th>Disaster Name</th>
                                 <th>Status</th>
                                 <th width="20%">Action</th>
+=======
+                                <th colspan="2">Disaster Name</th>
+                                <th class="w-6">Status</th>
+                                <th class="w-4">Action</th>
+>>>>>>> Stashed changes
                             </tr>
                         </thead>
                         <tbody>
@@ -114,7 +120,7 @@
                 },
                 messages: {
                     name: {
-                        required: 'Please Enter Disaster Name.'
+                        required: 'Please enter Disaster Name.'
                     }
                 },
                 errorElement: 'span',

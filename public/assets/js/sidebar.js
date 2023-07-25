@@ -13,6 +13,9 @@ document.addEventListener('click', function (object) {
         element.classList.toggle("bi-eye");
     } else if (element.parentElement.className == 'menuLink') {
         localStorage.setItem('activeLink', $(element.parentElement).attr('href'));
+        setTimeout(function () {
+            localStorage.removeItem("activeLink");
+        }, 7200000);
     } else if (element.closest('#logoutBtn') || element.parentElement.id == 'loginLink') {
         localStorage.removeItem("activeLink");
     }

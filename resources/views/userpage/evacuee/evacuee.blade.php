@@ -37,9 +37,9 @@
             </div>
             @include('userpage.evacuee.evacueeInfoFormModal')
             <div class="table-container p-3 shadow-lg rounded-lg">
-                <div class="block w-full overflow-auto">
+                <div class="block w-full overflow-auto pb-2">
                     <header class="text-2xl font-semibold mb-3">Evacuee Informations</header>
-                    <table class="table evacueeTable" width="100%">
+                    <table id="evacueeTable" class="table" width="100%">
                         <thead class="thead-light">
                             <tr class="table-row">
                                 <th>Id</th>
@@ -88,9 +88,9 @@
                 </select>
             </div>
             <div class="table-container p-3 shadow-lg rounded-lg">
-                <div class="block w-full overflow-auto">
+                <div class="block w-full overflow-auto pb-2">
                     <header class="text-2xl font-semibold mb-3">Archived Evacuee Informations</header>
-                    <table class="table archivedEvacueeTable" width="100%">
+                    <table id="archivedEvacueeTable" class="table" width="100%">
                         <thead class="thead-light">
                             <tr>
                                 <th>House Hold #</th>
@@ -134,6 +134,7 @@
     @include('partials.toastr')
     <script>
         $(document).ready(function() {
+<<<<<<< Updated upstream
             let evacueeTable = $('.evacueeTable').DataTable({
                 order: [
                     [1, 'asc']
@@ -141,6 +142,10 @@
                 language: {
                     emptyTable: 'No evacuee data recorded'
                 },
+=======
+            let evacueeTable = $('#evacueeTable').DataTable({
+                ordering: false,
+>>>>>>> Stashed changes
                 responsive: true,
                 processing: false,
                 serverSide: true,
@@ -648,6 +653,7 @@
                 }
             });
 
+<<<<<<< Updated upstream
             let archivedEvacueeTable = $('.archivedEvacueeTable').DataTable({
                 order: [
                     [1, 'asc']
@@ -655,6 +661,10 @@
                 language: {
                     emptyTable: 'No archived evacuee data'
                 },
+=======
+            let archivedEvacueeTable = $('#archivedEvacueeTable').DataTable({
+                ordering: false,
+>>>>>>> Stashed changes
                 responsive: true,
                 processing: false,
                 serverSide: true,

@@ -8,11 +8,15 @@
         crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 </head>
 
-<body>
+<body id="forgot-password-container">
     <div class="wrapper">
         @include('sweetalert::alert')
         <div class="header-section w-full drop-shadow-lg"></div>
+<<<<<<< Updated upstream
         <div class="recover-container bg-slate-50 rounded drop-shadow-lg">
+=======
+        <div class="recover-container bg-slate-300">
+>>>>>>> Stashed changes
             <form action="{{ route('findAccount') }}" method="POST" class="relative w-full">
                 @csrf
                 <div class="header-recovery p-3">
@@ -20,11 +24,16 @@
                 </div>
                 <hr>
                 <div class="p-4" id="email-container">
+<<<<<<< Updated upstream
                     <label for="email" class="pb-4">Please enter your email address to search your
+=======
+                    <label for="email" class="pb-2">Please enter your email address to search your
+>>>>>>> Stashed changes
                         account.</label>
                     <input type="email" name="email" class="form-control p-2.5" placeholder="Email Address" required>
                 </div>
                 <hr>
+<<<<<<< Updated upstream
                 <div class="flex justify-end items-center p-3 drop-shadow-lg">
                     <div class="">
                         <button class="bg-red-700 p-2 mr-2 font-bold tracking-wide text-white rounded-md hover:scale-105">
@@ -32,12 +41,19 @@
                         </button>
                         <button type="submit" class="btn-submit bg-green-600 p-2 font-bold tracking-wide">Search</button>
                     </div>
+=======
+                <div class="flex justify-end flex-wrap items-center px-4 pt-2.5 pb-1">
+                    <button class="btn-remove bg-red-700 p-2 mb-2">
+                        <a href="{{ route('login') }}">Cancel</a>
+                    </button>
+                    <button type="submit" class="btn-submit bg-green-600 ml-3 mb-2">Search</button>
+>>>>>>> Stashed changes
                 </div>
             </form>
         </div>
-        <div class="bottom-section pb-5 l-0 w-full">
+        <div class="bottom-section text-white w-full">
             <hr>
-            <p>E-LIGTAS @ {{ date('Y') }}</p>
+            <p class="text-slate-400">E-LIGTAS @ {{ date('Y') }}</p>
         </div>
     </div>
     

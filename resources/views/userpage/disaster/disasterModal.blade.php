@@ -14,14 +14,18 @@
                                 <div class="field-container">
                                     <label class="mb-0">Name</label>
                                     <input type="text" name="name" class="form-control" autocomplete="off"
-                                        placeholder="Enter Disaster Name" id="disasterName">
+                                        placeholder="Enter Name" id="disasterName">
                                 </div>
+<<<<<<< Updated upstream
                                 <div class="field-container">
                                     <label class="mb-0">Location</label>
                                     <input type="text" name="location" class="form-control" autocomplete="off"
                                         placeholder="Enter Location" id="location">
                                 </div>
                                 <div class="w-full p-4 -mt-3">
+=======
+                                <div class="w-full px-4 pt-3 pb-4">
+>>>>>>> Stashed changes
                                     <button id="submitDisasterBtn"
                                         class="btn-submit p-2 float-right">Create</button>
                                 </div>

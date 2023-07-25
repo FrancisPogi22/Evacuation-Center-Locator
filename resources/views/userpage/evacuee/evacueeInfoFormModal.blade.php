@@ -11,6 +11,7 @@
                         <div class="flex-auto">
                             <div class="flex flex-wrap">
                                 <input type="text" id="operation" hidden>
+<<<<<<< Updated upstream
                                 <div class="w-full mb-3 lg:w-3/12 px-4">
                                     <label class="mb-0">House Hold #</label>
                                     <input type="number" name="houseHoldNumber" class="form-control"
@@ -23,6 +24,20 @@
                                 </div>
                                 <div class="w-full mb-3 lg:w-6/12 px-4">
                                     <label class="mb-0">Sex</label>
+=======
+                                <div class="w-full mb-3 lg:w-3/12 px-4 field-container">
+                                    <label>House Hold #</label>
+                                    <input type="number" name="houseHoldNumber" class="form-control"
+                                        autocomplete="off" placeholder="HH#">
+                                </div>
+                                <div class="w-full mb-3 lg:w-9/12 px-4 field-container">
+                                    <label>Full Name</label>
+                                    <input type="text" name="fullName" class="form-control"
+                                        autocomplete="off" placeholder="Enter Full Name">
+                                </div>
+                                <div class="w-full mb-3 lg:w-6/12 px-4 field-container">
+                                    <label>Sex</label>
+>>>>>>> Stashed changes
                                     <select name="sex" class="form-select">
                                         <option value="">Select Sex</option>
                                         <option value="Male">
@@ -33,27 +48,42 @@
                                         </option>
                                     </select>
                                 </div>
+<<<<<<< Updated upstream
                                 <div class="w-full mb-3 lg:w-6/12 px-4">
                                     <label class="mb-0">Age</label>
+=======
+                                <div class="w-full mb-3 lg:w-6/12 px-4 field-container">
+                                    <label>Age</label>
+>>>>>>> Stashed changes
                                     <input type="number" name="age" class="form-control"
                                         autocomplete="off" placeholder="Enter Age">
                                 </div>
-                                <div class="flex flex-wrap w-full" id="dateFormFieldsContainer">
+                                <div class="flex flex-wrap w-full field-container" id="dateFormFieldsContainer">
                                     <div class="w-full mb-3 lg:w-6/12 px-4" id="dateEntryContainer">
                                         <label class="mb-0">Date Entry</label>
                                         <input type="text" name="dateEntry" id="dateEntry"
                                             class="form-control" autocomplete="off"
                                             placeholder="Select Date Entry">
                                     </div>
+<<<<<<< Updated upstream
                                     <div class="w-full mb-3 lg:w-6/12 px-4" id="dateOutContainer">
                                         <label class="mb-0">Date Out</label>
+=======
+                                    <div class="w-full mb-3 lg:w-6/12 px-4 field-container" id="dateOutContainer">
+                                        <label>Date Out</label>
+>>>>>>> Stashed changes
                                         <input type="text" name="dateOut" id="dateOut"
                                             class="form-control" autocomplete="off"
                                             placeholder="Select Date Out">
                                     </div>
                                 </div>
+<<<<<<< Updated upstream
                                 <div class="w-full mb-3 lg:w-6/12 px-4">
                                     <label class="mb-0">Barangay</label>
+=======
+                                <div class="w-full mb-3 lg:w-6/12 px-4 field-container">
+                                    <label>Barangay</label>
+>>>>>>> Stashed changes
                                     <select name="barangay" class="form-select">
                                         <option value="">Select Barangay</option>
                                         <option value="Baclaran">Baclaran</option>
@@ -76,8 +106,13 @@
                                         <option value="Barangay III Poblacion">Barangay III Poblacion</option>
                                     </select>
                                 </div>
+<<<<<<< Updated upstream
                                 <div class="w-full mb-3 lg:w-6/12 px-4">
                                     <label class="mb-0">Disaster</label>
+=======
+                                <div class="w-full mb-3 lg:w-6/12 px-4 field-container">
+                                    <label>Disaster</label>
+>>>>>>> Stashed changes
                                     <select name="disasterType" id="disasterType" class="form-select">
                                         <option value="">Select Disaster</option>
                                         {{-- @if ($disasterList != null)
@@ -88,7 +123,7 @@
                                         @endif --}}
                                     </select>
                                 </div>
-                                <div class="w-full px-4 hidden" id="typhoonSelectContainer">
+                                <div class="w-full px-4 hidden field-container" id="typhoonSelectContainer">
                                     <div class="w-full mb-3">
                                         <select name="typhoon" id="typhoon" class="form-select">
                                             <option value="">Select Typhoon</option>
@@ -99,7 +134,7 @@
                                         </select>
                                     </div>
                                 </div>
-                                <div class="w-full px-4 hidden" id="flashfloodSelectContainer">
+                                <div class="w-full px-4 hidden field-container" id="flashfloodSelectContainer">
                                     <div class="w-full mb-3">
                                         <select name="flashflood" id="flashflood" class="form-select">
                                             <option value="">Select Location</option>
@@ -122,7 +157,7 @@
                                     </select>
                                 </div>
                                 <input type="text" name="defaultEvacuationAssigned" hidden>
-                                <div class="w-full px-2">
+                                <div class="w-full px-4">
                                     <div class="flex justify-around flex-wrap">
                                         <div class="checkbox-container px-2">
                                             <input type="checkbox" id="fourps" name="fourps"

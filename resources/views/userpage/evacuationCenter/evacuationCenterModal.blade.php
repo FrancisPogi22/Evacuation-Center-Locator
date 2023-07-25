@@ -49,7 +49,11 @@
                                     <input type="text" name="longitude" id="longitude" hidden>
                                     <span id="location-error" class="error"></span>
                                 </div>
+<<<<<<< Updated upstream
                                 <div class="w-full p-4">
+=======
+                                <div class="w-full px-4 pt-3 pb-4">
+>>>>>>> Stashed changes
                                     <button id="saveEvacuationCenterBtn"
                                         class="btn-submit p-2 float-right">Create</button>
                                 </div>

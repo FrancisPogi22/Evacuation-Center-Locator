@@ -31,18 +31,27 @@
                 </div>
             @endif
             <div class="table-container p-3 shadow-lg rounded-lg">
-                <div class="block w-full overflow-auto">
-                    <header class="text-2xl font-semibold mb-3">Evacuation Center Table</header>
-                    <table class="table evacuationCenterTable" width="100%">
+                <div class="block w-full overflow-auto pb-2">
+                    <header class="text-2xl font-semibold">Evacuation Center Table</header>
+                    <table id="evacuationCenterTable" class="table" width="100%">
                         <thead class="thead-light">
                             <tr>
+<<<<<<< Updated upstream
                                 <th></th>
+=======
+                                <th>ID</th>
+>>>>>>> Stashed changes
                                 <th>Name</th>
                                 <th>Barangay</th>
                                 <th>Latitude</th>
                                 <th>Longitude</th>
+<<<<<<< Updated upstream
                                 <th>Status</th>
                                 <th>Action</th>
+=======
+                                <th class="w-4">Status</th>
+                                <th class="w-4">Action</th>
+>>>>>>> Stashed changes
                             </tr>
                         </thead>
                         <tbody>
@@ -74,6 +83,7 @@
         crossorigin="anonymous"></script>
     @include('partials.toastr')
     <script type="text/javascript">
+<<<<<<< Updated upstream
         let evacuationCenterTable = $('.evacuationCenterTable').DataTable({
             order: [
                 [1, 'asc']
@@ -81,6 +91,13 @@
             language: {
                 emptyTable: 'No evacuation center added yet',
             },
+=======
+        let evacuationCenterTable = $('#evacuationCenterTable').DataTable({
+            language: {
+                emptyTable: '<div class="text-red-600 font-extrabold">No evacuation center added.</div>'
+            },
+            ordering: false,
+>>>>>>> Stashed changes
             responsive: true,
             processing: false,
             serverSide: true,

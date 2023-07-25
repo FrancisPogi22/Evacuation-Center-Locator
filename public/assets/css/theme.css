@@ -128,6 +128,7 @@ hr,
     transform: scale(1.05);
 }
 
+<<<<<<< Updated upstream
 .btn-cancel {
     background: var(--color-red);
     color: var(--color-text);
@@ -156,6 +157,10 @@ hr,
 }
 
 .btn-edit {
+=======
+.btn-update,
+.btn-table-update {
+>>>>>>> Stashed changes
     background: var(--color-yellow);
     color: var(--color-text);
     border-radius: 4px;
@@ -183,6 +188,7 @@ hr,
     transform: scale(1.05);
 }
 
+.btn-primary,
 .btn-table-primary {
     background: var(--color-primary);
     width: 100px;
@@ -196,6 +202,7 @@ hr,
     border-radius: 4px;
 }
 
+.btn-primary:hover,
 .btn-table-primary:hover {
     background: #1d4ed8;
     color: var(--color-text);
@@ -386,7 +393,8 @@ hr,
 /* Side Bar End Section */
 
 /* Authentication Section Start Here */
-#login-container {
+#login-container,
+#forgot-password-container {
     background: var(--color-gray);
 }
 
@@ -430,8 +438,19 @@ hr,
 
 .recover-container,
 .res-password-cotainer {
+    color: text-white;
     max-width: 500px;
+<<<<<<< Updated upstream
     margin: 10% auto;
+=======
+    margin: 25% auto 20% auto;
+    filter: drop-shadow(0 4px 3px rgb(0 0 0 / 0.07)) drop-shadow(0 2px 2px rgb(0 0 0 / 0.06));
+    border-radius: 4px;
+}
+
+.res-password-cotainer .res-input-form {
+    padding: 24px 24px 2px 24px;
+>>>>>>> Stashed changes
 }
 
 .bottom-section p {
@@ -577,6 +596,26 @@ hr,
 
 /* Guideline End Section */
 
+<<<<<<< Updated upstream
+=======
+/* Evacuation Center Section Start Here */
+
+.info-window-container {
+    width: fit-content;
+    height: fit-content;
+}
+
+.info-description {
+    padding: 4px;
+}
+
+.info-description span {
+    font-weight: 600;
+}
+
+/* Evacuation Center Section End */
+
+>>>>>>> Stashed changes
 /* Report Incident Section Start Here */
 .report-button {
     position: fixed;
@@ -585,9 +624,6 @@ hr,
     right: 0;
 }
 
-#actualPhoto {
-    max-width: 400px;
-}
 
 /* Report Incident End Section*/
 
@@ -729,6 +765,85 @@ input::-webkit-inner-spin-button {
 
 /* Recording Evacuee End Section */
 
+<<<<<<< Updated upstream
+=======
+/* Form Section Start Here */
+input[type="number"] {
+    -moz-appearance: textfield;
+}
+
+input::-ms-reveal,
+input::-ms-clear {
+    display: none;
+}
+
+#evacueeInfoForm input,
+#evacuationCenterForm input,
+#accountForm input,
+#disasterForm input,
+#changePasswordForm input,
+#guidelineForm input,
+#reportForm input,
+#guideForm input,
+#evacuationCenterForm select,
+#evacueeInfoForm select,
+#accountForm select {
+    border-radius: 5px;
+    font-weight: 400;
+    font-size: 0.875rem;
+    border: 2px solid #94a3b8;
+    height: 40px;
+}
+
+#guideForm textarea,
+#reportForm textarea {
+    border-radius: 5px;
+    font-weight: 400;
+    font-size: 0.875rem;
+    border: 2px solid #94a3b8;
+}
+
+.field-container {
+    width: 100%;
+    margin-bottom: 16px;
+    padding: 0 24px;
+}
+
+.field-container label {
+    display: block;
+    text-align: start;
+    margin: 0px;
+}
+
+span.error {
+    color: #ef4444;
+    font-size: 12px;
+    font-family: Montserrat, san-serif;
+    font-style: italic;
+    margin-top: 5px;
+    float: left;
+}
+
+/* Form Section End */
+
+/* DataTable Section Start Here */
+table th,
+table td {
+    text-align: center !important;
+    vertical-align: middle !important;
+}
+
+.status-container {
+    width: 100px;
+    border-radius: 9999px;
+    padding: 6px 8px;
+    color: white;
+    font-weight: bold;
+}
+
+/* DataTable Section End */
+
+>>>>>>> Stashed changes
 /* Laptop View Section */
 @media only screen and (max-width: 1024px) {
     .login-section {
@@ -838,8 +953,13 @@ input::-webkit-inner-spin-button {
 
     .actionContainer button,
     .actionContainer select {
+        padding: 5px;
         margin-top: 2px;
         margin-bottom: 2px;
+    }
+
+    .recover-container {
+        margin-top: 30% ;
     }
 }
 
@@ -925,6 +1045,10 @@ input::-webkit-inner-spin-button {
     .report-container button {
         width: 100%;
         float: none;
+    }
+
+    .recover-container {
+        margin-top: 45% ;
     }
 
     /* Dashboard Section End*/

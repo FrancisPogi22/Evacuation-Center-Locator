@@ -30,10 +30,18 @@ class IncidentReportController extends Controller
         $pendingReport = $this->incidentReport->where('status', 'On Process')->get();
 
         return DataTables::of($pendingReport)
+<<<<<<< Updated upstream
             ->addIndexColumn()
             ->addColumn('action', function ($row) {
                 if (auth()->user()->status == "Active") {
                     $actionBtn = '';
+=======
+            ->addIndexColumn()->addColumn('status', function () {
+                return '<div class="flex justify-center"><div class="bg-orange-600 status-container w-28">On Process</div></div>';
+            })->addColumn('action', function ($row) {
+                if ($row->user_ip == request()->ip() && !auth()->check())
+                    return '<button class="btn-table-remove p-2 revertIncidentReport">Revert</button>';
+>>>>>>> Stashed changes
 
                     if ($row->user_ip == request()->ip() && !auth()->check())
                         $actionBtn .= '<button class="btn-table-remove revertIncidentReport">Revert</button>';
@@ -43,7 +51,7 @@ class IncidentReportController extends Controller
 
                 return '<span class="text-sm">Currently Disabled.</span>';
             })->addColumn('photo', function ($row) {
-                return '<img id="actualPhoto" src="' . asset('reports_image/' . $row->photo) . '"></img>';
+                return '<div class="flex justify-center"><img id="actualPhoto" class="h-24" src="' . asset('reports_image/' . $row->photo) . '"></img></div>';
             })
             ->rawColumns(['action', 'photo'])
             ->make(true);
@@ -54,15 +62,28 @@ class IncidentReportController extends Controller
         $incidentReport = $this->incidentReport->whereNotIn('status', ["On Process"])->where('is_archive', 0)->get();
 
         return DataTables::of($incidentReport)
+<<<<<<< Updated upstream
             ->addIndexColumn()
             ->addColumn('action', function () {
                 if (auth()->user()->status == "Active") {
                     return '<button class="btn-table-remove removeIncidentReport">Remove</button>';
+=======
+            ->addIndexColumn()->addColumn('status', function ($row) {
+                $color = match ($row->status) {
+                    'Approved' => 'green',
+                    'Declined' => 'red'
+                };
+
+                return '<div class="flex  justify-center"><div class="bg-' . $color . '-600 status-container">' . $row->status . '</div></div>';
+            })->addColumn('action', function () {
+                if (auth()->user()->is_disable == 0) {
+                    return '<button class="btn-table-remove p-2 removeIncidentReport">Remove</button>';
+>>>>>>> Stashed changes
                 }
 
                 return '<span class="text-sm">Currently Disabled.</span>';
             })->addColumn('photo', function ($row) {
-                return '<img id="actualPhoto" src="' . asset('reports_image/' . $row->photo) . '"></img>';
+                return '<div class="flex justify-center"><img id="actualPhoto" class="h-24" src="' . asset('reports_image/' . $row->photo) . '"></img></div>';
             })
             ->rawColumns(['action', 'photo'])
             ->make(true);

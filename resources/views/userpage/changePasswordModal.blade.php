@@ -22,22 +22,33 @@
                                     <span class="text-xs text-red-600 italic" id="currentPassword"></span>
                                 </div>
                                 <div class="field-container mb-2 relative">
+<<<<<<< Updated upstream
                                     <label class="mb-0">New Password</label>
                                     <input type="password" name="password" id="password" class="form-control"
+=======
+                                    <label>New Password</label>
+                                    <input type="password" name="password" id="password" class="form-control mb-2"
+>>>>>>> Stashed changes
                                         autocomplete="off" disabled>
-                                    <i class="bi bi-eye-slash absolute cursor-pointer text-xl pt-1.5"
+                                    <i class="bi bi-eye-slash absolute cursor-pointer text-lg mt-1"
                                         id="showPassword"></i>
                                 </div>
                                 <div class="field-container mb-2 relative">
                                     <label class="mb-0">Confirm Password</label>
                                     <input type="password" name="confirmPassword" id="confirmPassword"
-                                        class="form-control" autocomplete="off" onpaste="return false;" disabled>
-                                    <i class="bi bi-eye-slash absolute cursor-pointer text-xl pt-1"
+                                        class="form-control mb-2" autocomplete="off" onpaste="return false;" disabled>
+                                    <i class="bi bi-eye-slash absolute cursor-pointer text-lg mt-1"
                                         id="showConfirmPassword"></i>
                                 </div>
+<<<<<<< Updated upstream
                                 <div class="w-full p-4">
                                     <button id="changePasswordBtn" class="btn-edit p-2 float-right"
                                         disabled>Save</button>
+=======
+                                <div class="w-full px-4 pt-3 pb-4">
+                                    <button id="resetPasswordBtn" class="btn-update p-2 float-right"
+                                        disabled>Change</button>
+>>>>>>> Stashed changes
                                 </div>
                             </div>
                         </div>

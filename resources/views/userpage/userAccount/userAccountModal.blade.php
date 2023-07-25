@@ -45,7 +45,11 @@
                                     <input type="text" name="email" class="form-control" id="email"
                                         placeholder="Enter Email Address">
                                 </div>
+<<<<<<< Updated upstream
                                 <div class="w-full p-4">
+=======
+                                <div class="w-full px-4 pt-3 pb-4">
+>>>>>>> Stashed changes
                                     <button id="saveProfileDetails" class="btn-submit p-2 float-right">Create</button>
                                 </div>
                             </div>

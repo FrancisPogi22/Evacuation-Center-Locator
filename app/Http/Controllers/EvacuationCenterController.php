@@ -25,7 +25,19 @@ class EvacuationCenterController extends Controller
 
         return DataTables::of($evacuationCenterList)
             ->addIndexColumn()
+<<<<<<< Updated upstream
             ->addColumn('action', function () use ($operation) {
+=======
+            ->addColumn('status', function ($row) {
+                $color = match ($row->status) {
+                    'Active' => 'green',
+                    'Inactive' => 'red',
+                    'Full' => 'orange'
+                };
+
+                return '<div class="flex  justify-center"><div class="bg-' . $color . '-600 status-container">' . $row->status . '</div></div>';
+            })->addColumn('action', function () use ($operation) {
+>>>>>>> Stashed changes
                 if ($operation == "locator") {
                     return '<button class="btn-table-primary p-2 text-white locateEvacuationCenter"><i class="bi bi-search pr-2"></i>Locate</button>';
                 } else {

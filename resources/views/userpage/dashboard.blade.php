@@ -29,7 +29,11 @@
                     </p>
                     <form action="{{ route('generate.evacuee.data') }}" method="POST">
                         @csrf
+<<<<<<< Updated upstream
                         <button typ="submit" class="btn-submit float-right p-2 my-1 font-medium">
+=======
+                        <button typ="submit" class="btn-submit my-1">
+>>>>>>> Stashed changes
                             <i class="bi bi-printer pr-2"></i>
                             Generate Report Data
                         </button>

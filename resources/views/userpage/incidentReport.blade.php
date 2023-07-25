@@ -23,6 +23,7 @@
                 <span class="text-xl font-bold">INCIDENT REPORT</span>
             </div>
             <hr class="mt-4">
+<<<<<<< Updated upstream
             <div class="report-table shadow-lg p-4 rounded my-3">
                 <header class="text-2xl font-semibold">Incident Pending Report</header>
                 <table class="table pendingReport display nowrap" style="width:100%">
@@ -51,14 +52,27 @@
                             <th class="w-5">Status</th>
                             <th style="width:20%;">Actual Photo</th>
                             @auth
+=======
+            <div class="table-container p-3 shadow-lg rounded my-3">
+                <header class="text-2xl font-semibold mb-3">Pending Incident Report Table</header>
+                <div class="block w-full overflow-auto pb-2">
+                    <table id="pendingReport" class="table" width="100%">
+                        <thead class="thead-light">
+                            <tr>
+                                <th colspan="2">Report Description</th>
+                                <th>Accident Location</th>
+                                <th class="w-4">Status</th>
+                                <th class="w-28">Actual Photo</th>
+>>>>>>> Stashed changes
                                 <th class="w-4">Action</th>
-                            @endauth
-                        </tr>
-                    </thead>
-                    <tbody>
-                    </tbody>
-                </table>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
             </div>
+<<<<<<< Updated upstream
             @guest
                 <div class="modal fade" id="createAccidentReportModal" aria-hidden="true">
                     <div class="modal-dialog">
@@ -74,6 +88,67 @@
                                             Description</label>
                                         <input type="text" id="description" name="description" class="form-control"
                                             placeholder="Enter Incident Description" autocomplete="off">
+=======
+            @auth
+                <div class="table-container p-3 shadow-lg rounded mt-20">
+                    <header class="text-2xl font-semibold mb-3">Incident Report Table</header>
+                    <div class="block w-full overflow-auto pb-2">
+                        <table id="incidentReports" class="table" width="100%">
+                            <thead class="thead-light">
+                                <tr>
+                                    <th colspan="2">Report Description</th>
+                                    <th>Accident Location</th>
+                                    <th class="w-4">Status</th>
+                                    <th class="w-28">Actual Photo</th>
+                                    <th class="w-4">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            @endauth
+            @guest
+                {{-- customize display ng incident reports in cabuyao o wag nalang --}}
+            @endguest
+        </div>
+        @guest
+            <div class="modal fade" id="createAccidentReportModal" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header bg-green-600 text-white justify-center">
+                            <h1 class="modal-title fs-5 font-bold">Incident Report Form</h1>
+                        </div>
+                        <div class="modal-body">
+                            <form id="reportForm" name="reportForm" enctype="multipart/form-data">
+                                @csrf
+                                <div class="bg-slate-50 pt-3 pb-2 rounded">
+                                    <div class="flex-auto">
+                                        <div class="flex flex-wrap">
+                                            <input type="text" id="operation" hidden>
+                                            <div class="field-container">
+                                                <label>Report Description</label>
+                                                <textarea type="text" id="description" name="description" class="form-control"
+                                                    placeholder="Enter Incident Description" rows="5" autocomplete="off"></textarea>
+                                            </div>
+                                            <div class="field-container">
+                                                <label>Report Location</label>
+                                                <input type="text" id="location" name="location" class="form-control"
+                                                    placeholder="Enter Incident Location" autocomplete="off">
+                                            </div>
+                                            <div class="field-container">
+                                                <label>Report Photo</label>
+                                                <input type="file" id="photo" name="photo"
+                                                    class="form-control form-control-lg"
+                                                    placeholder="Enter Incident Location" autocomplete="off">
+                                            </div>
+                                            <div class="w-full px-4 pt-3 pb-4">
+                                                <button id="reportIncidentBtn"
+                                                    class="btn-submit p-2 float-right">Report</button>
+                                            </div>
+                                        </div>
+>>>>>>> Stashed changes
                                     </div>
                                     <div class="mb-3">
                                         <label for="location" class="flex items-center justify-center">Report
@@ -133,10 +208,15 @@
                 }
             });
             @auth
+<<<<<<< Updated upstream
             let pendingReport = $('.pendingReport').DataTable({
                 rowReorder: {
                     selector: 'td:nth-child(2)'
                 },
+=======
+            let pendingReport = $('#pendingReport').DataTable({
+                ordering: false,
+>>>>>>> Stashed changes
                 responsive: true,
                 processing: false,
                 serverSide: true,
@@ -175,10 +255,15 @@
                 ]
             });
 
+<<<<<<< Updated upstream
             let incidentReports = $('.incidentReports').DataTable({
                 rowReorder: {
                     selector: 'td:nth-child(2)'
                 },
+=======
+            let incidentReports = $('#incidentReports').DataTable({
+                ordering: false,
+>>>>>>> Stashed changes
                 responsive: true,
                 processing: false,
                 serverSide: true,
@@ -296,10 +381,15 @@
             @endif
         @endauth
         @guest
+<<<<<<< Updated upstream
         let pendingReport = $('.pendingReport').DataTable({
             rowReorder: {
                 selector: 'td:nth-child(2)'
             },
+=======
+        let pendingReport = $('#pendingReport').DataTable({
+            ordering: false,
+>>>>>>> Stashed changes
             responsive: true,
             processing: false,
             serverSide: true,
@@ -338,10 +428,15 @@
             ]
         });
 
+<<<<<<< Updated upstream
         let incidentReports = $('.incidentReports').DataTable({
             rowReorder: {
                 selector: 'td:nth-child(2)'
             },
+=======
+        let incidentReports = $('#incidentReports').DataTable({
+            ordering: false,
+>>>>>>> Stashed changes
             responsive: true,
             processing: false,
             serverSide: true,

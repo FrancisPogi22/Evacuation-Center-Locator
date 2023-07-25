@@ -24,13 +24,21 @@
                     @foreach ($guideline as $guidelineItem)
                         <div class="guideline-widget">
                             @auth
+<<<<<<< Updated upstream
                                 @if (auth()->user()->status == 'Active')
                                     <a href="javascript:void(0)" class="absolute left-2 top-3 mt-0.5" id="updateGuidelineBtn">
                                         <i class="btn-edit bi bi-pencil-square p-2"></i>
                                     </a>
                                     <a href="javascript:void(0)" class="absolute right-0 top-2 mt-1 mr-2" id="removeGuidelineBtn">
+=======
+                                @if (auth()->user()->is_disable == 0)
+                                    <button id="updateGuidelineBtn" class="absolute left-2 top-3">
+                                        <i class="btn-update bi bi-pencil-square p-2"></i>
+                                    </button>
+                                    <button id="removeGuidelineBtn" class="absolute top-3 right-2">
+>>>>>>> Stashed changes
                                         <i class="btn-remove bi bi-x-lg cursor-pointer p-2"></i>
-                                    </a>
+                                    </button>
                                 @endif
                                 <a class="guidelines-item"
                                     href="{{ route('guide.display', Crypt::encryptString($guidelineItem->id)) }}">
@@ -57,11 +65,18 @@
                     @endforeach
                     @if (auth()->check() && auth()->user()->status == 'Active')
                         <div class="guideline-btn">
+<<<<<<< Updated upstream
                             <div class="btn-container">
                                 <a id="createGuidelineBtn" href="javascript:void(0)"
                                     class="transition ease-in-out delay-150 hover:scale-105 duration-10 btn-submit px-1">
                                     <i class="bi bi-plus text-4xl"></i>
                                 </a>
+=======
+                            <div class="btn-container py-28">
+                                <button id="createGuidelineBtn" class="btn-submit py-1 px-2">
+                                    <i class="bi bi-plus-lg text-lg"></i>
+                                </button>
+>>>>>>> Stashed changes
                             </div>
                         </div>
                         @include('userpage.guideline.guidelineModal')
@@ -97,14 +112,18 @@
                         },
                         messages: {
                             type: {
-                                required: 'Please Enter Guideline Type.'
+                                required: 'Please enter Guideline Type.'
                             }
                         },
                         errorElement: 'span',
                         submitHandler: createGuidelineForm
                     });
 
+<<<<<<< Updated upstream
                     $('#createGuidelineBtn').click(function() {
+=======
+                    $(document).on('click', '#createGuidelineBtn', function() {
+>>>>>>> Stashed changes
                         $('#guidelineForm')[0].reset();
                         $('#operation').val('create');
                         $('.modal-header').removeClass('bg-yellow-500').addClass('bg-green-600');

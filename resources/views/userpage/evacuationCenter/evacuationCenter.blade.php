@@ -25,7 +25,7 @@
             <div class="locator-content my-3">
                 <div class="locator-header text-center text-white h-22 bg-red-600 rounded-t">
                     <div class="text-2xl py-3">
-                        <span>Cabuyao City Map</span>
+                        <span class="font-extrabold">Cabuyao City Map</span>
                     </div>
                 </div>
                 <div class="map-section border-2 border-red-600 rounded-b-md">
@@ -33,7 +33,11 @@
                 </div>
             </div>
             <div class="flex justify-end my-3">
+<<<<<<< Updated upstream
                 <button type="button" class="btn-submit bg-green-600 p-2 mr-3" id="locateNearestBtn">
+=======
+                <button type="button" class="mr-3" id="locateNearestBtn">
+>>>>>>> Stashed changes
                     <i class="bi bi-search pr-2"></i>
                     Locate Nearest Evacuation</button>
                 <button type="button" class="btn-cancel bg-red-600 p-2 rounded" id="locateCurrentLocationBtn">
@@ -41,16 +45,26 @@
                     Locate Current Location</button>
             </div>
             <div class="table-container p-3 shadow-lg rounded-lg">
+<<<<<<< Updated upstream
                 <div class="block w-full overflow-auto">
                     <header class="text-2xl font-semibold mb-3">Evacuation Centers</header>
                     <table class="table evacuationCenterTable" width="100%">
+=======
+                <div class="block w-full overflow-auto pb-2">
+                    <header class="text-2xl font-semibold mb-3">Evacuation Centers Table</header>
+                    <table id="evacuationCenterTable" class="table" width="100%">
+>>>>>>> Stashed changes
                         <thead class="thead-light">
                             <tr>
                                 <th>Name</th>
                                 <th>Barangay</th>
                                 <th>Latitude</th>
                                 <th>Longitude</th>
+<<<<<<< Updated upstream
                                 <th>Status</th>
+=======
+                                <th class="w-6">Status</th>
+>>>>>>> Stashed changes
                                 <th class="w-4">Action</th>
                             </tr>
                         </thead>
@@ -106,10 +120,29 @@
                     }
                 });
 
+<<<<<<< Updated upstream
                 let infowindow = new google.maps.InfoWindow({
                     content: `<b>Name:</b> ${evacuationCenter.name} <br>
                               <b>Barangay:</b> ${evacuationCenter.barangay_name} <br>
                               <b>Satus:</b> ${evacuationCenter.status}`
+=======
+                let statusColor = evacuationCenter.status == 'Active' ?
+                    'green' : evacuationCenter.status == 'Inactive' ?
+                    'red' : 'orange';
+
+                let infowindow = new google.maps.InfoWindow({
+                    content: `<div class="info-window-container">
+                                <div class="info-description">
+                                    <span>Name:</span> ${evacuationCenter.name}
+                                </div>
+                                <div class="info-description">
+                                    <span>Barangay:</span> ${evacuationCenter.barangay_name}
+                                </div>
+                                <div class="info-description">
+                                    <span>Status:</span> <span class="bg-${statusColor}-600 status-container">${evacuationCenter.status}</span>
+                                </div>
+                            </div>`
+>>>>>>> Stashed changes
                 });
 
                 marker.addListener("click", () => {
@@ -134,12 +167,17 @@
                 url = "{{ route('resident.evacuation.center.get', 'locator') }}":
                 url = "{{ route('evacuation.center.get', 'locator') }}";
 
+<<<<<<< Updated upstream
             let evacuationCenterTable = $('.evacuationCenterTable').DataTable({
                 order: [
                     [1, 'asc']
                 ],
+=======
+            let evacuationCenterTable = $('#evacuationCenterTable').DataTable({
+                ordering: false,
+>>>>>>> Stashed changes
                 language: {
-                    emptyTable: 'No available evacuation center yet',
+                    emptyTable: '<div class="text-red-600 font-extrabold">No available evacuation center yet.</div>',
                 },
                 responsive: true,
                 processing: false,

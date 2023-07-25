@@ -39,9 +39,23 @@ class UserAccountsController extends Controller
 
             return DataTables::of($userAccounts)
                 ->addIndexColumn()
+<<<<<<< Updated upstream
                 ->addColumn('action', function ($user) {
                     if (auth()->user()->status == "Active") {
                         $actionBtns = '<select class="custom-select w-44 bg-blue-500 text-white actionSelect">
+=======
+                ->addColumn('status', function ($row) {
+                    $color = match ($row->status) {
+                        'Active' => 'green',
+                        'Disabled' => 'red',
+                        'Suspended' => 'orange'
+                    };
+
+                    return '<div class="flex justify-center"><div class="bg-' . $color . '-600 status-container">' . $row->status . '</div></div>';
+                })->addColumn('action', function ($user) {
+                    if (auth()->user()->is_disable == 0) {
+                        $actionBtns = '<select class="form-select w-44 bg-blue-500 text-white actionSelect">
+>>>>>>> Stashed changes
                         <option value="" disabled selected hidden>Select Action</option>';
 
                         if ($user->is_suspend == 0) {
