@@ -2,7 +2,7 @@
 
 <body class="auth-body">
     <div class="wrapper">
-        <div class="header-section"></div>
+        <header class="header-section"></header>
         <div class="auth-content">
             <div class="auth-container">
                 <div class="auth-header-desc">
@@ -53,7 +53,7 @@
     </script>
     @include('partials.toastr')
     <script>
-        $(document).ready(function() {
+        $(document).ready(() => {
             $(document).on('click', '#showAuthPassword', function() {
                 const authPassword = $("#authPassword");
                 authPassword.attr('type', authPassword.attr('type') == 'password' ? 'text' : 'password');

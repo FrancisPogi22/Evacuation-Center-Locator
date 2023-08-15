@@ -32,7 +32,7 @@
             @endif
             <div class="table-container">
                 <div class="table-content">
-                    <header class="table-label">Evacuation Center</header>
+                    <header class="table-label">Evacuation Center Table</header>
                     <table class="table evacuationCenterTable" width="100%">
                         <thead class="thead-light">
                             <tr>
@@ -49,12 +49,8 @@
                     </table>
                 </div>
             </div>
-            @if (auth()->user()->is_disable == 0)
-                @include('userpage.evacuationCenter.evacuationCenterModal')
-            @endif
-            @auth
-                @include('userpage.changePasswordModal')
-            @endauth
+            @include('userpage.evacuationCenter.evacuationCenterModal')
+            @include('userpage.changePasswordModal')
         </div>
     </div>
 
@@ -169,7 +165,7 @@
                 });
             }
 
-            $(document).ready(function() {
+            $(document).ready(() => {
                 const validator = $("#evacuationCenterForm").validate({
                     rules: {
                         name: 'required',

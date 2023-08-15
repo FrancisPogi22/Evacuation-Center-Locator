@@ -32,7 +32,7 @@
             </div>
             <div class="table-container">
                 <div class="table-content">
-                    <header class="table-label">Evacuees Informations</header>
+                    <header class="table-label">Evacuees Informations Table</header>
                     <table class="table evacueeTable" width="100%">
                         <thead class="thead-light">
                             <tr class="table-row">
@@ -75,7 +75,7 @@
         crossorigin="anonymous"></script>
     @include('partials.toastr')
     <script>
-        $(document).ready(function() {
+        $(document).ready(() => {
             let evacueeId, defaultFormData, modal = $('#evacueeInfoFormModal'),
                 dateEntryInput = datePicker("#date_entry");
             const fieldNames = [

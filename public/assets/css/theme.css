@@ -160,6 +160,13 @@ hr,
     border: none;
 }
 
+.evacuation-button-container {
+    display: flex;
+    justify-content: space-between;
+    margin: 16px 0;
+    border: none;
+}
+
 .page-button-container {
     display: flex;
     justify-content: end;
@@ -167,6 +174,7 @@ hr,
     border: none;
 }
 
+.locator-button-container button i,
 .page-button-container button i,
 .generate-button-container button i {
     padding-right: 8px;
@@ -234,10 +242,6 @@ hr,
 
 .dropdown-menu .logout:active {
     background: #dc2626;
-}
-
-.field-container.mb-2 {
-    position: relative;
 }
 
 /* Header Section End */
@@ -873,8 +877,15 @@ hr,
 .guide-widget {
     position: relative;
     max-width: 300px;
+    transition: 0.1s all ease-in-out;
     filter: drop-shadow(0 10px 8px rgb(0 0 0 / 0.04)) drop-shadow(0 4px 3px rgb(0 0 0 / 0.1));
 }
+
+.guideline-widget:hover {
+    transform: scale(1.05);
+}
+
+
 
 #updateGuidelineBtn {
     position: absolute;
@@ -1030,6 +1041,49 @@ hr,
 .ssQIHO-checkbox-menu-item label {
     margin-bottom: 0;
     margin-left: 5px;
+}
+
+.evacuation-markers {
+    background: var(--color-text);
+    display: flex;
+    align-items: center;
+    border-radius: 4px;
+    border: 2px solid var(--color-red);
+    filter: drop-shadow(0 4px 3px rgb(0 0 0 / 0.07)) drop-shadow(0 2px 2px rgb(0 0 0 / 0.06));
+}
+
+.markers-header {
+    position: relative;
+    height: 100%;
+    background: var(--color-red);
+    text-align: center;
+    color: var(--color-text);
+}
+
+.markers-header p {
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    padding: 0 10px;
+    font-weight: 700;
+}
+
+.marker-container {
+    display: flex;
+    padding: 0 10px;
+    gap: 15px;
+}
+
+.markers img {
+    width: 30px;
+    cursor: pointer;
+    transition: 0.1s all ease-in-out;
+}
+
+.markers img:hover {
+    transform: scale(1.10);
 }
 
 /* Evacuation Center Section End */
@@ -1412,10 +1466,6 @@ input::-webkit-inner-spin-button {
     font-size: larger;
 }
 
-.field-container.mb-2 {
-    position: relative;
-}
-
 .toggle-password {
     position: absolute;
     cursor: pointer;
@@ -1429,13 +1479,16 @@ input::-webkit-inner-spin-button {
 /* Modal Section End */
 
 /* Form Section Start Here */
-
 .form-content {
     display: flex;
     flex-wrap: wrap;
     background-color: rgb(248 250 252 / 1);
     padding-top: 12px;
     border-radius: 4px;
+}
+
+.field-container {
+    position: relative;
 }
 
 .field-container {
@@ -1597,7 +1650,7 @@ table td {
     border-radius: 9999px;
     padding: 6px 8px;
     color: var(--color-text);
-    font-weight: bold;
+    font-weight: 700;
 }
 
 .action-container {
@@ -1688,12 +1741,11 @@ select.form-select option {
 
 /* Laptop View End Section */
 
-/* Mobile View Section */
+/* Tablet View Section */
 @media only screen and (max-width: 767px) {
     .main-content {
-        margin-top: 90px;
-        margin-bottom: 20px;
-        padding: 0 0 0 0;
+        margin: 90px 0 20px;
+        padding: 0;
     }
 
     .wrapper {
@@ -1701,7 +1753,7 @@ select.form-select option {
     }
 
     .auth-content {
-        padding: 29% 0 20% 0;
+        padding: 29% 0 20%;
     }
 
     .auth-content .auth-container .auth-header-desc {
@@ -1728,28 +1780,23 @@ select.form-select option {
     }
 
     .sidebar {
-        width: 0 !important;
+        width: 0;
     }
 
-    .sidebar #logo {
-        display: none;
-    }
-
-    .sidebar.active #logo {
-        display: block;
-    }
-
+    .sidebar #logo,
     .sidebar #btn-sidebar-close {
         display: none;
     }
 
+    .sidebar.active #logo,
     #btn-sidebar-mobile,
-    .sidebar.active #btn-sidebar-close {
+    .sidebar.active #btn-sidebar-close,
+    .profile-details-container {
         display: block;
     }
 
     .sidebar.active {
-        width: 320px !important;
+        width: 320px;
     }
 
     .widget-container {
@@ -1767,20 +1814,15 @@ select.form-select option {
     .action-container button,
     .action-container select {
         padding: 5px;
-        margin-top: 2px;
-        margin-bottom: 2px;
+        margin: 2px 0;
     }
 
     .dropdown button {
         margin: 0 -19px;
     }
-
-    .profile-details-container {
-        display: block;
-    }
 }
 
-/* Mobile View End Section */
+/* Tablet View End Section */
 
 /* Mobile View Section */
 @media only screen and (max-width: 380px) {
@@ -1909,8 +1951,11 @@ select.form-select option {
 
     .generate-button-container {
         margin-top: 14px;
-        display: flex;
-        justify-content: end;
+        display: block;
+    }
+
+    .generate-button-container button {
+        width: 100%;
     }
 
     .widget-container {
@@ -1959,7 +2004,6 @@ select.form-select option {
 }
 
 /* Mobile View End Section */
-
 
 /* Animations Start Here */
 @keyframes scaleIn {

@@ -181,8 +181,12 @@
         return toastr.warning(message, 'Warning');
     }
 
-    function showSuccessMessage(message) {
-        return toastr.success(message, 'Success');
+    function showSuccessMessage(message, shouldReload) {
+        return toastr.success(message, 'Success', {
+            onHidden() {
+                if (shouldReload) location.reload();
+            }
+        });
     }
 
     function showInfoMessage(message) {

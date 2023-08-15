@@ -85,7 +85,7 @@
         @include('partials.toastr')
         @if (auth()->user()->is_disable == 0)
             <script>
-                $(document).ready(function() {
+                $(document).ready(() => {
                     let guidelineId, defaultFormData;
 
                     const validator = $("#guidelineForm").validate({
@@ -141,9 +141,7 @@
                                         .replace(':guidelineId', guidelineId),
                                     type: "PATCH",
                                     success() {
-                                        showSuccessMessage(
-                                            'Guideline removed successfully.'
-                                        );
+                                        showSuccessMessage('Guideline removed successfully.', true);
                                     },
                                     error() {
                                         showErrorMessage();
@@ -170,12 +168,11 @@
                                         url,
                                         type,
                                         success(response) {
-                                            response.status == 'warning' ?
-                                                showWarningMessage(response.message) : (
-                                                    showSuccessMessage(`Guideline successfully ${operation}d.`),
-                                                    $('#guidelineForm')[0].reset(),
-                                                    $('#guidelineModal').modal('hide')
-                                                );
+                                            return response.status == 'warning' ? owWarningMessage(response
+                                                .message) : (showSuccessMessage(
+                                                `Guideline successfully ${operation}d, Please wait...`,
+                                                true), $('#guidelineForm')[0].reset(), $(
+                                                '#guidelineModal').modal('hide'));
                                         },
                                         error() {
                                             showErrorMessage();
