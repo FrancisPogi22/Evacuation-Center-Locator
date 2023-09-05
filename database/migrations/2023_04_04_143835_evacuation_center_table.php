@@ -15,6 +15,7 @@ return new class extends Migration
             $table->string('longitude');
             $table->integer('capacity');
             $table->string('status');
+            $table->boolean('is_archive');
         });
     }
 

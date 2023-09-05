@@ -24,6 +24,7 @@ return new class extends Migration
             $table->string('barangay');
             $table->string('evacuation_assigned');
             $table->string('remarks')->nullable();
+            $table->boolean('is_archive');
         });
     }
 

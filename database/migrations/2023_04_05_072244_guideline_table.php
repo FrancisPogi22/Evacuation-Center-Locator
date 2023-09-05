@@ -12,7 +12,6 @@ return new class extends Migration
             $table->id();
             $table->string('type')->unique();
             $table->string('organization');
-            $table->boolean('is_archive');
         });
     }
 

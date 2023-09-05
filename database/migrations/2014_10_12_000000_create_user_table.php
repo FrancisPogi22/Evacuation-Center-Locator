@@ -10,6 +10,7 @@ return new class extends Migration
     {
         Schema::create('user', function (Blueprint $table) {
             $table->id();
+            $table->string('name');
             $table->string('email')->unique();
             $table->string('password');
             $table->string('organization');
@@ -18,6 +19,7 @@ return new class extends Migration
             $table->boolean('is_disable');
             $table->boolean('is_suspend');
             $table->timestamp('suspend_time')->nullable();
+            $table->boolean('is_archive');
         });
     }
 
