@@ -26,7 +26,7 @@ class EvacueeController extends Controller
         $evacueeInfo = $this->evacuee->all();
         return DataTables::of($evacueeInfo)
             ->addIndexColumn()
-            ->addColumn('action', function() {
+            ->addColumn('action', function () {
                 if (auth()->user()->is_disable == 1) return;
 
                 return '<button class="btn-table-update" id="updateEvacueeBtn"><i class="bi bi-pencil-square"></i>Update</button>';
