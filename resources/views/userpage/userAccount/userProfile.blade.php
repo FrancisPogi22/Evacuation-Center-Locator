@@ -12,7 +12,7 @@
         <div class="main-content">
             <div class="label-container">
                 <i class="bi bi-person-circle"></i>
-                <span>MY PROFILE</span>
+                <span>MY ACCOUNT</span>
             </div>
             <hr>
             <div class="user-profile-container">

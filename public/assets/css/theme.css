@@ -24,6 +24,7 @@
     text-decoration: none !important;
     font-family: "Montserrat", sans-serif;
     -webkit-font-smoothing: antialiased;
+    user-select: none;
 }
 
 .toast {
@@ -256,13 +257,13 @@
 
 .main-content {
     width: 100%;
-    margin: 98px auto 30px;
+    margin: 92px auto 30px;
     padding: 0 20px 0 90px;
     transition: 0.2s all ease-in-out;
 }
 
 .main-content hr {
-    margin: 22px 0;
+    margin: 20px 0;
 }
 
 .label-container {
@@ -1802,7 +1803,7 @@ span.error {
 }
 
 .table-label {
-    font-size: 24px;
+    font-size: 20px;
     line-height: 32px;
     font-weight: 600;
     margin-bottom: 12px;
@@ -2152,7 +2153,7 @@ select.form-select option {
 
 @media only screen and (max-width: 767px) {
     .main-content {
-        margin: 89px 0 20px;
+        margin: 83px 0 20px;
         padding: 0;
     }
 
@@ -2408,7 +2409,7 @@ select.form-select option {
     }
 
     .main-content hr {
-        margin: 17px 0;
+        margin: 15px 0;
     }
 
     .details-content img {
@@ -2420,11 +2421,11 @@ select.form-select option {
     }
 
     .label-container i {
-        font-size: 18px;
+        font-size: 20px;
     }
 
     .label-container span {
-        font-size: 16px;
+        font-size: 15px;
     }
 
     .content-description p {
@@ -2565,7 +2566,7 @@ select.form-select option {
 
     .table-content .table-label {
         text-align: center;
-        font-size: 18px;
+        font-size: 16px;
     }
 
     .about-content>div {

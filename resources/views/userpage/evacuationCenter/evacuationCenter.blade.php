@@ -104,32 +104,25 @@
     <script>
         let map, activeInfoWindow, userMarker, userBounds, directionDisplay, evacuationCentersData,
             prevNearestEvacuationCenter, evacuationCenterTable, findNearestActive, rowData,
-            evacuationCenterJson = [],
-            evacuationCenterMarkers = [],
             watchId = null,
             locating = false,
             geolocationBlocked = false,
-            hasActiveEvacuationCenter = false;
+            hasActiveEvacuationCenter = false,
+            evacuationCenterJson = [],
+            evacuationCenterMarkers = [],
+            activeEvacuationCenters = [];
 
         const options = {
             enableHighAccuracy: true
         };
 
-        const errorCallback = (error) => {
-            switch (error.message) {
-                case 'User denied Geolocation':
-                    showWarningMessage(
-                        'Request for geolocation denied. To use this feature, please allow the browser to locate you.'
-                    );
-                    break;
-                default:
-                    showErrorMessage('Geolocation service failed. Please restart your browser.');
-                    break;
-            }
-
+        const errorCallback = () => {
+            showWarningMessage(
+                'Request for geolocation denied. To use this feature, please allow the browser to locate you.'
+            );
             $('#locateNearestBtn').removeAttr('disabled');
-            geolocationBlocked = true;
             locating = false;
+            geolocationBlocked = true;
         };
 
         function initMap() {
@@ -313,9 +306,15 @@
         }
 
         async function getEvacuationCentersDistance() {
-            prevNearestEvacuationCenter = evacuationCenterJson.length ? evacuationCenterJson[0] : null;
-            evacuationCenterJson.splice(0, evacuationCenterJson.length);
-            const activeEvacuationCenters = evacuationCentersData.filter(data => data.status != 'Inactive');
+            $('#locateNearestBtn').attr('disabled', true);
+            evacuationCenterJson.length = 0;
+            activeEvacuationCenters.length = 0;
+
+            for (const data of evacuationCentersData) {
+                if (data.status != 'Inactive') {
+                    activeEvacuationCenters.push(data);
+                }
+            }
 
             if (activeEvacuationCenters.length == 0) {
                 hasActiveEvacuationCenter = false;
@@ -325,48 +324,57 @@
                 }
             } else {
                 hasActiveEvacuationCenter = true;
-                const position = await getUserLocation();
-                const promises = activeEvacuationCenters.map(data => {
-                    return new Promise(resolve => {
-                        const direction = new google.maps.DirectionsService();
-                        direction.route(request(
-                                newLatLng(position.coords.latitude, position.coords
-                                    .longitude),
-                                newLatLng(data.latitude, data.longitude)),
-                            (response, status) => {
-                                if (status == 'OK') {
-                                    evacuationCenterJson.push({
-                                        id: data.id,
-                                        status: data.status,
-                                        latitude: data.latitude,
-                                        longitude: data.longitude,
-                                        distance: parseFloat(getKilometers(
-                                            response))
-                                    });
+                if (!geolocationBlocked) {
+                    const position = await getUserLocation();
+                    const promises = activeEvacuationCenters.map(data => {
+                        return new Promise(resolve => {
+                            const direction = new google.maps.DirectionsService();
+                            direction.route(request(
+                                    newLatLng(position.coords.latitude, position.coords
+                                        .longitude),
+                                    newLatLng(data.latitude, data.longitude)),
+                                (response, status) => {
+                                    if (status == 'OK') {
+                                        evacuationCenterJson.push({
+                                            id: data.id,
+                                            status: data.status,
+                                            latitude: data.latitude,
+                                            longitude: data.longitude,
+                                            distance: parseFloat(getKilometers(response))
+                                        });
+                                        resolve();
+                                    }
                                 }
-
-                                resolve();
-                            }
-                        );
+                            );
+                        });
                     });
-                });
 
-                await Promise.all(promises);
-                evacuationCenterJson.sort((a, b) => a.distance - b.distance);
+                    await Promise.all(promises);
+                    if (evacuationCenterJson.length > 1) {
+                        const unique = new Set();
+                        evacuationCenterJson = evacuationCenterJson
+                            .filter(({
+                                id,
+                                latitude,
+                                longitude
+                            }) => {
+                                const identifier = `${id}-${latitude}-${longitude}`;
+                                return unique.has(identifier) ? false : unique.add(identifier);
+                            })
+                            .sort((a, b) => a.distance - b.distance);
+                    }
+                }
             }
 
+            console.log(evacuationCenterJson)
             $('#locateNearestBtn').removeAttr('disabled');
         }
 
         function locateEvacuationCenter() {
             watchId = navigator.geolocation.watchPosition(async (position) => {
-
-                console.log(evacuationCenterJson)
-                console.log(rowData)
+                geolocationBlocked = false;
 
                 if (position.coords.accuracy <= 250) {
-                    if (geolocationBlocked) return;
-
                     if (findNearestActive && evacuationCenterJson.length == 0) {
                         await getEvacuationCentersDistance();
                         if (!hasActiveEvacuationCenter) return;
@@ -376,8 +384,9 @@
                         latitude,
                         longitude
                     } = findNearestActive ?
-                        evacuationCenterJson[0] : rowData,
-                        directionService = new google.maps.DirectionsService();
+                        evacuationCenterJson[0] : rowData;
+
+                    const directionService = new google.maps.DirectionsService();
 
                     directionService.route(
                         request(
@@ -421,6 +430,8 @@
                                 }
 
                                 directionDisplay.setDirections(response);
+                                if (findNearestActive)
+                                    prevNearestEvacuationCenter = evacuationCenterJson[0];
                             }
                         }
                     );
@@ -439,37 +450,6 @@
                         evacuationCentersData = response.data;
                         getEvacuationCentersDistance();
                         initMarkers(evacuationCentersData);
-
-                        if (locating && (rowData != null || prevNearestEvacuationCenter !=
-                                null)) {
-                            const {
-                                id,
-                                status,
-                                latitude,
-                                longitude
-                            } = findNearestActive ? prevNearestEvacuationCenter : rowData;
-
-                            const isCenterUnavailable = findNearestActive ?
-                                !evacuationCentersData.some(evacuationCenter =>
-                                    evacuationCenter.id == id && evacuationCenter.status ==
-                                    status) :
-                                !evacuationCentersData.some(evacuationCenter =>
-                                    evacuationCenter.id == id),
-                                isLocationUpdated = !evacuationCentersData.some(
-                                    evacuationCenter =>
-                                    evacuationCenter.latitude == latitude &&
-                                    evacuationCenter.longitude == longitude);
-
-                            if (isCenterUnavailable || isLocationUpdated) {
-                                $('#stopLocatingBtn').click();
-                                showWarningMessage(
-                                    isCenterUnavailable ?
-                                    'The evacuation center you are locating is no longer available.' :
-                                    'The location of the evacuation center you are locating is updated.'
-                                );
-                            }
-                        }
-
                         resolve();
                     }
                 });
@@ -579,8 +559,41 @@
             });
 
             // Echo.channel('evacuation-center-locator').listen('EvacuationCenterLocator', (e) => {
-            //     ajaxRequest().then(() =>
-            //         evacuationCenterTable.clear().rows.add(evacuationCentersData).draw());
+            //     ajaxRequest().then(() => {
+            //         if (locating && (rowData != null || prevNearestEvacuationCenter != null)) {
+            //             const {
+            //                 id,
+            //                 status,
+            //                 latitude,
+            //                 longitude
+            //             } = findNearestActive ? prevNearestEvacuationCenter : rowData;
+
+            //             const isCenterUnavailable = findNearestActive ?
+            //                 !evacuationCentersData.some(evacuationCenter =>
+            //                     evacuationCenter.id == id && ['Active', 'Full'].includes(
+            //                         evacuationCenter.status)) :
+            //                 !evacuationCentersData.some(evacuationCenter =>
+            //                     evacuationCenter.id == id),
+
+            //                 isLocationUpdated = !evacuationCentersData.some(
+            //                     evacuationCenter =>
+            //                     evacuationCenter.latitude == latitude &&
+            //                     evacuationCenter.longitude == longitude);
+
+            //             if (isCenterUnavailable || isLocationUpdated) {
+            //                 $('#stopLocatingBtn').click();
+            //                 showWarningMessage(
+            //                     isCenterUnavailable ?
+            //                     'The evacuation center you are locating is no longer available.' :
+            //                     'The location of the evacuation center you are locating is updated.'
+            //                 );
+
+            //                 if (findNearestActive) prevNearestEvacuationCenter = null;
+            //             }
+            //         }
+
+            //         evacuationCenterTable.clear().rows.add(evacuationCentersData).draw();
+            //     });
             // });
         });
     </script>
