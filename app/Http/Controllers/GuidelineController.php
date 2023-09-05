@@ -50,10 +50,9 @@ class GuidelineController extends Controller
 
         $guideline = $this->guideline->create([
             'type' => Str::upper(trim($request->type)),
-            'organization' => auth()->user()->organization,
-            'is_archive' => 0
+            'organization' => auth()->user()->organization
         ]);
-        $this->logActivity->generateLog('Registering Guideline');
+        $this->logActivity->generateLog('Creating Guideline');
 
         $labels = $request->label;
         $contents = $request->content;
@@ -65,8 +64,7 @@ class GuidelineController extends Controller
                 $guide = $this->guide->create([
                     'label' => $label,
                     'content' => $contents[$count],
-                    'guideline_id' => $guideline->id,
-                    'is_archive' => 0
+                    'guideline_id' => $guideline->id
                 ]);
 
                 if (isset($guidePhotos[$count])) {
@@ -108,8 +106,7 @@ class GuidelineController extends Controller
                 $guide = $this->guide->create([
                     'label' => $label,
                     'content' => $contents[$count],
-                    'guideline_id' => $guidelineId,
-                    'is_archive' => 0
+                    'guideline_id' => $guidelineId
                 ]);
 
                 if (isset($guidePhotos[$count])) {
@@ -124,12 +121,10 @@ class GuidelineController extends Controller
         return response()->json();
     }
 
-    public function archiveGuideline($guidelineId)
+    public function removeGuideline($guidelineId)
     {
-        $this->guideline->find(Crypt::decryptString($guidelineId))->update([
-            'is_archive' => 1
-        ]);
-        $this->logActivity->generateLog('Archiving Guideline');
+        $this->guideline->find(Crypt::decryptString($guidelineId))->delete();
+        $this->logActivity->generateLog('Removing Guideline');
         return response()->json();
     }
 
@@ -173,12 +168,10 @@ class GuidelineController extends Controller
         return response()->json();
     }
 
-    public function archiveGuide($guideId)
+    public function removeGuide($guideId)
     {
-        $this->guide->find($guideId)->update([
-            'is_archive' => 1
-        ]);
-        $this->logActivity->generateLog('Archiving Guide');
+        $this->guide->find($guideId)->delete();
+        $this->logActivity->generateLog('Removing Guide');
         return response()->json();
     }
 }

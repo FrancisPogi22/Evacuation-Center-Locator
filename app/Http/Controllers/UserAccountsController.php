@@ -27,7 +27,7 @@ class UserAccountsController extends Controller
     {
         if (!$request->ajax()) return view('userpage.userAccount.userAccounts');
 
-        $userAccounts = $this->user->all();
+        $userAccounts = $this->user->where('is_archive', 0);
         $userId = auth()->user()->id;
         $userAccounts = auth()->user()->organization == "CSWD" ? $userAccounts->whereNotIn('id', [$userId]) :
             $userAccounts->where('organization', 'CDRRMO')->whereNotIn('id', [$userId]);
@@ -37,7 +37,8 @@ class UserAccountsController extends Controller
             ->addColumn('status', fn ($account) => '<div class="status-container"><div class="status-content bg-' . match ($account->status) {
                 'Active' => 'success',
                 'Disabled' => 'danger',
-                'Suspended' => 'warning'
+                'Suspended' => 'warning',
+                'Archived' => 'warning'
             }
                 . '">' . $account->status . '</div></div>')
             ->addColumn('action', function ($user) {
@@ -60,6 +61,7 @@ class UserAccountsController extends Controller
     {
         $createAccountValidation = Validator::make($request->all(), [
             'organization' => 'required',
+            'name' => 'required',
             'email' => 'required|email|unique:user,email',
             'position' => 'required'
         ]);
@@ -71,11 +73,13 @@ class UserAccountsController extends Controller
         $this->user->create([
             'organization' => $request->organization,
             'position' => $request->position,
+            'name' => $request->name,
             'email' => trim($request->email),
             'password' =>  Hash::make($defaultPassword),
             'status' =>  "Active",
             'is_disable' =>  0,
-            'is_suspend' =>  0
+            'is_suspend' =>  0,
+            'is_archive'=> 0,
         ]);
         $this->logActivity->generateLog('Creating Account');
         Mail::to(trim($request->email))->send(new UserCredentialsMail([
@@ -91,6 +95,7 @@ class UserAccountsController extends Controller
     {
         $updateAccountValidation = Validator::make($request->all(), [
             'organization' => 'required',
+            'name' => 'required',
             'position' => 'required',
             'email' => 'required|email'
         ]);
@@ -100,6 +105,7 @@ class UserAccountsController extends Controller
 
         $this->user->find($userId)->update([
             'organization' => $request->organization,
+            'name' => $request->name,
             'position' => $request->position,
             'email' => trim($request->email)
         ]);

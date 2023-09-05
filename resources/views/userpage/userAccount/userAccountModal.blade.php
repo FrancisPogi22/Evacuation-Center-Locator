@@ -31,6 +31,11 @@
                                 <input name="suspend_time" class="form-control" id="suspend"
                                     placeholder="Select Suspend Time" autocomplete="off">
                             </div>
+                            <div class="field-container" id="name-container">
+                                <label>Name</label>
+                                <input type="text" name="name" class="form-control" id="name"
+                                    placeholder="Enter Name">
+                            </div>
                             <div class="field-container" id="email-container">
                                 <label>Email Address</label>
                                 <input type="email" name="email" class="form-control" id="email"

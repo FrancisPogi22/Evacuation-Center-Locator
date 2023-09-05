@@ -26,12 +26,12 @@ class DisasterController extends Controller
 
         return DataTables::of($disasterInformation)
             ->addIndexColumn()
-            ->addColumn('status', fn($disaster) => '<div class="status-container"><div class="status-content bg-' . match ($disaster->status) {
+            ->addColumn('status', fn ($disaster) => '<div class="status-container"><div class="status-content bg-' . match ($disaster->status) {
                 'On Going' => 'success',
                 'Inactive' => 'danger'
             }
                 . '">' . $disaster->status . '</div></div>')
-            ->addColumn('action', function($disaster) {
+            ->addColumn('action', function ($disaster) {
                 if (auth()->user()->is_disable == 1) return;
 
                 $statusOptions = $disaster->status == 'On Going' ? '<option value="Inactive">Inactive</option>' : '<option value="On Going">On Going</option>';

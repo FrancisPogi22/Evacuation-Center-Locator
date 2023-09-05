@@ -16,7 +16,8 @@ class EvacuationCenterSeeder extends Seeder
             'latitude' => '14.2862',
             'longitude' => '121.1338',
             'capacity' => '120',
-            'status' => 'Active'
+            'status' => 'Active',
+            'is_archive'=> 0,
         ]);
 
         EvacuationCenter::insert([
@@ -25,7 +26,8 @@ class EvacuationCenterSeeder extends Seeder
             'latitude' => '14.2546',
             'longitude' => '121.1295',
             'capacity' => '120',
-            'status' => 'Active'
+            'status' => 'Active',
+            'is_archive'=> 0,
         ]);
 
         EvacuationCenter::insert([
@@ -34,7 +36,8 @@ class EvacuationCenterSeeder extends Seeder
             'latitude' => '14.2704',
             'longitude' => '121.1539',
             'capacity' => '120',
-            'status' => 'Active'
+            'status' => 'Active',
+            'is_archive'=> 0,
         ]);
     }
 }

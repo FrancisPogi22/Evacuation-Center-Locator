@@ -78,14 +78,13 @@ Route::middleware('auth')->group(function () {
             Route::get('/getArchivedEvacueeInfo/{disasterInfo}', 'getArchivedEvacueeInfo')->name('get.archived');
             Route::post('/recordEvacueeInfo', 'recordEvacueeInfo')->name('record');
             Route::put('/updateEvacueeInfo/{evacueeId}', 'updateEvacueeInfo')->name('update');
-            Route::patch('/updateEvacueeDateOut', 'updateEvacueeDateOut')->name('update.dateout');
         });
 
         Route::prefix('evacuationCenter')->name('evacuation.center.')->controller(EvacuationCenterController::class)->group(function () {
             Route::get('/viewEvacuationCenter/{operation}', 'getEvacuationData')->name('get');
             Route::post('/createEvacuationCenter', 'createEvacuationCenter')->name('create');
             Route::put('/updateEvacuation/{evacuationId}', 'updateEvacuationCenter')->name('update');
-            Route::delete('/removeEvacuation/{evacuationId}', 'removeEvacuationCenter')->name('remove');
+            Route::patch('/archiveEvacuation/{evacuationId}', 'archiveEvacuationCenter')->name('archive');
             Route::patch('/changeEvacuationStatus/{evacuationId}', 'changeEvacuationStatus')->name('change.status');
         });
 
@@ -116,14 +115,14 @@ Route::middleware('auth')->group(function () {
             Route::get('/', 'eligtasGuideline')->name('display');
             Route::post('/guideline/createGuideline', 'createGuideline')->name('create');
             Route::post('/guideline/updateGuideline/{guidelineId}', 'updateGuideline')->name('update');
-            Route::patch('/guideline/archiveGuideline/{guidelineId}', 'archiveGuideline')->name('archive');
+            Route::delete('/guideline/removeGuideline/{guidelineId}', 'removeGuideline')->name('remove');
         });
 
         Route::name('guide.')->group(function () {
             Route::get('/guide/{guidelineId}', 'guide')->name('display');
             Route::post('/guide/addGuide{guidelineId}', 'createGuide')->name('create');
             Route::post('/guide/updateGuide/{guideId}', 'updateGuide')->name('update');
-            Route::patch('/guide/archiveGuide/{guideId}', 'archiveGuide')->name('archive');
+            Route::delete('/guide/removeGuide/{guideId}', 'removeGuide')->name('remove');
         });
     });
 

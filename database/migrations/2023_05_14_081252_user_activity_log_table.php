@@ -11,6 +11,7 @@ return new class extends Migration
         Schema::create('activity_log', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->references('id')->on('user')->cascadeOnUpdate();
+            $table->string('name');
             $table->string('activity');
             $table->string('date_time');
         });

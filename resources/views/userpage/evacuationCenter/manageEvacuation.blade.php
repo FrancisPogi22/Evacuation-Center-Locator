@@ -245,10 +245,10 @@
                     defaultFormData = $('#evacuationCenterForm').serialize();
                 });
 
-                $(document).on('click', '#removeEvacuationCenter', function() {
-                    let url = "{{ route('evacuation.center.remove', 'evacuationCenterId') }}".replace(
+                $(document).on('click', '#archiveEvacuationCenter', function() {
+                    let url = "{{ route('evacuation.center.archive', 'evacuationCenterId') }}".replace(
                         'evacuationCenterId', getRowData(this, evacuationCenterTable).id);
-                    alterEvacuationCenter(url, 'DELETE', 'remove');
+                    alterEvacuationCenter(url, 'PATCH', 'archive');
                 })
 
                 $(document).on('change', '#changeEvacuationStatus', function() {
@@ -312,7 +312,7 @@
 
                 function alterEvacuationCenter(url, type, operation) {
                     confirmModal(
-                        `Do you want to ${operation == "remove" ? "remove" : "change the status of"} this evacuation center?`
+                        `Do you want to ${operation == "archive" ? "archive" : "change the status of"} this evacuation center?`
                     ).then((result) => {
                         return !result.isConfirmed ? $('#changeEvacuationStatus').val('') :
                             $.ajax({
@@ -326,7 +326,7 @@
                                 url: url,
                                 success() {
                                     showSuccessMessage(
-                                        `Successfully ${operation == "remove" ? "removed" : "changed the status of"} evacuation center.`
+                                        `Successfully ${operation == "archive" ? "archived" : "changed the status of"} evacuation center.`
                                     );
                                     evacuationCenterTable.draw();
                                 },

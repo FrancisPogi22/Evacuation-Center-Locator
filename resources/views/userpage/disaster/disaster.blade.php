@@ -203,7 +203,7 @@
                                     response.status == 'warning' ? showWarningMessage(response
                                         .message) : (
                                         showSuccessMessage(
-                                            `Disaster successfully ${operation == "add" ? "addded" : "updated"}.`
+                                            `Disaster successfully ${operation == "add" ? "added" : "updated"}.`
                                         ),
                                         modal.modal('hide'), disasterTable.draw());
                                 },

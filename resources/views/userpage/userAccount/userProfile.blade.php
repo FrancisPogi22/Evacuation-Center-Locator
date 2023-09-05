@@ -114,7 +114,7 @@
             function formSubmitHandler(form) {
                 let formData = $(form).serialize();
 
-                confirmModal('Do you want to update this user details?').then((result) => {
+                confirmModal('Do you want to update your details?').then((result) => {
                     if (result.isConfirmed) return;
 
                     return operation == 'update' && defaultFormData == formData ? showWarningMessage(

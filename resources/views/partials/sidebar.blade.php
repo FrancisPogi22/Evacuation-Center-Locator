@@ -35,7 +35,7 @@
                         </div>
                         <div class="navigation-item">
                             <a href="{{ route('guideline.display') }}" class="menu-link">
-                                <i class="bi bi-speedometer2"></i>
+                                <i class="bi bi-book"></i>
                                 <span class="links_name">E-LIGTAS Guidelines</span>
                             </a>
                         </div>
@@ -47,7 +47,7 @@
                             </a>
                             <div class="sub-menu">
                                 <a href="{{ route('display.incident.report') }}" class="menu-link sub-item">
-                                    <i class="bi bi-person-gear"></i>
+                                    <i class="bi bi-people"></i>
                                     <span class="links_name">Manage Reports</span>
                                 </a>
                                 <a href="" class="menu-link sub-item">
@@ -69,7 +69,7 @@
                                         <span class="links_name">Manage Accounts</span>
                                     </a>
                                     <a href="" class="menu-link sub-item">
-                                        <i class="bi bi-archive"></i>
+                                        <i class="bi bi-person-slash"></i>
                                         <span class="links_name">Archived Accounts</span>
                                     </a>
                                 </div>
@@ -96,7 +96,7 @@
                         </div>
                         <div class="navigation-item">
                             <a href="{{ route('guideline.display') }}" class="menu-link">
-                                <i class="bi bi-speedometer2"></i>
+                                <i class="bi bi-book"></i>
                                 <span class="links_name">E-LIGTAS Guidelines</span>
                             </a>
                         </div>
@@ -108,11 +108,11 @@
                             </a>
                             <div class="sub-menu">
                                 <a href="{{ route('disaster.display') }}" class="menu-link sub-item">
-                                    <i class="bi bi-person-gear"></i>
+                                    <i class="bi bi-cloud-upload"></i>
                                     <span class="links_name">Manage Disaster</span>
                                 </a>
                                 <a href="" class="menu-link sub-item">
-                                    <i class="bi bi-archive"></i>
+                                    <i class="bi bi-cloud-slash"></i>
                                     <span class="links_name">Archived Disaster</span>
                                 </a>
                             </div>
@@ -124,10 +124,21 @@
                             </a>
                         </div>
                         <div class="navigation-item">
-                            <a href="{{ route('manage.evacuation') }}" class="menu-link">
-                                <i class="bi bi-house-gear"></i>
-                                <span class="links_name">Manage Evacuation Center</span>
+                            <a class="sub-btn">
+                                <i class="bi bi-hospital"></i>
+                                <span class="links_name">Evacuation Centers</span>
+                                <i class="bi bi-caret-right-fill dropdown"></i>
                             </a>
+                            <div class="sub-menu">
+                                <a href="{{ route('manage.evacuation') }}" class="menu-link sub-item">
+                                    <i class="bi bi-house-gear"></i>
+                                    <span class="links_name">Manage Evacuation</span>
+                                </a>
+                                <a href="" class="menu-link sub-item">
+                                    <i class="bi bi-house-slash"></i>
+                                    <span class="links_name">Archived Evacuation</span>
+                                </a>
+                            </div>
                         </div>
                         <div class="navigation-item">
                             <a href="{{ route('evacuation.center.locator') }}" class="menu-link">
@@ -148,7 +159,7 @@
                                         <span class="links_name">Users Account</span>
                                     </a>
                                     <a href="" class="menu-link sub-item">
-                                        <i class="bi bi-archive"></i>
+                                        <i class="bi bi-person-slash"></i>
                                         <span class="links_name">Archived Account</span>
                                     </a>
                                 </div>
@@ -156,17 +167,17 @@
                         @endif
                         <div class="navigation-item">
                             <a class="sub-btn">
-                                <i class="bi bi-book"></i>
+                                <i class="bi bi-exclamation-triangle"></i>
                                 <span class="links_name">Report Danger Areas</span>
                                 <i class="bi bi-caret-right-fill dropdown"></i>
                             </a>
                             <div class="sub-menu">
                                 <a href="{{ route('report.dangerous.areas.cswd') }}" class="menu-link sub-item">
-                                    <i class="bi bi-person-gear"></i>
+                                    <i class="bi bi-flag"></i>
                                     <span class="links_name">Manage Reports</span>
                                 </a>
                                 <a href="" class="menu-link sub-item">
-                                    <i class="bi bi-archive"></i>
+                                    <i class="bi bi-bookmark-x"></i>
                                     <span class="links_name">Archived Reports</span>
                                 </a>
                             </div>
