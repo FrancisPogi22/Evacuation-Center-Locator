@@ -18,8 +18,7 @@ class Guide extends Model
         'content',
         'guideline_id',
         'author',
-        'guide_photo',
-        'is_archive'
+        'guide_photo'
     ];
 
     public $timestamps = false;

@@ -28,7 +28,8 @@ class Evacuee extends Model
         'date_entry',
         'barangay',
         'evacuation_assigned',
-        'remarks'
+        'remarks',
+        'is_archive'
     ];
 
     public $timestamps = false;

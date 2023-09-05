@@ -16,8 +16,7 @@ class Guideline extends Model
     protected $fillable = [
         'type',
         'organization',
-        'author',
-        'is_archive'
+        'author'
     ];
 
     public $timestamps = false;
