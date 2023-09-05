@@ -33,7 +33,8 @@
                     <table class="table" id="accountTable" width="100%">
                         <thead>
                             <tr>
-                                <th colspan="2">Email Address</th>
+                                <th colspan="2">Name</th>
+                                <th>Email Address</th>
                                 <th>Organization</th>
                                 <th>Position</th>
                                 <th>Status</th>
@@ -79,6 +80,10 @@
                         visible: false
                     },
                     {
+                        data: 'name',
+                        name: 'name'
+                    },
+                    {
                         data: 'email',
                         name: 'email'
                     },
@@ -119,12 +124,14 @@
                     rules: {
                         organization: 'required',
                         position: 'required',
+                        name: 'required',
                         email: 'required',
                         suspend_time: 'required'
                     },
                     messages: {
                         organization: 'Please select an organization.',
                         position: 'Please select a position.',
+                        name: 'Please enter name.',
                         email: 'Please enter an email address.',
                         suspend_time: 'Please enter a suspension time.'
                     },
@@ -144,6 +151,7 @@
                             id,
                             organization,
                             position,
+                            name,
                             email
                         } = getRowData(this, accountTable);
                     userId = id;
@@ -194,6 +202,7 @@
                             $('#suspend-container').prop('hidden', true);
                             $('#organization').val(organization);
                             $('#position').val(position);
+                            $('#name').val(name);
                             $('#email').val(email);
                             operation = "update";
                             defaultFormData = $('#accountForm').serialize();
@@ -225,6 +234,7 @@
                             formButton.removeClass('btn-submit').addClass('btn-update').text('Suspend');
                             $('#organization').val(organization);
                             $('#position').val(position);
+                            $('#name').val(name);
                             $('#email').val(email);
                             operation = "suspend";
                             defaultFormData = $('#accountForm').serialize();

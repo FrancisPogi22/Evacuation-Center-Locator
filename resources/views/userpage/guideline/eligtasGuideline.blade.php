@@ -24,7 +24,7 @@
                                     <button id="updateGuidelineBtn">
                                         <i class="btn-update bi bi-pencil-square"></i>
                                     </button>
-                                    <button id="archiveGuidelineBtn">
+                                    <button id="removeGuidelineBtn">
                                         <i class="btn-remove bi bi-x-lg"></i>
                                     </button>
                                 @endif
@@ -121,12 +121,12 @@
                         defaultFormData = $('#guidelineForm').serialize();
                     });
 
-                    $(document).on('click', '#archiveGuidelineBtn', function() {
+                    $(document).on('click', '#removeGuidelineBtn', function() {
                         guidelineWidget = this.closest('.guideline-widget');
                         guidelineItem = guidelineWidget.querySelector('.guidelines-item');
                         guidelineId = guidelineItem.getAttribute('href').split('/').pop();
 
-                        confirmModal('Do you want to archive this guideline?').then((result) => {
+                        confirmModal('Do you want to remove this guideline?').then((result) => {
                             if (!result.isConfirmed) return;
 
                             $.ajax({
@@ -134,13 +134,13 @@
                                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                                 },
                                 data: guidelineId,
-                                url: "{{ route('guideline.archive', 'guidelineId') }}"
+                                url: "{{ route('guideline.remove', 'guidelineId') }}"
                                     .replace('guidelineId', guidelineId),
-                                type: "PATCH",
+                                type: "DELETE",
                                 success(response) {
                                     return response.status == 'warning' ? showWarningMessage(
                                         response.message) : showSuccessMessage(
-                                        'Guideline archived successfully.', true);
+                                        'Guideline removed successfully.', true);
                                 },
                                 error() {
                                     showErrorMessage();

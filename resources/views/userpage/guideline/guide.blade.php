@@ -37,7 +37,7 @@
                                                 </button>
                                             </div>
                                             <div class="guide-remove-btn">
-                                                <button class="btn-remove" id="archiveGuideBtn">
+                                                <button class="btn-remove" id="removeGuideBtn">
                                                     <i class="bi bi-trash3-fill"></i> Remove
                                                 </button>
                                             </div>
@@ -117,12 +117,12 @@
                         defaultFormData = serializeFormData(new FormData($('#guideForm')[0]));
                     });
 
-                    $(document).on('click', '#archiveGuideBtn', function() {
+                    $(document).on('click', '#removeGuideBtn', function() {
                         guideWidget = $(this).closest('.swiper-slide');
                         guideItem = guideWidget.find('.guide-item');
                         guideId = guideWidget.find('#guideId').val();
 
-                        confirmModal('Do you want to archive this guide?').then((result) => {
+                        confirmModal('Do you want to remove this guide?').then((result) => {
                             if (!result.isConfirmed) return;
 
                             $.ajax({
@@ -130,14 +130,14 @@
                                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                                 },
                                 data: guideId,
-                                url: "{{ route('guide.archive', 'guideId') }}".replace(
+                                url: "{{ route('guide.remove', 'guideId') }}".replace(
                                     'guideId',
                                     guideId),
-                                type: "PATCH",
+                                type: "DELETE",
                                 success(response) {
                                     return response.status == 'warning' ? showWarningMessage(
                                         response.message) : showSuccessMessage(
-                                        'Guide archived successfully, Please wait...', true);
+                                        'Guide removed successfully, Please wait...', true);
                                 },
                                 error() {
                                     showErrorMessage();
