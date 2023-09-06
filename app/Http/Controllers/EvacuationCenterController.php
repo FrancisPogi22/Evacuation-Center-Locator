@@ -64,7 +64,8 @@ class EvacuationCenterController extends Controller
         if ($evacuationCenterValidation->fails())
             return response(['status' => 'warning', 'message' => implode('<br>', $evacuationCenterValidation->errors()->all())]);
 
-        $this->evacuationCenter->create([
+        $evacuationCenterData =  $this->evacuationCenter->create([
+            'user_id' => auth()->user()->id,
             'name' => Str::of(trim($request->name))->title(),
             'barangay_name' => $request->barangayName,
             'latitude' => $request->latitude,
@@ -73,7 +74,7 @@ class EvacuationCenterController extends Controller
             'status' => 'Active',
             'is_archive' => 0,
         ]);
-        $this->logActivity->generateLog('Adding new evacuation center');
+        $this->logActivity->generateLog($evacuationCenterData->id, 'Added new evacuation center');
         // event(new EvacuationCenterLocator());
         return response()->json();
     }
@@ -91,13 +92,14 @@ class EvacuationCenterController extends Controller
             return response(['status' => 'warning', 'message' => implode('<br>', $evacuationCenterValidation->errors()->all())]);
 
         $this->evacuationCenter->find($evacuationId)->update([
+            'user_id' => auth()->user()->id,
             'name' => Str::of(trim($request->name))->title(),
             'barangay_name' => $request->barangayName,
             'latitude' => $request->latitude,
             'longitude' => $request->longitude,
             'capacity' => trim($request->capacity)
         ]);
-        $this->logActivity->generateLog('Updating evacuation center');
+        $this->logActivity->generateLog($evacuationId, 'Updated evacuation center');
         // event(new EvacuationCenterLocator());
         return response()->json();
     }
@@ -105,10 +107,11 @@ class EvacuationCenterController extends Controller
     public function archiveEvacuationCenter($evacuationId)
     {
         $this->evacuationCenter->find($evacuationId)->update([
+            'user_id' => auth()->user()->id,
             'status' => "Archived",
             'is_archive' => 1,
         ]);
-        $this->logActivity->generateLog('Archiving evacuation center');
+        $this->logActivity->generateLog($evacuationId, 'Archived evacuation center');
         // event(new EvacuationCenterLocator());
         return response()->json();
     }
@@ -116,9 +119,10 @@ class EvacuationCenterController extends Controller
     public function changeEvacuationStatus(Request $request, $evacuationId)
     {
         $this->evacuationCenter->find($evacuationId)->update([
+            'user_id' => auth()->user()->id,
             'status' => $request->status
         ]);
-        $this->logActivity->generateLog('Changing evacuation center status');
+        $this->logActivity->generateLog($evacuationId, 'Changed evacuation center status');
         // event(new EvacuationCenterLocator());
         return response()->json();
     }

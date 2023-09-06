@@ -29,7 +29,8 @@ class Evacuee extends Model
         'barangay',
         'evacuation_assigned',
         'remarks',
-        'is_archive'
+        'is_archive',
+        'user_id',
     ];
 
     public $timestamps = false;

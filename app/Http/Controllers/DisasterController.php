@@ -55,12 +55,13 @@ class DisasterController extends Controller
         if ($validatedDisasterValidation->fails())
             return response(['status' => 'warning', 'message' => $validatedDisasterValidation->errors()->first()]);
 
-        $this->disaster->create([
+        $disasterData = $this->disaster->create([
             'name' => Str::of(trim($request->name))->title(),
             'status' => "On Going",
+            'user_id' => auth()->user()->id,
             'is_archive' => 0
         ]);
-        $this->logActivity->generateLog('Creating Disaster Data');
+        $this->logActivity->generateLog($disasterData->id, 'Created New Disaster');
         return response()->json();
     }
 
@@ -74,9 +75,10 @@ class DisasterController extends Controller
             return response()->json(['status' => 'warning', 'message' => $validatedDisasterValidation->errors()->first()]);
 
         $this->disaster->find($disasterId)->update([
-            'name' => Str::of(trim($request->name))->title()
+            'name' => Str::of(trim($request->name))->title(),
+            'user_id' => auth()->user()->id
         ]);
-        $this->logActivity->generateLog('Updating Disaster Data');
+        $this->logActivity->generateLog($disasterId, 'Updating Disaster Data');
         return response()->json();
     }
 
@@ -84,18 +86,20 @@ class DisasterController extends Controller
     {
         $this->disaster->find($disasterId)->update([
             'status' => 'Archived',
+            'user_id' => auth()->user()->id,
             'is_archive' => 1
         ]);
-        $this->logActivity->generateLog('Archiving Disaster Data');
+        $this->logActivity->generateLog($disasterId, 'Archived Disaster');
         return response()->json();
     }
 
     public function changeDisasterStatus(Request $request, $disasterId)
     {
         $this->disaster->find($disasterId)->update([
-            'status' => $request->status
+            'status' => $request->status,
+            'user_id' => auth()->user()->id
         ]);
-        $this->logActivity->generateLog('Changing Disaster Status');
+        $this->logActivity->generateLog($disasterId, 'Changed Disaster Status');
         return response()->json();
     }
 }

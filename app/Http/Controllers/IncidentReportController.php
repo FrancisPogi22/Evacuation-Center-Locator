@@ -173,7 +173,7 @@ class IncidentReportController extends Controller
     public function approveIncidentReport($reportId)
     {
         $this->reportEvent->approveStatus($reportId);
-        $this->logActivity->generateLog('Approving Incident Report');
+        $this->logActivity->generateLog($reportId, 'Approved Incident Report');
         //event(new IncidentReportEvent());
         return response()->json();
     }
@@ -181,7 +181,7 @@ class IncidentReportController extends Controller
     public function declineIncidentReport($reportId)
     {
         $this->reportEvent->declineStatus($reportId);
-        $this->logActivity->generateLog('Declining Incident Report');
+        $this->logActivity->generateLog($reportId, 'Declined Incident Report');
         //event(new IncidentReportEvent());
         return response()->json();
     }
@@ -200,7 +200,7 @@ class IncidentReportController extends Controller
             'is_archive' => 1,
             'status' => 'Archived'
         ]);
-        $this->logActivity->generateLog('Archiving Incident Report');
+        $this->logActivity->generateLog($reportId, 'Archived Incident Report');
         //event(new IncidentReportEvent());
         return response()->json();
     }
@@ -330,7 +330,7 @@ class IncidentReportController extends Controller
     public function confirmDangerAreaReport($dangerAreaId)
     {
         $this->reportEvent->confirmDangerAreaReport($dangerAreaId);
-        $this->logActivity->generateLog('Confirming Dangerous Area Report');
+        $this->logActivity->generateLog($dangerAreaId, 'Confirmed Dangerous Area Report');
         //event(new IncidentReportEvent());
         return response()->json();
     }
@@ -338,7 +338,7 @@ class IncidentReportController extends Controller
     public function rejectDangerAreaReport($dangerAreaId)
     {
         $this->incidentReport->find($dangerAreaId)->delete();
-        $this->logActivity->generateLog('Rejecting Dangerous Area Report');
+        $this->logActivity->generateLog($dangerAreaId, 'Rejected Dangerous Area Report');
         //event(new IncidentReportEvent());
         return response()->json();
     }
@@ -346,7 +346,7 @@ class IncidentReportController extends Controller
     public function archiveDangerAreaReport($dangerAreaId)
     {
         $this->reportEvent->archiveDangerAreaReport($dangerAreaId);
-        $this->logActivity->generateLog('Archiving Dangerous Area Report');
+        $this->logActivity->generateLog($dangerAreaId, 'Archived Dangerous Area Report');
         //event(new IncidentReportEvent());
         return response()->json();
     }

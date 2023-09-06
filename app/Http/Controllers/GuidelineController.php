@@ -31,8 +31,8 @@ class GuidelineController extends Controller
             return view('userpage.guideline.eligtasGuideline', compact('guideline'));
         }
 
-        $guideline = auth()->user()->organization == "CDRRMO" ?  $this->guideline->where('organization', "CDRRMO")->where('is_archive', 0)->get() :
-            $this->guideline->where('organization', "CSWD")->where('is_archive', 0)->get();
+        $guideline = auth()->user()->organization == "CDRRMO" ?  $this->guideline->where('organization', "CDRRMO")->get() :
+            $this->guideline->where('organization', "CSWD")->get();
 
         return view('userpage.guideline.eligtasGuideline', compact('guideline'));
     }
@@ -48,11 +48,13 @@ class GuidelineController extends Controller
         if ($guidelineValidation->fails())
             return response(['status' => 'warning', 'message' => $guidelineValidation->errors()->first()]);
 
+        $userId = auth()->user()->id;
         $guideline = $this->guideline->create([
             'type' => Str::upper(trim($request->type)),
+            'user_id' => $userId,
             'organization' => auth()->user()->organization
         ]);
-        $this->logActivity->generateLog('Creating Guideline');
+        $this->logActivity->generateLog($guideline->id, 'Created New Guideline');
 
         $labels = $request->label;
         $contents = $request->content;
@@ -64,7 +66,8 @@ class GuidelineController extends Controller
                 $guide = $this->guide->create([
                     'label' => $label,
                     'content' => $contents[$count],
-                    'guideline_id' => $guideline->id
+                    'guideline_id' => $guideline->id,
+                    'user_id' => $userId,
                 ]);
 
                 if (isset($guidePhotos[$count])) {
@@ -92,9 +95,10 @@ class GuidelineController extends Controller
 
         $guidelineId = Crypt::decryptString($guidelineId);
         $this->guideline->find($guidelineId)->update([
-            'type' => Str::upper(trim($request->type))
+            'type' => Str::upper(trim($request->type)),
+            'user_id' => auth()->user()->id
         ]);
-        $this->logActivity->generateLog('Updating Guideline');
+        $this->logActivity->generateLog($guidelineId, 'Updated Guideline');
 
         $labels = $request->label;
         $contents = $request->content;
@@ -106,7 +110,8 @@ class GuidelineController extends Controller
                 $guide = $this->guide->create([
                     'label' => $label,
                     'content' => $contents[$count],
-                    'guideline_id' => $guidelineId
+                    'guideline_id' => $guidelineId,
+                    'user_id' => auth()->user()->id
                 ]);
 
                 if (isset($guidePhotos[$count])) {
@@ -124,13 +129,13 @@ class GuidelineController extends Controller
     public function removeGuideline($guidelineId)
     {
         $this->guideline->find(Crypt::decryptString($guidelineId))->delete();
-        $this->logActivity->generateLog('Removing Guideline');
+        $this->logActivity->generateLog($guidelineId, 'Removed Guideline');
         return response()->json();
     }
 
     public function guide($guidelineId)
     {
-        $guide = $this->guide->where('guideline_id', Crypt::decryptString($guidelineId))->where('is_archive', 0)->get();
+        $guide = $this->guide->where('guideline_id', Crypt::decryptString($guidelineId))->get();
         return view('userpage.guideline.guide', compact('guide', 'guidelineId'));
     }
 
@@ -161,17 +166,18 @@ class GuidelineController extends Controller
 
         $guideItem->update([
             'label' => Str::upper(trim($request->label)),
-            'content' => Str::ucfirst(trim($request->content))
+            'content' => Str::ucfirst(trim($request->content)),
+            'user_id' => auth()->user()->id
         ]);
 
-        $this->logActivity->generateLog('Updating Guide');
+        $this->logActivity->generateLog($guideId, 'Updated Guide');
         return response()->json();
     }
 
     public function removeGuide($guideId)
     {
         $this->guide->find($guideId)->delete();
-        $this->logActivity->generateLog('Removing Guide');
+        $this->logActivity->generateLog($guideId, 'Removed Guide');
         return response()->json();
     }
 }

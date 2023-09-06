@@ -17,7 +17,7 @@ class Guide extends Model
         'label',
         'content',
         'guideline_id',
-        'author',
+        'user_id',
         'guide_photo'
     ];
 

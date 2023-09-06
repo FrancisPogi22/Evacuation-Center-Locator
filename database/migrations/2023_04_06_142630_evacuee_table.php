@@ -25,6 +25,7 @@ return new class extends Migration
             $table->string('evacuation_assigned');
             $table->string('remarks')->nullable();
             $table->boolean('is_archive');
+            $table->foreignId('user_id')->references('id')->on('user')->cascadeOnUpdate();
         });
     }
 
