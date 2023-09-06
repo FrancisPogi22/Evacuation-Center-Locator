@@ -13,13 +13,15 @@ class DisasterSeeder extends Seeder
         Disaster::insert([
             'name' => ('Typhoon Paeng'),
             'status' => "On Going",
-            'is_archive' => 0
+            'is_archive' => 0,
+            'user_id' => 2
         ]);
 
         Disaster::insert([
             'name' => ('Typhoon Ondoy'),
             'status' => "Inactive",
-            'is_archive' => 0
+            'is_archive' => 0,
+            'user_id' => 2
         ]);
     }
 }

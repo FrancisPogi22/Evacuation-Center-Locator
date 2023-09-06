@@ -11,21 +11,25 @@ class GuidelineSeeder extends Seeder
     {
         Guideline::insert([
             'type' => ('TYPHOON GUIDELINE'),
+            'user_id' => 2,
             'organization' => 'CSWD'
         ]);
 
         Guideline::insert([
             'type' => ('ROAD ACCIDENT GUIDELINE'),
+            'user_id' => 1,
             'organization' => 'CDRRMO'
         ]);
 
         Guideline::insert([
             'type' => ('EARTHQUAKE GUIDELINE'),
+            'user_id' => 2,
             'organization' => 'CSWD'
         ]);
 
         Guideline::insert([
             'type' => ('FLASHFLOOD guideliGUIDELINEne'),
+            'user_id' => 1,
             'organization' => 'CDRRMO'
         ]);
     }

@@ -11,6 +11,7 @@ return new class extends Migration
         Schema::create('guideline', function (Blueprint $table) {
             $table->id();
             $table->string('type')->unique();
+            $table->foreignId('user_id')->references('id')->on('user')->cascadeOnUpdate();
             $table->string('organization');
         });
     }

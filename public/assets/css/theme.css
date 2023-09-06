@@ -931,11 +931,11 @@ text {
 }
 
 #updateGuidelineBtn i,
-#archiveGuidelineBtn i {
+#removeGuidelineBtn i {
     padding: 8px;
 }
 
-#archiveGuidelineBtn {
+#removeGuidelineBtn {
     position: absolute;
     right: 8px;
     top: 12px;
@@ -943,7 +943,7 @@ text {
 }
 
 #updateGuidelineBtn:hover,
-#archiveGuidelineBtn:hover,
+#removeGuidelineBtn:hover,
 #createGuidelineBtn:hover {
     transform: scale(1.05);
 }

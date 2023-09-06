@@ -79,7 +79,7 @@ class AuthenticationController extends Controller
     public function logout()
     {
         $organization = auth()->user()->organization;
-        $this->logActivity->generateLog('Logged Out');
+        $this->logActivity->generateLog(null, 'Logged Out');
         auth()->logout();
         session()->flush();
         return redirect('/')->with('success', 'Logged out ' . $organization . ' Panel.');
@@ -103,7 +103,7 @@ class AuthenticationController extends Controller
                 return back()->withInput()->with('warning', 'Your account has been suspended until ' . $suspendTime);
             }
 
-            $this->logActivity->generateLog('Logged In');
+            $this->logActivity->generateLog(null, 'Logged In');
             $userOrganization = $userAuthenticated->organization;
             return redirect("/" . Str::of($userOrganization)->lower() . "/dashboard")->with('success', "Welcome to " . $userOrganization . " Panel.");
         }

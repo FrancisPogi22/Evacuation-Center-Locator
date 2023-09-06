@@ -13,6 +13,7 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('status');
+            $table->foreignId('user_id')->references('id')->on('user')->cascadeOnUpdate();
             $table->boolean('is_archive');
         });
     }

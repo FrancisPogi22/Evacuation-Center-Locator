@@ -70,7 +70,7 @@ class UserAccountsController extends Controller
             return response(['status' => 'warning', 'message' => $createAccountValidation->errors()->first()]);
 
         $defaultPassword = Str::password(15);
-        $this->user->create([
+        $userAccountData = $this->user->create([
             'organization' => $request->organization,
             'position' => $request->position,
             'name' => $request->name,
@@ -79,9 +79,9 @@ class UserAccountsController extends Controller
             'status' =>  "Active",
             'is_disable' =>  0,
             'is_suspend' =>  0,
-            'is_archive'=> 0,
+            'is_archive' => 0,
         ]);
-        $this->logActivity->generateLog('Creating Account');
+        $this->logActivity->generateLog($userAccountData->id, 'Created New Account');
         Mail::to(trim($request->email))->send(new UserCredentialsMail([
             'email' => trim($request->email),
             'organization' => $request->organization,
@@ -109,7 +109,7 @@ class UserAccountsController extends Controller
             'position' => $request->position,
             'email' => trim($request->email)
         ]);
-        $this->logActivity->generateLog('Updating Account');
+        $this->logActivity->generateLog($userId, 'Updated Account');
         return response()->json();
     }
 
@@ -119,7 +119,7 @@ class UserAccountsController extends Controller
             'status' => 'Disabled',
             'is_disable' => 1
         ]);
-        $this->logActivity->generateLog('Disabling Account');
+        $this->logActivity->generateLog($userId, 'Disabled Account');
         return response()->json();
     }
 
@@ -129,7 +129,7 @@ class UserAccountsController extends Controller
             'status' => 'Active',
             'is_disable' => 0
         ]);
-        $this->logActivity->generateLog('Enabling Account');
+        $this->logActivity->generateLog($userId, 'Enabled Account');
         return response()->json();
     }
 
@@ -147,7 +147,7 @@ class UserAccountsController extends Controller
             'is_suspend' => 1,
             'suspend_time' => Carbon::parse($request->suspend_time)->format('Y-m-d H:i:s')
         ]);
-        $this->logActivity->generateLog('Suspending Account');
+        $this->logActivity->generateLog($userId, 'Suspended Account');
         return response()->json();
     }
 
@@ -159,7 +159,7 @@ class UserAccountsController extends Controller
             'is_suspend' => 0,
             'suspend_time' => null
         ]);
-        $this->logActivity->generateLog('Opening Account');
+        $this->logActivity->generateLog($userId, 'Opened Account');
         return response()->json();
     }
 
@@ -183,7 +183,7 @@ class UserAccountsController extends Controller
             $this->user->find($userId)->update([
                 'password' => Hash::make(trim($request->password))
             ]);
-            $this->logActivity->generateLog('Changing Password');
+            $this->logActivity->generateLog($userId, 'Changing Password');
             return response()->json();
         }
 
@@ -196,7 +196,7 @@ class UserAccountsController extends Controller
             'status' => 'Archived',
             'is_archive' => 1
         ]);
-        $this->logActivity->generateLog('Archiving Account');
+        $this->logActivity->generateLog($userId, 'ArchivedAccount');
         return response()->json();
     }
 }

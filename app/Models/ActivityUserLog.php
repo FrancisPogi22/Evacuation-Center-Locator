@@ -15,19 +15,19 @@ class ActivityUserLog extends Model
     protected $primaryKey = 'id';
 
     protected $fillable = [
+        'data_id',
         'user_id',
-        'name',
         'activity',
         'date_time'
     ];
 
     public $timestamps = false;
 
-    public function generateLog($activity)
+    public function generateLog($data_id, $activity)
     {
         $this->create([
+            'data_id' => $data_id,
             'user_id' => auth()->user()->id,
-            'name' => auth()->user()->name,
             'activity' => trim($activity),
             'date_time' => Carbon::now()->toDayDateTimeString()
         ]);
