@@ -46,11 +46,11 @@
                                 <i class="bi bi-caret-right-fill dropdown"></i>
                             </a>
                             <div class="sub-menu">
-                                <a href="{{ route('display.incident.report') }}" class="menu-link sub-item">
+                                <a href="{{ route('display.incident.report') }}" class="menu-link">
                                     <i class="bi bi-people"></i>
                                     <span class="links_name">Manage Reports</span>
                                 </a>
-                                <a href="" class="menu-link sub-item">
+                                <a href="" class="menu-link">
                                     <i class="bi bi-archive"></i>
                                     <span class="links_name">Archived Reports</span>
                                 </a>
@@ -64,11 +64,11 @@
                                     <i class="bi bi-caret-right-fill dropdown"></i>
                                 </a>
                                 <div class="sub-menu">
-                                    <a href="{{ route('account.display.users') }}" class="menu-link sub-item">
+                                    <a href="{{ route('account.display.users') }}" class="menu-link">
                                         <i class="bi bi-person-gear"></i>
                                         <span class="links_name">Manage Accounts</span>
                                     </a>
-                                    <a href="" class="menu-link sub-item">
+                                    <a href="" class="menu-link">
                                         <i class="bi bi-person-slash"></i>
                                         <span class="links_name">Archived Accounts</span>
                                     </a>
@@ -107,11 +107,11 @@
                                 <i class="bi bi-caret-right-fill dropdown"></i>
                             </a>
                             <div class="sub-menu">
-                                <a href="{{ route('disaster.display') }}" class="menu-link sub-item">
+                                <a href="{{ route('disaster.display') }}" class="menu-link">
                                     <i class="bi bi-cloud-upload"></i>
                                     <span class="links_name">Manage Disaster</span>
                                 </a>
-                                <a href="" class="menu-link sub-item">
+                                <a href="" class="menu-link">
                                     <i class="bi bi-cloud-slash"></i>
                                     <span class="links_name">Archived Disaster</span>
                                 </a>
@@ -130,11 +130,11 @@
                                 <i class="bi bi-caret-right-fill dropdown"></i>
                             </a>
                             <div class="sub-menu">
-                                <a href="{{ route('manage.evacuation') }}" class="menu-link sub-item">
+                                <a href="{{ route('manage.evacuation') }}" class="menu-link">
                                     <i class="bi bi-house-gear"></i>
                                     <span class="links_name">Manage Evacuation</span>
                                 </a>
-                                <a href="" class="menu-link sub-item">
+                                <a href="" class="menu-link">
                                     <i class="bi bi-house-slash"></i>
                                     <span class="links_name">Archived Evacuation</span>
                                 </a>
@@ -142,7 +142,7 @@
                         </div>
                         <div class="navigation-item">
                             <a href="{{ route('evacuation.center.locator') }}" class="menu-link">
-                                <i class="bi bi-house"></i>
+                                <i class="bi bi-search"></i>
                                 <span class="links_name">Evacuation Center Locator</span>
                             </a>
                         </div>
@@ -154,11 +154,11 @@
                                     <i class="bi bi-caret-right-fill dropdown"></i>
                                 </a>
                                 <div class="sub-menu">
-                                    <a href="{{ route('account.display.users') }}" class="menu-link sub-item">
+                                    <a href="{{ route('account.display.users') }}" class="menu-link">
                                         <i class="bi bi-person-gear"></i>
                                         <span class="links_name">Users Account</span>
                                     </a>
-                                    <a href="" class="menu-link sub-item">
+                                    <a href="" class="menu-link">
                                         <i class="bi bi-person-slash"></i>
                                         <span class="links_name">Archived Account</span>
                                     </a>
@@ -172,11 +172,11 @@
                                 <i class="bi bi-caret-right-fill dropdown"></i>
                             </a>
                             <div class="sub-menu">
-                                <a href="{{ route('report.dangerous.areas.cswd') }}" class="menu-link sub-item">
+                                <a href="{{ route('report.dangerous.areas.cswd') }}" class="menu-link">
                                     <i class="bi bi-flag"></i>
                                     <span class="links_name">Manage Reports</span>
                                 </a>
-                                <a href="" class="menu-link sub-item">
+                                <a href="" class="menu-link">
                                     <i class="bi bi-bookmark-x"></i>
                                     <span class="links_name">Archived Reports</span>
                                 </a>
@@ -205,7 +205,7 @@
                     </div>
                     <div class="navigation-item">
                         <a href="{{ route('resident.evacuation.center.locator') }}" class="menu-link">
-                            <i class="bi bi-house"></i>
+                            <i class="bi bi-search"></i>
                             <span class="links_name">Evacuation Center Locator</span>
                         </a>
                     </div>
