@@ -2,7 +2,7 @@
     const body = $('body'),
         themeIcon = $('#themeIcon'),
         themeText = $('#themeText'),
-        theme = localStorage.getItem('theme');
+        theme = sessionStorage.getItem('theme');
 
     @auth
     let currentPassword = $('#currentPassword'),
@@ -169,7 +169,7 @@
         body.addClass('dark-mode');
         themeIcon.removeClass('bi-moon').addClass('bi-brightness-high');
         themeText.text('Light Mode');
-        localStorage.setItem('theme', 'dark');
+        sessionStorage.setItem('theme', 'dark');
         $('hr').addClass('bg-white');
     }
 
@@ -177,7 +177,7 @@
         body.removeClass('dark-mode');
         themeIcon.removeClass('bi-brightness-high').addClass('bi-moon');
         themeText.text('Dark Mode');
-        localStorage.setItem('theme', 'light');
+        sessionStorage.setItem('theme', 'light');
         $('hr').removeClass('bg-white').addClass('bg-dark');
     }
 

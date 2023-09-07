@@ -1,19 +1,21 @@
 <script>
     $(document).ready(() => {
-        let sidebar = document.querySelector('.sidebar');
+         const sidebar = document.querySelector('.sidebar'),
+            activeLink = window.location.href.split('?')[0],
+            menuLink = $('.menu-link').filter(function() {
+                return $(this).attr('href') == activeLink;
+            });
 
-        if (localStorage.getItem('session-expired') == '1') {
-            localStorage.removeItem("active-link");
-            localStorage.setItem('session-expired', '0');
+        if (menuLink.length) {
+            menuLink.addClass('active-link');
+            const subMenu = menuLink.closest('.sub-menu');
+
+            if (subMenu.length) {
+                const subBtn = subMenu.prev('.sub-btn');
+                subBtn.find('.dropdown').addClass('rotate');
+                subMenu.addClass('active');
+            }
         }
-
-        localStorage.getItem('active-link') ?
-            $('.menu-link[href="' + localStorage.getItem('active-link') + '"]').
-        addClass('active-link'): $('.menu-link').first().addClass('active-link');
-
-        setTimeout(() => {
-            localStorage.setItem('session-expired', '1');
-        }, 7200000);
 
         $(window).resize(() => {
             if (!$('#btn-sidebar-mobile').is(':visible')) sidebar.classList.remove('active');
@@ -22,14 +24,12 @@
         document.addEventListener('click', ({
             target
         }) => {
-            let element = target;
+            const element = target;
 
-            element.id == 'btn-sidebar-mobile' ? sidebar.classList.toggle('active') :
-                element.id == 'btn-sidebar-close' ? sidebar.classList.remove('active') :
-                element.parentElement.className == 'menu-link' ? localStorage.setItem('active-link', $(
-                    element.parentElement).attr('href')) :
-                element.closest('#logoutBtn') || element.parentElement.id == 'loginLink' ? (localStorage
-                    .removeItem('active-link'), localStorage.removeItem('theme')) : null;
+            if (element.id == 'btn-sidebar-mobile' || element.id == 'btn-sidebar-close')
+                sidebar.classList.toggle('active');
+            else if (element.closest('#logoutBtn, #loginLink'))
+                sessionStorage.removeItem('theme');
         });
     });
 </script>

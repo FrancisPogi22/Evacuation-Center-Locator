@@ -137,7 +137,8 @@
 .btn-table-update i,
 .btn-table-remove i,
 .btn-table-primary i,
-.btn-remove i {
+.btn-remove i,
+.btn-update i {
     padding-right: 8px;
 }
 
@@ -166,7 +167,7 @@
     display: flex;
     justify-content: space-between;
     margin-top: -1px;
-    padding: 8px 0;
+    padding: 8px 0 7px 0;
     border: none;
 }
 
@@ -324,7 +325,6 @@
     position: relative;
     height: calc(100vh - 64px);
     overflow: auto;
-    padding-bottom: 5px;
 }
 
 .sidebar-content::-webkit-scrollbar {
@@ -342,17 +342,10 @@
     transform: rotate(90deg);
 }
 
-.sidebar .links_name{
+.sidebar .links_name {
     color: var(--color-text);
     opacity: 0;
     text-align: start;
-    pointer-events: none;
-    overflow: hidden;
-    font-size: 15px;
-}
-
-.sub-item{
-    color: var(--color-text);
     pointer-events: none;
     overflow: hidden;
     font-size: 15px;
@@ -394,12 +387,12 @@
 }
 
 .sub-menu {
-    padding: 5px 0;
+    padding: 0.1px 0;
     background: var(--color-d-bg-container);
     display: none;
 }
 
-.sub-menu.active{
+.sub-menu.active {
     display: block;
 }
 
@@ -411,7 +404,7 @@
     border-radius: 5px;
 }
 
-.sidebar ul .navigation-item a:not(.active-link):hover{
+.sidebar ul .navigation-item a:not(.active-link):hover {
     background: rgb(170, 170, 170);
     color: var(--color-text);
 }
@@ -616,15 +609,8 @@
 .recover-form hr,
 .auth-body .auth-bottom-section hr {
     margin: 0;
+    color: var(--color-d-text);
 }
-
-.auth-body .auth-bottom-section p {
-    margin: 0;
-    color: var(--color-d-sub-text);
-    font-size: 15px;
-    padding: 5px 0;
-}
-
 .auth-bottom-section p {
     font-size: 15px;
     padding: 5px 0;
@@ -700,15 +686,6 @@
     background: #b91c1c;
 }
 
-.rec-bottom-section {
-    position: absolute;
-    bottom: 0;
-    right: 0;
-    width: 100%;
-    color: var(--color-text);
-    padding: 0 24px;
-}
-
 .res-password-content {
     display: flex;
     justify-content: center;
@@ -754,12 +731,9 @@
     color: var(--color-text);
 }
 
-.rec-bottom-section p,
-.res-bottom-container p {
-    margin: 0;
-    font-size: 15px;
+.rec-bottom-section p {
     padding: 5px 0;
-    color: #94a3b8;
+    color: var(--color-text);
 }
 
 .report-container {
@@ -1161,18 +1135,24 @@ text {
     font-weight: 600;
 }
 
-.stop-btn-container {
+.stop-btn-container,
+.report-btn-container {
     margin: 10px;
+}
+
+.stop-btn-container {
     display: none;
 }
 
+#reportDangerBtn,
 #stopLocatingBtn {
     padding: 10px;
 }
 
 .gm-svpc,
+.gm-style-cc,
 .gm-fullscreen-control {
-    display: none;
+    display: none !important;
 }
 
 .gmnoprint ul {
@@ -1201,6 +1181,11 @@ text {
     border-radius: 4px;
     border: 2px solid var(--color-red);
     filter: drop-shadow(0 4px 3px rgb(0 0 0 / 0.07)) drop-shadow(0 2px 2px rgb(0 0 0 / 0.06));
+}
+
+.evacuation-markers::-webkit-scrollbar {
+    width: 0;
+    display: none;
 }
 
 .markers-header {
@@ -1237,7 +1222,8 @@ text {
 }
 
 #user-marker span.fw-bold,
-#flood-marker span.fw-bold {
+#flood-marker span.fw-bold,
+#roadblock-marker span.fw-bold {
     margin-left: 6px;
 }
 
@@ -1528,11 +1514,15 @@ text {
     filter: drop-shadow(0 10px 8px rgb(0 0 0 / 0.04)) drop-shadow(0 4px 3px rgb(0 0 0 / 0.1));
 }
 
+.user-profile-container hr {
+    margin: 24px 24px 16px;
+}
+
 .profile-section {
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 16px 0;
+    padding: 16px 0 24px 0;
 }
 
 .profile-img {
@@ -1557,10 +1547,6 @@ text {
 
 .edit-profile-btn button i {
     padding-right: 8px;
-}
-
-.user-profile-container hr {
-    margin: 22px 24px 16px;
 }
 
 .profile-details-container {
@@ -2016,8 +2002,14 @@ select.form-select option {
 }
 
 .dark-mode .dataTables_wrapper .dataTables_paginate .paginate_button.disabled,
-.dark-mode .dataTables_wrapper .dataTables_paginate .paginate_button.disabled:hover,
-.dark-mode .dataTables_wrapper .dataTables_paginate .paginate_button.disabled:active {
+.dark-mode
+    .dataTables_wrapper
+    .dataTables_paginate
+    .paginate_button.disabled:hover,
+.dark-mode
+    .dataTables_wrapper
+    .dataTables_paginate
+    .paginate_button.disabled:active {
     color: var(--color-d-sub-text) !important;
 }
 
@@ -2095,12 +2087,6 @@ select.form-select option {
         padding-bottom: 20px;
     }
 
-    .auth-bottom-section {
-        position: absolute;
-        bottom: 0;
-        left: 0;
-    }
-
     .auth-content .auth-container,
     .evacuation-button-container {
         display: block;
@@ -2114,7 +2100,7 @@ select.form-select option {
         display: contents;
     }
 
-    .about-content>div {
+    .about-content > div {
         margin: 15px;
     }
 
@@ -2153,7 +2139,7 @@ select.form-select option {
 
 @media only screen and (max-width: 767px) {
     .main-content {
-        margin: 83px 0 20px;
+        margin: 85px 0 20px;
         padding: 0;
     }
 
@@ -2266,11 +2252,6 @@ select.form-select option {
 
     .locator-button-container {
         margin-left: 0;
-    }
-
-    .evacuation-markers::-webkit-scrollbar {
-        width: 0;
-        display: none;
     }
 
     .evacuation-markers {
@@ -2526,6 +2507,9 @@ select.form-select option {
     .btn-table-submit,
     .btn-table-update,
     .btn-table-remove,
+    #editProfileBtn,
+    #reportDangerBtn,
+    #stopLocatingBtn,
     #locateNearestBtn,
     #pinpointCurrentLocationBtn,
     .page-button-container button,
@@ -2539,11 +2523,6 @@ select.form-select option {
     #changeEvacuationStatus {
         font-size: 11px;
         width: 140px;
-    }
-
-    .gm-control-active img {
-        width: 12px !important;
-        height: 12px !important;
     }
 
     .gmnoprint li {
@@ -2569,7 +2548,7 @@ select.form-select option {
         font-size: 16px;
     }
 
-    .about-content>div {
+    .about-content > div {
         margin: 20px 0;
     }
 
@@ -2616,6 +2595,36 @@ select.form-select option {
     .social-section p:last-child,
     .telephone-section p:last-child {
         margin-bottom: 8px;
+    }
+
+    .user-profile-container hr {
+        margin: 24px 24px 16px !important;
+    }
+
+    .profile-img {
+        width: 150px;
+        height: 150px;
+    }
+
+    .profile-details-label {
+        font-size: 13px;
+        padding: 6px;
+    }
+
+    .details-section {
+        font-size: 12px;
+    }
+
+    .profile-details {
+        padding: 8px !important;
+    }
+
+    .number-section .fw-bold {
+        font-size: 14px;
+    }
+
+    .number-section p {
+        font-size: 12px;
     }
 }
 
