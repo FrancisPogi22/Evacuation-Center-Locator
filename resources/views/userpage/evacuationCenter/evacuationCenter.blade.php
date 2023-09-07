@@ -15,7 +15,7 @@
         @include('partials.sidebar')
         <div class="main-content">
             <div class="label-container">
-                <i class="bi bi-house"></i>
+                <i class="bi bi-search"></i>
                 <span>EVACUATION CENTER LOCATOR</span>
             </div>
             <hr>
@@ -48,6 +48,10 @@
                         <div class="markers" id="flood-marker">
                             <img src="{{ asset('assets/img/floodedMarker.png') }}" alt="Icon">
                             <span class="fw-bold">Flooded</span>
+                        </div>
+                        <div class="markers" id="roadblock-marker">
+                            <img src="{{ asset('assets/img/roadBlock.png') }}" alt="Icon">
+                            <span class="fw-bold">Roadblock</span>
                         </div>
                         <div class="markers" id="user-marker" hidden>
                             <img src="{{ asset('assets/img/userMarker.png') }}" alt="Icon">
@@ -132,6 +136,7 @@
                     lng: 121.12772
                 },
                 zoom: 13,
+                zoomControl: false,
                 mapTypeControlOptions: {
                     style: google.maps.MapTypeControlStyle.DROPDOWN_MENU
                 }
@@ -149,10 +154,17 @@
                 }
             });
 
-            const buttonContainer = document.createElement('div');
-            buttonContainer.className = 'stop-btn-container';
-            buttonContainer.innerHTML = `<button id="stopLocatingBtn" class="btn-remove">Stop Locating</button>`;
-            map.controls[google.maps.ControlPosition.TOP_RIGHT].push(buttonContainer);
+            const stopBtnContainer = document.createElement('div'),
+                reportBtnContainer = document.createElement('div');
+
+            stopBtnContainer.className = 'stop-btn-container';
+            reportBtnContainer.className = 'report-btn-container';
+            stopBtnContainer.innerHTML =
+                `<button id="stopLocatingBtn" class="btn-remove"><i class="bi bi-stop-circle"></i>Stop Locating</button>`;
+            reportBtnContainer.innerHTML =
+                `<button id="reportDangerBtn" class="btn-update"><i class="bi bi-exclamation-triangle-fill"></i>Report Danger</button>`;
+            map.controls[google.maps.ControlPosition.TOP_RIGHT].push(stopBtnContainer);
+            map.controls[google.maps.ControlPosition.BOTTOM_RIGHT].push(reportBtnContainer);
         }
 
         function initMarkers(evacuationCenters) {
