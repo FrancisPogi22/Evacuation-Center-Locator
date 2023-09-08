@@ -113,9 +113,9 @@
                         guidelineWidget = this.closest('.guideline-widget');
                         guidelineItem = guidelineWidget.querySelector('.guidelines-item');
                         guidelineId = guidelineItem.getAttribute('href').split('/').pop();
-                        let guidelineLabel = guidelineItem.querySelector('.guideline-type p').innerText;
-                        $('#guidelineType').val(guidelineLabel);
-                        guidelineType = guidelineLabel;
+                        let guidelineType = guidelineItem.querySelector('.guideline-type p').innerText;
+                        $('#guidelineType').val(guidelineType);
+                        guidelineType = guidelineType;
                         operation = "update";
                         modal.modal('show');
                         defaultFormData = $('#guidelineForm').serialize();
@@ -162,9 +162,9 @@
                             </div>
                             <div class="guide-field-container">
                                 <div class="field-container">
-                                    <label>Guide Description</label>
+                                    <label>Guide Label</label>
                                     <input type="text" name="label[]" class="form-control" autocomplete="off"
-                                        placeholder="Enter Guide Description">
+                                        placeholder="Enter Guide Label">
                                 </div>
                                 <div class="field-container">
                                     <label>Guide Content</label>
@@ -202,8 +202,8 @@
                         confirmModal(`Do you want to ${operation} this guideline?`).then((result) => {
                             if (!result.isConfirmed) return;
 
-                            return operation == 'update' && guidelineType == $('#guidelineType').val() &&
-                                guideField < 0 ?
+                            return operation == "update" && guidelineType == $('#guidelineType').val() &&
+                                guideField <= 0 ?
                                 showWarningMessage('No changes were made.') :
                                 $.ajax({
                                     data: formData,
