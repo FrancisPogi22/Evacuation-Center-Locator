@@ -25,13 +25,11 @@ class MainController extends Controller
 
     public function dashboard()
     {
-        $disasterData = $this->fetchDisasterData();
-        $inactiveDisasters = $this->disaster->where('status', "Inactive")->get();
+        $totalEvacuee = $this->fetchDisasterData();
         $onGoingDisasters = $this->disaster->where('status', "On Going")->get();
         $activeEvacuation = $this->evacuationCenter->where('status', "Active")->count();
-        $totalEvacuee = array_sum(array_column($disasterData, 'totalEvacuee'));
 
-        return view('userpage.dashboard',  compact('activeEvacuation', 'disasterData', 'totalEvacuee', 'onGoingDisasters', 'inactiveDisasters'));
+        return view('userpage.dashboard',  compact('activeEvacuation', 'totalEvacuee', 'onGoingDisasters'));
     }
 
     public function generateExcelEvacueeData(Request $request)
@@ -49,13 +47,13 @@ class MainController extends Controller
     public function manageEvacueeInformation(Request $request)
     {
         $disasterList = $this->disaster->where('status', 'On Going')->get();
-        $evacuationList = $this->evacuationCenter->all();
+        $evacuationList = $this->evacuationCenter->whereNotIn('status', ['Inactive', 'Archived'])->get();
         return view('userpage.evacuee.evacuee', compact('evacuationList', 'disasterList'));
     }
 
     public function evacuationCenterLocator()
     {
-        $prefix = Request()->route()->getPrefix();
+        $prefix = request()->route()->getPrefix();
         return view('userpage.evacuationCenter.evacuationCenter', compact('prefix'));
     }
 
@@ -72,10 +70,10 @@ class MainController extends Controller
         $onGoingDisasters = $this->disaster->where('status', "On Going")->get();
 
         foreach ($onGoingDisasters as $disaster) {
-            $totalEvacuee += $this->evacuee->where('disaster_id', $disaster->id)->sum('individuals');
-            $result = $this->evacuee
-                ->where('disaster_id', $disaster->id)
-                ->selectRaw('SUM(male) as totalMale,
+            if (request()->ajax()) {
+                $result = $this->evacuee
+                    ->where('disaster_id', $disaster->id)
+                    ->selectRaw('SUM(male) as totalMale,
                     SUM(female) as totalFemale,
                     SUM(senior_citizen) as totalSeniorCitizen,
                     SUM(minors) as totalMinors,
@@ -83,11 +81,14 @@ class MainController extends Controller
                     SUM(pwd) as totalPwd,
                     SUM(pregnant) as totalPregnant,
                     SUM(lactating) as totalLactating')
-                ->first();
+                    ->first();
 
-            $disasterData[] = array_merge(['disasterName' => $disaster->name, 'totalEvacuee' => $totalEvacuee], $result->toArray());
+                $disasterData[] = array_merge(['disasterName' => $disaster->name], $result->toArray());
+            } else {
+                $totalEvacuee += $this->evacuee->where('disaster_id', $disaster->id)->sum('individuals');
+            }
         }
 
-        return request()->ajax() ? response()->json($disasterData) :  $disasterData;
+        return request()->ajax() ? response()->json($disasterData) : $totalEvacuee;
     }
 }
