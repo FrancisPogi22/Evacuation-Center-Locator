@@ -25,11 +25,12 @@ class MainController extends Controller
 
     public function dashboard()
     {
-        $totalEvacuee = $this->fetchDisasterData();
+        $disasterData = $this->fetchDisasterData();
         $onGoingDisasters = $this->disaster->where('status', "On Going")->get();
         $activeEvacuation = $this->evacuationCenter->where('status', "Active")->count();
+        $totalEvacuee = array_sum(array_column($disasterData, 'totalEvacuee'));
 
-        return view('userpage.dashboard',  compact('activeEvacuation', 'totalEvacuee', 'onGoingDisasters'));
+        return view('userpage.dashboard',  compact('activeEvacuation', 'disasterData', 'totalEvacuee', 'onGoingDisasters'));
     }
 
     public function generateExcelEvacueeData(Request $request)
@@ -65,15 +66,16 @@ class MainController extends Controller
 
     public function fetchDisasterData()
     {
-        $totalEvacuee = 0;
         $disasterData = [];
         $onGoingDisasters = $this->disaster->where('status', "On Going")->get();
 
         foreach ($onGoingDisasters as $disaster) {
-            if (request()->ajax()) {
-                $result = $this->evacuee
-                    ->where('disaster_id', $disaster->id)
-                    ->selectRaw('SUM(male) as totalMale,
+            $totalEvacuee = 0;
+            $totalEvacuee += $this->evacuee->where('disaster_id', $disaster->id)->sum('individuals');
+
+            $result = $this->evacuee
+                ->where('disaster_id', $disaster->id)
+                ->selectRaw('SUM(male) as totalMale,
                     SUM(female) as totalFemale,
                     SUM(senior_citizen) as totalSeniorCitizen,
                     SUM(minors) as totalMinors,
@@ -81,14 +83,12 @@ class MainController extends Controller
                     SUM(pwd) as totalPwd,
                     SUM(pregnant) as totalPregnant,
                     SUM(lactating) as totalLactating')
-                    ->first();
+                ->first();
 
-                $disasterData[] = array_merge(['disasterName' => $disaster->name], $result->toArray());
-            } else {
-                $totalEvacuee += $this->evacuee->where('disaster_id', $disaster->id)->sum('individuals');
-            }
+            $disasterData[] = array_merge(['disasterName' => $disaster->name, 'totalEvacuee' => $totalEvacuee], $result->toArray());
         }
 
-        return request()->ajax() ? response()->json($disasterData) : $totalEvacuee;
+
+        return request()->ajax() ? response()->json($disasterData) : $disasterData;
     }
 }
