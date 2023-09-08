@@ -45,7 +45,7 @@
                                                         <option value="" hidden disabled selected>Select Disaster
                                                         </option>
                                                         @foreach ($onGoingDisasters as $disaster)
-                                                            <option value="{{ Crypt::encryptString($disaster->id) }}">
+                                                            <option value="{{ $disaster->id }}">
                                                                 {{ $disaster->name }}</option>
                                                         @endforeach
                                                     </select>
@@ -88,14 +88,14 @@
                     </div>
                 </div>
             </div>
-            @if ($totalEvacuee != 0)
-                @foreach ($onGoingDisasters as $count => $disaster)
+            @foreach ($disasterData as $count => $disaster)
+                @if ($disaster['totalEvacuee'] != 0)
                     <figure class="chart-container">
                         <div id="evacueePie{{ $count + 1 }}" class="pie-chart"></div>
                         <div id="evacueeGraph{{ $count + 1 }}" class="bar-graph"></div>
                     </figure>
-                @endforeach
-            @endif
+                @endif
+            @endforeach
         </div>
         @include('userpage.changePasswordModal')
     </div>
