@@ -606,12 +606,13 @@
 .res-password-form hr,
 .res-bottom-container hr,
 .rec-bottom-section hr,
-.recover-form hr,
 .auth-body .auth-bottom-section hr {
     margin: 0;
     color: var(--color-d-text);
 }
+
 .auth-bottom-section p {
+    margin: 0;
     font-size: 15px;
     padding: 5px 0;
 }
@@ -652,6 +653,12 @@
 .res-password-form form {
     width: 100%;
     position: relative;
+}
+
+
+.recover-form hr {
+    color: var(--color-black);
+    margin: 0;
 }
 
 .form-header {
@@ -731,8 +738,17 @@
     color: var(--color-text);
 }
 
+.rec-bottom-section {
+    position: absolute;
+    width: 100%;
+    left: 0;
+    bottom: 0;
+    padding: 0 24px;
+}
+
 .rec-bottom-section p {
     padding: 5px 0;
+    margin: 0;
     color: var(--color-text);
 }
 
@@ -2002,14 +2018,8 @@ select.form-select option {
 }
 
 .dark-mode .dataTables_wrapper .dataTables_paginate .paginate_button.disabled,
-.dark-mode
-    .dataTables_wrapper
-    .dataTables_paginate
-    .paginate_button.disabled:hover,
-.dark-mode
-    .dataTables_wrapper
-    .dataTables_paginate
-    .paginate_button.disabled:active {
+.dark-mode .dataTables_wrapper .dataTables_paginate .paginate_button.disabled:hover,
+.dark-mode .dataTables_wrapper .dataTables_paginate .paginate_button.disabled:active {
     color: var(--color-d-sub-text) !important;
 }
 
@@ -2100,7 +2110,7 @@ select.form-select option {
         display: contents;
     }
 
-    .about-content > div {
+    .about-content>div {
         margin: 15px;
     }
 
@@ -2548,7 +2558,7 @@ select.form-select option {
         font-size: 16px;
     }
 
-    .about-content > div {
+    .about-content>div {
         margin: 20px 0;
     }
 
