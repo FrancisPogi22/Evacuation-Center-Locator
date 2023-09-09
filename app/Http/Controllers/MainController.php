@@ -72,7 +72,6 @@ class MainController extends Controller
         foreach ($onGoingDisasters as $disaster) {
             $totalEvacuee = 0;
             $totalEvacuee += $this->evacuee->where('disaster_id', $disaster->id)->sum('individuals');
-
             $result = $this->evacuee
                 ->where('disaster_id', $disaster->id)
                 ->selectRaw('SUM(male) as totalMale,

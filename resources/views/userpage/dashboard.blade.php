@@ -62,7 +62,7 @@
                     </div>
                 @endif
             </div>
-            <div class="widget-container">
+            <section class="widget-container">
                 <div class="widget">
                     <div class="widget-content">
                         <div class="content-description">
@@ -87,7 +87,7 @@
                         </div>
                     </div>
                 </div>
-            </div>
+            </section>
             @foreach ($disasterData as $count => $disaster)
                 @if ($disaster['totalEvacuee'] != 0)
                     <figure class="chart-container">
@@ -126,7 +126,6 @@
             });
 
             $('#generateReportModal').on('hidden.bs.modal', () => {
-                onGoingDisaster.add(inactiveDisaster).prop('hidden', true);
                 $('#generateReportForm')[0].reset();
             });
 
@@ -207,15 +206,13 @@
                     text: `${disaster.disasterName} Statistics`
                 },
                 xAxis: {
-                    categories: ['SENIOR CITIZEN', 'MINORS', 'INFANTS', 'PWD',
-                        'PREGNANT', 'LACTATING'
-                    ],
+                    categories: ['SENIOR CITIZEN', 'MINORS', 'INFANTS', 'PWD', 'PREGNANT', 'LACTATING']
                 },
                 yAxis: {
                     allowDecimals: false,
                     title: {
                         text: 'Estimated Numbers'
-                    },
+                    }
                 },
                 legend: {
                     reversed: true
@@ -244,16 +241,30 @@
                     }
                 },
                 series: [{
-                        name: 'SENIOR CITIZEN',
-                        data: [parseInt(disaster.totalSeniorCitizen), 0, 0, 0, 0, 0],
-                        color: '#e74c3c'
-                    },
-                    {
-                        name: 'MINORS',
-                        data: [0, parseInt(disaster.totalMinors), 0, 0, 0, 0],
-                        color: '#3498db'
-                    },
-                ],
+                    name: 'SENIOR CITIZEN',
+                    data: [parseInt(disaster.totalSeniorCitizen), 0, 0, 0, 0, 0],
+                    color: '#e74c3c'
+                }, {
+                    name: 'MINORS',
+                    data: [0, parseInt(disaster.totalMinors), 0, 0, 0, 0],
+                    color: '#3498db'
+                }, {
+                    name: 'INFANTS',
+                    data: ['', '', parseInt(disaster.totalInfants), '', '', ''],
+                    color: '#2ecc71'
+                }, {
+                    name: 'PWD',
+                    data: ['', '', '', parseInt(disaster.totalPwd), '', ''],
+                    color: '#1abc9c'
+                }, {
+                    name: 'PREGNANT',
+                    data: ['', '', '', '', parseInt(disaster.totalPregnant), ''],
+                    color: '#e67e22'
+                }, {
+                    name: 'LACTATING',
+                    data: ['', '', '', '', '', parseInt(disaster.totalLactating)],
+                    color: '#9b59b6'
+                }],
                 exporting: false,
                 credits: {
                     enabled: false
