@@ -58,7 +58,8 @@
 .wrapper {
     width: 100%;
     margin: 0 auto;
-    padding: 0 10px 0 20px;
+    padding: 0 20px;
+    height: 100vh;
 }
 
 .btn-submit,
@@ -498,12 +499,13 @@
 
 .auth-content {
     position: relative;
-    margin: auto;
-    padding: 20% 0 15% 0;
+    padding-top: 250px;
+    transition: 1s all ease;
 }
 
 .auth-header-desc {
-    padding: 20px 0;
+    margin-top: 55px;
+    padding: 0 100px 0 80px;
 }
 
 .auth-header-desc h1 {
@@ -512,15 +514,13 @@
     font-weight: 800;
 }
 
-.auth-header-desc .auth-header-title {
+.auth-header-desc p {
     padding-top: 24px;
-}
-
-.auth-header-desc .auth-header-title p {
     color: rgb(148, 163, 184);
 }
 
 .auth-content h1 {
+    margin: 0;
     font-size: 65px;
 }
 
@@ -532,12 +532,12 @@
 
 .auth-container {
     display: flex;
-    justify-content: space-around;
+    justify-content: center;
 }
 
 .auth-form-section {
     background-color: rgb(203, 213, 225);
-    margin-right: 8px;
+    margin: 0 50px;
     height: 75%;
     padding: 20px 10px;
     width: 100%;
@@ -573,21 +573,36 @@
     padding: 16px;
 }
 
-.auth-btn-container .btn-login {
+.auth-body .btn-login {
+    width: 100%;
+    padding: 15px;
+    font-size: 18px;
+    font-weight: 800;
+    color: var(--color-text);
+    border-radius: 6px;
     background: var(--color-gray);
     border: none;
 }
 
-.auth-btn-container .btn-login:hover {
+.auth-body .btn-login:hover {
     background: var(--color-d-background);
 }
 
-.auth-body .btn-resident {
+.btn-resident {
+    display: block;
+    margin: 10px 0;
+    text-align: center;
+    width: 100%;
+    padding: 15px;
+    font-size: 18px;
+    font-weight: 800;
+    color: var(--color-text);
+    border-radius: 6px;
     background: var(--color-red);
     border: none;
 }
 
-.auth-body .btn-resident:hover {
+.btn-resident:hover {
     background: #b91c1c;
 }
 
@@ -599,8 +614,11 @@
 }
 
 .auth-body .auth-bottom-section {
+    position: absolute;
     width: 100%;
-    color: var(--color-text);
+    bottom: 0;
+    left: 0;
+    padding: inherit;
 }
 
 .res-password-form hr,
@@ -612,19 +630,10 @@
 }
 
 .auth-bottom-section p {
+    color: var(--color-text);
     margin: 0;
     font-size: 15px;
     padding: 5px 0;
-}
-
-.auth-body .btn-login,
-.btn-resident {
-    width: 100%;
-    padding: 15px;
-    font-size: 18px;
-    font-weight: 800;
-    color: var(--color-text);
-    border-radius: 6px;
 }
 
 .recover-container,
@@ -811,7 +820,7 @@
 }
 
 .content-description .wigdet-header p {
-    color: #000;
+    color: var(--color-black);
     font-size: 16px;
     font-weight: 600;
 }
@@ -843,7 +852,7 @@
 .pie-chart {
     width: 500px;
     background: var(--color-text);
-    border-radius: 6px;
+    border-radius: 15px;
     margin-right: 20px;
     box-shadow: 0 0 19px -1px rgba(0, 0, 0, 0.2);
 }
@@ -851,8 +860,8 @@
 .bar-graph {
     flex: 1;
     height: 400px;
-    background: #e2e8f0;
-    border-radius: 6px;
+    background: var(--color-text);
+    border-radius: 15px;
     box-shadow: 0 0 19px -1px rgba(0, 0, 0, 0.2);
 }
 
@@ -866,8 +875,8 @@
 }
 
 text {
-    color: #000 !important;
-    fill: #000 !important;
+    color: var(--color-black) !important;
+    fill: var(--color-black) !important;
 }
 
 .highcharts-title {
@@ -875,10 +884,7 @@ text {
 }
 
 .highcharts-axis-labels,
-.highcharts-legend g {
-    font-size: 1rem !important;
-}
-
+.highcharts-legend g,
 .highcharts-label {
     font-size: 1rem !important;
 }
@@ -2083,8 +2089,13 @@ select.form-select option {
 @media only screen and (max-width: 1024px) {
     .auth-content {
         text-align: center;
-        padding: 20% 0 15% 0;
+        padding-top: 100px;
         width: 100%;
+    }
+
+    .auth-header-desc {
+        margin: 0;
+        padding: 55px 0;
     }
 
     .auth-content .auth-container .auth-header-desc h1 {
@@ -2094,7 +2105,7 @@ select.form-select option {
     .auth-content .auth-container .auth-header-desc p {
         margin: 0 auto;
         font-size: 18px;
-        padding-bottom: 20px;
+        padding-top: 16px;
     }
 
     .auth-content .auth-container,
@@ -2157,15 +2168,6 @@ select.form-select option {
         padding: 0 20px;
     }
 
-    .auth-content {
-        padding: 29% 0 20%;
-    }
-
-    .auth-content .auth-container .auth-header-desc {
-        width: 100%;
-        padding-bottom: 30px;
-    }
-
     .auth-content .auth-container .auth-header-desc h1 {
         font-size: 50px;
     }
@@ -2176,7 +2178,6 @@ select.form-select option {
     }
 
     .auth-content .auth-form-section {
-        margin: 0 auto;
         max-width: 400px;
     }
 
@@ -2271,14 +2272,25 @@ select.form-select option {
 }
 
 @media only screen and (max-width: 380px) {
+    #toast-container>.toast-warning {
+        width: 15em;
+        background-size: 20px;
+    }
+
+    .toast-title {
+        font-size: 10px;
+    }
+
+    .toast-message {
+        font-size: 10px;
+    }
+
     .auth-content {
-        padding: 35% 0 20% 0;
-        transition: 0.5s all ease-in-out;
+        padding-top: 150px;
     }
 
     .auth-content .auth-container .auth-header-desc {
-        width: 100%;
-        padding-bottom: 30px;
+        padding: 0 0 30px 0;
     }
 
     .auth-content .auth-container .auth-header-desc h1 {
@@ -2290,14 +2302,9 @@ select.form-select option {
         font-size: 14px;
     }
 
-    .auth-form-section {
-        padding: 5px 0;
-        width: 100%;
-        max-width: 430px;
-    }
-
     .auth-content .auth-form-section {
-        max-width: 250px;
+        padding: 5px 0;
+        max-width: 300px;
     }
 
     .auth-form-section .auth-email-container input,
