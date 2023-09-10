@@ -13,13 +13,13 @@
     <div class="wrapper">
         @include('partials.header')
         @include('partials.sidebar')
-        <div class="main-content">
+        <main class="main-content">
             <div class="label-container">
                 <i class="bi bi-megaphone"></i>
                 <span>INCIDENT REPORT</span>
             </div>
             <hr>
-            <div class="table-container">
+            <section class="table-container">
                 <div class="table-content">
                     <header class="table-label">Pending Incident Report</header>
                     <table class="table" id="pendingReport" width="100%">
@@ -36,9 +36,9 @@
                         </tbody>
                     </table>
                 </div>
-            </div>
+            </section>
             @guest
-                <div class="incident-report">
+                <section class="incident-report">
                     <div class="incidentReportTable">
                         @foreach ($incidentReport as $report)
                             <div class="incident-report-container">
@@ -69,11 +69,10 @@
                             </div>
                         @endforeach
                     </div>
-                </div>
+                </section>
             @endguest
             @auth
-                <br>
-                <div class="table-container">
+                <section class="table-container">
                     <div class="table-content">
                         <header class="table-label">Incident Report</header>
                         <table class="table" id="incidentReports" width="100%">
@@ -90,9 +89,9 @@
                             </tbody>
                         </table>
                     </div>
-                </div>
+                </section>
             @endauth
-        </div>
+        </main>
         @guest
             @include('userpage.incidentReport.incidentReportModal')
             <div class="report-button">

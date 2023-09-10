@@ -9,13 +9,13 @@
     <div class="wrapper">
         @include('partials.header')
         @include('partials.sidebar')
-        <div class="main-content">
+        <main class="main-content">
             <div class="label-container">
                 <i class="bi bi-book"></i>
                 <span>E-LIGTAS GUIDELINES</span>
             </div>
             <hr>
-            <div class="content-item">
+            <section class="content-item">
                 <div class="guideline-container">
                     @foreach ($guideline as $guidelineItem)
                         <div class="guideline-widget">
@@ -62,8 +62,8 @@
                         @include('userpage.guideline.guidelineModal')
                     @endif
                 </div>
-            </div>
-        </div>
+            </section>
+        </main>
         @include('userpage.changePasswordModal')
     </div>
 

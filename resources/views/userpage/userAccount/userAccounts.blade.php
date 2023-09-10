@@ -13,7 +13,7 @@
     <div class="wrapper">
         @include('partials.header')
         @include('partials.sidebar')
-        <div class="main-content">
+        <main class="main-content">
             <div class="label-container">
                 <i class="bi bi-person-gear"></i>
                 <span>MANAGE USERS ACCOUNT</span>
@@ -27,7 +27,7 @@
                     </button>
                 </div>
             @endif
-            <div class="table-container">
+            <section class="table-container">
                 <div class="table-content">
                     <header class="table-label">User Accounts Table</header>
                     <table class="table" id="accountTable" width="100%">
@@ -47,8 +47,8 @@
                 </div>
                 @include('userpage.userAccount.userAccountModal')
                 @include('userpage.changePasswordModal')
-            </div>
-        </div>
+            </section>
+        </main>
     </div>
 
     @include('partials.script')

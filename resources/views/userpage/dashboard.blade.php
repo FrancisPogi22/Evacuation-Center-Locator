@@ -3,7 +3,6 @@
 
 <head>
     @include('partials.headPackage')
-    <link rel="stylesheet" href="{{ asset('assets/css/theme.css') }}" />
     {{-- @vite(['resources/js/app.js']) --}}
 </head>
 
@@ -129,23 +128,23 @@
                 $('#generateReportForm')[0].reset();
             });
 
-            fetchChartData();
+            fetchEvacueeData();
 
             // Echo.channel('active-evacuees').listen('ActiveEvacuees', (e) => {
             //     $("#totalEvacuee").text(e.activeEvacuees);
-            //     fetchChartData();
+            //     fetchEvacueeData();
             // })
         });
 
-        function fetchChartData() {
+        function fetchEvacueeData() {
             $.ajax({
                 url: "{{ route('fetchDisasterData') }}",
                 method: 'GET',
                 dataType: 'json',
                 success(disasterData) {
                     disasterData.forEach((disaster, count) => {
-                        fetchEvacueePieChart(disaster, count);
-                        fetchEvacueeGraph(disaster, count);
+                        initializePieChart(disaster, count);
+                        initializeBarGraph(disaster, count);
                     });
                 },
                 error() {
@@ -154,7 +153,7 @@
             });
         }
 
-        function fetchEvacueePieChart(disaster, count) {
+        function initializePieChart(disaster, count) {
             Highcharts.chart(`evacueePie${count + 1}`, {
                 chart: {
                     type: 'pie'
@@ -197,7 +196,7 @@
             });
         }
 
-        function fetchEvacueeGraph(disaster, count) {
+        function initializeBarGraph(disaster, count) {
             Highcharts.chart(`evacueeGraph${count + 1}`, {
                 chart: {
                     type: 'bar'
@@ -242,11 +241,11 @@
                 },
                 series: [{
                     name: 'SENIOR CITIZEN',
-                    data: [parseInt(disaster.totalSeniorCitizen), 0, 0, 0, 0, 0],
+                    data: [parseInt(disaster.totalSeniorCitizen), '', '', '', '', ''],
                     color: '#e74c3c'
                 }, {
                     name: 'MINORS',
-                    data: [0, parseInt(disaster.totalMinors), 0, 0, 0, 0],
+                    data: ['', parseInt(disaster.totalMinors), '', '', '', ''],
                     color: '#3498db'
                 }, {
                     name: 'INFANTS',

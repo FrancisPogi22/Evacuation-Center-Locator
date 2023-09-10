@@ -9,13 +9,13 @@
     <div class="wrapper">
         @include('partials.header')
         @include('partials.sidebar')
-        <div class="main-content">
+        <main class="main-content">
             <div class="label-container">
                 <i class="bi bi-info-circle"></i>
                 <span>ABOUT</span>
             </div>
             <hr>
-            <div class="about-content">
+            <section class="about-content">
                 <div class="location-section">
                     <div class="text-center">
                         <p>Address</p>
@@ -75,8 +75,8 @@
                         <p> <i class="bi bi-envelope-at"></i> cdrrmocabuyao@gmail.com</p>
                     </div>
                 </div>
-            </div>
-        </div>
+            </section>
+        </main>
         @auth
             @include('userpage.changePasswordModal')
         @endauth

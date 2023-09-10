@@ -13,21 +13,21 @@
     <div class="wrapper">
         @include('partials.header')
         @include('partials.sidebar')
-        <div class="main-content">
+        <main class="main-content">
             <div class="label-container">
                 <i class="bi bi-search"></i>
                 <span>EVACUATION CENTER LOCATOR</span>
             </div>
             <hr>
-            <div class="locator-content">
+            <section class="locator-content">
                 <div class="locator-header">
                     <div class="header-title"><span>Cabuyao City Map</span></div>
                 </div>
                 <div class="map-section">
                     <div class="locator-map" id="map"></div>
                 </div>
-            </div>
-            <div class="evacuation-button-container">
+            </section>
+            <section class="evacuation-button-container">
                 <div class="evacuation-markers">
                     <div class="markers-header">
                         <p>Markers</p>
@@ -65,8 +65,8 @@
                     <button type="button" id="pinpointCurrentLocationBtn">
                         <i class="bi bi-geo-fill"></i>Pinpoint Current Location</button>
                 </div>
-            </div>
-            <div class="table-container">
+            </section>
+            <section class="table-container">
                 <div class="table-content">
                     <header class="table-label">Evacuation Centers Table</header>
                     <table class="table" id="evacuationCenterTable" width="100%">
@@ -84,8 +84,8 @@
                         </thead>
                     </table>
                 </div>
-            </div>
-        </div>
+            </section>
+        </main>
         @include('userpage.changePasswordModal')
     </div>
 

@@ -9,13 +9,13 @@
     <div class="wrapper">
         @include('partials.header')
         @include('partials.sidebar')
-        <div class="main-content">
+        <main class="main-content">
             <div class="label-container">
                 <i class="bi bi-person-circle"></i>
                 <span>MY ACCOUNT</span>
             </div>
             <hr>
-            <div class="user-profile-container">
+            <section class="user-profile-container">
                 <div class="profile-section">
                     <div class="profile-img">
                         <img src="{{ asset('assets/img/profile.png') }}" alt="Profile" id="profile">
@@ -54,8 +54,8 @@
                         </div>
                     </div>
                 </form>
-            </div>
-        </div>
+            </section>
+        </main>
         @include('userpage.userAccount.userAccountModal')
         @include('userpage.changePasswordModal')
     </div>

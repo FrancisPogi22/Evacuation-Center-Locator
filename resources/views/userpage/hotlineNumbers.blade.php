@@ -9,13 +9,13 @@
     <div class="wrapper">
         @include('partials.header')
         @include('partials.sidebar')
-        <div class="main-content">
+        <main class="main-content">
             <div class="label-container">
                 <i class="bi bi-telephone"></i>
                 <span>HOTLINE NUMBERS</span>
             </div>
             <hr>
-            <div class="hotline-content mt-3">
+            <section class="hotline-content mt-3">
                 <div class="number-section">
                     <div>
                         <div class="fw-bold">
@@ -50,8 +50,8 @@
                         <p class="mt-3">+12 3341 562 341</p>
                     </div>
                 </div>
-            </div>
-        </div>
+            </section>
+        </main>
         @auth
             @include('userpage.changePasswordModal')
         @endauth
