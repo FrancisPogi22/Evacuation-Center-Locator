@@ -1,15 +1,15 @@
 <div class="modal fade" id="reportDangerousAreaModal" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
-            <div class="modal-label-container">
+            <header class="modal-label-container">
                 <h1 class="modal-label"></h1>
-            </div>
+            </header>
             <div class="modal-body">
                 <form id="dangerousAreaReportForm">
                     @csrf
                     <div class="form-content">
                         <div class="field-container">
-                            <label>Report Type</label>
+                            <label for="report_type">Report Type</label>
                             <select name="report_type" id="report_type" class="form-select">
                                 <option value="" hidden selected disabled>Select Report Type</option>
                                 <option value="Flooded Area">Flooded Area</option>
