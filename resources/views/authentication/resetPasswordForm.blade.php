@@ -2,9 +2,9 @@
 
 <body class="auth-body">
     <div class="wrapper">
-        <div class="header-section"></div>
-        <div class="res-password-cotainer">
-            <div class="res-password-content d-flex">
+        <header class="header-section"></header>
+        <section class="res-password-cotainer">
+            <div class="res-password-content">
                 <div class="res-password-form">
                     <form action="{{ route('resetPassword') }}" method="POST">
                         @csrf
@@ -26,9 +26,9 @@
                         </div>
                         <div class="res-input-form mb-4">
                             <label>Confirm Password</label>
-                            <input type="password" name="password_confirmation" id="password_confirmation"
-                                class="form-control p-2.5" placeholder="Enter Confirm Password" autocomplete="off"
-                                onpaste="return false;" required autofocus>
+                            <input type="password" name="password_confirmation" class="form-control p-2.5"
+                                placeholder="Enter Confirm Password" autocomplete="off" onpaste="return false;" required
+                                autofocus>
                         </div>
                         <hr>
                         <div class="res-button-container">
@@ -37,11 +37,11 @@
                     </form>
                 </div>
             </div>
-        </div>
-        <div class="res-bottom-container">
+        </section>
+        <footer class="res-bottom-container">
             <hr>
             <p>E-LIGTAS @ {{ date('Y') }}</p>
-        </div>
+        </footer>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"
