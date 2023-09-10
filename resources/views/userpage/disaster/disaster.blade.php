@@ -12,7 +12,7 @@
     <div class="wrapper">
         @include('partials.header')
         @include('partials.sidebar')
-        <div class="main-content">
+        <main class="main-content">
             <div class="label-container">
                 <i class="bi bi-tropical-storm"></i>
                 <span>MANAGE DISASTER INFORMATION</span>
@@ -25,7 +25,7 @@
                     </button>
                 </div>
             @endif
-            <div class="table-container">
+            <section class="table-container">
                 <div class="table-content">
                     <header class="table-label">Disaster Information Table</header>
                     <table class="table" id="disasterTable" width="100%">
@@ -40,10 +40,10 @@
                         </tbody>
                     </table>
                 </div>
-            </div>
+            </section>
             @include('userpage.disaster.disasterModal')
             @include('userpage.changePasswordModal')
-        </div>
+        </main>
     </div>
 
     @include('partials.script')

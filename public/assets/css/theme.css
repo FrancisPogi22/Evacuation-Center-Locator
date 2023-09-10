@@ -2,14 +2,22 @@
 @import url("https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css");
 
 :root {
-    --color-text: #ffffff;
-    --color-background: #ecf0f1;
-    --color-red: #dc3545;
     --color-gray: #2c3e50;
     --color-green: #28a745;
     --color-primary: #3575ff;
     --color-yellow: #ffc107;
     --color-black: #000000;
+    --color-red: #dc3545;
+
+    --color-red-hover: #b91c1c;
+    --color-green-hover: #06782f;
+    --color-yellow-hover: #ffb412;
+    --color-primary-hover: #1d4ed8;
+
+    --color-text: #ffffff;
+    --color-background: #ecf0f1;
+    --color-sidebar: #334155;
+
     --color-d-background: #1e293b;
     --color-d-text: #e2e8f0;
     --color-d-sub-text: #94a3b8;
@@ -79,9 +87,8 @@
 .btn-submit:hover,
 .btn-table-submit:hover,
 #locateNearestBtn:hover {
-    background: #06782f;
+    background: var(--color-green-hover);
     transform: scale(1.05);
-    border: none;
 }
 
 .btn-update,
@@ -99,9 +106,8 @@
 
 .btn-update:hover,
 .btn-table-update:hover {
-    background: #ffb412;
+    background: var(--color-yellow-hover);
     transform: scale(1.05);
-    border: none;
 }
 
 .btn-remove,
@@ -120,9 +126,8 @@
 
 .btn-remove:hover,
 .btn-table-remove:hover {
-    background: #b91c1c;
+    background: var(--color-red-hover);
     transform: scale(1.05);
-    border: none;
 }
 
 .btn-table-submit,
@@ -159,9 +164,8 @@
 
 .btn-table-primary:hover,
 #pinpointCurrentLocationBtn:hover {
-    background: #1d4ed8;
+    background: var(--color-primary-hover);
     transform: scale(1.05);
-    border: none;
 }
 
 .evacuation-button-container {
@@ -181,7 +185,6 @@
 
 .locator-button-container button i,
 .page-button-container button i,
-.page-button-container a i,
 .generate-button-container button i {
     padding-right: 8px;
 }
@@ -260,7 +263,7 @@
 .main-content {
     width: 100%;
     margin: 92px auto 30px;
-    padding: 0 20px 0 90px;
+    padding: 0 10px 0 90px;
     transition: 0.2s all ease-in-out;
 }
 
@@ -278,7 +281,7 @@
     display: grid;
     margin-right: 16px;
     grid-column-end: 1;
-    background: #334155;
+    background: var(--color-sidebar);
     border-radius: 4px;
     padding: 8px;
     font-size: 24px;
@@ -293,7 +296,7 @@
 .sidebar {
     position: fixed;
     width: 80px;
-    background: #334155;
+    background: var(--color-sidebar);
     z-index: 100;
     left: 0;
     top: 0;
@@ -603,7 +606,7 @@
 }
 
 .btn-resident:hover {
-    background: #b91c1c;
+    background: var(--color-red-hover);
 }
 
 .forgot-password-container {
@@ -613,7 +616,9 @@
     color: rgb(2, 132, 199);
 }
 
-.auth-body .auth-bottom-section {
+.auth-body .auth-bottom-section,
+.rec-bottom-section,
+.res-bottom-container {
     position: absolute;
     width: 100%;
     bottom: 0;
@@ -621,7 +626,10 @@
     padding: inherit;
 }
 
-.res-password-form hr,
+.res-password-form hr {
+    margin: 0;
+}
+
 .res-bottom-container hr,
 .rec-bottom-section hr,
 .auth-body .auth-bottom-section hr {
@@ -629,7 +637,8 @@
     color: var(--color-d-text);
 }
 
-.auth-bottom-section p {
+.auth-bottom-section p,
+.res-bottom-container p {
     color: var(--color-text);
     margin: 0;
     font-size: 15px;
@@ -640,7 +649,7 @@
 .res-password-cotainer {
     position: relative;
     margin: auto;
-    padding: 300px 0;
+    padding-top: 300px;
 }
 
 .recover-content {
@@ -699,7 +708,7 @@
 }
 
 .button-container .btn-remove:hover {
-    background: #b91c1c;
+    background: var(--color-red-hover);
 }
 
 .res-password-content {
@@ -739,25 +748,13 @@
 
 .button-container .btn-submit:hover,
 .res-button-container .btn-submit:hover {
-    background: #15803d;
-}
-
-.res-bottom-container {
-    width: 100%;
-    color: var(--color-text);
-}
-
-.rec-bottom-section {
-    position: absolute;
-    width: 100%;
-    left: 0;
-    bottom: 0;
-    padding: 0 24px;
+    background: var(--color-green-hover);
 }
 
 .rec-bottom-section p {
     padding: 5px 0;
     margin: 0;
+    font-size: 15px;
     color: var(--color-text);
 }
 
@@ -984,6 +981,13 @@ text {
     color: var(--color-text);
     padding: 10px 0;
     margin: 0 14px;
+    transition-duration: 100ms;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+#removeGuideField:hover {
+    background: var(--color-red-hover);
+    transform: scale(1.01);
 }
 
 #removeGuideField i {
@@ -1259,25 +1263,6 @@ text {
     transform: scale(1.1);
 }
 
-.page-button-container a {
-    background: var(--color-green);
-    color: var(--color-text);
-    font-size: 14px;
-    font-weight: 600;
-    border-radius: 4px;
-    padding: 8px 10px;
-    filter: drop-shadow(0 4px 3px rgb(0 0 0 / 0.07)) drop-shadow(0 2px 2px rgb(0 0 0 / 0.06));
-    transition-duration: 100ms;
-    border: none;
-}
-
-.page-button-container a:hover {
-    color: var(--color-text);
-    background: #06782f;
-    transform: scale(1.05);
-    border: none;
-}
-
 .report-button {
     position: fixed;
     margin: 35px 14px;
@@ -1286,7 +1271,7 @@ text {
 }
 
 .report-form a {
-    background: #334155;
+    background: var(--color-sidebar);
     padding: 16px;
     font-size: 24px;
     border-radius: 50%;
@@ -1797,7 +1782,7 @@ span.error {
 }
 
 .table-container {
-    margin-top: 10px;
+    margin: 10px 0 30px;
     padding: 12px;
     box-shadow: 0 0 19px -1px rgba(0, 0, 0, 0.2);
     border-radius: 8px;

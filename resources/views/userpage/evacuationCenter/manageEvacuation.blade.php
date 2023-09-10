@@ -12,7 +12,7 @@
     <div class="wrapper">
         @include('partials.header')
         @include('partials.sidebar')
-        <div class="main-content">
+        <main class="main-content">
             <div class="label-container">
                 <i class="bi bi-house-gear"></i>
                 <span>MANAGE EVACUATION CENTER</span>
@@ -26,7 +26,7 @@
                     </button>
                 </div>
             @endif
-            <div class="table-container">
+            <section class="table-container">
                 <div class="table-content">
                     <header class="table-label">Evacuation Center Table</header>
                     <table class="table" id="evacuationCenterTable" width="100%">
@@ -42,10 +42,10 @@
                         </tbody>
                     </table>
                 </div>
-            </div>
+            </section>
             @include('userpage.evacuationCenter.evacuationCenterModal')
             @include('userpage.changePasswordModal')
-        </div>
+        </main>
     </div>
 
     @include('partials.script')

@@ -13,7 +13,7 @@
     <div class="wrapper">
         @include('partials.header')
         @include('partials.sidebar')
-        <div class="main-content">
+        <main class="main-content">
             <div class="label-container">
                 <i class="bi bi-exclamation-triangle"></i>
                 <span>DANGER AREAS REPORT</span>
@@ -26,7 +26,7 @@
                     </button>
                 </div>
             @endguest
-            <div class="table-container">
+            <section class="table-container">
                 <div class="table-content">
                     <header class="table-label">Danger Areas Report Table</header>
                     <table class="table" id="dangerousAreasReports" width="100%">
@@ -43,12 +43,12 @@
                         </tbody>
                     </table>
                 </div>
-            </div>
+            </section>
             @guest
                 @include('userpage.evacuationCenter.dangerAreaReportModal')
             @endguest
             @include('userpage.changePasswordModal')
-        </div>
+        </main>
 
         @include('partials.script')
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>

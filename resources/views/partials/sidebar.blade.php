@@ -1,4 +1,4 @@
-<div class="sidebar">
+<aside class="sidebar">
     <div class="sidebar-header">
         <img id="logo" src="{{ asset('assets/img/e-ligtas-logo.png') }}" alt="Logo">
         <button type="button" class="bi bi-x" id="btn-sidebar-close"></button>
@@ -243,4 +243,4 @@
             </ul>
         </div>
     </div>
-</div>
+</aside>

@@ -10,13 +10,13 @@
     <div class="wrapper">
         @include('partials.header')
         @include('partials.sidebar')
-        <div class="main-content">
+        <main class="main-content">
             <div class="label-container">
                 <i class="bi bi-file-earmark-richtext"></i>
                 <span>GUIDES</span>
             </div>
             <hr>
-            <div class="swiper guide-section">
+            <section class="swiper guide-section">
                 <div class="swiper-wrapper">
                     @foreach ($guide as $guide)
                         <div class="swiper-slide">
@@ -50,10 +50,10 @@
                         </div>
                     @endforeach
                 </div>
-            </div>
+            </section>
             @include('userpage.guideline.guideModal')
             @include('userpage.changePasswordModal')
-        </div>
+        </main>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"
