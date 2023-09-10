@@ -87,7 +87,6 @@ class MainController extends Controller
             $disasterData[] = array_merge(['disasterName' => $disaster->name, 'totalEvacuee' => $totalEvacuee], $result->toArray());
         }
 
-
         return request()->ajax() ? response()->json($disasterData) : $disasterData;
     }
 }
