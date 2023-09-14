@@ -1,9 +1,9 @@
 @include('partials.authHeader')
 
-<body class="auth-body">
+<body>
     <div class="wrapper">
         <header class="header-section"></header>
-        <section class="auth-content">
+        <section class="auth-section">
             <div class="auth-container">
                 <div class="auth-header-desc">
                     <h1>{{ config('app.name') }}</h1>
@@ -34,10 +34,6 @@
                 </div>
             </div>
         </section>
-        <footer class="auth-bottom-section">
-            <hr>
-            <p>E-LIGTAS @ {{ date('Y') }}</p>
-        </footer>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"

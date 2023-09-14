@@ -1,9 +1,9 @@
 @include('partials.authHeader')
 
-<body class="auth-body">
+<body>
     <div class="wrapper">
         <header class="header-section"></header>
-        <section class="res-password-cotainer">
+        <section class="res-password-section">
             <div class="res-password-content">
                 <div class="res-password-form">
                     <form action="{{ route('resetPassword') }}" method="POST">
@@ -38,10 +38,6 @@
                 </div>
             </div>
         </section>
-        <footer class="res-bottom-container">
-            <hr>
-            <p>E-LIGTAS @ {{ date('Y') }}</p>
-        </footer>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"

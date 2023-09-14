@@ -16,7 +16,11 @@
         <main class="main-content">
             <div class="label-container">
                 <i class="bi bi-person-gear"></i>
-                <span>MANAGE USERS ACCOUNT</span>
+                @if (auth()->user()->organization == 'CDRRMO')
+                    <span>MANAGE CDRRMO ACCOUNT</span>
+                @else
+                    <span>MANAGE USERS ACCOUNT</span>
+                @endif
             </div>
             <hr>
             @if (auth()->user()->is_disable == 0)
@@ -29,7 +33,11 @@
             @endif
             <section class="table-container">
                 <div class="table-content">
-                    <header class="table-label">User Accounts Table</header>
+                    @if (auth()->user()->organization == 'CDRRMO')
+                        <header class="table-label">User CDRRMO Table</header>
+                    @else
+                        <header class="table-label">User Accounts Table</header>
+                    @endif
                     <table class="table" id="accountTable" width="100%">
                         <thead>
                             <tr>

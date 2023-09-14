@@ -22,7 +22,7 @@
                     </div>
                 </div>
                 <div class="edit-profile-btn">
-                    <button class="btn-update" id="editProfileBtn">
+                    <button class="btn-update" id="updateProfileBtn">
                         <i class="bi bi-pencil-square"></i>Edit Profile
                     </button>
                 </div>
@@ -87,15 +87,14 @@
                     organization: 'Please Enter Your Organization.',
                     position: 'Please Enter Your Position.',
                     email: 'Please Enter Your Email Address.'
-
                 },
                 errorElement: 'span',
                 submitHandler: formSubmitHandler
             });
 
-            $(document).on('click', '#editProfileBtn', () => {
+            $(document).on('click', '#updateProfileBtn', () => {
                 modalLabelContainer.removeClass('bg-success').addClass('bg-warning');
-                modalLabel.text('Edit Profile Account');
+                modalLabel.text('Update Profile Account');
                 formButton.removeClass('btn-submit').addClass('btn-update').text('Update');
                 $('#suspend-container').hide();
                 operation = "update";
