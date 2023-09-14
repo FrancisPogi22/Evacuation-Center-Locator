@@ -159,7 +159,7 @@
                     type: 'pie'
                 },
                 title: {
-                    text: disaster.disasterName
+                    text: `As Affected of ${disaster.disasterName}` 
                 },
                 tooltip: {
                     pointFormat: '{series.name}: <b>{point.y}</b>'

@@ -168,7 +168,7 @@
                             width: '1rem',
                             orderable: false,
                             searchable: false
-                        },
+                        }
                     ],
                     columnDefs: [{
                         targets: 5,
@@ -218,7 +218,7 @@
                             width: '1rem',
                             orderable: false,
                             searchable: false
-                        },
+                        }
                     ],
                     columnDefs: [{
                         targets: 5,
@@ -249,10 +249,10 @@
                                     archive: "{{ route('report.archive', 'reportId') }}"
                                 },
                                 url = route[operation].replace('reportId', reportId),
-                                type {
+                                type = {
                                     approve: "POST",
                                     decline: "DELETE",
-                                    archive: "PATCH",
+                                    archive: "PATCH"
                                 } [operation];
 
                             $.ajax({
