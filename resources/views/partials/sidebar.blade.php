@@ -107,11 +107,11 @@
                                 <i class="bi bi-caret-right-fill dropdown"></i>
                             </a>
                             <div class="sub-menu">
-                                <a href="{{ route('disaster.display') }}" class="menu-link">
+                                <a href="{{ route('disaster.information', 'manage') }}" class="menu-link">
                                     <i class="bi bi-cloud-upload"></i>
                                     <span class="links_name">Manage Disaster</span>
                                 </a>
-                                <a href="" class="menu-link">
+                                <a href="{{ route('disaster.information', 'archived') }}" class="menu-link">
                                     <i class="bi bi-cloud-slash"></i>
                                     <span class="links_name">Archived Disaster</span>
                                 </a>
@@ -130,11 +130,11 @@
                                 <i class="bi bi-caret-right-fill dropdown"></i>
                             </a>
                             <div class="sub-menu">
-                                <a href="{{ route('manage.evacuation') }}" class="menu-link">
+                                <a href="{{ route('evacuation.center', 'active') }}" class="menu-link">
                                     <i class="bi bi-house-gear"></i>
                                     <span class="links_name">Manage Evacuation</span>
                                 </a>
-                                <a href="" class="menu-link">
+                                <a href="{{ route('evacuation.center', 'archived') }}" class="menu-link">
                                     <i class="bi bi-house-slash"></i>
                                     <span class="links_name">Archived Evacuation</span>
                                 </a>
@@ -154,11 +154,11 @@
                                     <i class="bi bi-caret-right-fill dropdown"></i>
                                 </a>
                                 <div class="sub-menu">
-                                    <a href="{{ route('account.display.users') }}" class="menu-link">
+                                    <a href="{{ route('display.users.account', 'active') }}" class="menu-link">
                                         <i class="bi bi-person-gear"></i>
                                         <span class="links_name">Users Account</span>
                                     </a>
-                                    <a href="" class="menu-link">
+                                    <a href="{{ route('display.users.account', 'archived') }}" class="menu-link">
                                         <i class="bi bi-person-slash"></i>
                                         <span class="links_name">Archived Account</span>
                                     </a>

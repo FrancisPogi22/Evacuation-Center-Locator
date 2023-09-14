@@ -23,7 +23,7 @@
                 @endif
             </div>
             <hr>
-            @if (auth()->user()->is_disable == 0)
+            @if (auth()->user()->is_disable == 0 && $operation == 'active')
                 <div class="page-button-container">
                     <button class="btn-submit" id="createUserAccount">
                         <i class="bi bi-person-fill-add"></i>
@@ -81,7 +81,7 @@
                 responsive: true,
                 processing: false,
                 serverSide: true,
-                ajax: "{{ route('account.display.users') }}",
+                ajax: "{{ route('account.display.users', $operation) }}",
                 columns: [{
                         data: 'id',
                         name: 'id',
@@ -222,7 +222,7 @@
                                 return !result.isConfirmed ? $(this).val('') :
                                     $.ajax({
                                         type: "PATCH",
-                                        url: "{{ route('account.archive', 'userId') }}"
+                                        url: "{{ route('account.archive', ['userId', 'archive']) }}"
                                             .replace('userId', userId),
                                         success() {
                                             showSuccessMessage(
@@ -233,6 +233,25 @@
                                             showErrorMessage();
                                         }
                                     });
+                            });
+                            break;
+
+                        case 'unArchiveAccount':
+                            confirmModal('Do you want to unarchive this account?').then((result) => {
+                                return !result.isConfirmed ? $(this).val('') :
+                                    $.ajax({
+                                        type: "PATCH",
+                                        url: "{{ route('account.archive', ['userId', 'unarchive']) }}"
+                                            .replace('userId', userId),
+                                        success() {
+                                            showSuccessMessage(
+                                                'Successfully unarchived account.');
+                                            accountTable.draw();
+                                        },
+                                        error() {
+                                            showErrorMessage();
+                                        }
+                                    })
                             });
                             break;
 

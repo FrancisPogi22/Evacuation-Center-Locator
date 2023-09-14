@@ -16,8 +16,8 @@ class GuidelineController extends Controller
 
     function __construct()
     {
-        $this->guide = new Guide;
-        $this->guideline = new Guideline;
+        $this->guide       = new Guide;
+        $this->guideline   = new Guideline;
         $this->logActivity = new ActivityUserLog;
     }
 
@@ -40,23 +40,23 @@ class GuidelineController extends Controller
     public function createGuideline(Request $request)
     {
         $guidelineValidation = Validator::make($request->all(), [
-            'type' => 'required|unique:guideline,type',
-            'label.*' => 'required',
+            'type'      => 'required|unique:guideline,type',
+            'label.*'   => 'required',
             'content.*' => 'required'
         ]);
 
         if ($guidelineValidation->fails())
             return response(['status' => 'warning', 'message' => $guidelineValidation->errors()->first()]);
 
-        $userId = auth()->user()->id;
+        $userId    = auth()->user()->id;
         $guideline = $this->guideline->create([
-            'type' => Str::upper(trim($request->type)),
-            'user_id' => $userId,
+            'type'         => Str::upper(trim($request->type)),
+            'user_id'      => $userId,
             'organization' => auth()->user()->organization
         ]);
         $this->logActivity->generateLog($guideline->id, 'Created New Guideline');
 
-        $labels = $request->label;
+        $labels   = $request->label;
         $contents = $request->content;
 
         if ($labels && $contents) {
@@ -64,14 +64,14 @@ class GuidelineController extends Controller
 
             foreach ($labels as $count => $label) {
                 $guide = $this->guide->create([
-                    'label' => $label,
-                    'content' => $contents[$count],
+                    'label'        => $label,
+                    'content'      => $contents[$count],
                     'guideline_id' => $guideline->id,
-                    'user_id' => $userId,
+                    'user_id'      => $userId,
                 ]);
 
                 if (isset($guidePhotos[$count])) {
-                    $reportPhotoPath =  $guidePhotos[$count]->store();
+                    $reportPhotoPath    =  $guidePhotos[$count]->store();
                     $guidePhotos[$count]->move(public_path('guide_photo'), $reportPhotoPath);
                     $guide->guide_photo = $reportPhotoPath;
                     $guide->save();
@@ -85,8 +85,8 @@ class GuidelineController extends Controller
     public function updateGuideline(Request $request, $guidelineId)
     {
         $guidelineValidation = Validator::make($request->all(), [
-            'type' => 'required',
-            'label.*' => 'required',
+            'type'      => 'required',
+            'label.*'   => 'required',
             'content.*' => 'required'
         ]);
 
@@ -95,12 +95,12 @@ class GuidelineController extends Controller
 
         $guidelineId = Crypt::decryptString($guidelineId);
         $this->guideline->find($guidelineId)->update([
-            'type' => Str::upper(trim($request->type)),
+            'type'    => Str::upper(trim($request->type)),
             'user_id' => auth()->user()->id
         ]);
         $this->logActivity->generateLog($guidelineId, 'Updated Guideline');
 
-        $labels = $request->label;
+        $labels   = $request->label;
         $contents = $request->content;
 
         if ($labels && $contents) {
@@ -108,10 +108,10 @@ class GuidelineController extends Controller
 
             foreach ($labels as $count => $label) {
                 $guide = $this->guide->create([
-                    'label' => $label,
-                    'content' => $contents[$count],
+                    'label'        => $label,
+                    'content'      => $contents[$count],
                     'guideline_id' => $guidelineId,
-                    'user_id' => auth()->user()->id
+                    'user_id'      => auth()->user()->id
                 ]);
 
                 if (isset($guidePhotos[$count])) {
@@ -142,7 +142,7 @@ class GuidelineController extends Controller
     public function updateGuide(Request $request, $guideId)
     {
         $guideValidation = Validator::make($request->all(), [
-            'label' => 'required',
+            'label'   => 'required',
             'content' => 'required'
         ]);
 
@@ -165,7 +165,7 @@ class GuidelineController extends Controller
         }
 
         $guideItem->update([
-            'label' => Str::upper(trim($request->label)),
+            'label'   => Str::upper(trim($request->label)),
             'content' => Str::ucfirst(trim($request->content)),
             'user_id' => auth()->user()->id
         ]);

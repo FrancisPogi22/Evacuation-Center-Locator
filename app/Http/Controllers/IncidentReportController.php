@@ -18,10 +18,10 @@ class IncidentReportController extends Controller
 
     function __construct()
     {
-        $this->reportLog = new ReportLog;
-        $this->reportEvent = new IncidentReportEvent;
+        $this->reportLog      = new ReportLog;
+        $this->reportEvent    = new IncidentReportEvent;
         $this->incidentReport = new IncidentReport;
-        $this->logActivity = new ActivityUserLog;
+        $this->logActivity    = new ActivityUserLog;
     }
 
     public function displayPendingIncidentReport()
@@ -85,8 +85,8 @@ class IncidentReportController extends Controller
     {
         $incidentReportValidation = Validator::make($request->all(), [
             'description' => 'required',
-            'location' => 'required',
-            'photo' => 'image|mimes:jpeg|max:2048'
+            'location'    => 'required',
+            'photo'       => 'image|mimes:jpeg|max:2048'
         ]);
 
         if ($incidentReportValidation->fails())
@@ -97,13 +97,13 @@ class IncidentReportController extends Controller
         $request->photo->move(public_path('reports_image'), $reportPhotoPath);
         $incidentReport = [
             'description' => Str::ucFirst(trim($request->description)),
-            'location' => Str::of(trim($request->location))->title(),
-            'photo' => $reportPhotoPath,
-            'latitude' => null,
-            'longitude' => null,
-            'status' => 'On Process',
-            'user_ip' => $request->ip(),
-            'is_archive' => 0
+            'location'    => Str::of(trim($request->location))->title(),
+            'photo'       => $reportPhotoPath,
+            'latitude'    => null,
+            'longitude'   => null,
+            'status'      => 'On Process',
+            'user_ip'     => $request->ip(),
+            'is_archive'  => 0
         ];
 
         if ($resident) {
@@ -142,8 +142,8 @@ class IncidentReportController extends Controller
     {
         $incidentReportValidation = Validator::make($request->all(), [
             'description' => 'required',
-            'location' => 'required',
-            'photo' => 'image|mimes:jpeg|max:2048'
+            'location'    => 'required',
+            'photo'       => 'image|mimes:jpeg|max:2048'
         ]);
 
         if ($incidentReportValidation->fails())
@@ -154,14 +154,14 @@ class IncidentReportController extends Controller
 
         $dataToUpdate = [
             'description' => Str::ucFirst(trim($request->description)),
-            'location' => Str::of(trim($request->location))->title()
+            'location'    => Str::of(trim($request->location))->title()
         ];
 
         if ($reportPhoto) {
-            $reportPhoto = $reportPhoto->store();
+            $reportPhoto           = $reportPhoto->store();
             $request->photo->move(public_path('reports_image'), $reportPhoto);
             $dataToUpdate['photo'] = $reportPhoto;
-            $image_path = public_path('reports_image/' . $residentReport->value('photo'));
+            $image_path            = public_path('reports_image/' . $residentReport->value('photo'));
             if (file_exists($image_path)) unlink($image_path);
         }
 
@@ -198,7 +198,7 @@ class IncidentReportController extends Controller
     {
         $this->incidentReport->find($reportId)->update([
             'is_archive' => 1,
-            'status' => 'Archived'
+            'status'     => 'Archived'
         ]);
         $this->logActivity->generateLog($reportId, 'Archived Incident Report');
         //event(new IncidentReportEvent());
@@ -220,7 +220,7 @@ class IncidentReportController extends Controller
         return DataTables::of($dangerousAreasReport->get())
             ->addIndexColumn()
             ->addColumn('status', fn ($dangerousAreas) => '<div class="status-container"><div class="status-content bg-' . match ($dangerousAreas->status) {
-                'Confirmed' => 'success',
+                'Confirmed'  => 'success',
                 'On Process' => 'warning'
             }
                 . '">' . $dangerousAreas->status . '</div></div>')
@@ -249,8 +249,8 @@ class IncidentReportController extends Controller
     {
         $dangerousAreasReportValidation = Validator::make($request->all(), [
             'report_type' => 'required',
-            'latitude' => 'required',
-            'longitude' => 'required'
+            'latitude'    => 'required',
+            'longitude'   => 'required'
         ]);
 
         if ($dangerousAreasReportValidation->fails())
@@ -259,18 +259,18 @@ class IncidentReportController extends Controller
         $resident = $this->reportLog->where('user_ip', $request->ip())->first();
         $dangerAreaReport = [
             'description' => Str::ucFirst(trim($request->report_type)),
-            'location' => null,
-            'photo' => null,
-            'latitude' => $request->latitude,
-            'longitude' => $request->longitude,
-            'status' => 'On Process',
-            'user_ip' => $request->ip(),
-            'is_archive' => 0
+            'location'    => null,
+            'photo'       => null,
+            'latitude'    => $request->latitude,
+            'longitude'   => $request->longitude,
+            'status'      => 'On Process',
+            'user_ip'     => $request->ip(),
+            'is_archive'  => 0
         ];
 
         if ($resident) {
             $residentAttempt = $resident->attempt;
-            $reportTime = $resident->report_time;
+            $reportTime      = $resident->report_time;
 
             if ($residentAttempt == 3) {
                 $isBlock = $this->isBlocked($reportTime);
@@ -304,8 +304,8 @@ class IncidentReportController extends Controller
     {
         $dangerousAreasReportValidation = Validator::make($request->all(), [
             'report_type' => 'required',
-            'latitude' => 'required',
-            'longitude' => 'required'
+            'latitude'    => 'required',
+            'longitude'   => 'required'
         ]);
 
         if ($dangerousAreasReportValidation->fails())
@@ -313,8 +313,8 @@ class IncidentReportController extends Controller
 
         $this->incidentReport->find($reportId)->update([
             'description' => Str::ucFirst(trim($request->report_type)),
-            'latitude' => $request->latitude,
-            'longitude' => $request->longitude
+            'latitude'    => $request->latitude,
+            'longitude'   => $request->longitude
         ]);
         //event(new IncidentReportEvent());
         return response()->json();
@@ -353,7 +353,7 @@ class IncidentReportController extends Controller
 
     public function updateUserAttempt()
     {
-        $userIp = request()->ip();
+        $userIp   = request()->ip();
         $resident = $this->reportLog->where('user_ip', $userIp)->first();
 
         if ($resident) {

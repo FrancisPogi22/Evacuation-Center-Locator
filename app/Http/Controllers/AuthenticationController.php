@@ -19,7 +19,7 @@ class AuthenticationController extends Controller
 
     public function __construct()
     {
-        $this->user = new User;
+        $this->user        = new User;
         $this->logActivity = new ActivityUserLog;
     }
 
@@ -43,8 +43,8 @@ class AuthenticationController extends Controller
         try {
             $token = Str::random(124);
             DB::table('password_resets')->insert([
-                'email' => $request->email,
-                'token' => $token,
+                'email'      => $request->email,
+                'token'      => $token,
                 'created_at' => now()->addHours(3)
             ]);
             Mail::to($request->email)->send(new SendResetPasswordLink(['token' => $token]));
@@ -63,8 +63,8 @@ class AuthenticationController extends Controller
     public function resetPassword(Request $request)
     {
         $resetPasswordValidation = Validator::make($request->all(), [
-            'email' => 'required|email|exists:user',
-            'password' => 'required|confirmed',
+            'email'                 => 'required|email|exists:user',
+            'password'              => 'required|confirmed',
             'password_confirmation' => 'required'
         ]);
 
@@ -78,11 +78,10 @@ class AuthenticationController extends Controller
 
     public function logout()
     {
-        $organization = auth()->user()->organization;
-        $this->logActivity->generateLog(null, 'Logged Out');
+        $this->logActivity->generateLog(null, Str::of(auth()->user()->name)->title() . 'Logged Out');
         auth()->logout();
         session()->flush();
-        return redirect('/')->with('success', 'Logged out ' . $organization . ' Panel.');
+        return redirect('/')->with('success', 'Successfully Logged out ');
     }
 
     private function checkUserAccount()
@@ -90,11 +89,13 @@ class AuthenticationController extends Controller
         if (!auth()->check()) return back();
 
         $userAuthenticated = auth()->user();
+        $userOrganization  = $userAuthenticated->organization;
+        $userName          = $userAuthenticated->name;
 
         if ($userAuthenticated->is_suspend == 1 && $userAuthenticated->suspend_time <= Carbon::now()->format('Y-m-d H:i:s')) {
             $this->user->find($userAuthenticated->id)->update([
-                'status' => 'Active',
-                'is_suspend' => 0,
+                'status'       => 'Active',
+                'is_suspend'   => 0,
                 'suspend_time' => null
             ]);
         } else if ($userAuthenticated->is_suspend == 1) {
@@ -104,8 +105,7 @@ class AuthenticationController extends Controller
             return back()->withInput()->with('warning', 'Your account has been suspended until ' . $suspendTime);
         }
 
-        $this->logActivity->generateLog(null, 'Logged In');
-        $userOrganization = $userAuthenticated->organization;
-        return redirect("/" . Str::of($userOrganization)->lower() . "/dashboard")->with('success', "Welcome to " . $userOrganization . " Panel.");
+        $this->logActivity->generateLog(null, Str::of($userName)->title() . ' Logged In');
+        return redirect("/" . Str::of($userOrganization)->lower() . "/dashboard")->with('success', "Welcome to " . $userName);
     }
 }

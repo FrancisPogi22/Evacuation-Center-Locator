@@ -14,8 +14,8 @@
     --color-yellow-hover: #ffb412;
     --color-primary-hover: #1d4ed8;
 
-    --color-text: #f8fafc;
-    --color-background: #ecf0f1;
+    --color-text: #ffffff;
+    --color-background: #F6F7FB;
 
     --color-d-background: #1e293b;
     --color-d-text: #e2e8f0;
@@ -36,7 +36,7 @@
 }
 
 body {
-    background: var(--color-text)
+    background: var(--color-background) !important;
 }
 
 .toast {
@@ -107,7 +107,6 @@ input::placeholder {
     font-weight: 600;
     color: var(--color-text);
     transition-duration: 100ms;
-    filter: drop-shadow(0 4px 3px rgb(0 0 0 / 0.07)) drop-shadow(0 2px 2px rgb(0 0 0 / 0.06));
     transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
     border-radius: 4px;
     border: none;
@@ -126,7 +125,6 @@ input::placeholder {
     font-weight: 600;
     color: var(--color-text);
     transition-duration: 100ms;
-    filter: drop-shadow(0 4px 3px rgb(0 0 0 / 0.07)) drop-shadow(0 2px 2px rgb(0 0 0 / 0.06));
     transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
     border-radius: 4px;
     border: none;
@@ -144,7 +142,6 @@ input::placeholder {
     display: flex;
     gap: 8px;
     padding: 8px 16px;
-    border: none;
 }
 
 .btn-table-primary,
@@ -167,6 +164,13 @@ input::placeholder {
     transform: scale(1.05);
 }
 
+.btn-update,
+.btn-remove,
+#pinpointCurrentLocationBtn {
+    filter: drop-shadow(0 4px 3px rgb(0 0 0 / 0.07)) drop-shadow(0 2px 2px rgb(0 0 0 / 0.06));
+}
+
+
 .evacuation-button-container {
     display: flex;
     justify-content: space-between;
@@ -185,7 +189,7 @@ input::placeholder {
 .page-button-container button i,
 .generate-button-container button i,
 .locateEvacuationCenter i,
-#reportDangerBtn i{
+#reportDangerBtn i {
     padding-right: 8px;
 }
 
@@ -327,7 +331,7 @@ input::placeholder {
 
 .sidebar-content {
     position: relative;
-    height: calc(100vh - 64px);
+    height: calc(100vh - 60px);
     overflow: auto;
 }
 
@@ -527,7 +531,7 @@ input::placeholder {
 }
 
 .auth-form-section {
-    background: #f1f5f9;
+    background: var(--color-text);
     margin: 0 50px;
     padding: 20px 10px;
     width: 100%;
@@ -628,17 +632,11 @@ input::placeholder {
 
 .recover-form,
 .res-password-form {
-    background: #f1f5f9;
+    background: var(--color-text);
     width: 100%;
     max-width: 500px;
     border-radius: 6px;
     filter: drop-shadow(0 10px 8px rgb(0 0 0 / 0.04)) drop-shadow(0 4px 3px rgb(0 0 0 / 0.1));
-}
-
-.recover-form form,
-.res-password-form form {
-    width: 100%;
-    position: relative;
 }
 
 .recover-form form label,
@@ -750,7 +748,7 @@ input::placeholder {
 }
 
 .widget {
-    background: #f1f5f9;
+    background: var(--color-text);
     position: relative;
     overflow: hidden;
     border-radius: 15px;
@@ -814,8 +812,8 @@ input::placeholder {
     filter: drop-shadow(0 10px 8px rgb(0 0 0 / 0.04)) drop-shadow(0 4px 3px rgb(0 0 0 / 0.1));
 }
 
-.highcharts-background{
-    fill: #f1f5f9;
+.highcharts-background {
+    fill: var(--color-text);
 }
 
 .bar-graph {
@@ -1740,7 +1738,8 @@ span.error {
 
 .table-container {
     padding: 12px;
-    box-shadow: 0 0 19px -1px rgba(0, 0, 0, 0.2);
+    background: var(--color-text);
+    filter: drop-shadow(0 10px 8px rgb(0 0 0 / 0.04)) drop-shadow(0 4px 3px rgb(0 0 0 / 0.1));
     border-radius: 8px;
 }
 
@@ -1816,7 +1815,7 @@ select.form-select option {
 }
 
 .dark-mode {
-    background: var(--color-d-background);
+    background: var(--color-d-background) !important;
 }
 
 .dark-mode * {

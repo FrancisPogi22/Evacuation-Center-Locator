@@ -19,7 +19,6 @@ class EvacuationCenter extends Model
         'barangay_name',
         'latitude',
         'longitude',
-        'capacity',
         'status',
         'is_archive'
     ];

@@ -19,39 +19,51 @@ class UserAccountsController extends Controller
 
     public function __construct()
     {
-        $this->user = new User;
+        $this->user        = new User;
         $this->logActivity = new ActivityUserLog;
     }
 
-    public function userAccounts(Request $request)
+    public function userAccounts($operation)
     {
-        if (!$request->ajax()) return view('userpage.userAccount.userAccounts');
-
-        $userAccounts = $this->user->where('is_archive', 0);
-        $userId = auth()->user()->id;
+        $userAccounts = $this->user->where('is_archive', $operation == "active" ? 0 : 1);
+        $userId       = auth()->user()->id;
         $userAccounts = auth()->user()->organization == "CSWD" ? $userAccounts->whereNotIn('id', [$userId]) :
             $userAccounts->where('organization', 'CDRRMO')->whereNotIn('id', [$userId]);
 
         return DataTables::of($userAccounts)
             ->addIndexColumn()
             ->addColumn('status', fn ($account) => '<div class="status-container"><div class="status-content bg-' . match ($account->status) {
-                'Active' => 'success',
-                'Disabled' => 'danger',
-                'Suspended' => 'warning',
-                'Archived' => 'warning'
+                'Active'    => 'success',
+                'Disabled'  => 'danger',
+                'Suspended' => 'warning'
             }
                 . '">' . $account->status . '</div></div>')
-            ->addColumn('action', function ($user) {
+            ->addColumn('action', function ($user) use ($operation) {
                 if (auth()->user()->is_disable == 1) return;
 
-                $actionBtns = '<div class="action-container"><select class="form-select actionSelect">
-                <option value="" disabled selected hidden>Select Action</option>';
+                $staticOption = '<option value="disableAccount">Disable Account</option><option value="suspendAccount">Suspend Account</option>';
+                $actionBtns   = '<div class="action-container"><select class="form-select actionSelect">
+                <option value="" disabled selected hidden>Select Action</option>' . '<option value="updateAccount">Update Account</option>';
 
-                $actionBtns .= $user->is_suspend == 0 && $user->is_disable == 0
-                    ? '<option value="disableAccount">Disable Account</option><option value="suspendAccount">Suspend Account</option>'
-                    : ($user->is_suspend == 1 ? '<option value="openAccount">Open Account</option>' : '<option value="enableAccount">Enable Account</option>');
+                if ($operation == "active") {
+                    $actionBtns .= $user->is_suspend == 0 && $user->is_disable == 0
+                        ? $staticOption
+                        : ($user->is_suspend == 1
+                            ? '<option value="openAccount">Open Account</option>'
+                            : '<option value="enableAccount">Enable Account</option>'
+                        );
+                    $actionBtns .= '<option value="archiveAccount">Archive Account</option></select>';
+                } else {
+                    $actionBtns .= ($user->is_suspend == 0 && $user->is_disable == 0)
+                        ? $staticOption
+                        : ($user->is_suspend == 1
+                            ? '<option value="openAccount">Open Account</option>'
+                            : '<option value="enableAccount">Enable Account</option>'
+                        );
+                    $actionBtns .= '<option value="unArchiveAccount">Unarchive Account</option></select>';
+                }
 
-                return $actionBtns .= '<option value="updateAccount">Update Account</option><option value="archiveAccount">Archive Account</option></select></div>';
+                return $actionBtns . '</div>';
             })
             ->rawColumns(['status', 'action'])
             ->make(true);
@@ -61,9 +73,9 @@ class UserAccountsController extends Controller
     {
         $createAccountValidation = Validator::make($request->all(), [
             'organization' => 'required',
-            'name' => 'required',
-            'email' => 'required|email|unique:user,email',
-            'position' => 'required'
+            'name'         => 'required',
+            'email'        => 'required|email|unique:user,email',
+            'position'     => 'required'
         ]);
 
         if ($createAccountValidation->fails())
@@ -72,21 +84,21 @@ class UserAccountsController extends Controller
         $defaultPassword = Str::password(15);
         $userAccountData = $this->user->create([
             'organization' => $request->organization,
-            'position' => $request->position,
-            'name' => $request->name,
-            'email' => trim($request->email),
-            'password' =>  Hash::make($defaultPassword),
-            'status' =>  "Active",
-            'is_disable' =>  0,
-            'is_suspend' =>  0,
-            'is_archive' => 0,
+            'position'     => $request->position,
+            'name'         => $request->name,
+            'email'        => trim($request->email),
+            'password'     =>  Hash::make($defaultPassword),
+            'status'       =>  "Active",
+            'is_disable'   =>  0,
+            'is_suspend'   =>  0,
+            'is_archive'   => 0,
         ]);
         $this->logActivity->generateLog($userAccountData->id, 'Created New Account');
         Mail::to(trim($request->email))->send(new UserCredentialsMail([
-            'email' => trim($request->email),
+            'email'        => trim($request->email),
             'organization' => $request->organization,
-            'position' => Str::upper($request->position),
-            'password' => $defaultPassword
+            'position'     => Str::upper($request->position),
+            'password'     => $defaultPassword
         ]));
         return response()->json();
     }
@@ -95,9 +107,9 @@ class UserAccountsController extends Controller
     {
         $updateAccountValidation = Validator::make($request->all(), [
             'organization' => 'required',
-            'name' => 'required',
-            'position' => 'required',
-            'email' => 'required|email'
+            'name'         => 'required',
+            'position'     => 'required',
+            'email'        => 'required|email'
         ]);
 
         if ($updateAccountValidation->fails())
@@ -105,18 +117,18 @@ class UserAccountsController extends Controller
 
         $this->user->find($userId)->update([
             'organization' => $request->organization,
-            'name' => $request->name,
-            'position' => $request->position,
-            'email' => trim($request->email)
+            'name'         => $request->name,
+            'position'     => $request->position,
+            'email'        => trim($request->email)
         ]);
-        $this->logActivity->generateLog($userId, 'Updated Account');
+        $this->logActivity->generateLog($userId, 'Updated Account') ;
         return response()->json();
     }
 
     public function disableAccount($userId)
     {
         $this->user->find($userId)->update([
-            'status' => 'Disabled',
+            'status'     => 'Disabled',
             'is_disable' => 1
         ]);
         $this->logActivity->generateLog($userId, 'Disabled Account');
@@ -126,7 +138,7 @@ class UserAccountsController extends Controller
     public function enableAccount($userId)
     {
         $this->user->find($userId)->update([
-            'status' => 'Active',
+            'status'     => 'Active',
             'is_disable' => 0
         ]);
         $this->logActivity->generateLog($userId, 'Enabled Account');
@@ -143,8 +155,7 @@ class UserAccountsController extends Controller
             return response(['status' => 'warning', 'message' => $suspendAccountValidation->errors()->first()]);
 
         $this->user->find($userId)->update([
-            'status' => 'Suspended',
-            'is_suspend' => 1,
+            'is_suspend'   => 1,
             'suspend_time' => Carbon::parse($request->suspend_time)->format('Y-m-d H:i:s')
         ]);
         $this->logActivity->generateLog($userId, 'Suspended Account');
@@ -154,9 +165,9 @@ class UserAccountsController extends Controller
     public function openAccount($userId)
     {
         $this->user->find($userId)->update([
-            'status' => 'Active',
-            'is_disable' => 0,
-            'is_suspend' => 0,
+            'status'       => 'Active',
+            'is_disable'   => 0,
+            'is_suspend'   => 0,
             'suspend_time' => null
         ]);
         $this->logActivity->generateLog($userId, 'Opened Account');
@@ -173,8 +184,8 @@ class UserAccountsController extends Controller
         if (Hash::check($request->current_password, auth()->user()->password)) {
             $changePasswordValidation = Validator::make($request->all(), [
                 'current_password' => 'required',
-                'password' => 'required',
-                'confirmPassword' => 'required|same:password'
+                'password'         => 'required',
+                'confirmPassword'  => 'required|same:password'
             ]);
 
             if ($changePasswordValidation->fails())
@@ -190,13 +201,12 @@ class UserAccountsController extends Controller
         return response(['status' => 'warning', 'message' => "Current password doesn't match."]);
     }
 
-    public function archiveAccount($userId)
+    public function archiveAccount($userId, $operation)
     {
         $this->user->find($userId)->update([
-            'status' => 'Archived',
-            'is_archive' => 1
+            'is_archive' => $operation == "archive" ? 1 : 0
         ]);
-        $this->logActivity->generateLog($userId, 'ArchivedAccount');
+        $this->logActivity->generateLog($userId, $operation == "archive" ? "Archived Account" : "Unarchived Account");
         return response()->json();
     }
 }
