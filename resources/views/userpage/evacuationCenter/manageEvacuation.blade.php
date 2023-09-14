@@ -18,7 +18,7 @@
                 <span>MANAGE EVACUATION CENTER</span>
             </div>
             <hr>
-            @if (auth()->user()->is_disable == 0)
+            @if (auth()->user()->is_disable == 0 && $operation == "active")
                 <div class="page-button-container">
                     <button class="btn-submit" id="createEvacuationCenter">
                         <i class="bi bi-house-down-fill"></i>
@@ -71,7 +71,7 @@
             responsive: true,
             processing: false,
             serverSide: true,
-            ajax: "{{ route('evacuation.center.get', 'manage') }}",
+            ajax: "{{ route('evacuation.center.get', ['manage', $operation]) }}",
             columns: [{
                     data: 'id',
                     name: 'id',
@@ -97,7 +97,7 @@
                 {
                     data: 'status',
                     name: 'status',
-                    width: '10%',
+                    width: '10%'
                 },
                 {
                     data: 'action',
@@ -226,7 +226,6 @@
                     $('#name').val(name);
                     $('#latitude').val(latitude);
                     $('#longitude').val(longitude);
-                    $('#capacity').val(capacity);
                     $(`#barangayName, option[value="${barangay_name}"`).prop('selected', true);
 
                     marker = new google.maps.Marker({
@@ -246,9 +245,18 @@
                 });
 
                 $(document).on('click', '#archiveEvacuationCenter', function() {
-                    let url = "{{ route('evacuation.center.archive', 'evacuationCenterId') }}".replace(
-                        'evacuationCenterId', getRowData(this, evacuationCenterTable).id);
+                    let url = "{{ route('evacuation.center.archive', ['evacuationCenterId', 'archive']) }}"
+                        .replace(
+                            'evacuationCenterId', getRowData(this, evacuationCenterTable).id);
                     alterEvacuationCenter(url, 'PATCH', 'archive');
+                })
+
+                $(document).on('click', '#unArchiveEvacuationCenter', function() {
+                    let url =
+                        "{{ route('evacuation.center.archive', ['evacuationCenterId', 'unarchive']) }}"
+                        .replace(
+                            'evacuationCenterId', getRowData(this, evacuationCenterTable).id);
+                    alterEvacuationCenter(url, 'PATCH', 'unarchive');
                 })
 
                 $(document).on('change', '#changeEvacuationStatus', function() {
@@ -312,7 +320,7 @@
 
                 function alterEvacuationCenter(url, type, operation) {
                     confirmModal(
-                        `Do you want to ${operation == "archive" ? "archive" : "change the status of"} this evacuation center?`
+                        `Do you want to ${operation == "archive" ? "archive" : operation == "unarchive" ? "unarchive" : "change the status of"} this evacuation center?`
                     ).then((result) => {
                         return !result.isConfirmed ? $('#changeEvacuationStatus').val('') :
                             $.ajax({
@@ -325,8 +333,14 @@
                                 },
                                 url: url,
                                 success() {
+                                    let operationList = {
+                                        archive: "archived",
+                                        unarchive: "unarchived",
+                                        change: "changed the status of"
+                                    };
+
                                     showSuccessMessage(
-                                        `Successfully ${operation == "archive" ? "archived" : "changed the status of"} evacuation center.`
+                                        `Successfully ${operationList[operation]} evacuation center.`
                                     );
                                     evacuationCenterTable.draw();
                                 },

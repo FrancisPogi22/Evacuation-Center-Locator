@@ -39,11 +39,6 @@
                                 </select>
                             </div>
                             <div class="field-container">
-                                <label for="capacity">Capacity</label>
-                                <input type="number" name="capacity" class="form-control" autocomplete="off"
-                                    placeholder="Enter Capacity" id="capacity">
-                            </div>
-                            <div class="field-container">
                                 <label>Location</label>
                                 <div class="map-border">
                                     <div class="form-map" id="map"></div>

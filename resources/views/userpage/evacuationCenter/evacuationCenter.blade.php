@@ -77,7 +77,7 @@
                                 <th>Barangay</th>
                                 <th>Latitude</th>
                                 <th>Longitude</th>
-                                <th>Capacity</th>
+                                <th>No. of Evacuees</th>
                                 <th>Status</th>
                                 <th>Action</th>
                             </tr>
@@ -455,8 +455,8 @@
                 $.ajax({
                     method: 'GET',
                     url: '{{ $prefix }}' == 'resident' ?
-                        "{{ route('resident.evacuation.center.get', 'locator') }}" :
-                        "{{ route('evacuation.center.get', 'locator') }}",
+                        "{{ route('resident.evacuation.center.get', ['locator', 'active']) }}" :
+                        "{{ route('evacuation.center.get', ['locator', 'active']) }}",
                     success: (response) => {
                         evacuationCentersData = response.data;
                         getEvacuationCentersDistance();
@@ -500,8 +500,8 @@
                             visible: false
                         },
                         {
-                            data: 'capacity',
-                            name: 'capacity',
+                            data: 'evacuees',
+                            name: 'evacuees',
                             width: '1rem',
                             orderable: false,
                             searchable: false
@@ -509,7 +509,7 @@
                         {
                             data: 'status',
                             name: 'status',
-                            width: '15%'
+                            width: '10%'
                         },
                         {
                             data: 'action',
