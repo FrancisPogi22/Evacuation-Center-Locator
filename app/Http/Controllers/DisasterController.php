@@ -15,14 +15,13 @@ class DisasterController extends Controller
 
     public function __construct()
     {
-        $this->disaster = new Disaster;
+        $this->disaster    = new Disaster;
         $this->logActivity = new ActivityUserLog;
     }
-    public function displayDisasterInformation(Request $request)
+    public function displayDisasterInformation($operation)
     {
-        if (!$request->ajax()) return view('userpage.disaster.disaster');
-
-        $disasterInformation = $this->disaster->where('is_archive', 0)->orderBy('id', 'desc')->get();
+        $isArchive = $operation == "manage" ? 0 : 1;
+        $disasterInformation = $this->disaster->where('is_archive', $isArchive)->orderBy('id', 'asc')->get();
 
         return DataTables::of($disasterInformation)
             ->addIndexColumn()
@@ -31,16 +30,22 @@ class DisasterController extends Controller
                 'Inactive' => 'danger'
             }
                 . '">' . $disaster->status . '</div></div>')
-            ->addColumn('action', function ($disaster) {
+            ->addColumn('action', function ($disaster) use ($operation) {
                 if (auth()->user()->is_disable == 1) return;
 
-                $statusOptions = $disaster->status == 'On Going' ? '<option value="Inactive">Inactive</option>' : '<option value="On Going">On Going</option>';
+                $updateButton  = '<button class="btn-table-update" id="updateDisaster"><i class="bi bi-pencil-square"></i>Update</button>';
+                $statusOptions = ($disaster->status == 'On Going') ? '<option value="Inactive">Inactive</option>' : '<option value="On Going">On Going</option>';
+                $selectStatus  = "";
 
-                return '<div class="action-container">' .
-                    '<button class="btn-table-update" id="updateDisaster"><i class="bi bi-pencil-square"></i>Update</button>' .
-                    '<button class="btn-table-remove" id="archiveDisaster"><i class="bi bi-trash3-fill"></i>Archive</button>' .
-                    '<select class="form-select" id="changeDisasterStatus">' .
-                    '<option value="" disabled selected hidden>Change Status</option>' . $statusOptions . '</select></div>';
+                if ($operation == "manage") {
+                    $selectStatus  = '<select class="form-select" id="changeDisasterStatus">' .
+                        '<option value="" disabled selected hidden>Change Status</option>' . $statusOptions . '</select>';
+                    $archiveButton = '<button class="btn-table-remove" id="archiveDisaster"><i class="bi bi-trash3-fill"></i>Archive</button>';
+                } else {
+                    $archiveButton = '<button class="btn-table-remove" id="unArchiveDisaster"><i class="bi bi-arrow-repeat"></i>Unarchive</button>';
+                }
+
+                return '<div class="action-container">' . $updateButton . $archiveButton . $selectStatus . '</div>';
             })
             ->rawColumns(['status', 'action'])
             ->make(true);
@@ -56,9 +61,9 @@ class DisasterController extends Controller
             return response(['status' => 'warning', 'message' => $validatedDisasterValidation->errors()->first()]);
 
         $disasterData = $this->disaster->create([
-            'name' => Str::of(trim($request->name))->title(),
-            'status' => "On Going",
-            'user_id' => auth()->user()->id,
+            'name'       => Str::of(trim($request->name))->title(),
+            'status'     => "On Going",
+            'user_id'    => auth()->user()->id,
             'is_archive' => 0
         ]);
         $this->logActivity->generateLog($disasterData->id, 'Created New Disaster');
@@ -72,31 +77,31 @@ class DisasterController extends Controller
         ]);
 
         if ($validatedDisasterValidation->fails())
-            return response()->json(['status' => 'warning', 'message' => $validatedDisasterValidation->errors()->first()]);
+            return response(['status' => 'warning', 'message' => $validatedDisasterValidation->errors()->first()]);
 
         $this->disaster->find($disasterId)->update([
-            'name' => Str::of(trim($request->name))->title(),
+            'name'    => Str::of(trim($request->name))->title(),
             'user_id' => auth()->user()->id
         ]);
         $this->logActivity->generateLog($disasterId, 'Updating Disaster Data');
         return response()->json();
     }
 
-    public function archiveDisasterData($disasterId)
+    public function archiveDisasterData($disasterId, $operation)
     {
         $this->disaster->find($disasterId)->update([
-            'status' => 'Archived',
-            'user_id' => auth()->user()->id,
-            'is_archive' => 1
+            'user_id'    => auth()->user()->id,
+            'is_archive' => $operation == "archive" ? 1 : 0
         ]);
-        $this->logActivity->generateLog($disasterId, 'Archived Disaster');
+
+        $this->logActivity->generateLog($disasterId, $operation == "archive" ? "Archived Disaster" : "Unarchived Disaster");
         return response()->json();
     }
 
     public function changeDisasterStatus(Request $request, $disasterId)
     {
         $this->disaster->find($disasterId)->update([
-            'status' => $request->status,
+            'status'  => $request->status,
             'user_id' => auth()->user()->id
         ]);
         $this->logActivity->generateLog($disasterId, 'Changed Disaster Status');

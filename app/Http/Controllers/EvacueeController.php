@@ -17,7 +17,7 @@ class EvacueeController extends Controller
 
     function __construct()
     {
-        $this->evacuee = new Evacuee;
+        $this->evacuee     = new Evacuee;
         $this->logActivity = new ActivityUserLog;
     }
 
@@ -38,19 +38,19 @@ class EvacueeController extends Controller
     public function recordEvacueeInfo(Request $request)
     {
         $evacueeInfoValidation = Validator::make($request->all(), [
-            'infants' => 'required|numeric',
-            'minors' => 'required|numeric',
-            'senior_citizen' => 'required|numeric',
-            'pwd' => 'required|numeric',
-            'pregnant' => 'required|numeric',
-            'lactating' => 'required|numeric',
-            'families' => 'required|numeric',
-            'individuals' => 'required|numeric',
-            'male' => 'required|numeric',
-            'female' => 'required|numeric',
-            'disaster_id' => 'required',
-            'date_entry' => 'required',
-            'barangay' => 'required|unique:evacuee,barangay',
+            'infants'             => 'required|numeric',
+            'minors'              => 'required|numeric',
+            'senior_citizen'      => 'required|numeric',
+            'pwd'                 => 'required|numeric',
+            'pregnant'            => 'required|numeric',
+            'lactating'           => 'required|numeric',
+            'families'            => 'required|numeric',
+            'individuals'         => 'required|numeric',
+            'male'                => 'required|numeric',
+            'female'              => 'required|numeric',
+            'disaster_id'         => 'required',
+            'date_entry'          => 'required',
+            'barangay'            => 'required|unique:evacuee,barangay',
             'evacuation_assigned' => 'required'
         ]);
 
@@ -62,10 +62,10 @@ class EvacueeController extends Controller
             'families', 'individuals', 'male', 'female', 'disaster_id', 'date_entry',
             'barangay', 'evacuation_assigned'
         ]);
-        $evacueeInfo['user_id'] = auth()->user()->id;
-        $evacueeInfo['remarks'] = Str::ucfirst(trim($request->remarks));
+        $evacueeInfo['user_id']    = auth()->user()->id;
+        $evacueeInfo['remarks']    = Str::ucfirst(trim($request->remarks));
         $evacueeInfo['is_archive'] = 0;
-        $evacueeInfo = $this->evacuee->create($evacueeInfo);
+        $evacueeInfo               = $this->evacuee->create($evacueeInfo);
         $this->logActivity->generateLog($evacueeInfo->id, 'Recorded evacuee information');
         // event(new ActiveEvacuees());
         return response()->json();
@@ -74,19 +74,19 @@ class EvacueeController extends Controller
     public function updateEvacueeInfo(Request $request, $evacueeId)
     {
         $evacueeInfoValidation = Validator::make($request->all(), [
-            'infants' => 'required|numeric',
-            'minors' => 'required|numeric',
-            'senior_citizen' => 'required|numeric',
-            'pwd' => 'required|numeric',
-            'pregnant' => 'required|numeric',
-            'lactating' => 'required|numeric',
-            'families' => 'required|numeric',
-            'individuals' => 'required|numeric',
-            'male' => 'required|numeric',
-            'female' => 'required|numeric',
-            'disaster_id' => 'required',
-            'date_entry' => 'required',
-            'barangay' => 'required',
+            'infants'             => 'required|numeric',
+            'minors'              => 'required|numeric',
+            'senior_citizen'      => 'required|numeric',
+            'pwd'                 => 'required|numeric',
+            'pregnant'            => 'required|numeric',
+            'lactating'           => 'required|numeric',
+            'families'            => 'required|numeric',
+            'individuals'         => 'required|numeric',
+            'male'                => 'required|numeric',
+            'female'              => 'required|numeric',
+            'disaster_id'         => 'required',
+            'date_entry'          => 'required',
+            'barangay'            => 'required',
             'evacuation_assigned' => 'required'
         ]);
 

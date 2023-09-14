@@ -18,17 +18,17 @@ class MainController extends Controller
 
     public function __construct()
     {
-        $this->evacuee = new Evacuee;
-        $this->disaster = new Disaster;
+        $this->evacuee          = new Evacuee;
+        $this->disaster         = new Disaster;
         $this->evacuationCenter = new EvacuationCenter;
     }
 
     public function dashboard()
     {
-        $disasterData = $this->fetchDisasterData();
+        $disasterData     = $this->fetchDisasterData();
         $onGoingDisasters = $this->disaster->where('status', "On Going")->get();
         $activeEvacuation = $this->evacuationCenter->where('status', "Active")->count();
-        $totalEvacuee = array_sum(array_column($disasterData, 'totalEvacuee'));
+        $totalEvacuee     = array_sum(array_column($disasterData, 'totalEvacuee'));
 
         return view('userpage.dashboard',  compact('activeEvacuation', 'disasterData', 'totalEvacuee', 'onGoingDisasters'));
     }
@@ -47,9 +47,14 @@ class MainController extends Controller
 
     public function manageEvacueeInformation(Request $request)
     {
-        $disasterList = $this->disaster->where('status', 'On Going')->get();
+        $disasterList   = $this->disaster->where('status', 'On Going')->get();
         $evacuationList = $this->evacuationCenter->whereNotIn('status', ['Inactive', 'Archived'])->get();
         return view('userpage.evacuee.evacuee', compact('evacuationList', 'disasterList'));
+    }
+
+    public function disasterInformation($operation)
+    {
+        return view('userpage.disaster.disaster', compact('operation'));
     }
 
     public function evacuationCenterLocator()
@@ -58,15 +63,25 @@ class MainController extends Controller
         return view('userpage.evacuationCenter.evacuationCenter', compact('prefix'));
     }
 
+    public function evacuationCenter($operation)
+    {
+        return view('userpage.evacuationCenter.manageEvacuation', compact('operation'));
+    }
+
     public function incidentReport()
     {
         $incidentReport = IncidentReport::where('status', 'Confirmed')->where('is_archive', 0)->get();
         return view('userpage.incidentReport.incidentReport', compact('incidentReport'));
     }
 
+    public function userAccounts($operation)
+    {
+        return view('userpage.userAccount.userAccounts', compact('operation'));
+    }
+
     public function fetchDisasterData()
     {
-        $disasterData = [];
+        $disasterData     = [];
         $onGoingDisasters = $this->disaster->where('status', "On Going")->get();
 
         foreach ($onGoingDisasters as $disaster) {
