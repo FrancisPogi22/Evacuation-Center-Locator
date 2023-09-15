@@ -490,8 +490,6 @@
                     success: (response) => {
                         let data = response;
 
-                        console.log(data)
-
                         if (type == "evacuationCenter") {
                             data = data.data;
                             evacuationCentersData = data;
