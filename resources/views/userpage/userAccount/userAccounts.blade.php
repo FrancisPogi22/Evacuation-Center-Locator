@@ -53,9 +53,9 @@
                         </tbody>
                     </table>
                 </div>
-                @include('userpage.userAccount.userAccountModal')
-                @include('userpage.changePasswordModal')
             </section>
+            @include('userpage.userAccount.userAccountModal')
+            @include('userpage.changePasswordModal')
         </main>
     </div>
 

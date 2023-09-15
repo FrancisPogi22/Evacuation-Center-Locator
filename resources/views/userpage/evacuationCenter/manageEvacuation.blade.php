@@ -20,7 +20,7 @@
             <hr>
             @if (auth()->user()->is_disable == 0 && $operation == "active")
                 <div class="page-button-container">
-                    <button class="btn-submit" id="createEvacuationCenter">
+                    <button class="btn-submit" id="addEvacuationCenter">
                         <i class="bi bi-house-down-fill"></i>
                         Add Evacuation Center
                     </button>
@@ -201,9 +201,9 @@
                     submitHandler: formSubmitHandler
                 });
 
-                $(document).on('click', '#createEvacuationCenter', () => {
+                $(document).on('click', '#addEvacuationCenter', () => {
                     modalLabelContainer.removeClass('bg-warning');
-                    modalLabel.text('Create Evacuation Center');
+                    modalLabel.text('Add Evacuation Center');
                     formButton.addClass('btn-submit').removeClass('btn-update').text('Add');
                     operation = "add";
                     modal.modal('show');
