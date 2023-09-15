@@ -208,7 +208,7 @@
                         </span>
                     </div>` :
                     `<div class="info-description">
-                        <span>Type:</span> ${data.type}
+                        ${data.type}
                     </div>
                     <div class="info-description update" ${!data.update && "hidden"}>
                         <span>Update:</span> ${data.update}
@@ -480,8 +480,8 @@
                 "{{ route('resident.hazard.get') }}" :
                 "{{ route('cswd.hazard.get') }}" :
                 '{{ $prefix }}' == 'resident' ?
-                "{{ route('resident.evacuation.center.get', 'locator') }}" :
-                "{{ route('evacuation.center.get', 'locator') }}";
+                "{{ route('resident.evacuation.center.get', ['locator', 'active']) }}" :
+                "{{ route('evacuation.center.get', ['locator', 'active']) }}";
 
             return new Promise((resolve, reject) => {
                 $.ajax({
@@ -538,8 +538,8 @@
                             visible: false
                         },
                         {
-                            data: 'capacity',
-                            name: 'capacity',
+                            data: 'evacuees',
+                            name: 'evacuees',
                             width: '1rem',
                             orderable: false,
                             searchable: false
@@ -547,7 +547,7 @@
                         {
                             data: 'status',
                             name: 'status',
-                            width: '15%'
+                            width: '10%'
                         },
                         {
                             data: 'action',
