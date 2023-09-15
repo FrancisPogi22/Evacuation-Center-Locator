@@ -56,7 +56,7 @@ Route::prefix('resident')->middleware('guest')->group(function () {
             Route::get('/getHazardReport', 'getHazardReport')->name('get');
         });
 
-        Route::get('/viewEvacuationCenter/{operation}', EvacuationCenterController::class . '@getEvacuationData')->name('evacuation.center.get');
+        Route::get('/viewEvacuationCenter/{operation}/{type}', EvacuationCenterController::class . '@getEvacuationData')->name('evacuation.center.get');
     });
 });
 
