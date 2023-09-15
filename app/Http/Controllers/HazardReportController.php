@@ -50,11 +50,14 @@ class HazardReportController extends Controller
 
     public function verifyHazardReport($reportId)
     {
-        $this->hazardReport->find($reportId)->update([
+
+        $report = $this->hazardReport->find($reportId);
+
+        $report->update([
             'status' => 'Verified'
         ]);
 
-        $this->logActivity->generateLog($reportId, 'Verified Hazard Report');
+        $this->logActivity->generateLog($reportId, $report->type, 'Verified Hazard Report');
 
         // event(new HazardReportEvent());
         return response()->json();
@@ -69,11 +72,13 @@ class HazardReportController extends Controller
         if ($hazardReportValidation->fails())
             return response(['status' => 'warning', 'message' =>  $hazardReportValidation->errors()->first()]);
 
-        $this->hazardReport->find($reportId)->update([
+        $report = $this->hazardReport->find($reportId);
+
+        $report->update([
             'update' => trim($request->update)
         ]);
 
-        $this->logActivity->generateLog($reportId, 'Updated Hazard Report');
+        $this->logActivity->generateLog($reportId, $report->type, 'Updated Hazard Report');
 
         // event(new HazardReportEvent());
         return response()->json();
@@ -81,9 +86,11 @@ class HazardReportController extends Controller
 
     public function removeHazardReport($reportId)
     {
-        $this->hazardReport->find($reportId)->delete();
+        $report = $this->hazardReport->find($reportId);
 
-        $this->logActivity->generateLog($reportId, 'Removed Hazard Report');
+        $report->delete();
+
+        $this->logActivity->generateLog($reportId, $report->type, 'Removed Hazard Report');
 
         // event(new HazardReportEvent());
         return response()->json();
