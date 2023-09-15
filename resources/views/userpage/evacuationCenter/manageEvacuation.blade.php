@@ -137,6 +137,7 @@
                         lng: 121.12772
                     },
                     zoom: 13,
+                    zoomControl: false,
                     clickableIcons: false,
                     mapTypeControlOptions: {
                         style: google.maps.MapTypeControlStyle.DROPDOWN_MENU
