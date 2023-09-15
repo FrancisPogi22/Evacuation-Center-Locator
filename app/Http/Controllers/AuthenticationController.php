@@ -78,10 +78,10 @@ class AuthenticationController extends Controller
 
     public function logout()
     {
-        $this->logActivity->generateLog(null, Str::of(auth()->user()->name)->title() . 'Logged Out');
+        $this->logActivity->generateLog(null, null, 'Logged Out');
         auth()->logout();
         session()->flush();
-        return redirect('/')->with('success', 'Successfully Logged out ');
+        return redirect('/')->with('success', 'Successfully Logged out.');
     }
 
     private function checkUserAccount()
@@ -89,8 +89,6 @@ class AuthenticationController extends Controller
         if (!auth()->check()) return back();
 
         $userAuthenticated = auth()->user();
-        $userOrganization  = $userAuthenticated->organization;
-        $userName          = $userAuthenticated->name;
 
         if ($userAuthenticated->is_suspend == 1 && $userAuthenticated->suspend_time <= Carbon::now()->format('Y-m-d H:i:s')) {
             $this->user->find($userAuthenticated->id)->update([
@@ -98,14 +96,14 @@ class AuthenticationController extends Controller
                 'is_suspend'   => 0,
                 'suspend_time' => null
             ]);
-        } else if ($userAuthenticated->is_suspend == 1) {
+        } elseif ($userAuthenticated->is_suspend == 1) {
             $suspendTime = Carbon::parse($userAuthenticated->suspend_time)->format('F j, Y H:i:s');
             auth()->logout();
             session()->flush();
             return back()->withInput()->with('warning', 'Your account has been suspended until ' . $suspendTime);
         }
 
-        $this->logActivity->generateLog(null, Str::of($userName)->title() . ' Logged In');
-        return redirect("/" . Str::of($userOrganization)->lower() . "/dashboard")->with('success', "Welcome to " . $userName);
+        $this->logActivity->generateLog(null, null, 'Logged In');
+        return redirect("/" . Str::of($userAuthenticated->organization)->lower() . "/dashboard")->with('success', "Welcome " . $userAuthenticated->name . ".");
     }
 }

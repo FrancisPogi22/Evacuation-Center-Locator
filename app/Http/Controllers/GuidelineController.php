@@ -54,8 +54,6 @@ class GuidelineController extends Controller
             'user_id'      => $userId,
             'organization' => auth()->user()->organization
         ]);
-        $this->logActivity->generateLog($guideline->id, 'Created New Guideline');
-
         $labels   = $request->label;
         $contents = $request->content;
 
@@ -67,7 +65,7 @@ class GuidelineController extends Controller
                     'label'        => $label,
                     'content'      => $contents[$count],
                     'guideline_id' => $guideline->id,
-                    'user_id'      => $userId,
+                    'user_id'      => $userId
                 ]);
 
                 if (isset($guidePhotos[$count])) {
@@ -78,6 +76,8 @@ class GuidelineController extends Controller
                 }
             }
         }
+
+        $this->logActivity->generateLog($guideline->id, $guideline->type, 'created a new guideline');
 
         return response()->json();
     }
@@ -93,12 +93,12 @@ class GuidelineController extends Controller
         if ($guidelineValidation->fails())
             return response(['status' => 'warning', 'message' => $guidelineValidation->errors()->first()]);
 
-        $guidelineId = Crypt::decryptString($guidelineId);
-        $this->guideline->find($guidelineId)->update([
+        $guidelineId  = Crypt::decryptString($guidelineId);
+        $guideline    = $this->guideline->find($guidelineId)->update([
             'type'    => Str::upper(trim($request->type)),
             'user_id' => auth()->user()->id
         ]);
-        $this->logActivity->generateLog($guidelineId, 'Updated Guideline');
+        $this->logActivity->generateLog($guidelineId, $guideline->type, 'updated a guideline');
 
         $labels   = $request->label;
         $contents = $request->content;
@@ -128,8 +128,9 @@ class GuidelineController extends Controller
 
     public function removeGuideline($guidelineId)
     {
-        $this->guideline->find(Crypt::decryptString($guidelineId))->delete();
-        $this->logActivity->generateLog($guidelineId, 'Removed Guideline');
+        $guideline = $this->guideline->find(Crypt::decryptString($guidelineId));
+        $this->logActivity->generateLog($guidelineId, $guideline->type, 'removed a guideline');
+        $guideline->delete();
         return response()->json();
     }
 
@@ -170,14 +171,15 @@ class GuidelineController extends Controller
             'user_id' => auth()->user()->id
         ]);
 
-        $this->logActivity->generateLog($guideId, 'Updated Guide');
+        $this->logActivity->generateLog($guideId, $guideItem->label, 'updated a guide');
         return response()->json();
     }
 
     public function removeGuide($guideId)
     {
-        $this->guide->find($guideId)->delete();
-        $this->logActivity->generateLog($guideId, 'Removed Guide');
+        $guideItem = $this->guide->find($guideId);
+        $this->logActivity->generateLog($guideId, $guideItem->label, 'removed a guide');
+        $guideItem->delete();
         return response()->json();
     }
 }
