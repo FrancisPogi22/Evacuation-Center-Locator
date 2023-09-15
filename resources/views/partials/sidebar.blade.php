@@ -46,11 +46,11 @@
                                 <i class="bi bi-caret-right-fill dropdown"></i>
                             </a>
                             <div class="sub-menu">
-                                <a href="{{ route('display.incident.report') }}" class="menu-link">
+                                <a href="{{ route('incident.report', 'pending') }}" class="menu-link">
                                     <i class="bi bi-people"></i>
                                     <span class="links_name">Manage Reports</span>
                                 </a>
-                                <a href="" class="menu-link">
+                                <a href="{{ route('incident.report', 'report') }}" class="menu-link">
                                     <i class="bi bi-archive"></i>
                                     <span class="links_name">Archived Reports</span>
                                 </a>
@@ -64,7 +64,7 @@
                                     <i class="bi bi-caret-right-fill dropdown"></i>
                                 </a>
                                 <div class="sub-menu">
-                                    <a href="{{ route('account.display.users') }}" class="menu-link">
+                                    <a href="{{ route('display.users.account', 'active') }}" class="menu-link">
                                         <i class="bi bi-person-gear"></i>
                                         <span class="links_name">Manage Accounts</span>
                                     </a>
@@ -164,6 +164,12 @@
                                     </a>
                                 </div>
                             </div>
+                            <div class="navigation-item">
+                                <a href="{{ route('activity.log') }}" class="menu-link">
+                                    <i class="bi bi-card-checklist"></i>
+                                    <span class="links_name">User Activity Log</span>
+                                </a>
+                            </div>
                         @endif
                         <div class="navigation-item">
                             <a class="sub-btn">
@@ -172,11 +178,11 @@
                                 <i class="bi bi-caret-right-fill dropdown"></i>
                             </a>
                             <div class="sub-menu">
-                                <a href="{{ route('report.dangerous.areas.cswd') }}" class="menu-link">
+                                <a href="{{ route('danger.area.report', 'report') }}" class="menu-link">
                                     <i class="bi bi-flag"></i>
                                     <span class="links_name">Manage Reports</span>
                                 </a>
-                                <a href="" class="menu-link">
+                                <a href="{{ route('danger.area.report', 'archived') }}" class="menu-link">
                                     <i class="bi bi-bookmark-x"></i>
                                     <span class="links_name">Archived Reports</span>
                                 </a>
@@ -210,13 +216,13 @@
                         </a>
                     </div>
                     <div class="navigation-item">
-                        <a href="{{ route('resident.display.incident.report') }}" class="menu-link">
+                        <a href="{{ route('resident.display.incident.report', 'pending') }}" class="menu-link">
                             <i class="bi bi-megaphone"></i>
                             <span class="links_name">Report Incident</span>
                         </a>
                     </div>
                     <div class="navigation-item">
-                        <a href="{{ route('resident.report.danger.areas') }}" class="menu-link">
+                        <a href="{{ route('resident.danger.area.report', 'report') }}" class="menu-link">
                             <i class="bi bi-exclamation-triangle"></i>
                             <span class="links_name">Report Dangerous Areas</span>
                         </a>
