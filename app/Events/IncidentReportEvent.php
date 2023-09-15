@@ -37,7 +37,7 @@ class IncidentReportEvent implements ShouldBroadcast
     function revertIncidentReport($accidentReportId, $reportPhotoPath)
     {
         $this->incidentReport = new IncidentReport;
-        $image_path = public_path('reports_image/' . $reportPhotoPath);
+        $image_path           = public_path('reports_image/' . $reportPhotoPath);
 
         if (file_exists($image_path)) {
             unlink($image_path);
@@ -49,18 +49,22 @@ class IncidentReportEvent implements ShouldBroadcast
     function confirmDangerAreaReport($dangerAreaId)
     {
         $this->incidentReport = new IncidentReport;
+        $dangerAreaReport     = $this->incidentReport->find($dangerAreaId);
         $this->incidentReport->find($dangerAreaId)->update([
             'status' => 'Confirmed'
         ]);
+        $reportDescription = $dangerAreaReport->description;
+        return $reportDescription;
     }
 
-    function archiveDangerAreaReport($dangerAreaId)
+    function archiveDangerAreaReport($dangerAreaId, $operation)
     {
         $this->incidentReport = new IncidentReport;
-        $this->incidentReport->find($dangerAreaId)->update([
-            'status' => "Archived",
-            'is_archive' => 1
+        $dangerAreaReport     = $this->incidentReport->find($dangerAreaId);
+        $dangerAreaReport->find($dangerAreaId)->update([
+            'is_archive' => $operation == 'archive' ? 1 : 0
         ]);
+        return $dangerAreaReport->description;
     }
 
     function revertDangerAreaReport($dangerAreaId)
