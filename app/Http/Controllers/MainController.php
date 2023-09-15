@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\ActivityUserLog;
 use App\Models\Evacuee;
 use App\Models\Disaster;
 use Illuminate\Http\Request;
@@ -68,15 +69,28 @@ class MainController extends Controller
         return view('userpage.evacuationCenter.manageEvacuation', compact('operation'));
     }
 
-    public function incidentReport()
+    public function incidentReport($operation)
     {
-        $incidentReport = IncidentReport::where('status', 'Confirmed')->where('is_archive', 0)->get();
-        return view('userpage.incidentReport.incidentReport', compact('incidentReport'));
+        return view('userpage.incidentReport.incidentReport', compact('operation'));
+    }
+
+    public function userActivityLog()
+    {
+        $userActivityLogs = ActivityUserLog::join('user', 'activity_log.user_id', '=', 'user.id')
+            ->select('activity_log.data_name', 'activity_log.activity', 'activity_log.date_time', 'user.name')
+            ->get();
+
+        return view('userpage.activityLog', compact('userActivityLogs'));
     }
 
     public function userAccounts($operation)
     {
         return view('userpage.userAccount.userAccounts', compact('operation'));
+    }
+
+    public function dangerAreaReport($operation)
+    {
+        return view('userpage.evacuationCenter.dangerousAreasReport', compact('operation'));
     }
 
     public function fetchDisasterData()

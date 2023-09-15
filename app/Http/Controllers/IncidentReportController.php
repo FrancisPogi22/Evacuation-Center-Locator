@@ -24,9 +24,9 @@ class IncidentReportController extends Controller
         $this->logActivity    = new ActivityUserLog;
     }
 
-    public function displayPendingIncidentReport()
+    public function displayPendingIncidentReport($operation)
     {
-        $pendingReport = $this->incidentReport->where('status', 'On Process')->whereNotNull('photo')->get();
+        $pendingReport = $this->incidentReport->where('status', 'On Process')->where('is_archive', $operation == "pending" ? 0 : 1)->whereNotNull('photo')->get();
 
         return DataTables::of($pendingReport)
             ->addIndexColumn()
@@ -52,13 +52,13 @@ class IncidentReportController extends Controller
                         </div>
                     </div>
                 </div>')
-            ->rawColumns(['id', 'status', 'action', 'photo'])
+            ->rawColumns(['status', 'action', 'photo'])
             ->make(true);
     }
 
-    public function displayIncidentReport()
+    public function displayIncidentReport($operation)
     {
-        $incidentReport = $this->incidentReport->where('status', 'Approved')->where('is_archive', 0)->get();
+        $incidentReport = $this->incidentReport->whereNotIn('status', ['On Process'])->get();
 
         return DataTables::of($incidentReport)
             ->addIndexColumn()
@@ -67,8 +67,13 @@ class IncidentReportController extends Controller
                 'Declined' => 'danger'
             }
                 . '">' . $report->status . '</div></div>')
-            ->addColumn('action', fn () => auth()->user()->is_disable == 0 ? '<button class="btn-table-remove" id="archiveIncidentReport"><i class="bi bi-trash3-fill"></i>Archive</button>' :
-                '<span class="message-text">Currently Disabled.</span>')
+            ->addColumn('action', function ($report) {
+                if (auth()->user()->is_disable == 0) {
+                    return $report->is_archive == 0 ?
+                        '<button class="btn-table-remove" id="archiveIncidentReport"><i class="bi bi-trash3-fill"></i>Archive</button>' :
+                        '<button class="btn-table-remove" id="unArchiveIncidentReport"><i class="bi bi-arrow-repeat"></i>Unarchive</button>';
+                }
+            })
             ->addColumn('photo', fn ($report) => '<div class="photo-container">
                     <div class="image-wrapper">
                         <img class="report-img" src="' . asset('reports_image/' . $report->photo) . '">
@@ -108,7 +113,7 @@ class IncidentReportController extends Controller
 
         if ($resident) {
             $residentAttempt = $resident->attempt;
-            $reportTime = $resident->report_time;
+            $reportTime      = $resident->report_time;
 
             if ($residentAttempt == 3) {
                 $isBlock = $this->isBlocked($reportTime);
@@ -150,11 +155,11 @@ class IncidentReportController extends Controller
             response(['status' => 'warning', 'message' => $incidentReportValidation->errors()->first()]);
 
         $residentReport = $this->incidentReport->find($reportId);
-        $reportPhoto = $request->file('photo');
+        $reportPhoto    = $request->file('photo');
 
         $dataToUpdate = [
             'description' => Str::ucFirst(trim($request->description)),
-            'location'    => Str::of(trim($request->location))->title()
+            'location'    => Str::title(trim($request->location))
         ];
 
         if ($reportPhoto) {
@@ -166,14 +171,13 @@ class IncidentReportController extends Controller
         }
 
         $residentReport->update($dataToUpdate);
-
         return response()->json();
     }
 
     public function approveIncidentReport($reportId)
     {
         $this->reportEvent->approveStatus($reportId);
-        $this->logActivity->generateLog($reportId, 'Approved Incident Report');
+        $this->logActivity->generateLog($reportId, 'Resident Incident Report', 'approved a incident report');
         //event(new IncidentReportEvent());
         return response()->json();
     }
@@ -181,7 +185,7 @@ class IncidentReportController extends Controller
     public function declineIncidentReport($reportId)
     {
         $this->reportEvent->declineStatus($reportId);
-        $this->logActivity->generateLog($reportId, 'Declined Incident Report');
+        $this->logActivity->generateLog($reportId, 'Resident Incident Report', 'declined a incident report');
         //event(new IncidentReportEvent());
         return response()->json();
     }
@@ -194,24 +198,22 @@ class IncidentReportController extends Controller
         return response()->json();
     }
 
-    public function archiveIncidentReport($reportId)
+    public function archiveIncidentReport($reportId, $operation)
     {
         $this->incidentReport->find($reportId)->update([
-            'is_archive' => 1,
-            'status'     => 'Archived'
+            'is_archive' => $operation == 'archive' ? 1 : 0,
         ]);
-        $this->logActivity->generateLog($reportId, 'Archived Incident Report');
+        $action = $operation == 'archive' ? 'archived' : 'unarchived';
+        $this->logActivity->generateLog($reportId, 'Resident Incident Report', "$action a incident report");
         //event(new IncidentReportEvent());
         return response()->json();
     }
 
-    public function displayDangerousAreasReport(Request $request)
+    public function displayDangerousAreasReport(Request $request, $operation)
     {
-        if (!$request->ajax()) return view('userpage.evacuationCenter.dangerousAreasReport');
-
         $dangerousAreasReport = $this->incidentReport
             ->whereIn('status', auth()->check() ? ['On Process', 'Confirmed'] : ['On Process'])
-            ->where('is_archive', 0)
+            ->where('is_archive', $operation == "report" ? 0 : 1)
             ->whereNull('photo');
 
         if (!auth()->check())
@@ -224,19 +226,25 @@ class IncidentReportController extends Controller
                 'On Process' => 'warning'
             }
                 . '">' . $dangerousAreas->status . '</div></div>')
-            ->addColumn('action', function ($dangerousAreas) {
+            ->addColumn('action', function ($dangerousAreas) use ($operation) {
                 if (!auth()->check()) {
                     return $dangerousAreas->user_ip == request()->ip() ? '<div class="action-container">' .
                         '<button class="btn-table-update" id="updateDangerousAreaReport"><i class="bi bi-trash3-fill"></i>Update</button>' .
                         '<button class="btn-table-remove" id="revertDangerousAreaReport"><i class="bi bi-arrow-counterclockwise"></i>Revert</button>' .
                         '</div>' : '';
                 } elseif (auth()->user()->is_disable == 0) {
-                    return '<div class="action-container">' .
-                        ($dangerousAreas->status == "Confirmed"
-                            ? '<button class="btn-table-remove" id="archiveDangerAreaReport"><i class="bi bi-trash3-fill"></i>Archive</button>'
-                            : '<button class="btn-table-submit" id="confirmDangerAreaReport"><i class="bi bi-check-circle-fill"></i>Confirm</button>' .
-                            '<button class="btn-table-remove" id="rejectDangerAreaReport"><i class="bi bi-x-circle-fill"></i>Reject</button>') .
-                        '</div>';
+                    if ($operation == "report") {
+                        return '<div class="action-container">' .
+                            ($dangerousAreas->status == "Confirmed"
+                                ? '<button class="btn-table-remove" id="archiveDangerAreaReport"><i class="bi bi-trash3-fill"></i>Archive</button>'
+                                : '<button class="btn-table-submit" id="confirmDangerAreaReport"><i class="bi bi-check-circle-fill"></i>Confirm</button>' .
+                                '<button class="btn-table-remove" id="rejectDangerAreaReport"><i class="bi bi-x-circle-fill"></i>Reject</button>') .
+                            '</div>';
+                    } else {
+                        return '<div class="action-container">' .
+                            '<button class="btn-table-remove" id="unArchiveDangerAreaReport"><i class="bi bi-arrow-repeat"></i>Unarchive</button>' .
+                            '</div>';
+                    }
                 } else {
                     return '<span class="message-text">Currently Disabled.</span>';
                 }
@@ -329,24 +337,25 @@ class IncidentReportController extends Controller
 
     public function confirmDangerAreaReport($dangerAreaId)
     {
-        $this->reportEvent->confirmDangerAreaReport($dangerAreaId);
-        $this->logActivity->generateLog($dangerAreaId, 'Confirmed Dangerous Area Report');
+        $dangerAreaReport = $this->reportEvent->confirmDangerAreaReport($dangerAreaId);
+        $this->logActivity->generateLog($dangerAreaId, $dangerAreaReport, 'confirmed a dangerous area report');
         //event(new IncidentReportEvent());
         return response()->json();
     }
 
     public function rejectDangerAreaReport($dangerAreaId)
     {
-        $this->incidentReport->find($dangerAreaId)->delete();
-        $this->logActivity->generateLog($dangerAreaId, 'Rejected Dangerous Area Report');
+        $dangerAreaReport = $this->incidentReport->find($dangerAreaId);
+        $this->logActivity->generateLog($dangerAreaId, $dangerAreaReport->description, 'rejected a dangerous area report');
+        $dangerAreaReport->delete();
         //event(new IncidentReportEvent());
         return response()->json();
     }
 
-    public function archiveDangerAreaReport($dangerAreaId)
+    public function archiveDangerAreaReport($dangerAreaId, $operation)
     {
-        $this->reportEvent->archiveDangerAreaReport($dangerAreaId);
-        $this->logActivity->generateLog($dangerAreaId, 'Archived Dangerous Area Report');
+        $dangerAreaReport = $this->reportEvent->archiveDangerAreaReport($dangerAreaId, $operation);
+        $this->logActivity->generateLog($dangerAreaId, $dangerAreaReport,  $operation == "archive" ? "archived a dangerous area report" : "unarchived a dangerous area report");
         //event(new IncidentReportEvent());
         return response()->json();
     }

@@ -66,7 +66,7 @@ class EvacueeController extends Controller
         $evacueeInfo['remarks']    = Str::ucfirst(trim($request->remarks));
         $evacueeInfo['is_archive'] = 0;
         $evacueeInfo               = $this->evacuee->create($evacueeInfo);
-        $this->logActivity->generateLog($evacueeInfo->id, 'Recorded evacuee information');
+        $this->logActivity->generateLog($evacueeInfo->id, $evacueeInfo->barangay, 'recorded a new evacuee information: ');
         // event(new ActiveEvacuees());
         return response()->json();
     }
@@ -100,8 +100,8 @@ class EvacueeController extends Controller
         ]);
         $evacueeInfo['user_id'] = auth()->user()->id;
         $evacueeInfo['remarks'] = Str::ucfirst(trim($request->remarks));
-        $this->evacuee->find($evacueeId)->update($evacueeInfo);
-        $this->logActivity->generateLog($evacueeId, 'Updated evacuee information');
+        $evacueeInfo            = $this->evacuee->find($evacueeId)->update($evacueeInfo);
+        $this->logActivity->generateLog($evacueeId, $evacueeInfo->barangay, 'updated a evacuee information');
         return response()->json();
     }
 }
