@@ -13,21 +13,21 @@
     <div class="wrapper">
         @include('partials.header')
         @include('partials.sidebar')
-        <main class="main-content">
+        <div class="main-content">
             <div class="label-container">
                 <i class="bi bi-search"></i>
                 <span>EVACUATION CENTER LOCATOR</span>
             </div>
             <hr>
-            <section class="locator-content">
+            <div class="locator-content">
                 <div class="locator-header">
                     <div class="header-title"><span>Cabuyao City Map</span></div>
                 </div>
                 <div class="map-section">
                     <div class="locator-map" id="map"></div>
                 </div>
-            </section>
-            <section class="evacuation-button-container">
+            </div>
+            <div class="evacuation-button-container">
                 <div class="evacuation-markers">
                     <div class="markers-header">
                         <p>Markers</p>
@@ -65,8 +65,8 @@
                     <button type="button" id="pinpointCurrentLocationBtn">
                         <i class="bi bi-geo-fill"></i>Pinpoint Current Location</button>
                 </div>
-            </section>
-            <section class="table-container">
+            </div>
+            <div class="table-container">
                 <div class="table-content">
                     <header class="table-label">Evacuation Centers Table</header>
                     <table class="table" id="evacuationCenterTable" width="100%">
@@ -77,24 +77,22 @@
                                 <th>Barangay</th>
                                 <th>Latitude</th>
                                 <th>Longitude</th>
-                                <th>No. of Evacuees</th>
+                                <th>Capacity</th>
                                 <th>Status</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
                     </table>
                 </div>
-            </section>
-        </main>
+            </div>
+        </div>
         @include('userpage.changePasswordModal')
     </div>
 
-    @auth
-        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/jquery.validate.min.js"
-            integrity="sha512-rstIgDs0xPgmG6RX1Aba4KV5cWJbAMcvRCVmglpam9SoHZiUCyQVDdH2LPlxoHtrv17XWblE/V/PP+Tr04hbtA=="
-            crossorigin="anonymous"></script>
-    @endauth
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/jquery.validate.min.js"
+        integrity="sha512-rstIgDs0xPgmG6RX1Aba4KV5cWJbAMcvRCVmglpam9SoHZiUCyQVDdH2LPlxoHtrv17XWblE/V/PP+Tr04hbtA=="
+        crossorigin="anonymous"></script>
     @include('partials.script')
     <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
     <script
@@ -106,14 +104,16 @@
     </script>
     @include('partials.toastr')
     <script>
-        let map, activeInfoWindow, userMarker, userBounds, directionDisplay, evacuationCentersData,
-            prevNearestEvacuationCenter, evacuationCenterTable, findNearestActive, rowData,
+        let map, activeInfoWindow, userMarker, userBounds, directionDisplay, evacuationCentersData, rowData,
+            prevNearestEvacuationCenter, evacuationCenterTable, findNearestActive, reportMarker, reportWindow,
             watchId = null,
             locating = false,
             geolocationBlocked = false,
+            reportButtonClicked = false,
             hasActiveEvacuationCenter = false,
             evacuationCenterJson = [],
             evacuationCenterMarkers = [],
+            hazardMarkers = [],
             activeEvacuationCenters = [];
 
         const options = {
@@ -154,54 +154,67 @@
                 }
             });
 
-            const stopBtnContainer = document.createElement('div'),
-                reportBtnContainer = document.createElement('div');
-
+            const stopBtnContainer = document.createElement('div');
             stopBtnContainer.className = 'stop-btn-container';
-            reportBtnContainer.className = 'report-btn-container';
             stopBtnContainer.innerHTML =
-                `<button id="stopLocatingBtn" class="btn-remove"><i class="bi bi-stop-circle"></i>Stop Locating</button>`;
-            reportBtnContainer.innerHTML =
-                `<button id="reportDangerBtn" class="btn-update"><i class="bi bi-exclamation-triangle-fill"></i>Report Danger</button>`;
+                `<button id="stopLocatingBtn" class="btn-remove">
+                    <i class="bi bi-stop-circle"></i>Stop Locating
+                </button>`;
             map.controls[google.maps.ControlPosition.TOP_RIGHT].push(stopBtnContainer);
-            map.controls[google.maps.ControlPosition.BOTTOM_RIGHT].push(reportBtnContainer);
+
+            if ('{{ $prefix }}' == 'resident') {
+                const reportBtnContainer = document.createElement('div');
+                reportBtnContainer.className = 'report-btn-container';
+                reportBtnContainer.innerHTML =
+                    `<button id="reportHazardBtn" class="btn-update">
+                        <i class="bi bi-exclamation-circle-fill"></i>Report Hazard Area
+                    </button>`;
+                map.controls[google.maps.ControlPosition.BOTTOM_RIGHT].push(reportBtnContainer);
+            }
         }
 
-        function initMarkers(evacuationCenters) {
-            while (evacuationCenterMarkers.length) evacuationCenterMarkers.pop().setMap(null);
+        function initMarkers(markersData, type, markersArray) {
+            while (markersArray.length) markersArray.pop().setMap(null);
 
-            evacuationCenters.forEach(evacuationCenter => {
-                let picture = evacuationCenter.status == 'Active' ?
-                    "evacMarkerActive" : evacuationCenter.status == 'Full' ?
-                    "evacMarkerFull" : "evacMarkerInactive";
+            markersData.forEach((data) => {
+                let picture = type == "evacuationCenter" ?
+                    data.status == "Active" ? "evacMarkerActive" :
+                    data.status == "Inactive" ? "evacMarkerInactive" :
+                    "evacMarkerFull" :
+                    data.type == "Flooded" ? "floodedMarker" :
+                    "roadBlock";
 
-                let evacuationCenterMarker = generateMarker({
-                    lat: parseFloat(evacuationCenter.latitude),
-                    lng: parseFloat(evacuationCenter.longitude)
+                let marker = generateMarker({
+                    lat: parseFloat(data.latitude),
+                    lng: parseFloat(data.longitude)
                 }, "{{ asset('assets/img/picture.png') }}".replace('picture', picture));
 
-                evacuationCenterMarkers.push(evacuationCenterMarker);
+                markersArray.push(marker);
 
-                generateInfoWindow(
-                    evacuationCenterMarker,
-                    `<div class="info-window-container">
-                        <div class="info-description">
-                            <span>Name:</span> ${evacuationCenter.name}
-                        </div>
-                        <div class="info-description">
-                            <span>Barangay:</span> ${evacuationCenter.barangay_name}
-                        </div>
-                        <div class="info-description">
-                            <span>Capacity:</span> ${evacuationCenter.capacity}
-                        </div>
-                        <div class="info-description">
-                            <span>Status:</span>
-                            <span class="status-content bg-${getStatusColor(evacuationCenter.status)}">
-                                ${evacuationCenter.status}
-                            </span>
-                        </div>
-                    </div>`
-                );
+                let content = type == "evacuationCenter" ?
+                    `<div class="info-description">
+                            <span>Name:</span> ${data.name}
+                    </div>
+                    <div class="info-description">
+                        <span>Barangay:</span> ${data.barangay_name}
+                    </div>
+                    <div class="info-description">
+                        <span>Capacity:</span> ${data.capacity}
+                    </div>
+                    <div class="info-description status">
+                        <span>Status:</span>
+                        <span class="status-content bg-${getStatusColor(data.status)}">
+                            ${data.status}
+                        </span>
+                    </div>` :
+                    `<div class="info-description">
+                        ${data.type}
+                    </div>
+                    <div class="info-description update" ${!data.update && "hidden"}>
+                        <span>Update:</span> ${data.update}
+                    </div>`;
+
+                generateInfoWindow(marker, content);
             });
         }
 
@@ -213,15 +226,22 @@
             });
 
             marker.addListener('click', () => {
-                closeInfoWindow();
-                infoWindow.open({
-                    anchor: marker,
-                    map
-                });
-                activeInfoWindow = infoWindow;
+                if (!marker.icon.url.includes('reportMarker')) {
+                    closeInfoWindow();
+                    activeInfoWindow = infoWindow;
+                }
+
                 if (marker.icon.url.includes('userMarker'))
                     zoomToUserLocation();
+
+                openInfoWindow(infoWindow, marker);
             });
+
+            if (marker.icon.url.includes('reportMarker')) {
+                reportMarker = marker;
+                reportWindow = infoWindow;
+                openInfoWindow(infoWindow, marker);
+            }
         }
 
         function generateMarker(position, icon) {
@@ -246,6 +266,10 @@
                 strokeOpacity: 0.8,
                 strokeWeight: 2
             });
+        }
+
+        function openInfoWindow(infoWindow, marker) {
+            infoWindow.open(map, marker);
         }
 
         function request(origin, destination) {
@@ -450,17 +474,30 @@
             }, errorCallback, options);
         }
 
-        function ajaxRequest() {
+        function ajaxRequest(type = "evacuationCenter") {
+            let url = type == "reportHazard" ?
+                '{{ $prefix }}' == 'resident' ?
+                "{{ route('resident.hazard.get') }}" :
+                "{{ route('cswd.hazard.get') }}" :
+                '{{ $prefix }}' == 'resident' ?
+                "{{ route('resident.evacuation.center.get', ['locator', 'active']) }}" :
+                "{{ route('evacuation.center.get', ['locator', 'active']) }}";
+
             return new Promise((resolve, reject) => {
                 $.ajax({
                     method: 'GET',
-                    url: '{{ $prefix }}' == 'resident' ?
-                        "{{ route('resident.evacuation.center.get', ['locator', 'active']) }}" :
-                        "{{ route('evacuation.center.get', ['locator', 'active']) }}",
+                    url: url,
                     success: (response) => {
-                        evacuationCentersData = response.data;
-                        getEvacuationCentersDistance();
-                        initMarkers(evacuationCentersData);
+                        let data = response;
+
+                        if (type == "evacuationCenter") {
+                            data = data.data;
+                            evacuationCentersData = data;
+                            getEvacuationCentersDistance();
+                        }
+
+                        initMarkers(data, type, type == "evacuationCenter" ?
+                            evacuationCenterMarkers : hazardMarkers);
                         resolve();
                     }
                 });
@@ -468,6 +505,7 @@
         }
 
         $(document).ready(() => {
+            ajaxRequest('reportHazard');
             ajaxRequest().then(() => {
                 evacuationCenterTable = $('#evacuationCenterTable').DataTable({
                     language: {
@@ -568,6 +606,98 @@
                 map.setZoom(13);
                 $('#user-marker').prop('hidden', true);
             });
+
+            $(document).on("click", "#reportHazardBtn", function() {
+                if (this.textContent == 'Report Hazard Area' || !reportButtonClicked) {
+                    map.setOptions({
+                        draggableCursor: 'pointer'
+                    });
+                    showInfoMessage(
+                        'Click on the map to pinpoint the location of the hazard. Click the button again to cancel.'
+                    );
+                    $('#reportHazardBtn').html(
+                        '<i class="bi bi-stop-circle"></i>Cancel Reporting'
+                    ).addClass('btn-remove');
+                    google.maps.event.addListener(map, 'click', function(event) {
+                        const coordinates = event.latLng;
+
+                        if (reportMarker) {
+                            reportMarker.setPosition(coordinates);
+                            openInfoWindow(reportWindow, reportMarker);
+                            $('[name="latitude"]').val(coordinates.lat());
+                            $('[name="longitude"]').val(coordinates.lng());
+                        } else {
+                            generateInfoWindow(
+                                generateMarker(
+                                    coordinates, "{{ asset('assets/img/reportMarker.png') }}"
+                                ),
+                                `<form id="reportHazardForm">
+                                    @csrf
+                                    <input type="text" name="latitude" value="${coordinates.lat()}" hidden>
+                                    <input type="text" name="longitude" value="${coordinates.lng()}" hidden>
+                                    <div class="mx-1">
+                                        <label>Report Type</label>
+                                        <select name="type" class="form-select">
+                                            <option value="" hidden selected disabled>Select Report Type</option>
+                                            <option value="Flooded">Flooded</option>
+                                            <option value="Roadblock">Roadblock</option>
+                                        </select>
+                                        <center>
+                                            <button id="reportBtn">Submit</button>
+                                        <center>
+                                    </div>
+                                </form>`
+                            );
+                        }
+                    });
+                } else {
+                    map.setOptions({
+                        draggableCursor: 'default'
+                    });
+                    $('#reportHazardBtn').html(
+                        '<i class="bi bi-exclamation-circle-fill"></i>Report Hazard Area'
+                    ).removeClass('btn-remove');
+                    reportMarker?.setMap(null);
+                    reportMarker = null;
+                    google.maps.event.clearListeners(map, 'click');
+                }
+
+                if (!reportButtonClicked) reportButtonClicked = true;
+            });
+
+            $(document).on('click', '#reportBtn', function() {
+                $('#reportHazardForm').validate({
+                    rules: {
+                        type: 'required'
+                    },
+                    messages: {
+                        type: 'Please select report type.'
+                    },
+                    errorElement: 'span',
+                    submitHandler: function(form) {
+                        confirmModal('Are you sure you want to report this area?').then((
+                            result) => {
+                            if (!result.isConfirmed) return;
+
+                            $.post("{{ route('resident.hazard.report') }}", $(form)
+                                .serialize(),
+                                function(response) {
+                                    if (response.status == "warning")
+                                        showErrorMessage(response.message);
+                                    else {
+                                        showSuccessMessage(
+                                            'Report submitted successfully.');
+                                        $('#reportHazardBtn').click();
+                                    }
+                                }).fail(showErrorMessage);
+                        });
+                    }
+                });
+            });
+
+            // Echo.channel('hazard-report').listen('HazardReport', (e) => {
+            //     ajaxRequest('reportHazard');
+            // });
 
             // Echo.channel('evacuation-center-locator').listen('EvacuationCenterLocator', (e) => {
             //     ajaxRequest().then(() => {

@@ -1,6 +1,6 @@
 <script>
     $(document).ready(() => {
-         const sidebar = document.querySelector('.sidebar'),
+        const sidebar = document.querySelector('.sidebar'),
             activeLink = window.location.href.split('?')[0],
             menuLink = $('.menu-link').filter(function() {
                 return $(this).attr('href') == activeLink;
@@ -28,8 +28,6 @@
 
             if (element.id == 'btn-sidebar-mobile' || element.id == 'btn-sidebar-close')
                 sidebar.classList.toggle('active');
-            else if (element.closest('#logoutBtn, #loginLink'))
-                sessionStorage.removeItem('theme');
         });
     });
 </script>

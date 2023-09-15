@@ -6,6 +6,7 @@ use App\Models\ActivityUserLog;
 use App\Models\Evacuee;
 use App\Models\Disaster;
 use Illuminate\Http\Request;
+use App\Models\HazardReport;
 use App\Models\IncidentReport;
 use App\Models\EvacuationCenter;
 use App\Exports\EvacueeDataExport;
@@ -15,12 +16,13 @@ use Maatwebsite\Excel\Excel as FileFormat;
 
 class MainController extends Controller
 {
-    private $evacuationCenter, $disaster, $evacuee;
+    private $evacuationCenter, $disaster, $evacuee, $hazardReport;
 
     public function __construct()
     {
-        $this->evacuee          = new Evacuee;
-        $this->disaster         = new Disaster;
+        $this->evacuee = new Evacuee;
+        $this->disaster = new Disaster;
+        $this->hazardReport = new HazardReport;
         $this->evacuationCenter = new EvacuationCenter;
     }
 
@@ -61,7 +63,7 @@ class MainController extends Controller
     public function evacuationCenterLocator()
     {
         $prefix = request()->route()->getPrefix();
-        return view('userpage.evacuationCenter.evacuationCenter', compact('prefix'));
+        return view('userpage.evacuationCenter.evacuationCenterLocator', compact('prefix'));
     }
 
     public function evacuationCenter($operation)

@@ -75,8 +75,7 @@ input::placeholder {
 .wrapper {
     width: 100%;
     margin: 0 auto;
-    padding: 0 20px;
-    height: 100vh;
+    padding: 0 10px 0 20px;
 }
 
 .btn-submit,
@@ -93,11 +92,16 @@ input::placeholder {
     border: none;
 }
 
+#locateNearestBtn {
+    margin-left: 15px;
+}
+
 .btn-submit:hover,
 .btn-table-submit:hover,
 #locateNearestBtn:hover {
     background: var(--color-green-hover);
     transform: scale(1.05);
+    border: none;
 }
 
 .btn-update,
@@ -116,6 +120,7 @@ input::placeholder {
 .btn-table-update:hover {
     background: var(--color-yellow-hover);
     transform: scale(1.05);
+    border: none;
 }
 
 .btn-remove,
@@ -134,6 +139,7 @@ input::placeholder {
 .btn-table-remove:hover {
     background: var(--color-red-hover);
     transform: scale(1.05);
+    border: none;
 }
 
 .btn-table-submit,
@@ -170,6 +176,18 @@ input::placeholder {
     filter: drop-shadow(0 4px 3px rgb(0 0 0 / 0.07)) drop-shadow(0 2px 2px rgb(0 0 0 / 0.06));
 }
 
+.sendUpdateBtn,
+#reportBtn {
+    font-size: 14px;
+    font-weight: 400;
+    background: var(--color-green);
+    color: var(--color-text);
+    border: none;
+    border-radius: 25px;
+    padding: 6px 10px;
+    margin-top: 8px;
+}
+
 .evacuation-button-container {
     display: flex;
     justify-content: space-between;
@@ -188,7 +206,8 @@ input::placeholder {
 .page-button-container button i,
 .generate-button-container button i,
 .locateEvacuationCenter i,
-#reportDangerBtn i {
+#stopLocatingBtn i,
+#reportHazardBtn i {
     padding-right: 8px;
 }
 
@@ -266,8 +285,8 @@ input::placeholder {
 
 .main-content {
     width: 100%;
-    margin: 92px auto 30px;
-    padding: 0 10px 0 90px;
+    margin: 90px auto 30px;
+    padding: 0 20px 0 90px;
     transition: 0.2s all ease-in-out;
 }
 
@@ -336,7 +355,9 @@ input::placeholder {
 }
 
 .sidebar-content::-webkit-scrollbar {
+    width: 0;
     display: none;
+    appearance: none;
 }
 
 .sidebar ul .navigation-item {
@@ -1117,8 +1138,25 @@ text {
     padding: 6px;
 }
 
+.info-description.status {
+    white-space: nowrap;
+}
+
 .info-description span {
     font-weight: 600;
+}
+
+.info-window-hr {
+    margin: 5px 0 !important;
+    background: black;
+}
+
+.info-window-action-container {
+    gap: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 10px;
 }
 
 .stop-btn-container,
@@ -1130,7 +1168,7 @@ text {
     display: none;
 }
 
-#reportDangerBtn,
+#reportHazardBtn,
 #stopLocatingBtn {
     padding: 10px 16px;
 }
@@ -1145,6 +1183,12 @@ text {
     width: 88%;
 }
 
+.gm-style-iw-d::-webkit-scrollbar {
+    display: none;
+    width: 0;
+    appearance: none;
+}
+
 .ssQIHO-checkbox-menu-item label {
     margin-bottom: 0;
     margin-left: 5px;
@@ -1153,9 +1197,10 @@ text {
 .locator-button-container {
     display: flex;
     justify-content: end;
-    gap: 8px;
+    gap: 15px;
 }
 
+.hazard-markers,
 .evacuation-markers {
     background: var(--color-text);
     display: flex;
@@ -1165,9 +1210,16 @@ text {
     filter: drop-shadow(0 4px 3px rgb(0 0 0 / 0.07)) drop-shadow(0 2px 2px rgb(0 0 0 / 0.06));
 }
 
+.hazard-markers {
+    height: 50px;
+    white-space: nowrap;
+}
+
+.hazard-markers::-webkit-scrollbar,
 .evacuation-markers::-webkit-scrollbar {
     width: 0;
     display: none;
+    appearance: none;
 }
 
 .markers-header {
@@ -1194,6 +1246,14 @@ text {
     gap: 15px;
 }
 
+.marker-container.hazard {
+    gap: 5px;
+    padding: 0 5px 0 5px;
+    width: 100%;
+    justify-content: center;
+}
+
+hazard-markers .markers,
 .evacuation-markers .markers {
     display: flex;
     justify-content: center;
@@ -1650,7 +1710,8 @@ input::-ms-clear {
 #evacueeInfoForm select,
 #accountForm select,
 #dangerousAreaReportForm select,
-#generateReportModal select {
+#generateReportModal select,
+#reportHazardForm select {
     border-radius: 5px;
     font-weight: 400;
     font-size: 0.875rem;
@@ -1658,9 +1719,15 @@ input::-ms-clear {
     height: 40px;
 }
 
+#reportHazardForm select {
+    height: fit-content;
+    font-size: 12px;
+}
+
 #guideForm textarea,
 #guidelineForm textarea,
 #reportForm textarea,
+.reportUpdateForm textarea,
 #evacueeInfoForm textarea {
     border-radius: 5px;
     font-weight: 400;
@@ -1668,14 +1735,50 @@ input::-ms-clear {
     border: 2px solid var(--color-d-sub-text);
 }
 
-.map-border {
-    border: 2px solid var(--color-d-sub-text);
+.hazard-map {
+    height: 600px;
+    border: 2px solid var(--color-red);
     border-radius: 6px;
+    margin-bottom: 10px;
+}
+
+.count-container {
+    background: var(--color-yellow);
+    color: black;
+    padding: 4px;
+    border-radius: 5px;
+    font-size: 12px;
+    font-weight: 700;
+    width: fit-content;
+    align-items: center;
+    display: flex;
+    justify-content: center;
+    overflow: visible;
+}
+
+.count-container img {
+    width: 25px;
+    height: 25px;
+    margin-right: 5px;
+}
+
+.count-container.pending img {
+    margin-left: -4px;
+    margin-right: 3px;
+}
+
+.count-container.flooded {
+    background: rgb(255, 157, 0);
+}
+
+.count-container.roadblock {
+    background: rgb(255, 32, 32)
 }
 
 .form-map {
     height: 384px;
-    border-radius: 4px;
+    border: 2px solid var(--color-d-sub-text);
+    border-radius: 6px;
 }
 
 .locator-header {
@@ -1734,6 +1837,11 @@ span.error {
     font-size: 12px;
     font-style: italic;
     margin-top: 5px;
+}
+
+#reportHazardForm span.error,
+.reportUpdateForm span.error {
+    font-size: 11px;
 }
 
 .table-container {
@@ -1805,6 +1913,10 @@ select.form-select option {
     color: var(--color-black);
     font-size: 15px;
     font-weight: 700;
+}
+
+#reportHazardForm select.form-select option {
+    font-size: 12px !important;
 }
 
 .message-text {
@@ -1987,16 +2099,19 @@ select.form-select option {
     color: var(--color-yellow);
 }
 
+.dark-mode .reportUpdateForm textarea,
 .dark-mode .form-content textarea,
 .dark-mode .field-container input,
-.dark-mode .field-container select {
+.dark-mode .field-container select,
+.dark-mode #reportHazardForm select {
     background: var(--color-d-bg-container);
     color: var(--color-d-text);
 }
 
 .dark-mode .form-content textarea::placeholder,
 .dark-mode .field-container input::placeholder,
-.dark-mode .field-container .form-select {
+.dark-mode .field-container .form-select,
+.dark-mode #reportHazardForm select {
     color: var(--color-d-text);
 }
 
@@ -2018,16 +2133,22 @@ select.form-select option {
     color: var(--color-d-text);
 }
 
+.dark-mode .hazard-markers,
 .dark-mode .evacuation-markers {
     background: var(--color-d-bg-container);
 }
 
+.dark-mode .info-window-hr {
+    background: var(--color-text);
+}
+
 .gmnoprint span,
-.ssQIHO-checkbox-menu-item label {
+.ssQIHO-checkbox-menu-item label,
+.dark-mode .count-container span  {
     color: var(--color-black);
 }
 
-@media only screen and (max-width: 1024px) {
+@media only screen and (max-width: 1150px) {
     .auth-section {
         text-align: center;
         width: 100%;
@@ -2087,8 +2208,12 @@ select.form-select option {
         margin-left: 0;
     }
 
+    .hazard-markers,
     .evacuation-markers {
         overflow: auto;
+    }
+
+    .evacuation-markers {
         height: 43px;
     }
 
@@ -2103,7 +2228,7 @@ select.form-select option {
 
 @media only screen and (max-width: 767px) {
     .main-content {
-        margin: 85px 0 20px;
+        margin:80px 0 20px;
         padding: 0;
     }
 
@@ -2169,7 +2294,6 @@ select.form-select option {
     .action-container button,
     .action-container select {
         padding: 8px 10px;
-        margin: 4px;
     }
 
     .dropdown button {
@@ -2204,9 +2328,14 @@ select.form-select option {
         margin-left: 0;
     }
 
+    .hazard-markers,
     .evacuation-markers {
         -ms-overflow-style: none;
         scrollbar-width: none;
+    }
+
+    #locateNearestBtn {
+        margin-left: 0;
     }
 }
 
@@ -2286,6 +2415,7 @@ select.form-select option {
     .details-content span,
     .sidebar.active .links_name,
     .toast,
+    .hazard-markers,
     .evacuation-markers {
         font-size: 14px;
     }
@@ -2457,7 +2587,7 @@ select.form-select option {
     .btn-table-update,
     .btn-table-remove,
     #editProfileBtn,
-    #reportDangerBtn,
+    #reportHazardBtn,
     #stopLocatingBtn,
     #locateNearestBtn,
     #pinpointCurrentLocationBtn,
@@ -2574,6 +2704,35 @@ select.form-select option {
 
     .number-section p {
         font-size: 12px;
+    }
+
+    .info-description,
+    div.view-link span,
+    div.title.full-width,
+    div.address-line.full-width,
+    .sendUpdateBtn,
+    #reportBtn {
+        font-size: 11px !important;
+    }
+
+    #reportHazardForm label {
+        font-size: 12px !important;
+    }
+
+    #reportHazardForm select {
+        font-size: 10px !important;
+        padding: 4px !important;
+        height: fit-content;
+        background: transparent;
+    }
+
+    #reportHazardForm select.form-select option {
+        font-size: 10px !important;
+    }
+
+    #reportHazardForm span.error,
+    .reportUpdateForm span.error {
+        font-size: 10px;
     }
 }
 

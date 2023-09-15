@@ -76,6 +76,12 @@
                             </div>
                         @endif
                         <div class="navigation-item">
+                            <a href="{{ route('manage.hazard.report') }}" class="menu-link">
+                                <i class="bi bi-exclamation-triangle"></i>
+                                <span class="links_name">Manage Hazard Area</span>
+                            </a>
+                        </div>
+                        <div class="navigation-item">
                             <a href="{{ route('hotline.number') }}" class="menu-link">
                                 <i class="bi bi-telephone"></i>
                                 <span class="links_name">Hotline Numbers</span>
@@ -172,23 +178,6 @@
                             </div>
                         @endif
                         <div class="navigation-item">
-                            <a class="sub-btn">
-                                <i class="bi bi-exclamation-triangle"></i>
-                                <span class="links_name">Report Danger Areas</span>
-                                <i class="bi bi-caret-right-fill dropdown"></i>
-                            </a>
-                            <div class="sub-menu">
-                                <a href="{{ route('danger.area.report', 'report') }}" class="menu-link">
-                                    <i class="bi bi-flag"></i>
-                                    <span class="links_name">Manage Reports</span>
-                                </a>
-                                <a href="{{ route('danger.area.report', 'archived') }}" class="menu-link">
-                                    <i class="bi bi-bookmark-x"></i>
-                                    <span class="links_name">Archived Reports</span>
-                                </a>
-                            </div>
-                        </div>
-                        <div class="navigation-item">
                             <a href="{{ route('hotline.number') }}" class="menu-link">
                                 <i class="bi bi-telephone"></i>
                                 <span class="links_name">Hotline Numbers</span>
@@ -219,12 +208,6 @@
                         <a href="{{ route('resident.display.incident.report', 'pending') }}" class="menu-link">
                             <i class="bi bi-megaphone"></i>
                             <span class="links_name">Report Incident</span>
-                        </a>
-                    </div>
-                    <div class="navigation-item">
-                        <a href="{{ route('resident.danger.area.report', 'report') }}" class="menu-link">
-                            <i class="bi bi-exclamation-triangle"></i>
-                            <span class="links_name">Report Dangerous Areas</span>
                         </a>
                     </div>
                     <div class="navigation-item">
