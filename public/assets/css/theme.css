@@ -163,6 +163,18 @@
     border: none;
 }
 
+.sendUpdateBtn,
+#reportBtn {
+    font-size: 14px;
+    font-weight: 400;
+    background: var(--color-green);
+    color: var(--color-text);
+    border: none;
+    border-radius: 25px;
+    padding: 6px 10px;
+    margin-top: 8px;
+}
+
 .evacuation-button-container {
     display: flex;
     justify-content: space-between;
@@ -1147,8 +1159,25 @@ text {
     padding: 6px;
 }
 
+.info-description.status {
+    white-space: nowrap;
+}
+
 .info-description span {
     font-weight: 600;
+}
+
+.info-window-hr {
+    margin: 5px 0 !important;
+    background: black;
+}
+
+.info-window-action-container {
+    gap: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 10px;
 }
 
 .stop-btn-container,
@@ -1160,7 +1189,7 @@ text {
     display: none;
 }
 
-#reportDangerBtn,
+#reportHazardBtn,
 #stopLocatingBtn {
     padding: 10px;
 }
@@ -1173,6 +1202,12 @@ text {
 
 .gmnoprint ul {
     width: 88%;
+}
+
+.gm-style-iw-d::-webkit-scrollbar {
+    display: none;
+    width: 0;
+    appearance: none;
 }
 
 .ssQIHO-checkbox-menu-item label {
@@ -1190,6 +1225,7 @@ text {
     margin-left: 16px;
 }
 
+.hazard-markers,
 .evacuation-markers {
     background: var(--color-text);
     display: flex;
@@ -1199,6 +1235,12 @@ text {
     filter: drop-shadow(0 4px 3px rgb(0 0 0 / 0.07)) drop-shadow(0 2px 2px rgb(0 0 0 / 0.06));
 }
 
+.hazard-markers {
+    height: 50px;
+    white-space: nowrap;
+}
+
+.hazard-markers::-webkit-scrollbar,
 .evacuation-markers::-webkit-scrollbar {
     width: 0;
     display: none;
@@ -1228,6 +1270,14 @@ text {
     gap: 15px;
 }
 
+.marker-container.hazard {
+    gap: 5px;
+    padding: 0 5px 0 5px;
+    width: 100%;
+    justify-content: center;
+}
+
+hazard-markers .markers,
 .evacuation-markers .markers {
     display: flex;
     justify-content: center;
@@ -1703,7 +1753,8 @@ input::-ms-clear {
 #evacueeInfoForm select,
 #accountForm select,
 #dangerousAreaReportForm select,
-#generateReportModal select {
+#generateReportModal select,
+#reportHazardForm select {
     border-radius: 5px;
     font-weight: 400;
     font-size: 0.875rem;
@@ -1711,9 +1762,15 @@ input::-ms-clear {
     height: 40px;
 }
 
+#reportHazardForm select {
+    height: fit-content;
+    font-size: 12px;
+}
+
 #guideForm textarea,
 #guidelineForm textarea,
 #reportForm textarea,
+.reportUpdateForm textarea,
 #evacueeInfoForm textarea {
     border-radius: 5px;
     font-weight: 400;
@@ -1721,14 +1778,50 @@ input::-ms-clear {
     border: 2px solid var(--color-d-sub-text);
 }
 
-.map-border {
-    border: 2px solid var(--color-d-sub-text);
+.hazard-map {
+    height: 600px;
+    border: 2px solid var(--color-red);
     border-radius: 6px;
+    margin-bottom: 10px;
+}
+
+.count-container {
+    background: var(--color-yellow);
+    color: black;
+    padding: 4px;
+    border-radius: 5px;
+    font-size: 12px;
+    font-weight: 700;
+    width: fit-content;
+    align-items: center;
+    display: flex;
+    justify-content: center;
+    overflow: visible;
+}
+
+.count-container img {
+    width: 25px;
+    height: 25px;
+    margin-right: 5px;
+}
+
+.count-container.pending img {
+    margin-left: -4px;
+    margin-right: 3px;
+}
+
+.count-container.flooded {
+    background: rgb(255, 157, 0);
+}
+
+.count-container.roadblock {
+    background: rgb(255, 32, 32)
 }
 
 .form-map {
     height: 384px;
-    border-radius: 4px;
+    border: 2px solid var(--color-d-sub-text);
+    border-radius: 6px;
 }
 
 .locator-header {
@@ -1788,6 +1881,11 @@ span.error {
     font-style: italic;
     margin-top: 5px;
     float: left;
+}
+
+#reportHazardForm span.error,
+.reportUpdateForm span.error {
+    font-size: 11px;
 }
 
 .table-container {
@@ -1858,6 +1956,10 @@ select.form-select option {
     color: var(--color-black);
     font-size: 15px;
     font-weight: 700;
+}
+
+#reportHazardForm select.form-select option {
+    font-size: 12px !important;
 }
 
 .message-text {
@@ -2040,16 +2142,19 @@ select.form-select option {
     color: var(--color-yellow);
 }
 
+.dark-mode .reportUpdateForm textarea,
 .dark-mode .form-content textarea,
 .dark-mode .field-container input,
-.dark-mode .field-container select {
+.dark-mode .field-container select,
+.dark-mode #reportHazardForm select {
     background: var(--color-d-bg-container);
     color: var(--color-d-text);
 }
 
 .dark-mode .form-content textarea::placeholder,
 .dark-mode .field-container input::placeholder,
-.dark-mode .field-container .form-select {
+.dark-mode .field-container .form-select,
+.dark-mode #reportHazardForm select {
     color: var(--color-d-text);
 }
 
@@ -2071,12 +2176,18 @@ select.form-select option {
     color: var(--color-d-text);
 }
 
+.dark-mode .hazard-markers,
 .dark-mode .evacuation-markers {
     background: var(--color-d-bg-container);
 }
 
+.dark-mode .info-window-hr {
+    background: var(--color-text);
+}
+
 .gmnoprint span,
-.ssQIHO-checkbox-menu-item label {
+.ssQIHO-checkbox-menu-item label,
+.dark-mode .count-container span  {
     color: var(--color-black);
 }
 
@@ -2133,8 +2244,12 @@ select.form-select option {
         margin-left: 0;
     }
 
+    .hazard-markers,
     .evacuation-markers {
         overflow: auto;
+    }
+
+    .evacuation-markers {
         height: 43px;
     }
 
@@ -2264,6 +2379,7 @@ select.form-select option {
         margin-left: 0;
     }
 
+    .hazard-markers,
     .evacuation-markers {
         -ms-overflow-style: none;
         scrollbar-width: none;
@@ -2344,6 +2460,7 @@ select.form-select option {
     .details-content span,
     .sidebar.active .links_name,
     .toast,
+    .hazard-markers,
     .evacuation-markers {
         font-size: 14px;
     }
@@ -2518,7 +2635,7 @@ select.form-select option {
     .btn-table-update,
     .btn-table-remove,
     #editProfileBtn,
-    #reportDangerBtn,
+    #reportHazardBtn,
     #stopLocatingBtn,
     #locateNearestBtn,
     #pinpointCurrentLocationBtn,
@@ -2635,6 +2752,35 @@ select.form-select option {
 
     .number-section p {
         font-size: 12px;
+    }
+
+    .info-description,
+    div.view-link span,
+    div.title.full-width,
+    div.address-line.full-width,
+    .sendUpdateBtn,
+    #reportBtn {
+        font-size: 11px !important;
+    }
+
+    #reportHazardForm label {
+        font-size: 12px !important;
+    }
+
+    #reportHazardForm select {
+        font-size: 10px !important;
+        padding: 4px !important;
+        height: fit-content;
+        background: transparent;
+    }
+
+    #reportHazardForm select.form-select option {
+        font-size: 10px !important;
+    }
+
+    #reportHazardForm span.error,
+    .reportUpdateForm span.error {
+        font-size: 10px;
     }
 }
 
