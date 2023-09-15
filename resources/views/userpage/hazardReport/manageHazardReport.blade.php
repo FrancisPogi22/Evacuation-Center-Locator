@@ -273,6 +273,8 @@
                                 showWarningMessage(response.message) : showSuccessMessage(
                                     `Successfully ${operation == 'verify' ? 'verified' : operation == 'update' ? 'add update to' : 'removed'} the report.`
                                 );
+
+                            ajaxRequest();
                         },
                         error() {
                             showErrorMessage();
