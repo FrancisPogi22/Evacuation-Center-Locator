@@ -92,6 +92,10 @@ input::placeholder {
     border: none;
 }
 
+#locateNearestBtn {
+    margin-left: 15px;
+}
+
 .btn-submit:hover,
 .btn-table-submit:hover,
 #locateNearestBtn:hover {
@@ -202,7 +206,8 @@ input::placeholder {
 .page-button-container button i,
 .generate-button-container button i,
 .locateEvacuationCenter i,
-#reportDangerBtn i {
+#stopLocatingBtn i,
+#reportHazardBtn i {
     padding-right: 8px;
 }
 
@@ -350,7 +355,9 @@ input::placeholder {
 }
 
 .sidebar-content::-webkit-scrollbar {
+    width: 0;
     display: none;
+    appearance: none;
 }
 
 .sidebar ul .navigation-item {
@@ -1190,7 +1197,7 @@ text {
 .locator-button-container {
     display: flex;
     justify-content: end;
-    gap: 8px;
+    gap: 15px;
 }
 
 .hazard-markers,
@@ -1212,6 +1219,7 @@ text {
 .evacuation-markers::-webkit-scrollbar {
     width: 0;
     display: none;
+    appearance: none;
 }
 
 .markers-header {
@@ -2140,7 +2148,7 @@ select.form-select option {
     color: var(--color-black);
 }
 
-@media only screen and (max-width: 1024px) {
+@media only screen and (max-width: 1150px) {
     .auth-section {
         text-align: center;
         width: 100%;
@@ -2286,7 +2294,6 @@ select.form-select option {
     .action-container button,
     .action-container select {
         padding: 8px 10px;
-        margin: 4px;
     }
 
     .dropdown button {
@@ -2325,6 +2332,10 @@ select.form-select option {
     .evacuation-markers {
         -ms-overflow-style: none;
         scrollbar-width: none;
+    }
+
+    #locateNearestBtn {
+        margin-left: 0;
     }
 }
 
