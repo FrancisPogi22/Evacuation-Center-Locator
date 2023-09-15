@@ -16,6 +16,7 @@ class ActivityUserLog extends Model
 
     protected $fillable = [
         'data_id',
+        'data_name',
         'user_id',
         'activity',
         'date_time'
@@ -23,12 +24,13 @@ class ActivityUserLog extends Model
 
     public $timestamps = false;
 
-    public function generateLog($data_id, $activity)
+    public function generateLog($data_id, $data_name, $activity)
     {
         $this->create([
-            'data_id' => $data_id,
-            'user_id' => auth()->user()->id,
-            'activity' => trim($activity),
+            'data_id'   => $data_id,
+            'data_name' => $data_name,
+            'user_id'   => auth()->user()->id,
+            'activity'  => trim($activity),
             'date_time' => Carbon::now()->toDayDateTimeString()
         ]);
     }
