@@ -121,7 +121,7 @@
                     responsive: true,
                     processing: false,
                     serverSide: true,
-                    ajax: "{{ route('report.dangerous.areas.cswd') }}",
+                    ajax: "{{ route('report.dangerous.areas.cswd', $operation) }}",
                     columns: [{
                             data: 'id',
                             name: 'id',
@@ -172,21 +172,29 @@
                     });
 
                     $(document).on('click', '#archiveDangerAreaReport', function() {
-                        alterIncidentReport('remove', getRowData(this, dangerousAreasReports).id);
+                        alterIncidentReport('archive', getRowData(this, dangerousAreasReports).id);
+                    });
+
+                    $(document).on('click', '#unArchiveDangerAreaReport', function() {
+                        alterIncidentReport('unarchive', getRowData(this, dangerousAreasReports).id);
                     });
 
                     function alterIncidentReport(operation, dangerAreaId) {
-                        confirmModal(`Do you want to ${operation == 'remove' ? 'archive' : operation} this report?`)
+                        confirmModal(`Do you want to ${operation} this report?`)
                             .then((result) => {
                                 if (result.isConfirmed) {
                                     let url = operation == 'confirm' ?
                                         "{{ route('report.dangerous.areas.confirm', 'dangerAreaId') }}"
                                         .replace('dangerAreaId', dangerAreaId) : operation == 'reject' ?
                                         "{{ route('report.dangerous.areas.reject', 'dangerAreaId') }}".replace(
-                                            'dangerAreaId', dangerAreaId) :
-                                        "{{ route('report.dangerous.areas.archive', 'dangerAreaId') }}".replace(
-                                            'dangerAreaId', dangerAreaId);
-                                    let type = operation == 'confirm' ? "POST" : operation == "reject" ? "DELETE" :
+                                            'dangerAreaId', dangerAreaId) : operation == 'archive' ?
+                                        "{{ route('report.dangerous.areas.archive', ['dangerAreaId', 'archive']) }}"
+                                        .replace('dangerAreaId', dangerAreaId) :
+                                        "{{ route('report.dangerous.areas.archive', ['dangerAreaId', 'unarchive']) }}"
+                                        .replace('dangerAreaId', dangerAreaId);
+
+                                    let type = operation == 'confirm' ? "POST" : operation == "reject" ?
+                                        "DELETE" :
                                         "PATCH";
 
                                     $.ajax({
@@ -194,7 +202,7 @@
                                         url: url,
                                         success() {
                                             showSuccessMessage(
-                                                `Danger area successfully ${operation == 'remove' ? 'archiv' : operation}ed.`
+                                                `Danger area successfully ${operation == "reject" ? "rejected" : operation}d.`
                                             );
                                             dangerousAreasReports.draw();
                                         },
@@ -222,7 +230,7 @@
                 responsive: true,
                 processing: false,
                 serverSide: true,
-                ajax: "{{ route('resident.report.danger.areas') }}",
+                ajax: "{{ route('resident.report.danger.areas', $operation) }}",
                 columns: [{
                         data: 'id',
                         name: 'id',
