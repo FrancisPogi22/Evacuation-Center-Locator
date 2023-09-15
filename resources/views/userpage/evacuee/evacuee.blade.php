@@ -13,7 +13,7 @@
     <div class="wrapper">
         @include('partials.header')
         @include('partials.sidebar')
-        <div class="main-content">
+        <main class="main-content">
             <div class="label-container">
                 <i class="bi bi-people"></i>
                 <span>MANAGE EVACUEE INFORMATION</span>
@@ -28,7 +28,7 @@
                     </button>
                 </div>
             @endif
-            <div class="table-container">
+            <section class="table-container">
                 <div class="table-content">
                     <header class="table-label">Evacuees Informations Table</header>
                     <table class="table" id="evacueeTable" width="100%">
@@ -54,8 +54,8 @@
                         </tbody>
                     </table>
                 </div>
-            </div>
-        </div>
+            </section>
+        </main>
         @include('userpage.evacuee.evacueeInfoFormModal')
         @include('userpage.changePasswordModal')
     </div>

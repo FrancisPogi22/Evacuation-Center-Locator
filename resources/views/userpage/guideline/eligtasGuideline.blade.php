@@ -9,13 +9,13 @@
     <div class="wrapper">
         @include('partials.header')
         @include('partials.sidebar')
-        <div class="main-content">
+        <main class="main-content">
             <div class="label-container">
                 <i class="bi bi-book"></i>
                 <span>E-LIGTAS GUIDELINES</span>
             </div>
             <hr>
-            <div class="content-item">
+            <section class="content-item">
                 <div class="guideline-container">
                     @foreach ($guideline as $guidelineItem)
                         <div class="guideline-widget">
@@ -62,8 +62,8 @@
                         @include('userpage.guideline.guidelineModal')
                     @endif
                 </div>
-            </div>
-        </div>
+            </section>
+        </main>
         @include('userpage.changePasswordModal')
     </div>
 
@@ -82,6 +82,7 @@
                 $(document).ready(() => {
                     let guidelineId, guidelineWidget, guidelineItem, defaultFormData, operation, guideField = 0,
                         guidelineType, modal = $('#guidelineModal'),
+                        addGuideInput = $('#addGuideInput'),
                         modalLabel = $('.modal-label'),
                         modalLabelContainer = $('.modal-label-container'),
                         formButton = $('#submitGuidelineBtn');
@@ -102,14 +103,14 @@
                         operation = "create";
                         modalLabelContainer.removeClass('bg-warning');
                         modalLabel.text('Create Guideline');
-                        formButton.addClass('btn-submit').removeClass('btn-update').text('Create');
+                        formButton.text('Create').add(addGuideInput).addClass('btn-submit').removeClass('btn-update');
                         modal.modal('show');
                     });
 
                     $(document).on('click', '#updateGuidelineBtn', function() {
                         modalLabelContainer.addClass('bg-warning');
                         modalLabel.text('Update Guideline');
-                        formButton.addClass('btn-update').removeClass('btn-submit').text('Update');
+                        formButton.text('Update').add(addGuideInput).addClass('btn-update').removeClass('btn-submit');
                         guidelineWidget = this.closest('.guideline-widget');
                         guidelineItem = guidelineWidget.querySelector('.guidelines-item');
                         guidelineId = guidelineItem.getAttribute('href').split('/').pop();

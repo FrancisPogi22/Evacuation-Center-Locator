@@ -19,7 +19,7 @@ class AuthenticationController extends Controller
 
     public function __construct()
     {
-        $this->user = new User;
+        $this->user        = new User;
         $this->logActivity = new ActivityUserLog;
     }
 
@@ -43,9 +43,9 @@ class AuthenticationController extends Controller
         try {
             $token = Str::random(124);
             DB::table('password_resets')->insert([
-                'email' => $request->email,
-                'token' => $token,
-                'created_at' => Carbon::now()->addHours(3)
+                'email'      => $request->email,
+                'token'      => $token,
+                'created_at' => now()->addHours(3)
             ]);
             Mail::to($request->email)->send(new SendResetPasswordLink(['token' => $token]));
             return back()->with('success', 'We have sent you an email with a link to reset your password.');
@@ -63,8 +63,8 @@ class AuthenticationController extends Controller
     public function resetPassword(Request $request)
     {
         $resetPasswordValidation = Validator::make($request->all(), [
-            'email' => 'required|email|exists:user',
-            'password' => 'required|confirmed',
+            'email'                 => 'required|email|exists:user',
+            'password'              => 'required|confirmed',
             'password_confirmation' => 'required'
         ]);
 
@@ -78,36 +78,32 @@ class AuthenticationController extends Controller
 
     public function logout()
     {
-        $organization = auth()->user()->organization;
-        $this->logActivity->generateLog(null, 'Logged Out');
+        $this->logActivity->generateLog(null, null, 'Logged Out');
         auth()->logout();
         session()->flush();
-        return redirect('/')->with('success', 'Logged out ' . $organization . ' Panel.');
+        return redirect('/')->with('success', 'Successfully Logged out.');
     }
 
     private function checkUserAccount()
     {
-        if (auth()->check()) {
-            $userAuthenticated = auth()->user();
+        if (!auth()->check()) return back();
 
-            if ($userAuthenticated->is_suspend == 1 && $userAuthenticated->suspend_time <= Carbon::now()->format('Y-m-d H:i:s')) {
-                $this->user->find($userAuthenticated->id)->update([
-                    'status' => 'Active',
-                    'is_suspend' => 0,
-                    'suspend_time' => null
-                ]);
-            } else if ($userAuthenticated->is_suspend == 1) {
-                $suspendTime = Carbon::parse($userAuthenticated->suspend_time)->format('F j, Y H:i:s');
-                auth()->logout();
-                session()->flush();
-                return back()->withInput()->with('warning', 'Your account has been suspended until ' . $suspendTime);
-            }
+        $userAuthenticated = auth()->user();
 
-            $this->logActivity->generateLog(null, 'Logged In');
-            $userOrganization = $userAuthenticated->organization;
-            return redirect("/" . Str::of($userOrganization)->lower() . "/dashboard")->with('success', "Welcome to " . $userOrganization . " Panel.");
+        if ($userAuthenticated->is_suspend == 1 && $userAuthenticated->suspend_time <= Carbon::now()->format('Y-m-d H:i:s')) {
+            $this->user->find($userAuthenticated->id)->update([
+                'status'       => 'Active',
+                'is_suspend'   => 0,
+                'suspend_time' => null
+            ]);
+        } elseif ($userAuthenticated->is_suspend == 1) {
+            $suspendTime = Carbon::parse($userAuthenticated->suspend_time)->format('F j, Y H:i:s');
+            auth()->logout();
+            session()->flush();
+            return back()->withInput()->with('warning', 'Your account has been suspended until ' . $suspendTime);
         }
 
-        return back();
+        $this->logActivity->generateLog(null, null, 'Logged In');
+        return redirect("/" . Str::of($userAuthenticated->organization)->lower() . "/dashboard")->with('success', "Welcome " . $userAuthenticated->name . ".");
     }
 }

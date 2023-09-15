@@ -27,13 +27,13 @@ Route::controller(AuthenticationController::class)->group(function () {
 Route::prefix('resident')->middleware('guest')->group(function () {
     Route::name('resident.')->group(function () {
         Route::name('report.')->prefix('reportIncident')->controller(IncidentReportController::class)->group(function () {
-            Route::get('/displayPendingIncidentReport', 'displayPendingIncidentReport')->name('pending');
+            Route::get('/displayPendingIncidentReport/{operation}', 'displayPendingIncidentReport')->name('pending');
             Route::get('/displayIncidentReport', 'displayIncidentReport')->name('display');
             Route::delete('/revertIncidentReport/{reportId}', 'revertIncidentReport')->name('revert');
             Route::patch('/updateAttempt', 'updateUserAttempt')->name('update');
             Route::post('/createIncidentReport', 'createIncidentReport')->name('accident');
             Route::post('/updateIncidentReport/{reportId}', 'updateIncidentReport')->name('incident.update');
-            Route::get('/displayDangerousAreasReport', 'displayDangerousAreasReport')->name('danger.areas');
+            Route::get('/displayDangerousAreasReport/{operation}', 'displayDangerousAreasReport')->name('danger.areas');
             Route::post('/reportDangerousArea', 'reportDangerousArea')->name('dangerous.area');
             Route::put('/updateDangerousArea/{reportId}', 'updateDangerousAreaReport')->name('update.danger.area');
             Route::delete('/revertDangerousAreaReport/{reportId}', 'revertDangerousAreaReport')->name('revert.danger.area.report');
@@ -65,15 +65,18 @@ Route::middleware('auth')->group(function () {
         Route::controller(MainController::class)->group(function () {
             Route::get('/dashboard', 'dashboard')->name('dashboard.cswd');
             Route::get('/evacuee', 'manageEvacueeInformation')->name('manage.evacuee.record');
-            Route::view('/manageEvacuation', 'userpage.evacuationCenter.manageEvacuation')->name('manage.evacuation');
+            Route::get('/evacuationCenter/{operation}', 'evacuationCenter')->name('evacuation.center');
             Route::get('/evacuationCenterLocator', 'evacuationCenterLocator')->name('evacuation.center.locator');
+            Route::get('/dangerAreaReport/{operation}', 'dangerAreaReport')->name('danger.area.report');
+            Route::get('/userActivityLog', 'userActivityLog')->name('activity.log');
+            Route::get('/disasterInformation/{operation}', 'disasterInformation')->name('disaster.information');
         });
 
         Route::prefix('disaster')->name('disaster.')->controller(DisasterController::class)->group(function () {
-            Route::get('/disasterInformation', 'displayDisasterInformation')->name('display');
+            Route::get('/disasterInformation/{operation}', 'displayDisasterInformation')->name('display');
             Route::post('/createDisasterData', 'createDisasterData')->name('create');
             Route::patch('/updateDisaster/{disasterId}', 'updateDisasterData')->name('update');
-            Route::patch('/archiveDisasterData/{disasterId}', 'archiveDisasterData')->name('archive');
+            Route::patch('/archiveDisasterData/{disasterId}/{operation}', 'archiveDisasterData')->name('archive');
             Route::patch('/changeDisasterStatus/{disasterId}', 'changeDisasterStatus')->name('change.status');
         });
 
@@ -85,18 +88,18 @@ Route::middleware('auth')->group(function () {
         });
 
         Route::prefix('evacuationCenter')->name('evacuation.center.')->controller(EvacuationCenterController::class)->group(function () {
-            Route::get('/viewEvacuationCenter/{operation}', 'getEvacuationData')->name('get');
+            Route::get('/viewEvacuationCenter/{operation}/{type}', 'getEvacuationData')->name('get');
             Route::post('/createEvacuationCenter', 'createEvacuationCenter')->name('create');
             Route::put('/updateEvacuation/{evacuationId}', 'updateEvacuationCenter')->name('update');
-            Route::patch('/archiveEvacuation/{evacuationId}', 'archiveEvacuationCenter')->name('archive');
+            Route::patch('/archiveEvacuation/{evacuationId}/{operation}', 'archiveEvacuationCenter')->name('archive');
             Route::patch('/changeEvacuationStatus/{evacuationId}', 'changeEvacuationStatus')->name('change.status');
         });
 
         Route::prefix('incidentReport')->name('report.dangerous.areas.')->controller(IncidentReportController::class)->group(function () {
-            Route::get('/displayDangerousAreasReport', 'displayDangerousAreasReport')->name('cswd');
+            Route::get('/displayDangerousAreasReport/{operation}', 'displayDangerousAreasReport')->name('cswd');
             Route::post('/confirmDangerAreaReport/{dangerAreaId}', 'confirmDangerAreaReport')->name('confirm');
             Route::delete('/rejectDangerAreaReport/{dangerAreaId}', 'rejectDangerAreaReport')->name('reject');
-            Route::patch('/archiveDangerAreaReport/{dangerAreaId}', 'archiveDangerAreaReport')->name('archive');
+            Route::patch('/archiveDangerAreaReport/{dangerAreaId}/{operation}', 'archiveDangerAreaReport')->name('archive');
         });
 
         Route::get('/getHazardReport', HazardReportController::class . '@getHazardReport')->name('cswd.hazard.get');
@@ -105,15 +108,16 @@ Route::middleware('auth')->group(function () {
     Route::prefix('cdrrmo')->middleware('check.cdrrmo')->group(function () {
         Route::controller(MainController::class)->group(function () {
             Route::get('/dashboard', 'dashboard')->name('dashboard.cdrrmo');
+            Route::get('/incidentReport/{operation}', 'incidentReport')->name('incident.report');
             Route::view('/manageHazardReport', 'userpage.hazardReport.manageHazardReport')->name('manage.hazard.report');
         });
 
         Route::prefix('incidentReport')->name('report.')->controller(IncidentReportController::class)->group(function () {
-            Route::get('/displayPendingIndcidentReport', 'displayPendingIncidentReport')->name('pending');
-            Route::get('/displayIncidentReport', 'displayIncidentReport')->name('accident');
+            Route::get('/displayPendingIndcidentReport/{operation}', 'displayPendingIncidentReport')->name('pending');
+            Route::get('/displayIncidentReport/{operation}', 'displayIncidentReport')->name('accident');
             Route::post('/approveIncidentReport/{reportId}', 'approveIncidentReport')->name('approve');
             Route::delete('/declineIncidentReport/{reportId}', 'declineIncidentReport')->name('decline');
-            Route::patch('/archiveIncidentReport/{reportId}', 'archiveIncidentReport')->name('archive');
+            Route::patch('/archiveIncidentReport/{reportId}/{operation}', 'archiveIncidentReport')->name('archive');
         });
 
         Route::name('hazard.')->controller(HazardReportController::class)->group(function () {
@@ -142,7 +146,7 @@ Route::middleware('auth')->group(function () {
 
     Route::controller(MainController::class)->group(function () {
         Route::post('/generateEvacueeData', 'generateExcelEvacueeData')->name('generate.evacuee.data');
-        Route::get('/incidentReport', 'incidentReport')->name('display.incident.report');
+        Route::get('/userAccounts/{operation}', 'userAccounts')->name('display.users.account');
         Route::view('/hotlineNumber', 'userpage.hotlineNumbers')->name('hotline.number');
         Route::view('/about', 'userpage.about')->name('about');
         Route::get('/fetchDisasterData', 'fetchDisasterData')->name('fetchDisasterData');
@@ -152,13 +156,13 @@ Route::middleware('auth')->group(function () {
         Route::post('/createAccount', 'createAccount')->name('create');
         Route::view('/userProfile', 'userpage.userAccount.userProfile')->name('display.profile');
         Route::put('/updateAccount/{userId}', 'updateAccount')->name('update');
-        Route::get('/userAccount', 'userAccounts')->name('display.users');
+        Route::get('/displayUserAccount/{operation}', 'userAccounts')->name('display.users');
         Route::patch('/disableAccount/{userId}', 'disableAccount')->name('disable');
         Route::patch('/enableAccount/{userId}', 'enableAccount')->name('enable');
         Route::put('/suspendAccount/{userId}', 'suspendAccount')->name('suspend');
         Route::patch('/openAccount/{userId}', 'openAccount')->name('open');
         Route::put('/resetPassword/{userId}', 'resetPassword')->name('reset.password');
         Route::post('/checkPassword', 'checkPassword')->name('check.password');
-        Route::patch('/archiveAccount/{userId}', 'archiveAccount')->name('archive');
+        Route::patch('/archiveAccount/{userId}/{operation}', 'archiveAccount')->name('archive');
     });
 });

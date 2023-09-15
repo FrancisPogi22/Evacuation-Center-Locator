@@ -9,20 +9,20 @@
     <div class="wrapper">
         @include('partials.header')
         @include('partials.sidebar')
-        <div class="main-content">
+        <main class="main-content">
             <div class="label-container">
                 <i class="bi bi-person-circle"></i>
                 <span>MY ACCOUNT</span>
             </div>
             <hr>
-            <div class="user-profile-container">
+            <section class="user-profile-container">
                 <div class="profile-section">
                     <div class="profile-img">
                         <img src="{{ asset('assets/img/profile.png') }}" alt="Profile" id="profile">
                     </div>
                 </div>
                 <div class="edit-profile-btn">
-                    <button class="btn-update" id="editProfileBtn">
+                    <button class="btn-update" id="updateProfileBtn">
                         <i class="bi bi-pencil-square"></i>Edit Profile
                     </button>
                 </div>
@@ -54,8 +54,8 @@
                         </div>
                     </div>
                 </form>
-            </div>
-        </div>
+            </section>
+        </main>
         @include('userpage.userAccount.userAccountModal')
         @include('userpage.changePasswordModal')
     </div>
@@ -87,15 +87,14 @@
                     organization: 'Please Enter Your Organization.',
                     position: 'Please Enter Your Position.',
                     email: 'Please Enter Your Email Address.'
-
                 },
                 errorElement: 'span',
                 submitHandler: formSubmitHandler
             });
 
-            $(document).on('click', '#editProfileBtn', () => {
+            $(document).on('click', '#updateProfileBtn', () => {
                 modalLabelContainer.removeClass('bg-success').addClass('bg-warning');
-                modalLabel.text('Edit Profile Account');
+                modalLabel.text('Update Profile Account');
                 formButton.removeClass('btn-submit').addClass('btn-update').text('Update');
                 $('#suspend-container').hide();
                 operation = "update";

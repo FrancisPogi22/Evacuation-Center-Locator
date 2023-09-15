@@ -13,32 +13,34 @@
     <div class="wrapper">
         @include('partials.header')
         @include('partials.sidebar')
-        <div class="main-content">
+        <main class="main-content">
             <div class="label-container">
                 <i class="bi bi-megaphone"></i>
                 <span>INCIDENT REPORT</span>
             </div>
             <hr>
-            <div class="table-container">
-                <div class="table-content">
-                    <header class="table-label">Pending Incident Report</header>
-                    <table class="table" id="pendingReport" width="100%">
-                        <thead>
-                            <tr>
-                                <th colspan="2">Description</th>
-                                <th>Location</th>
-                                <th>Status</th>
-                                <th>Photo</th>
-                                <th>Action</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-            @guest
-                <div class="incident-report">
+            @if ($operation == 'pending')
+                <section class="table-container">
+                    <div class="table-content">
+                        <header class="table-label">Pending Incident Report</header>
+                        <table class="table" id="pendingReport" width="100%">
+                            <thead>
+                                <tr>
+                                    <th colspan="2">Description</th>
+                                    <th>Location</th>
+                                    <th>Status</th>
+                                    <th>Photo</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+            @endif
+            {{-- @guest
+                <section class="incident-report">
                     <div class="incidentReportTable">
                         @foreach ($incidentReport as $report)
                             <div class="incident-report-container">
@@ -69,30 +71,31 @@
                             </div>
                         @endforeach
                     </div>
-                </div>
-            @endguest
+                </section>
+            @endguest --}}
             @auth
-                <br>
-                <div class="table-container">
-                    <div class="table-content">
-                        <header class="table-label">Incident Report</header>
-                        <table class="table" id="incidentReports" width="100%">
-                            <thead>
-                                <tr>
-                                    <th colspan="2">Description</th>
-                                    <th>Location</th>
-                                    <th>Status</th>
-                                    <th>Photo</th>
-                                    <th>Action</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
+                @if ($operation == 'report')
+                    <section class="table-container">
+                        <div class="table-content">
+                            <header class="table-label">Incident Report</header>
+                            <table class="table" id="incidentReports" width="100%">
+                                <thead>
+                                    <tr>
+                                        <th colspan="2">Description</th>
+                                        <th>Location</th>
+                                        <th>Status</th>
+                                        <th>Photo</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+                        </div>
+                    </section>
+                @endif
             @endauth
-        </div>
+        </main>
         @guest
             @include('userpage.incidentReport.incidentReportModal')
             <div class="report-button">
@@ -119,113 +122,117 @@
     @include('partials.toastr')
     <script>
         $(document).ready(() => {
-                let pendingReport;
-
                 $.ajaxSetup({
                     headers: {
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                     }
                 });
                 @auth
-                pendingReport = $('#pendingReport').DataTable({
-                    language: {
-                        emptyTable: '<div class="message-text">There are currently no pending reports.</div>',
-                    },
-                    ordering: false,
-                    responsive: true,
-                    processing: false,
-                    serverSide: true,
-                    ajax: "{{ route('report.pending') }}",
-                    columns: [{
-                            data: 'id',
-                            name: 'id',
-                            visible: false
-                        },
-                        {
-                            data: 'description',
-                            name: 'description'
-                        },
-                        {
-                            data: 'location',
-                            name: 'location'
-                        },
-                        {
-                            data: 'status',
-                            name: 'status',
-                            width: '10%',
-                            orderable: false,
-                            searchable: false
-                        },
-                        {
-                            data: 'photo',
-                            name: 'photo',
-                            width: '10%',
-                            orderable: false,
-                            searchable: false
-                        },
-                        {
-                            data: 'action',
-                            name: 'action',
-                            width: '1rem',
-                            orderable: false,
-                            searchable: false
-                        },
-                    ],
-                    columnDefs: [{
-                        targets: 5,
-                        visible: {{ auth()->user()->is_disable }} == 0 ? true : false
-                    }]
-                });
+                let pendingReport, incidentReport;
 
-                let incidentReports = $('#incidentReports').DataTable({
-                    language: {
-                        emptyTable: '<div class="message-text">There are currently no reports.</div>',
-                    },
-                    ordering: false,
-                    responsive: true,
-                    processing: false,
-                    serverSide: true,
-                    ajax: "{{ route('report.accident') }}",
-                    columns: [{
-                            data: 'id',
-                            name: 'id',
-                            visible: false
+                @if ($operation == 'pending')
+                    pendingReport = $('#pendingReport').DataTable({
+                        language: {
+                            emptyTable: '<div class="message-text">There are currently no pending reports.</div>',
                         },
-                        {
-                            data: 'description',
-                            name: 'description'
+                        ordering: false,
+                        responsive: true,
+                        processing: false,
+                        serverSide: true,
+                        ajax: "{{ route('report.pending', $operation) }}",
+                        columns: [{
+                                data: 'id',
+                                name: 'id',
+                                visible: false
+                            },
+                            {
+                                data: 'description',
+                                name: 'description'
+                            },
+                            {
+                                data: 'location',
+                                name: 'location'
+                            },
+                            {
+                                data: 'status',
+                                name: 'status',
+                                width: '10%',
+                                orderable: false,
+                                searchable: false
+                            },
+                            {
+                                data: 'photo',
+                                name: 'photo',
+                                width: '10%',
+                                orderable: false,
+                                searchable: false
+                            },
+                            {
+                                data: 'action',
+                                name: 'action',
+                                width: '1rem',
+                                orderable: false,
+                                searchable: false
+                            }
+                        ],
+                        columnDefs: [{
+                            targets: 5,
+                            visible: {{ auth()->user()->is_disable }} == 0 ? true : false
+                        }]
+                    });
+                @endif
+
+                @if ($operation == 'report')
+                    incidentReports = $('#incidentReports').DataTable({
+                        language: {
+                            emptyTable: '<div class="message-text">There are currently no reports.</div>',
                         },
-                        {
-                            data: 'location',
-                            name: 'location'
-                        },
-                        {
-                            data: 'status',
-                            name: 'status',
-                            width: '10%',
-                            orderable: false,
-                            searchable: false
-                        },
-                        {
-                            data: 'photo',
-                            name: 'photo',
-                            width: '10%',
-                            orderable: false,
-                            searchable: false
-                        },
-                        {
-                            data: 'action',
-                            name: 'action',
-                            width: '1rem',
-                            orderable: false,
-                            searchable: false
-                        },
-                    ],
-                    columnDefs: [{
-                        targets: 5,
-                        visible: {{ auth()->user()->is_disable }} == 0 ? true : false
-                    }]
-                });
+                        ordering: false,
+                        responsive: true,
+                        processing: false,
+                        serverSide: true,
+                        ajax: "{{ route('report.accident', $operation) }}",
+                        columns: [{
+                                data: 'id',
+                                name: 'id',
+                                visible: false
+                            },
+                            {
+                                data: 'description',
+                                name: 'description'
+                            },
+                            {
+                                data: 'location',
+                                name: 'location'
+                            },
+                            {
+                                data: 'status',
+                                name: 'status',
+                                width: '10%',
+                                orderable: false,
+                                searchable: false
+                            },
+                            {
+                                data: 'photo',
+                                name: 'photo',
+                                width: '10%',
+                                orderable: false,
+                                searchable: false
+                            },
+                            {
+                                data: 'action',
+                                name: 'action',
+                                width: '1rem',
+                                orderable: false,
+                                searchable: false
+                            }
+                        ],
+                        columnDefs: [{
+                            targets: 5,
+                            visible: {{ auth()->user()->is_disable }} == 0 ? true : false
+                        }]
+                    });
+                @endif
 
                 @if (auth()->user()->is_disable == 0)
                     $(document).on('click', '#approveIncidentReport', function() {
@@ -236,33 +243,39 @@
                         alterIncidentReport('decline', getRowData(this, pendingReport).id);
                     });
 
-                    $(document).on('click', '#archiveIncidentReport', function() {
-                        alterIncidentReport('archive', getRowData(this, incidentReports).id);
-                    });
+                    @if ($operation == 'report')
+                        $(document).on('click', '#archiveIncidentReport', function() {
+                            alterIncidentReport('archive', getRowData(this, incidentReports).id);
+                        });
+
+                        $(document).on('click', '#unArchiveIncidentReport', function() {
+                            alterIncidentReport('unarchive', getRowData(this, incidentReports).id);
+                        });
+                    @endif
 
                     function alterIncidentReport(operation, reportId) {
                         confirmModal(`Do you want to ${operation} this report?`).then((result) => {
                             if (!result.isConfirmed) return;
 
                             let route = {
-                                    approve: "{{ route('report.approve', 'reportId') }}",
-                                    decline: "{{ route('report.decline', 'reportId') }}",
-                                    archive: "{{ route('report.archive', 'reportId') }}"
-                                },
-                                url = route[operation].replace('reportId', reportId),
-                                type {
-                                    approve: "POST",
-                                    decline: "DELETE",
-                                    archive: "PATCH",
-                                } [operation];
+                                approve: "{{ route('report.approve', 'reportId') }}",
+                                decline: "{{ route('report.decline', 'reportId') }}",
+                                archive: "{{ route('report.archive', ['reportId', 'archive']) }}",
+                                unarchive: "{{ route('report.archive', ['reportId', 'unarchive']) }}"
+                            };
+                            route[operation] = route[operation].replace('reportId', reportId);
 
                             $.ajax({
-                                type: type,
-                                url: url,
+                                type: operation == 'archive' || operation == 'unarchive' ? 'PATCH' :
+                                    operation == 'approve' ? 'POST' : 'DELETE',
+                                url: route[operation],
                                 success() {
                                     showSuccessMessage(`Incident report successfully ${operation}d.`);
-                                    pendingReport.draw();
-                                    incidentReports.draw();
+                                    @if ($operation == 'pending')
+                                        pendingReport.draw();
+                                    @else
+                                        incidentReports.draw();
+                                    @endif
                                 },
                                 error() {
                                     showErrorMessage();
@@ -278,51 +291,53 @@
                 modalLabel = $('.modal-label'),
                 formButton = $('#reportIncidentBtn');
 
-            pendingReport = $('#pendingReport').DataTable({
-                language: {
-                    emptyTable: '<div class="message-text">You have no pending reports.</div>'
-                },
-                ordering: false,
-                responsive: true,
-                processing: false,
-                serverSide: true,
-                ajax: "{{ route('resident.report.pending') }}",
-                columns: [{
-                        data: 'id',
-                        name: 'id',
-                        visible: false
+            @if ($operation == 'pending')
+                let pendingReport = $('#pendingReport').DataTable({
+                    language: {
+                        emptyTable: '<div class="message-text">You have no pending reports.</div>'
                     },
-                    {
-                        data: 'description',
-                        name: 'description'
-                    },
-                    {
-                        data: 'location',
-                        name: 'location'
-                    },
-                    {
-                        data: 'status',
-                        name: 'status',
-                        width: '10%',
-                        orderable: false,
-                        searchable: false
-                    },
-                    {
-                        data: 'photo',
-                        name: 'photo',
-                        width: '10%',
-                        orderable: false,
-                        searchable: false
-                    },
-                    {
-                        data: 'action',
-                        name: 'action',
-                        width: '1rem',
-                        orderable: false,
-                        searchable: false
-                    }
-                ]
-            });
+                    ordering: false,
+                    responsive: true,
+                    processing: false,
+                    serverSide: true,
+                    ajax: "{{ route('resident.report.pending', $operation) }}",
+                    columns: [{
+                            data: 'id',
+                            name: 'id',
+                            visible: false
+                        },
+                        {
+                            data: 'description',
+                            name: 'description'
+                        },
+                        {
+                            data: 'location',
+                            name: 'location'
+                        },
+                        {
+                            data: 'status',
+                            name: 'status',
+                            width: '10%',
+                            orderable: false,
+                            searchable: false
+                        },
+                        {
+                            data: 'photo',
+                            name: 'photo',
+                            width: '10%',
+                            orderable: false,
+                            searchable: false
+                        },
+                        {
+                            data: 'action',
+                            name: 'action',
+                            width: '1rem',
+                            orderable: false,
+                            searchable: false
+                        }
+                    ]
+                });
+            @endif
 
             validator = $("#reportForm").validate({
                 rules: {

@@ -2,20 +2,20 @@
     <div class="modal fade" id="evacuationCenterModal" tabindex="-1" role="dialog" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
-                <div class="modal-label-container">
+                <header class="modal-label-container">
                     <h1 class="modal-label"></h1>
-                </div>
+                </header>
                 <div class="modal-body">
                     <form id="evacuationCenterForm">
                         @csrf
                         <div class="form-content">
                             <div class="field-container">
-                                <label>Evacuation Center Name</label>
+                                <label for="name">Evacuation Center Name</label>
                                 <input type="text" name="name" class="form-control" autocomplete="off"
                                     placeholder="Enter Evacuation Center Name" id="name">
                             </div>
                             <div class="field-container">
-                                <label>Barangay</label>
+                                <label for="barangayName">Barangay</label>
                                 <select name="barangayName" class="form-select" id="barangayName">
                                     <option value="" hidden selected disabled>Select Barangay</option>
                                     <option value="Baclaran">Baclaran</option>
@@ -37,11 +37,6 @@
                                     <option value="Barangay II Poblacion">Barangay II Poblacion</option>
                                     <option value="Barangay III Poblacion">Barangay III Poblacion</option>
                                 </select>
-                            </div>
-                            <div class="field-container">
-                                <label>Capacity</label>
-                                <input type="number" name="capacity" class="form-control" autocomplete="off"
-                                    placeholder="Enter Capacity" id="capacity">
                             </div>
                             <div class="field-container">
                                 <label>Location</label>

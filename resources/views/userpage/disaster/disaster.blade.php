@@ -12,20 +12,20 @@
     <div class="wrapper">
         @include('partials.header')
         @include('partials.sidebar')
-        <div class="main-content">
+        <main class="main-content">
             <div class="label-container">
                 <i class="bi bi-tropical-storm"></i>
                 <span>MANAGE DISASTER INFORMATION</span>
             </div>
             <hr>
-            @if (auth()->user()->is_disable == 0)
+            @if (auth()->user()->is_disable == 0 && $operation == 'manage')
                 <div class="page-button-container">
                     <button class="btn-submit" id="addDisasterData">
                         <i class="bi bi-cloud-plus"></i>Add Disaster
                     </button>
                 </div>
             @endif
-            <div class="table-container">
+            <section class="table-container">
                 <div class="table-content">
                     <header class="table-label">Disaster Information Table</header>
                     <table class="table" id="disasterTable" width="100%">
@@ -40,10 +40,10 @@
                         </tbody>
                     </table>
                 </div>
-            </div>
+            </section>
             @include('userpage.disaster.disasterModal')
             @include('userpage.changePasswordModal')
-        </div>
+        </main>
     </div>
 
     @include('partials.script')
@@ -67,7 +67,7 @@
                 responsive: true,
                 processing: false,
                 serverSide: true,
-                ajax: "{{ route('disaster.display') }}",
+                ajax: "{{ route('disaster.display', $operation) }}",
                 columns: [{
                         data: 'id',
                         name: 'id',
@@ -144,8 +144,15 @@
                 });
 
                 $(document).on('click', '#archiveDisaster', function() {
-                    alterDisasterData('remove', "{{ route('disaster.archive', 'disasterId') }}".replace(
-                        'disasterId', getRowData(this, disasterTable).id));
+                    alterDisasterData('archive',
+                        "{{ route('disaster.archive', ['disasterId', 'archive']) }}"
+                        .replace('disasterId', getRowData(this, disasterTable).id));
+                });
+
+                $(document).on('click', '#unArchiveDisaster', function() {
+                    alterDisasterData('unarchive',
+                        "{{ route('disaster.archive', ['disasterId', 'unarchive']) }}".replace(
+                            'disasterId', getRowData(this, disasterTable).id));
                 });
 
                 $(document).on('change', '#changeDisasterStatus', function() {
@@ -160,9 +167,10 @@
                 });
 
                 function alterDisasterData(operation, url) {
-                    confirmModal(`Do you want to ${operation == 'remove' ? 'archive' : 'change'} this disaster?`)
-                        .then((
-                            result) => {
+                    confirmModal(
+                            `Do you want to ${operation == 'archive' ? 'archive' : operation == "unarchive" ? 'unarchive' : 'change the status of'} this disaster?`
+                        )
+                        .then((result) => {
                             return !result.isConfirmed ? $('#changeDisasterStatus').val('') :
                                 $.ajax({
                                     type: 'PATCH',
@@ -173,7 +181,7 @@
                                     success() {
                                         disasterTable.draw();
                                         showSuccessMessage(
-                                            `Disaster successfully ${operation == 'remove' ? 'archived' : 'changed'}.`
+                                            `Disaster successfully ${operation == "archive" ? "archived" : operation == "unarchive" ? "unarchived" : "changed status"}.`
                                         );
                                     },
                                     error() {

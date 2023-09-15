@@ -13,13 +13,17 @@
     <div class="wrapper">
         @include('partials.header')
         @include('partials.sidebar')
-        <div class="main-content">
+        <main class="main-content">
             <div class="label-container">
                 <i class="bi bi-person-gear"></i>
-                <span>MANAGE USERS ACCOUNT</span>
+                @if (auth()->user()->organization == 'CDRRMO')
+                    <span>MANAGE CDRRMO ACCOUNT</span>
+                @else
+                    <span>MANAGE USERS ACCOUNT</span>
+                @endif
             </div>
             <hr>
-            @if (auth()->user()->is_disable == 0)
+            @if (auth()->user()->is_disable == 0 && $operation == 'active')
                 <div class="page-button-container">
                     <button class="btn-submit" id="createUserAccount">
                         <i class="bi bi-person-fill-add"></i>
@@ -27,9 +31,13 @@
                     </button>
                 </div>
             @endif
-            <div class="table-container">
+            <section class="table-container">
                 <div class="table-content">
-                    <header class="table-label">User Accounts Table</header>
+                    @if (auth()->user()->organization == 'CDRRMO')
+                        <header class="table-label">User CDRRMO Table</header>
+                    @else
+                        <header class="table-label">User Accounts Table</header>
+                    @endif
                     <table class="table" id="accountTable" width="100%">
                         <thead>
                             <tr>
@@ -45,10 +53,10 @@
                         </tbody>
                     </table>
                 </div>
-                @include('userpage.userAccount.userAccountModal')
-                @include('userpage.changePasswordModal')
-            </div>
-        </div>
+            </section>
+            @include('userpage.userAccount.userAccountModal')
+            @include('userpage.changePasswordModal')
+        </main>
     </div>
 
     @include('partials.script')
@@ -73,7 +81,7 @@
                 responsive: true,
                 processing: false,
                 serverSide: true,
-                ajax: "{{ route('account.display.users') }}",
+                ajax: "{{ route('account.display.users', $operation) }}",
                 columns: [{
                         data: 'id',
                         name: 'id',
@@ -214,7 +222,7 @@
                                 return !result.isConfirmed ? $(this).val('') :
                                     $.ajax({
                                         type: "PATCH",
-                                        url: "{{ route('account.archive', 'userId') }}"
+                                        url: "{{ route('account.archive', ['userId', 'archive']) }}"
                                             .replace('userId', userId),
                                         success() {
                                             showSuccessMessage(
@@ -225,6 +233,25 @@
                                             showErrorMessage();
                                         }
                                     });
+                            });
+                            break;
+
+                        case 'unArchiveAccount':
+                            confirmModal('Do you want to unarchive this account?').then((result) => {
+                                return !result.isConfirmed ? $(this).val('') :
+                                    $.ajax({
+                                        type: "PATCH",
+                                        url: "{{ route('account.archive', ['userId', 'unarchive']) }}"
+                                            .replace('userId', userId),
+                                        success() {
+                                            showSuccessMessage(
+                                                'Successfully unarchived account.');
+                                            accountTable.draw();
+                                        },
+                                        error() {
+                                            showErrorMessage();
+                                        }
+                                    })
                             });
                             break;
 

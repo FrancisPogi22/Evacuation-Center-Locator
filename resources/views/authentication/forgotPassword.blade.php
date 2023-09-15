@@ -1,9 +1,9 @@
 @include('partials.authHeader')
 
-<body class="auth-body">
+<body>
     <div class="wrapper">
-        <div class="header-section"></div>
-        <div class="recover-container">
+        <header class="header-section"></header>
+        <section class="recover-section">
             <div class="recover-content">
                 <div class="recover-form">
                     <form action="{{ route('findAccount') }}" method="POST">
@@ -20,19 +20,13 @@
                         </div>
                         <hr>
                         <div class="button-container">
-                            <button class="btn-remove">
-                                <a href="{{ route('login') }}" class="text-white">Cancel</a>
-                            </button>
+                            <a class="btn-remove" href="{{ route('login') }}" class="text-white">Cancel</a>
                             <button type="submit" class="btn-submit">Search</button>
                         </div>
                     </form>
                 </div>
             </div>
-        </div>
-        <div class="rec-bottom-section">
-            <hr>
-            <p>E-LIGTAS @ {{ date('Y') }}</p>
-        </div>
+        </section>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"

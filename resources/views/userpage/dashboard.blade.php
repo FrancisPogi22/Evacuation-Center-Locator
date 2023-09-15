@@ -3,7 +3,6 @@
 
 <head>
     @include('partials.headPackage')
-    <link rel="stylesheet" href="{{ asset('assets/css/theme.css') }}" />
     {{-- @vite(['resources/js/app.js']) --}}
 </head>
 
@@ -62,7 +61,7 @@
                     </div>
                 @endif
             </div>
-            <div class="widget-container">
+            <section class="widget-container">
                 <div class="widget">
                     <div class="widget-content">
                         <div class="content-description">
@@ -87,7 +86,7 @@
                         </div>
                     </div>
                 </div>
-            </div>
+            </section>
             @foreach ($disasterData as $count => $disaster)
                 @if ($disaster['totalEvacuee'] != 0)
                     <figure class="chart-container">
@@ -126,27 +125,26 @@
             });
 
             $('#generateReportModal').on('hidden.bs.modal', () => {
-                onGoingDisaster.add(inactiveDisaster).prop('hidden', true);
                 $('#generateReportForm')[0].reset();
             });
 
-            fetchChartData();
+            fetchEvacueeData();
 
             // Echo.channel('active-evacuees').listen('ActiveEvacuees', (e) => {
             //     $("#totalEvacuee").text(e.activeEvacuees);
-            //     fetchChartData();
+            //     fetchEvacueeData();
             // })
         });
 
-        function fetchChartData() {
+        function fetchEvacueeData() {
             $.ajax({
                 url: "{{ route('fetchDisasterData') }}",
                 method: 'GET',
                 dataType: 'json',
                 success(disasterData) {
                     disasterData.forEach((disaster, count) => {
-                        fetchEvacueePieChart(disaster, count);
-                        fetchEvacueeGraph(disaster, count);
+                        initializePieChart(disaster, count);
+                        initializeBarGraph(disaster, count);
                     });
                 },
                 error() {
@@ -155,13 +153,13 @@
             });
         }
 
-        function fetchEvacueePieChart(disaster, count) {
+        function initializePieChart(disaster, count) {
             Highcharts.chart(`evacueePie${count + 1}`, {
                 chart: {
                     type: 'pie'
                 },
                 title: {
-                    text: disaster.disasterName
+                    text: `As Affected of ${disaster.disasterName}` 
                 },
                 tooltip: {
                     pointFormat: '{series.name}: <b>{point.y}</b>'
@@ -198,7 +196,7 @@
             });
         }
 
-        function fetchEvacueeGraph(disaster, count) {
+        function initializeBarGraph(disaster, count) {
             Highcharts.chart(`evacueeGraph${count + 1}`, {
                 chart: {
                     type: 'bar'
@@ -207,15 +205,13 @@
                     text: `${disaster.disasterName} Statistics`
                 },
                 xAxis: {
-                    categories: ['SENIOR CITIZEN', 'MINORS', 'INFANTS', 'PWD',
-                        'PREGNANT', 'LACTATING'
-                    ],
+                    categories: ['SENIOR CITIZEN', 'MINORS', 'INFANTS', 'PWD', 'PREGNANT', 'LACTATING']
                 },
                 yAxis: {
                     allowDecimals: false,
                     title: {
                         text: 'Estimated Numbers'
-                    },
+                    }
                 },
                 legend: {
                     reversed: true
@@ -244,16 +240,30 @@
                     }
                 },
                 series: [{
-                        name: 'SENIOR CITIZEN',
-                        data: [parseInt(disaster.totalSeniorCitizen), 0, 0, 0, 0, 0],
-                        color: '#e74c3c'
-                    },
-                    {
-                        name: 'MINORS',
-                        data: [0, parseInt(disaster.totalMinors), 0, 0, 0, 0],
-                        color: '#3498db'
-                    },
-                ],
+                    name: 'SENIOR CITIZEN',
+                    data: [parseInt(disaster.totalSeniorCitizen), '', '', '', '', ''],
+                    color: '#e74c3c'
+                }, {
+                    name: 'MINORS',
+                    data: ['', parseInt(disaster.totalMinors), '', '', '', ''],
+                    color: '#3498db'
+                }, {
+                    name: 'INFANTS',
+                    data: ['', '', parseInt(disaster.totalInfants), '', '', ''],
+                    color: '#2ecc71'
+                }, {
+                    name: 'PWD',
+                    data: ['', '', '', parseInt(disaster.totalPwd), '', ''],
+                    color: '#1abc9c'
+                }, {
+                    name: 'PREGNANT',
+                    data: ['', '', '', '', parseInt(disaster.totalPregnant), ''],
+                    color: '#e67e22'
+                }, {
+                    name: 'LACTATING',
+                    data: ['', '', '', '', '', parseInt(disaster.totalLactating)],
+                    color: '#9b59b6'
+                }],
                 exporting: false,
                 credits: {
                     enabled: false

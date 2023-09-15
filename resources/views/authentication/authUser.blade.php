@@ -1,16 +1,14 @@
 @include('partials.authHeader')
 
-<body class="auth-body">
+<body>
     <div class="wrapper">
         <header class="header-section"></header>
-        <div class="auth-content">
+        <section class="auth-section">
             <div class="auth-container">
                 <div class="auth-header-desc">
                     <h1>{{ config('app.name') }}</h1>
-                    <div class="auth-header-title">
-                        <p>E-LIGTAS can help you to locate an evacuation centers in Cabuyao, Laguna, as well as provide
-                            disaster preparedness information.</p>
-                    </div>
+                    <p>E-LIGTAS can help you to locate an evacuation centers in Cabuyao, Laguna, as well as provide
+                        disaster preparedness information.</p>
                 </div>
                 <div class="auth-form-section">
                     <form action="{{ route('login') }}" method="POST">
@@ -27,25 +25,15 @@
                         </div>
                         <div class="auth-btn-container">
                             <button type="submit" class="btn-login">Login</button>
+                            <a href="{{ route('resident.guideline') }}" class="btn-resident">Continue as resident</a>
                         </div>
-                    </form>
-                    <form action="{{ route('resident.guideline') }}" method="POST" class="py-2 px-3">
-                        @method('GET')
-                        @csrf
-                        <button type="submit" class="btn-resident">
-                            Continue as resident
-                        </button>
                     </form>
                     <div class="forgot-password-container">
                         <a href="{{ route('recoverAccount') }}">Forgotten password?</a>
                     </div>
                 </div>
             </div>
-        </div>
-        <div class="auth-bottom-section">
-            <hr>
-            <p>E-LIGTAS @ {{ date('Y') }}</p>
-        </div>
+        </section>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"

@@ -14,7 +14,6 @@ return new class extends Migration
             $table->string('barangay_name');
             $table->string('latitude');
             $table->string('longitude');
-            $table->integer('capacity');
             $table->string('status');
             $table->boolean('is_archive');
         });
