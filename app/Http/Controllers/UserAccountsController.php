@@ -85,21 +85,21 @@ class UserAccountsController extends Controller
         $userAccountData = $this->user->create([
             'organization' => $request->organization,
             'position'     => $request->position,
-            'name'         => $request->name,
+            'name'         => Str::title(trim($request->name)),
             'email'        => trim($request->email),
             'password'     =>  Hash::make($defaultPassword),
             'status'       =>  "Active",
             'is_disable'   =>  0,
             'is_suspend'   =>  0,
-            'is_archive'   => 0,
+            'is_archive'   => 0
         ]);
-        $this->logActivity->generateLog($userAccountData->id, 'Created New Account');
         Mail::to(trim($request->email))->send(new UserCredentialsMail([
             'email'        => trim($request->email),
             'organization' => $request->organization,
             'position'     => Str::upper($request->position),
             'password'     => $defaultPassword
         ]));
+        $this->logActivity->generateLog($userAccountData->id, $userAccountData->name, 'created a new account');
         return response()->json();
     }
 
@@ -115,33 +115,36 @@ class UserAccountsController extends Controller
         if ($updateAccountValidation->fails())
             return response(['status' => 'warning', 'message' => $updateAccountValidation->errors()->first()]);
 
-        $this->user->find($userId)->update([
+        $userAccount = $this->user->find($userId);
+        $userAccount->update([
             'organization' => $request->organization,
-            'name'         => $request->name,
+            'name'         => Str::title(trim($request->name)),
             'position'     => $request->position,
             'email'        => trim($request->email)
         ]);
-        $this->logActivity->generateLog($userId, 'Updated Account') ;
+        $this->logActivity->generateLog($userId, $userAccount->name, 'updated a account');
         return response()->json();
     }
 
     public function disableAccount($userId)
     {
-        $this->user->find($userId)->update([
+        $userAccount = $this->user->find($userId);
+        $userAccount->update([
             'status'     => 'Disabled',
             'is_disable' => 1
         ]);
-        $this->logActivity->generateLog($userId, 'Disabled Account');
+        $this->logActivity->generateLog($userId, $userAccount->name, 'disabled a account');
         return response()->json();
     }
 
     public function enableAccount($userId)
     {
-        $this->user->find($userId)->update([
+        $userAccount = $this->user->find($userId);
+        $userAccount->update([
             'status'     => 'Active',
             'is_disable' => 0
         ]);
-        $this->logActivity->generateLog($userId, 'Enabled Account');
+        $this->logActivity->generateLog($userId, $userAccount->name, 'enabled a account');
         return response()->json();
     }
 
@@ -154,23 +157,25 @@ class UserAccountsController extends Controller
         if ($suspendAccountValidation->fails())
             return response(['status' => 'warning', 'message' => $suspendAccountValidation->errors()->first()]);
 
-        $this->user->find($userId)->update([
+        $userAccount = $this->user->find($userId);
+        $userAccount->update([
             'is_suspend'   => 1,
             'suspend_time' => Carbon::parse($request->suspend_time)->format('Y-m-d H:i:s')
         ]);
-        $this->logActivity->generateLog($userId, 'Suspended Account');
+        $this->logActivity->generateLog($userId, $userAccount->name, 'suspended a account');
         return response()->json();
     }
 
     public function openAccount($userId)
     {
-        $this->user->find($userId)->update([
+        $userAccount = $this->user->find($userId);
+        $userAccount->update([
             'status'       => 'Active',
             'is_disable'   => 0,
             'is_suspend'   => 0,
             'suspend_time' => null
         ]);
-        $this->logActivity->generateLog($userId, 'Opened Account');
+        $this->logActivity->generateLog($userId, $userAccount->name, 'opened a account');
         return response()->json();
     }
 
@@ -191,10 +196,11 @@ class UserAccountsController extends Controller
             if ($changePasswordValidation->fails())
                 return response(['status' => 'warning', 'message' => $changePasswordValidation->errors()->first()]);
 
-            $this->user->find($userId)->update([
+            $userAccount = $this->user->find($userId);
+            $userAccount->update([
                 'password' => Hash::make(trim($request->password))
             ]);
-            $this->logActivity->generateLog($userId, 'Changing Password');
+            $this->logActivity->generateLog($userId, $userAccount->name, 'changed a password');
             return response()->json();
         }
 
@@ -203,10 +209,11 @@ class UserAccountsController extends Controller
 
     public function archiveAccount($userId, $operation)
     {
-        $this->user->find($userId)->update([
+        $userAccount = $this->user->find($userId);
+        $userAccount->update([
             'is_archive' => $operation == "archive" ? 1 : 0
         ]);
-        $this->logActivity->generateLog($userId, $operation == "archive" ? "Archived Account" : "Unarchived Account");
+        $this->logActivity->generateLog($userId, $userAccount->name, $operation == "archive" ? "archived a account" : "unarchived a account");
         return response()->json();
     }
 }

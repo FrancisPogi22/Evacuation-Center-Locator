@@ -20,8 +20,7 @@ class DisasterController extends Controller
     }
     public function displayDisasterInformation($operation)
     {
-        $isArchive = $operation == "manage" ? 0 : 1;
-        $disasterInformation = $this->disaster->where('is_archive', $isArchive)->orderBy('id', 'asc')->get();
+        $disasterInformation = $this->disaster->where('is_archive', $operation == "manage" ? 0 : 1)->orderBy('id', 'asc')->get();
 
         return DataTables::of($disasterInformation)
             ->addIndexColumn()
@@ -61,12 +60,12 @@ class DisasterController extends Controller
             return response(['status' => 'warning', 'message' => $validatedDisasterValidation->errors()->first()]);
 
         $disasterData = $this->disaster->create([
-            'name'       => Str::of(trim($request->name))->title(),
+            'name'       => Str::title(trim($request->name)),
             'status'     => "On Going",
             'user_id'    => auth()->user()->id,
             'is_archive' => 0
         ]);
-        $this->logActivity->generateLog($disasterData->id, 'Created New Disaster');
+        $this->logActivity->generateLog($disasterData->id, $disasterData->name, 'added a new disaster data');
         return response()->json();
     }
 
@@ -79,32 +78,35 @@ class DisasterController extends Controller
         if ($validatedDisasterValidation->fails())
             return response(['status' => 'warning', 'message' => $validatedDisasterValidation->errors()->first()]);
 
-        $this->disaster->find($disasterId)->update([
-            'name'    => Str::of(trim($request->name))->title(),
+        $disasterData = $this->disaster->find($disasterId);
+        $disasterData->update([
+            'name'    => Str::title(trim($request->name)),
             'user_id' => auth()->user()->id
         ]);
-        $this->logActivity->generateLog($disasterId, 'Updating Disaster Data');
+        $this->logActivity->generateLog($disasterId, $disasterData->name, 'updated a disaster data');
         return response()->json();
     }
 
     public function archiveDisasterData($disasterId, $operation)
     {
-        $this->disaster->find($disasterId)->update([
+        $disasterData = $this->disaster->find($disasterId);
+        $disasterData->update([
             'user_id'    => auth()->user()->id,
             'is_archive' => $operation == "archive" ? 1 : 0
         ]);
 
-        $this->logActivity->generateLog($disasterId, $operation == "archive" ? "Archived Disaster" : "Unarchived Disaster");
+        $this->logActivity->generateLog($disasterId, $disasterData->name, $operation == "archive" ? "archived a disaster data" : "unarchived a disaster data");
         return response()->json();
     }
 
     public function changeDisasterStatus(Request $request, $disasterId)
     {
-        $this->disaster->find($disasterId)->update([
+        $disasterData = $this->disaster->find($disasterId);
+        $disasterData->update([
             'status'  => $request->status,
             'user_id' => auth()->user()->id
         ]);
-        $this->logActivity->generateLog($disasterId, 'Changed Disaster Status');
+        $this->logActivity->generateLog($disasterId, $disasterData->name, 'changed a disaster status');
         return response()->json();
     }
 }
