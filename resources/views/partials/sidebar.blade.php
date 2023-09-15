@@ -76,6 +76,12 @@
                             </div>
                         @endif
                         <div class="navigation-item">
+                            <a href="{{ route('manage.hazard.report') }}" class="menu-link">
+                                <i class="bi bi-exclamation-triangle"></i>
+                                <span class="links_name">Manage Hazard Area</span>
+                            </a>
+                        </div>
+                        <div class="navigation-item">
                             <a href="{{ route('hotline.number') }}" class="menu-link">
                                 <i class="bi bi-telephone"></i>
                                 <span class="links_name">Hotline Numbers</span>
@@ -165,23 +171,6 @@
                                 </div>
                             </div>
                         @endif
-                        <div class="navigation-item">
-                            <a class="sub-btn">
-                                <i class="bi bi-exclamation-triangle"></i>
-                                <span class="links_name">Report Danger Areas</span>
-                                <i class="bi bi-caret-right-fill dropdown"></i>
-                            </a>
-                            <div class="sub-menu">
-                                <a href="{{ route('report.dangerous.areas.cswd') }}" class="menu-link">
-                                    <i class="bi bi-flag"></i>
-                                    <span class="links_name">Manage Reports</span>
-                                </a>
-                                <a href="" class="menu-link">
-                                    <i class="bi bi-bookmark-x"></i>
-                                    <span class="links_name">Archived Reports</span>
-                                </a>
-                            </div>
-                        </div>
                         <div class="navigation-item">
                             <a href="{{ route('hotline.number') }}" class="menu-link">
                                 <i class="bi bi-telephone"></i>
