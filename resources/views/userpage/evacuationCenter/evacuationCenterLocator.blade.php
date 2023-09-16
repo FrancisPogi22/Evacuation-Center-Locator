@@ -171,6 +171,11 @@
                     </button>`;
                 map.controls[google.maps.ControlPosition.BOTTOM_RIGHT].push(reportBtnContainer);
             }
+
+            const loader = document.createElement('div');
+            loader.id = 'loader';
+            loader.innerHTML = '<div id="loader-inner"></div>';
+            map.controls[google.maps.ControlPosition.CENTER].push(loader);
         }
 
         function initMarkers(markersData, type, markersArray) {
@@ -445,8 +450,9 @@
                                 );
 
                                 if ($('.stop-btn-container').is(':hidden')) {
+                                    $('#reportHazardBtn').attr('hidden', false);
+                                    $('#loader').removeClass('show');
                                     directionDisplay.setMap(map);
-                                    scrollToMap();
                                     var bounds = new google.maps.LatLngBounds();
                                     response.routes[0].legs.forEach(({
                                             steps
@@ -587,6 +593,9 @@
 
             $(document).on("click", "#locateNearestBtn, .locateEvacuationCenter", function() {
                 if (!locating) {
+                    scrollToMap();
+                    $('#reportHazardBtn').attr('hidden', true);
+                    $('#loader').addClass('show');
                     findNearestActive = !$(this).hasClass('locateEvacuationCenter');
                     rowData = findNearestActive ? null : getRowData(this, evacuationCenterTable);
                     locating = true;
