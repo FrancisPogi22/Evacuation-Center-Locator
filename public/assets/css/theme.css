@@ -2177,6 +2177,13 @@ select.form-select option {
 }
 
 @media only screen and (max-width: 1150px) {
+    .auth-container,
+    .recover-content,
+    .res-password-content  {
+        margin: 150px 0;
+        height: auto;
+    }
+
     .auth-section {
         text-align: center;
         width: 100%;
