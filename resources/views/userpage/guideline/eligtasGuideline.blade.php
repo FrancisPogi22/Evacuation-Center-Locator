@@ -17,7 +17,7 @@
             <hr>
             <section class="content-item">
                 <div class="guideline-container">
-                    @foreach ($guideline as $guidelineItem)
+                    @foreach ($guidelineData as $guidelineItem)
                         <div class="guideline-widget">
                             @auth
                                 @if (auth()->user()->is_disable == 0)
@@ -29,7 +29,7 @@
                                     </button>
                                 @endif
                                 <a class="guidelines-item"
-                                    href="{{ route('guide.display', Crypt::encryptString($guidelineItem->id)) }}">
+                                    href="{{ route('eligtas.guide', Crypt::encryptString($guidelineItem->id)) }}">
                                     <div class="guideline-content">
                                         <img src="{{ asset('assets/img/cdrrmo-logo.png') }}" alt="Logo">
                                         <div class="guideline-type">
@@ -40,7 +40,7 @@
                             @endauth
                             @guest
                                 <a class="guidelines-item"
-                                    href="{{ route('resident.guide', Crypt::encryptString($guidelineItem->id)) }}">
+                                    href="{{ route('resident.eligtas.guide', Crypt::encryptString($guidelineItem->id)) }}">
                                     <div class="guideline-content">
                                         <img src="{{ asset('assets/img/cdrrmo-logo.png') }}" alt="Logo">
                                         <div class="guideline-type">
@@ -103,14 +103,16 @@
                         operation = "create";
                         modalLabelContainer.removeClass('bg-warning');
                         modalLabel.text('Create Guideline');
-                        formButton.text('Create').add(addGuideInput).addClass('btn-submit').removeClass('btn-update');
+                        formButton.text('Create').add(addGuideInput).addClass('btn-submit').removeClass(
+                            'btn-update');
                         modal.modal('show');
                     });
 
                     $(document).on('click', '#updateGuidelineBtn', function() {
                         modalLabelContainer.addClass('bg-warning');
                         modalLabel.text('Update Guideline');
-                        formButton.text('Update').add(addGuideInput).addClass('btn-update').removeClass('btn-submit');
+                        formButton.text('Update').add(addGuideInput).addClass('btn-update').removeClass(
+                            'btn-submit');
                         guidelineWidget = this.closest('.guideline-widget');
                         guidelineItem = guidelineWidget.querySelector('.guidelines-item');
                         guidelineId = guidelineItem.getAttribute('href').split('/').pop();
