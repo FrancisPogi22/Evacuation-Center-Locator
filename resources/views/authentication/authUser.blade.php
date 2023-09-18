@@ -25,7 +25,7 @@
                         </div>
                         <div class="auth-btn-container">
                             <button type="submit" class="btn-login">Login</button>
-                            <a href="{{ route('resident.guideline') }}" class="btn-resident">Continue as resident</a>
+                            <a href="{{ route('resident.eligtas.guideline') }}" class="btn-resident">Continue as resident</a>
                         </div>
                     </form>
                     <div class="forgot-password-container">

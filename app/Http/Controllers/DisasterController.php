@@ -66,6 +66,7 @@ class DisasterController extends Controller
             'is_archive' => 0
         ]);
         $this->logActivity->generateLog($disasterData->id, $disasterData->name, 'added a new disaster data');
+        
         return response()->json();
     }
 
@@ -84,6 +85,7 @@ class DisasterController extends Controller
             'user_id' => auth()->user()->id
         ]);
         $this->logActivity->generateLog($disasterId, $disasterData->name, 'updated a disaster data');
+        
         return response()->json();
     }
 
@@ -96,6 +98,7 @@ class DisasterController extends Controller
         ]);
 
         $this->logActivity->generateLog($disasterId, $disasterData->name, $operation == "archive" ? "archived a disaster data" : "unarchived a disaster data");
+        
         return response()->json();
     }
 
@@ -107,6 +110,7 @@ class DisasterController extends Controller
             'user_id' => auth()->user()->id
         ]);
         $this->logActivity->generateLog($disasterId, $disasterData->name, 'changed a disaster status');
+
         return response()->json();
     }
 }

@@ -68,6 +68,7 @@ class EvacueeController extends Controller
         $evacueeInfo               = $this->evacuee->create($evacueeInfo);
         $this->logActivity->generateLog($evacueeInfo->id, $evacueeInfo->barangay, 'recorded a new evacuee information: ');
         // event(new ActiveEvacuees());
+        
         return response()->json();
     }
 
@@ -102,6 +103,7 @@ class EvacueeController extends Controller
         $evacueeInfo['remarks'] = Str::ucfirst(trim($request->remarks));
         $evacueeInfo            = $this->evacuee->find($evacueeId)->update($evacueeInfo);
         $this->logActivity->generateLog($evacueeId, $evacueeInfo->barangay, 'updated a evacuee information');
+        
         return response()->json();
     }
 }

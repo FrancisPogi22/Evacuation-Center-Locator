@@ -1,5 +1,6 @@
 <?php
 
+use App\Events\NotificationEvent;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\MainController;
 use App\Http\Controllers\EvacueeController;
@@ -33,22 +34,15 @@ Route::prefix('resident')->middleware('guest')->group(function () {
             Route::patch('/updateAttempt', 'updateUserAttempt')->name('update');
             Route::post('/createIncidentReport', 'createIncidentReport')->name('accident');
             Route::post('/updateIncidentReport/{reportId}', 'updateIncidentReport')->name('incident.update');
-            Route::get('/displayDangerousAreasReport/{operation}', 'displayDangerousAreasReport')->name('danger.areas');
-            Route::post('/reportDangerousArea', 'reportDangerousArea')->name('dangerous.area');
-            Route::put('/updateDangerousArea/{reportId}', 'updateDangerousAreaReport')->name('update.danger.area');
-            Route::delete('/revertDangerousAreaReport/{reportId}', 'revertDangerousAreaReport')->name('revert.danger.area.report');
-        });
-
-        Route::prefix('eligtasGuideline')->controller(GuidelineController::class)->group(function () {
-            Route::get('/', 'eligtasGuideline')->name('guideline');
-            Route::get('/guide/{guidelineId}', 'guide')->name('guide');
         });
 
         Route::controller(MainController::class)->group(function () {
+            Route::get('/eligtasGuideline', 'eligtasGuideline')->name('eligtas.guideline');
+            Route::get('/guide/{guidelineId}', 'guide')->name('eligtas.guide');
             Route::get('/evacuationCenterLocator', 'evacuationCenterLocator')->name('evacuation.center.locator');
-            Route::get('/incidentReport', 'incidentReport')->name('display.incident.report');
-            Route::view('/hotlineNumber', 'userpage.hotlineNumbers')->name('hotline.number');
-            Route::view('/about', 'userpage.about')->name('about');
+            Route::get('/incidentReport/{operation}', 'incidentReport')->name('display.incident.report');
+            Route::get('/hotlineNumber', 'hotlineNumbers')->name('hotline.number');
+            Route::get('/about', 'about')->name('about');
         });
 
         Route::name('hazard.')->controller(HazardReportController::class)->group(function () {
@@ -109,7 +103,7 @@ Route::middleware('auth')->group(function () {
         Route::controller(MainController::class)->group(function () {
             Route::get('/dashboard', 'dashboard')->name('dashboard.cdrrmo');
             Route::get('/incidentReport/{operation}', 'incidentReport')->name('incident.report');
-            Route::view('/manageHazardReport', 'userpage.hazardReport.manageHazardReport')->name('manage.hazard.report');
+            Route::get('/manageHazardReport', 'manageHazardReport')->name('manage.hazard.report');
         });
 
         Route::prefix('incidentReport')->name('report.')->controller(IncidentReportController::class)->group(function () {
@@ -130,14 +124,12 @@ Route::middleware('auth')->group(function () {
 
     Route::prefix('eligtasGuideline')->controller(GuidelineController::class)->group(function () {
         Route::name('guideline.')->group(function () {
-            Route::get('/', 'eligtasGuideline')->name('display');
             Route::post('/guideline/createGuideline', 'createGuideline')->name('create');
             Route::post('/guideline/updateGuideline/{guidelineId}', 'updateGuideline')->name('update');
             Route::delete('/guideline/removeGuideline/{guidelineId}', 'removeGuideline')->name('remove');
         });
 
         Route::name('guide.')->group(function () {
-            Route::get('/guide/{guidelineId}', 'guide')->name('display');
             Route::post('/guide/addGuide{guidelineId}', 'createGuide')->name('create');
             Route::post('/guide/updateGuide/{guideId}', 'updateGuide')->name('update');
             Route::delete('/guide/removeGuide/{guideId}', 'removeGuide')->name('remove');
@@ -145,12 +137,16 @@ Route::middleware('auth')->group(function () {
     });
 
     Route::controller(MainController::class)->group(function () {
+        Route::get('/eligtasGuideline', 'eligtasGuideline')->name('eligtas.guideline');
+        Route::get('/guide/{guidelineId}', 'guide')->name('eligtas.guide');
         Route::post('/generateEvacueeData', 'generateExcelEvacueeData')->name('generate.evacuee.data');
         Route::get('/userAccounts/{operation}', 'userAccounts')->name('display.users.account');
-        Route::view('/hotlineNumber', 'userpage.hotlineNumbers')->name('hotline.number');
-        Route::view('/about', 'userpage.about')->name('about');
+        Route::get('/hotlineNumber', 'hotlineNumbers')->name('hotline.number');
+        Route::get('/about', 'about')->name('about');
         Route::get('/fetchDisasterData', 'fetchDisasterData')->name('fetchDisasterData');
     });
+
+    Route::get('/notifications', NotificationEvent::class . '@notifications')->name('notifications');
 
     Route::name('account.')->controller(UserAccountsController::class)->group(function () {
         Route::post('/createAccount', 'createAccount')->name('create');

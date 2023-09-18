@@ -2,27 +2,31 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\ActivityUserLog;
+use App\Models\Guide;
 use App\Models\Evacuee;
 use App\Models\Disaster;
+use App\Models\Guideline;
 use Illuminate\Http\Request;
-use App\Models\HazardReport;
-use App\Models\IncidentReport;
+use App\Models\ActivityUserLog;
 use App\Models\EvacuationCenter;
+use App\Events\NotificationEvent;
 use App\Exports\EvacueeDataExport;
 use Maatwebsite\Excel\Facades\Excel;
+use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Validator;
 use Maatwebsite\Excel\Excel as FileFormat;
 
 class MainController extends Controller
 {
-    private $evacuationCenter, $disaster, $evacuee, $hazardReport;
+    private $evacuationCenter, $disaster, $evacuee, $notification, $guide, $guideline;
 
     public function __construct()
     {
+        $this->guide = new Guide;
         $this->evacuee = new Evacuee;
         $this->disaster = new Disaster;
-        $this->hazardReport = new HazardReport;
+        $this->guideline = new Guideline;
+        $this->notification = new NotificationEvent;
         $this->evacuationCenter = new EvacuationCenter;
     }
 
@@ -32,8 +36,9 @@ class MainController extends Controller
         $onGoingDisasters = $this->disaster->where('status', "On Going")->get();
         $activeEvacuation = $this->evacuationCenter->where('status', "Active")->count();
         $totalEvacuee     = array_sum(array_column($disasterData, 'totalEvacuee'));
+        $notifications    = $this->notification->notifications();
 
-        return view('userpage.dashboard',  compact('activeEvacuation', 'disasterData', 'totalEvacuee', 'onGoingDisasters'));
+        return view('userpage.dashboard', compact('activeEvacuation', 'disasterData', 'totalEvacuee', 'onGoingDisasters', 'notifications'));
     }
 
     public function generateExcelEvacueeData(Request $request)
@@ -48,10 +53,36 @@ class MainController extends Controller
         return Excel::download(new EvacueeDataExport($request->disaster_id), 'evacuee-data.xlsx', FileFormat::XLSX);
     }
 
+    public function eligtasGuideline()
+    {
+        $notifications = $this->notification->notifications();
+        $guidelineData = "";
+
+        if (!auth()->check()) {
+            $guidelineData = $this->guideline->all();
+
+            return view('userpage.guideline.eligtasGuideline', compact('guidelineData'));
+        }
+
+        $guidelineData = auth()->user()->organization == "CDRRMO" ? $this->guideline->where('organization', "CDRRMO")->get() :
+            $this->guideline->where('organization', "CSWD")->get();
+
+        return view('userpage.guideline.eligtasGuideline', compact('guidelineData', 'notifications'));
+    }
+
+    public function guide($guidelineId)
+    {
+        $notifications = $this->notification->notifications();
+        $guide         = $this->guide->where('guideline_id', Crypt::decryptString($guidelineId))->get();
+
+        return view('userpage.guideline.guide', compact('guide', 'guidelineId', 'notifications'));
+    }
+
     public function manageEvacueeInformation(Request $request)
     {
         $disasterList   = $this->disaster->where('status', 'On Going')->get();
         $evacuationList = $this->evacuationCenter->whereNotIn('status', ['Inactive', 'Archived'])->get();
+
         return view('userpage.evacuee.evacuee', compact('evacuationList', 'disasterList'));
     }
 
@@ -63,6 +94,7 @@ class MainController extends Controller
     public function evacuationCenterLocator()
     {
         $prefix = request()->route()->getPrefix();
+
         return view('userpage.evacuationCenter.evacuationCenterLocator', compact('prefix'));
     }
 
@@ -73,7 +105,9 @@ class MainController extends Controller
 
     public function incidentReport($operation)
     {
-        return view('userpage.incidentReport.incidentReport', compact('operation'));
+        $notifications = $this->notification->notifications();
+
+        return view('userpage.incidentReport.incidentReport', compact('operation', 'notifications'));
     }
 
     public function userActivityLog()
@@ -87,12 +121,16 @@ class MainController extends Controller
 
     public function userAccounts($operation)
     {
-        return view('userpage.userAccount.userAccounts', compact('operation'));
+        $notifications = $this->notification->notifications();
+
+        return view('userpage.userAccount.userAccounts', compact('operation', 'notifications'));
     }
 
-    public function dangerAreaReport($operation)
+    public function manageHazardReport()
     {
-        return view('userpage.evacuationCenter.dangerousAreasReport', compact('operation'));
+        $notifications = $this->notification->notifications();
+
+        return view('userpage.hazardReport.manageHazardReport', compact('notifications'));
     }
 
     public function fetchDisasterData()
@@ -119,5 +157,19 @@ class MainController extends Controller
         }
 
         return request()->ajax() ? response()->json($disasterData) : $disasterData;
+    }
+
+    public function hotlineNumbers()
+    {
+        $notifications = $this->notification->notifications();
+
+        return view('userpage.hotlineNumbers', compact('notifications'));
+    }
+
+    public function about()
+    {
+        $notifications = $this->notification->notifications();
+
+        return view('userpage.about', compact('notifications'));
     }
 }

@@ -34,7 +34,7 @@
                             </a>
                         </div>
                         <div class="navigation-item">
-                            <a href="{{ route('guideline.display') }}" class="menu-link">
+                            <a href="{{ route('eligtas.guideline') }}" class="menu-link">
                                 <i class="bi bi-book"></i>
                                 <span class="links_name">E-LIGTAS Guidelines</span>
                             </a>
@@ -101,7 +101,7 @@
                             </a>
                         </div>
                         <div class="navigation-item">
-                            <a href="{{ route('guideline.display') }}" class="menu-link">
+                            <a href="{{ route('eligtas.guideline') }}" class="menu-link">
                                 <i class="bi bi-book"></i>
                                 <span class="links_name">E-LIGTAS Guidelines</span>
                             </a>
@@ -193,7 +193,7 @@
                 @endauth
                 @guest
                     <div class="navigation-item">
-                        <a href="{{ route('resident.guideline') }}" class="menu-link">
+                        <a href="{{ route('resident.eligtas.guideline') }}" class="menu-link">
                             <i class="bi bi-book"></i>
                             <span class="links_name">E-LIGTAS Guidelines</span>
                         </a>
