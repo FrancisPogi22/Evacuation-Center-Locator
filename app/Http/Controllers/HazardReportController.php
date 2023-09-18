@@ -15,7 +15,7 @@ class HazardReportController extends Controller
     function __construct()
     {
         $this->hazardReport = new HazardReport;
-        $this->logActivity = new ActivityUserLog;
+        $this->logActivity  = new ActivityUserLog;
     }
 
     public function getHazardReport()

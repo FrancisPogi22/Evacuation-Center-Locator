@@ -66,7 +66,7 @@ class EvacueeController extends Controller
         $evacueeInfo['remarks']    = Str::ucfirst(trim($request->remarks));
         $evacueeInfo['is_archive'] = 0;
         $evacueeInfo               = $this->evacuee->create($evacueeInfo);
-        $this->logActivity->generateLog($evacueeInfo->id, $evacueeInfo->barangay, 'recorded a new evacuee information: ');
+        $this->logActivity->generateLog($evacueeInfo->id, $evacueeInfo->barangay, 'recorded a new evacuee information');
         // event(new ActiveEvacuees());
         
         return response()->json();

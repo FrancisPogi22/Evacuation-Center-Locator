@@ -33,16 +33,9 @@ class DisasterController extends Controller
                 if (auth()->user()->is_disable == 1) return;
 
                 $updateButton  = '<button class="btn-table-update" id="updateDisaster"><i class="bi bi-pencil-square"></i>Update</button>';
-                $statusOptions = ($disaster->status == 'On Going') ? '<option value="Inactive">Inactive</option>' : '<option value="On Going">On Going</option>';
-                $selectStatus  = "";
-
-                if ($operation == "manage") {
-                    $selectStatus  = '<select class="form-select" id="changeDisasterStatus">' .
-                        '<option value="" disabled selected hidden>Change Status</option>' . $statusOptions . '</select>';
-                    $archiveButton = '<button class="btn-table-remove" id="archiveDisaster"><i class="bi bi-trash3-fill"></i>Archive</button>';
-                } else {
-                    $archiveButton = '<button class="btn-table-remove" id="unArchiveDisaster"><i class="bi bi-arrow-repeat"></i>Unarchive</button>';
-                }
+                $statusOptions = $disaster->status == 'On Going' ? '<option value="Inactive">Inactive</option>' : '<option value="On Going">On Going</option>';
+                $selectStatus  = '<select class="form-select" id="changeDisasterStatus"><option value="" disabled selected hidden>Change Status</option>' . $statusOptions . '</select>';
+                $archiveButton = $operation == "manage" ? '<button class="btn-table-remove" id="archiveDisaster"><i class="bi bi-trash3-fill"></i>Archive</button>' : '<button class="btn-table-remove" id="unArchiveDisaster"><i class="bi bi-arrow-repeat"></i>Unarchive</button>';
 
                 return '<div class="action-container">' . $updateButton . $archiveButton . $selectStatus . '</div>';
             })
@@ -97,7 +90,7 @@ class DisasterController extends Controller
             'is_archive' => $operation == "archive" ? 1 : 0
         ]);
 
-        $this->logActivity->generateLog($disasterId, $disasterData->name, $operation == "archive" ? "archived a disaster data" : "unarchived a disaster data");
+        $this->logActivity->generateLog($disasterId, $disasterData->name, ($operation == "archive" ? "archived" : "unarchived") . " a disaster data");
         
         return response()->json();
     }

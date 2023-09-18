@@ -211,11 +211,8 @@ class IncidentReportController extends Controller
 
     public function archiveIncidentReport($reportId, $operation)
     {
-        $this->incidentReport->find($reportId)->update([
-            'is_archive' => $operation == 'archive' ? 1 : 0,
-        ]);
-        $action = $operation == 'archive' ? 'archived' : 'unarchived';
-        $this->logActivity->generateLog($reportId, 'Resident Incident Report', "$action a incident report");
+        $dangerAreaReport = $this->reportEvent->archiveDangerAreaReport($dangerAreaId, $operation);
+        $$this->logActivity->generateLog($dangerAreaId, $dangerAreaReport, ($operation == "archive" ? "archived" : "unarchived") . " a dangerous area report");
         //event(new IncidentReportEvent());
         
         return response()->json();

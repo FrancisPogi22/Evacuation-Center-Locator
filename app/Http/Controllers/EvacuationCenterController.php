@@ -29,10 +29,10 @@ class EvacuationCenterController extends Controller
         return DataTables::of($evacuationCenterList)
             ->addIndexColumn()
             ->addColumn('evacuees', function ($evacuation) use ($operation) {
-                return $operation == "locator" ? Evacuee::where('evacuation_assigned', $evacuation->name)->sum('individuals') : $evacuation->capacity;
+                return $operation == "locator" ? Evacuee::where('evacuation_assigned', $evacuation->name)->sum('individuals') : '';
             })->addColumn('action', function ($evacuation) use ($operation, $type) {
                 if ($operation == "locator")
-                    return '<button class="btn-table-primary text-white locateEvacuationCenter"><i class="bi bi-search"></i>Locate</button>';
+                    return '<button class="btn-table-primary locateEvacuationCenter"><i class="bi bi-search"></i>Locate</button>';
 
                 if (auth()->user()->is_disable == 1) return;
 

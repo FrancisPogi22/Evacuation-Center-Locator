@@ -32,7 +32,7 @@
                                     placeholder="Select Suspend Time" autocomplete="off">
                             </div>
                             <div class="field-container" id="name-container">
-                                <label for="name">Name</label>
+                                <label for="name">Full Name</label>
                                 <input type="text" name="name" class="form-control" id="name"
                                     placeholder="Enter Name">
                             </div>

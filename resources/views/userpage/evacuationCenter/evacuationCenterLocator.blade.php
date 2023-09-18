@@ -77,7 +77,7 @@
                                 <th>Barangay</th>
                                 <th>Latitude</th>
                                 <th>Longitude</th>
-                                <th>Capacity</th>
+                                <th>No. of Evacuee</th>
                                 <th>Status</th>
                                 <th>Action</th>
                             </tr>

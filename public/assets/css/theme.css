@@ -251,7 +251,7 @@ input::placeholder {
 }
 
 .dropdown-menu {
-    padding: 9px 0;
+    padding: 7px 0;
     border-radius: 6px !important;
 }
 
@@ -2235,6 +2235,8 @@ select.form-select option {
 
     .auth-section .auth-container {
         flex-direction: column;
+        padding: 40px 0;
+        height: calc(100vh + 100%);
     }
 
     .evacuation-button-container {
@@ -2298,6 +2300,14 @@ select.form-select option {
 
     .wrapper {
         padding: 0 20px;
+    }
+
+    .dropdown-menu {
+        padding: 5px 0;
+    }
+
+    .dropdown-menu li {
+        font-size: 12px;
     }
 
     .auth-section .auth-container .auth-header-desc h1 {
@@ -2411,6 +2421,10 @@ select.form-select option {
 
     .toast-message {
         font-size: 10px;
+    }
+
+    .auth-section .auth-container {
+        padding: 90px 0;
     }
 
     .auth-section .auth-container .auth-header-desc {
