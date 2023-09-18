@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use App\Models\IncidentReport;
 use App\Models\ActivityUserLog;
 use Yajra\DataTables\DataTables;
+use App\Events\NotificationEvent;
 use App\Events\IncidentReportEvent;
 use Illuminate\Support\Facades\Validator;
 
@@ -130,7 +131,9 @@ class IncidentReportController extends Controller
             $resident->update(['attempt' => $residentAttempt + 1]);
             $attempt = $resident->attempt;
             $attempt == 3 ? $resident->update(['report_time' => Carbon::now()->addHours(3)]) : null;
-            //event(new IncidentReportEvent());
+            // event(new IncidentReportEvent());
+            // event(new NotificationEvent());
+
             return response()->json();
         }
 
@@ -140,6 +143,8 @@ class IncidentReportController extends Controller
             'attempt' => 1
         ]);
         //event(new IncidentReportEvent());
+        event(new NotificationEvent());
+
         return response()->json();
     }
 
@@ -171,6 +176,9 @@ class IncidentReportController extends Controller
         }
 
         $residentReport->update($dataToUpdate);
+        //event(new IncidentReportEvent());
+        event(new NotificationEvent());
+
         return response()->json();
     }
 
@@ -179,6 +187,7 @@ class IncidentReportController extends Controller
         $this->reportEvent->approveStatus($reportId);
         $this->logActivity->generateLog($reportId, 'Resident Incident Report', 'approved a incident report');
         //event(new IncidentReportEvent());
+
         return response()->json();
     }
 
@@ -187,6 +196,7 @@ class IncidentReportController extends Controller
         $this->reportEvent->declineStatus($reportId);
         $this->logActivity->generateLog($reportId, 'Resident Incident Report', 'declined a incident report');
         //event(new IncidentReportEvent());
+
         return response()->json();
     }
 
@@ -195,6 +205,7 @@ class IncidentReportController extends Controller
         $reportPhotoPath = $this->incidentReport->find($reportId)->value('photo');
         $this->reportEvent->revertIncidentReport($reportId, $reportPhotoPath);
         //event(new IncidentReportEvent());
+
         return response()->json();
     }
 
@@ -206,157 +217,7 @@ class IncidentReportController extends Controller
         $action = $operation == 'archive' ? 'archived' : 'unarchived';
         $this->logActivity->generateLog($reportId, 'Resident Incident Report', "$action a incident report");
         //event(new IncidentReportEvent());
-        return response()->json();
-    }
-
-    public function displayDangerousAreasReport(Request $request, $operation)
-    {
-        $dangerousAreasReport = $this->incidentReport
-            ->whereIn('status', auth()->check() ? ['On Process', 'Confirmed'] : ['On Process'])
-            ->where('is_archive', $operation == "report" ? 0 : 1)
-            ->whereNull('photo');
-
-        if (!auth()->check())
-            $dangerousAreasReport->where('user_ip', $request->ip());
-
-        return DataTables::of($dangerousAreasReport->get())
-            ->addIndexColumn()
-            ->addColumn('status', fn ($dangerousAreas) => '<div class="status-container"><div class="status-content bg-' . match ($dangerousAreas->status) {
-                'Confirmed'  => 'success',
-                'On Process' => 'warning'
-            }
-                . '">' . $dangerousAreas->status . '</div></div>')
-            ->addColumn('action', function ($dangerousAreas) use ($operation) {
-                if (!auth()->check()) {
-                    return $dangerousAreas->user_ip == request()->ip() ? '<div class="action-container">' .
-                        '<button class="btn-table-update" id="updateDangerousAreaReport"><i class="bi bi-trash3-fill"></i>Update</button>' .
-                        '<button class="btn-table-remove" id="revertDangerousAreaReport"><i class="bi bi-arrow-counterclockwise"></i>Revert</button>' .
-                        '</div>' : '';
-                } elseif (auth()->user()->is_disable == 0) {
-                    if ($operation == "report") {
-                        return '<div class="action-container">' .
-                            ($dangerousAreas->status == "Confirmed"
-                                ? '<button class="btn-table-remove" id="archiveDangerAreaReport"><i class="bi bi-trash3-fill"></i>Archive</button>'
-                                : '<button class="btn-table-submit" id="confirmDangerAreaReport"><i class="bi bi-check-circle-fill"></i>Confirm</button>' .
-                                '<button class="btn-table-remove" id="rejectDangerAreaReport"><i class="bi bi-x-circle-fill"></i>Reject</button>') .
-                            '</div>';
-                    } else {
-                        return '<div class="action-container">' .
-                            '<button class="btn-table-remove" id="unArchiveDangerAreaReport"><i class="bi bi-arrow-repeat"></i>Unarchive</button>' .
-                            '</div>';
-                    }
-                } else {
-                    return '<span class="message-text">Currently Disabled.</span>';
-                }
-            })
-            ->rawColumns(['status', 'action'])
-            ->make(true);
-    }
-
-    public function reportDangerousArea(Request $request)
-    {
-        $dangerousAreasReportValidation = Validator::make($request->all(), [
-            'report_type' => 'required',
-            'latitude'    => 'required',
-            'longitude'   => 'required'
-        ]);
-
-        if ($dangerousAreasReportValidation->fails())
-            return response(['status' => 'warning', 'message' => $dangerousAreasReportValidation->errors()->first()]);
-
-        $resident = $this->reportLog->where('user_ip', $request->ip())->first();
-        $dangerAreaReport = [
-            'description' => Str::ucFirst(trim($request->report_type)),
-            'location'    => null,
-            'photo'       => null,
-            'latitude'    => $request->latitude,
-            'longitude'   => $request->longitude,
-            'status'      => 'On Process',
-            'user_ip'     => $request->ip(),
-            'is_archive'  => 0
-        ];
-
-        if ($resident) {
-            $residentAttempt = $resident->attempt;
-            $reportTime      = $resident->report_time;
-
-            if ($residentAttempt == 3) {
-                $isBlock = $this->isBlocked($reportTime);
-
-                if (!$isBlock) {
-                    $resident->update(['attempt' => 0, 'report_time' => null]);
-                    $residentAttempt = 0;
-                } else {
-                    return response(['status' => 'blocked', 'message' => "You have been blocked until  $isBlock."]);
-                }
-            }
-
-            $this->incidentReport->create($dangerAreaReport);
-            $resident->update(['attempt' => $residentAttempt + 1]);
-            $attempt = $resident->attempt;
-            $attempt == 3 ? $resident->update(['report_time' => Carbon::now()->addHours(3)]) : null;
-            //event(new IncidentReportEvent());
-            return response()->json();
-        }
-
-        $this->incidentReport->create($dangerAreaReport);
-        $this->reportLog->create([
-            'user_ip' => $request->ip(),
-            'attempt' => 1
-        ]);
-        //event(new IncidentReportEvent());
-        return response()->json();
-    }
-
-    public function updateDangerousAreaReport(Request $request, $reportId)
-    {
-        $dangerousAreasReportValidation = Validator::make($request->all(), [
-            'report_type' => 'required',
-            'latitude'    => 'required',
-            'longitude'   => 'required'
-        ]);
-
-        if ($dangerousAreasReportValidation->fails())
-            return response(['status' => 'warning', 'message' => $dangerousAreasReportValidation->errors()->first()]);
-
-        $this->incidentReport->find($reportId)->update([
-            'description' => Str::ucFirst(trim($request->report_type)),
-            'latitude'    => $request->latitude,
-            'longitude'   => $request->longitude
-        ]);
-        //event(new IncidentReportEvent());
-        return response()->json();
-    }
-
-    public function revertDangerousAreaReport($reportId)
-    {
-        $this->reportEvent->revertDangerAreaReport($reportId);
-        //event(new IncidentReportEvent());
-        return response()->json();
-    }
-
-    public function confirmDangerAreaReport($dangerAreaId)
-    {
-        $dangerAreaReport = $this->reportEvent->confirmDangerAreaReport($dangerAreaId);
-        $this->logActivity->generateLog($dangerAreaId, $dangerAreaReport, 'confirmed a dangerous area report');
-        //event(new IncidentReportEvent());
-        return response()->json();
-    }
-
-    public function rejectDangerAreaReport($dangerAreaId)
-    {
-        $dangerAreaReport = $this->incidentReport->find($dangerAreaId);
-        $this->logActivity->generateLog($dangerAreaId, $dangerAreaReport->description, 'rejected a dangerous area report');
-        $dangerAreaReport->delete();
-        //event(new IncidentReportEvent());
-        return response()->json();
-    }
-
-    public function archiveDangerAreaReport($dangerAreaId, $operation)
-    {
-        $dangerAreaReport = $this->reportEvent->archiveDangerAreaReport($dangerAreaId, $operation);
-        $this->logActivity->generateLog($dangerAreaId, $dangerAreaReport,  $operation == "archive" ? "archived a dangerous area report" : "unarchived a dangerous area report");
-        //event(new IncidentReportEvent());
+        
         return response()->json();
     }
 

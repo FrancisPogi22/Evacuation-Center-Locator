@@ -57,6 +57,7 @@ class AuthenticationController extends Controller
     public function resetPasswordForm($token)
     {
         $passwordReset = DB::table('password_resets')->where('token', $token)->first();
+
         return !$passwordReset ? redirect('/')->with('warning', 'Unauthorized Token.') : (Carbon::parse($passwordReset->created_at)->isPast() ? redirect('/')->with('warning', 'Token Expired.') : view('authentication.resetPasswordForm', compact('token')));
     }
 
@@ -73,6 +74,7 @@ class AuthenticationController extends Controller
 
         $this->user->where('email', $request->email)->update(['password' => Hash::make($request->password)]);
         DB::table('password_resets')->where('email', $request->email)->delete();
+
         return redirect('/')->with('success', 'Your password has been changed.');
     }
 
@@ -81,6 +83,7 @@ class AuthenticationController extends Controller
         $this->logActivity->generateLog(null, null, 'Logged Out');
         auth()->logout();
         session()->flush();
+
         return redirect('/')->with('success', 'Successfully Logged out.');
     }
 
@@ -100,10 +103,12 @@ class AuthenticationController extends Controller
             $suspendTime = Carbon::parse($userAuthenticated->suspend_time)->format('F j, Y H:i:s');
             auth()->logout();
             session()->flush();
+
             return back()->withInput()->with('warning', 'Your account has been suspended until ' . $suspendTime);
         }
 
         $this->logActivity->generateLog(null, null, 'Logged In');
+        
         return redirect("/" . Str::of($userAuthenticated->organization)->lower() . "/dashboard")->with('success', "Welcome " . $userAuthenticated->name . ".");
     }
 }

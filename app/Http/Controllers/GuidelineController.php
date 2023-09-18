@@ -21,22 +21,6 @@ class GuidelineController extends Controller
         $this->logActivity = new ActivityUserLog;
     }
 
-    public function eligtasGuideline()
-    {
-        $guideline = "";
-
-        if (!auth()->check()) {
-            $guideline = $this->guideline->all();
-
-            return view('userpage.guideline.eligtasGuideline', compact('guideline'));
-        }
-
-        $guideline = auth()->user()->organization == "CDRRMO" ?  $this->guideline->where('organization', "CDRRMO")->get() :
-            $this->guideline->where('organization', "CSWD")->get();
-
-        return view('userpage.guideline.eligtasGuideline', compact('guideline'));
-    }
-
     public function createGuideline(Request $request)
     {
         $guidelineValidation = Validator::make($request->all(), [
@@ -131,13 +115,8 @@ class GuidelineController extends Controller
         $guideline = $this->guideline->find(Crypt::decryptString($guidelineId));
         $this->logActivity->generateLog($guidelineId, $guideline->type, 'removed a guideline');
         $guideline->delete();
-        return response()->json();
-    }
 
-    public function guide($guidelineId)
-    {
-        $guide = $this->guide->where('guideline_id', Crypt::decryptString($guidelineId))->get();
-        return view('userpage.guideline.guide', compact('guide', 'guidelineId'));
+        return response()->json();
     }
 
     public function updateGuide(Request $request, $guideId)
@@ -170,8 +149,8 @@ class GuidelineController extends Controller
             'content' => Str::ucfirst(trim($request->content)),
             'user_id' => auth()->user()->id
         ]);
-
         $this->logActivity->generateLog($guideId, $guideItem->label, 'updated a guide');
+
         return response()->json();
     }
 
@@ -180,6 +159,7 @@ class GuidelineController extends Controller
         $guideItem = $this->guide->find($guideId);
         $this->logActivity->generateLog($guideId, $guideItem->label, 'removed a guide');
         $guideItem->delete();
+
         return response()->json();
     }
 }

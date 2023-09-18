@@ -100,6 +100,7 @@ class UserAccountsController extends Controller
             'password'     => $defaultPassword
         ]));
         $this->logActivity->generateLog($userAccountData->id, $userAccountData->name, 'created a new account');
+
         return response()->json();
     }
 
@@ -123,6 +124,7 @@ class UserAccountsController extends Controller
             'email'        => trim($request->email)
         ]);
         $this->logActivity->generateLog($userId, $userAccount->name, 'updated a account');
+
         return response()->json();
     }
 
@@ -134,6 +136,7 @@ class UserAccountsController extends Controller
             'is_disable' => 1
         ]);
         $this->logActivity->generateLog($userId, $userAccount->name, 'disabled a account');
+
         return response()->json();
     }
 
@@ -145,6 +148,7 @@ class UserAccountsController extends Controller
             'is_disable' => 0
         ]);
         $this->logActivity->generateLog($userId, $userAccount->name, 'enabled a account');
+
         return response()->json();
     }
 
@@ -163,6 +167,7 @@ class UserAccountsController extends Controller
             'suspend_time' => Carbon::parse($request->suspend_time)->format('Y-m-d H:i:s')
         ]);
         $this->logActivity->generateLog($userId, $userAccount->name, 'suspended a account');
+
         return response()->json();
     }
 
@@ -176,6 +181,7 @@ class UserAccountsController extends Controller
             'suspend_time' => null
         ]);
         $this->logActivity->generateLog($userId, $userAccount->name, 'opened a account');
+        
         return response()->json();
     }
 
@@ -214,6 +220,7 @@ class UserAccountsController extends Controller
             'is_archive' => $operation == "archive" ? 1 : 0
         ]);
         $this->logActivity->generateLog($userId, $userAccount->name, $operation == "archive" ? "archived a account" : "unarchived a account");
+        
         return response()->json();
     }
 }
