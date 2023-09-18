@@ -5,7 +5,8 @@
         theme = sessionStorage.getItem('theme');
 
     @auth
-    let currentPassword = $('#currentPassword'),
+    let badge = $('#badge'),
+        currentPassword = $('#currentPassword'),
         password = $('#password'),
         confirmPassword = $('#confirmPassword'),
         resetPasswordBtn = $('#resetPasswordBtn'),
@@ -104,6 +105,46 @@
             $(this).next('.sub-menu').toggleClass('active');
             $(this).find('.dropdown').toggleClass('rotate');
         });
+
+        $(document).on('click', '#notification-container button', function() {
+            badge.prop('hidden', true).text(0);
+        });
+
+        // Echo.channel('notification').listen('NotificationEvent', (e) => {
+        //     let {
+        //         hazard,
+        //         incident
+        //     } = e.notifications;
+        //     const dropdownMenu = $('#notification-container .dropdown-menu');
+
+        //     dropdownMenu.empty();
+
+        //     if (hazard.length > 0 || incident.length > 0) {
+        //         hazard.forEach((hazardNotification) => {
+        //             dropdownMenu.append(`
+        //         <li>
+        //             <a href="{{ route('manage.hazard.report') }}" class="dropdown-item">
+        //                 <span>Resident reported a hazard: ${hazardNotification.type}</span>
+        //             </a>
+        //         </li>
+        //     `);
+        //         });
+
+        //         incident.forEach((incidentNotification) => {
+        //             dropdownMenu.append(`
+        //         <li>
+        //             <a href="{{ route('incident.report', 'pending') }}" class="dropdown-item">
+        //                 <span>Resident reported an incident: ${incidentNotification.description}</span>
+        //             </a>
+        //         </li>
+        //     `);
+        //         });
+
+        //         badge.prop('hidden', false).text(e.notifications.hazard.length + incident.length);
+        //     } else {
+        //         dropdownMenu.html('<div class="empty-notification">No notification</div>');
+        //     }
+        // });
     @endauth
     theme == 'dark' ? enableDarkMode() : disableDarkMode();
 
