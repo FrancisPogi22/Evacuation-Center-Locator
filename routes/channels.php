@@ -13,3 +13,7 @@ Broadcast::channel('incident-report-event', function () {
 Broadcast::channel('evacuation-center-locator', function () {
     return true;
 });
+
+Broadcast::channel('notification', function () {
+    return true;
+});
