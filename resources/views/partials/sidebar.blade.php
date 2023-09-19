@@ -77,7 +77,7 @@
                         @endif
                         <div class="navigation-item">
                             <a href="{{ route('manage.hazard.report') }}" class="menu-link">
-                                <i class="bi bi-exclamation-triangle"></i>
+                                <i class="bi bi-flag"></i>
                                 <span class="links_name">Manage Hazard Area</span>
                             </a>
                         </div>
