@@ -24,9 +24,14 @@
                             <i class="bi bi-eye-slash" id="showAuthPassword"></i>
                         </div>
                         <div class="auth-btn-container">
-                            <button type="submit" class="btn-login">Login</button>
-                            <a href="{{ route('resident.eligtas.guideline') }}" class="btn-resident">Continue as resident</a>
+                            <button type="submit" class="btn-login" id="loginBtn">Login</button>
+                            <a href="{{ route('resident.eligtas.guideline') }}" class="btn-resident">Continue as
+                                resident</a>
                         </div>
+                        @if (session('limit'))
+                            <p id="error-attempt">The password you've enter is incorrect, please wait for <span
+                                    id="time"></span> seconds.</p>
+                        @endif
                     </form>
                     <div class="forgot-password-container">
                         <a href="{{ route('recoverAccount') }}">Forgotten password?</a>
@@ -47,6 +52,26 @@
                 authPassword.attr('type', authPassword.attr('type') == 'password' ? 'text' : 'password');
                 $(this).toggleClass("bi-eye-slash bi-eye");
             });
+
+            @if (session('limit'))
+                var timeRemaining = {{ session('seconds') }};
+                var timer = $('#time');
+
+                function updateCountdown() {
+                    if (timeRemaining <= 0) {
+                        $('#error-attempt, #time').text("");
+                        $('#loginBtn').prop('disabled', false);
+                    } else {
+                        $('#loginBtn').prop('disabled', true);
+                        timer.text(timeRemaining);
+                        timeRemaining--;
+                        setTimeout(updateCountdown, 1000);
+                    }
+                }
+
+                updateCountdown();
+            @endif
+
         });
     </script>
 </body>
