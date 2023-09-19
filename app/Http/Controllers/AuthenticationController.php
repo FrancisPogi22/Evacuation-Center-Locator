@@ -43,11 +43,12 @@ class AuthenticationController extends Controller
         try {
             $token = Str::random(124);
             DB::table('password_resets')->insert([
-                'email'      => $request->email,
+                'email'      => trim($request->email),
                 'token'      => $token,
                 'created_at' => now()->addHours(3)
             ]);
             Mail::to($request->email)->send(new SendResetPasswordLink(['token' => $token]));
+
             return back()->with('success', 'We have sent you an email with a link to reset your password.');
         } catch (\Exception $e) {
             return back()->with('error', 'An error occurred while processing your request.');
@@ -80,10 +81,10 @@ class AuthenticationController extends Controller
 
     public function logout()
     {
-        $this->logActivity->generateLog(null, null, 'Logged Out');
+        $this->logActivity->generateLog(null, null, 'logged out');
         auth()->logout();
         session()->flush();
-
+        
         return redirect('/')->with('success', 'Successfully Logged out.');
     }
 
@@ -93,22 +94,26 @@ class AuthenticationController extends Controller
 
         $userAuthenticated = auth()->user();
 
-        if ($userAuthenticated->is_suspend == 1 && $userAuthenticated->suspend_time <= Carbon::now()->format('Y-m-d H:i:s')) {
-            $this->user->find($userAuthenticated->id)->update([
-                'status'       => 'Active',
-                'is_suspend'   => 0,
-                'suspend_time' => null
-            ]);
-        } elseif ($userAuthenticated->is_suspend == 1) {
-            $suspendTime = Carbon::parse($userAuthenticated->suspend_time)->format('F j, Y H:i:s');
+        if ($userAuthenticated->is_suspend == 1) {
+            if ($userAuthenticated->suspend_time <= Carbon::now()->format('Y-m-d H:i:s')) {
+                $this->user->find($userAuthenticated->id)->update([
+                    'status'       => 'Active',
+                    'is_suspend'   => 0,
+                    'suspend_time' => null
+                ]);
+            } else {
+                auth()->logout();
+                session()->flush();
+                return back()->withInput()->with('warning', 'Your account has been suspended until ' . Carbon::parse($userAuthenticated->suspend_time)->format('F j, Y H:i:s'));
+            }
+        } elseif ($userAuthenticated->is_archive == 1) {
             auth()->logout();
             session()->flush();
-
-            return back()->withInput()->with('warning', 'Your account has been suspended until ' . $suspendTime);
+            return back()->withInput()->with('warning', 'Your account is not accessible, please reach out to admin.');
         }
 
         $this->logActivity->generateLog(null, null, 'Logged In');
-        
+
         return redirect("/" . Str::of($userAuthenticated->organization)->lower() . "/dashboard")->with('success', "Welcome " . $userAuthenticated->name . ".");
     }
 }

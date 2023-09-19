@@ -258,9 +258,9 @@ input::placeholder {
 #badge {
     position: relative;
     top: 0;
-    left: 100%; 
+    left: 100%;
     transform: translateX(-50%);
-    padding: 0.25rem 0.5rem; 
+    padding: 0.25rem 0.5rem;
     border-radius: 50rem;
     background-color: var(--color-green);
     color: var(--color-text);
@@ -572,6 +572,16 @@ input::placeholder {
     font-size: 20px;
     line-height: 1.4em;
     max-width: 800px;
+}
+
+#error-attempt {
+    color: var(--color-red);
+    font-style: italic;
+    font-size: 14px;
+}
+
+#time {
+    font-weight: 900;
 }
 
 .auth-form-section {
@@ -2206,9 +2216,10 @@ select.form-select option {
 }
 
 @media only screen and (max-width: 1150px) {
+
     .auth-container,
     .recover-content,
-    .res-password-content  {
+    .res-password-content {
         margin: 150px 0;
         height: auto;
     }
@@ -2235,8 +2246,6 @@ select.form-select option {
 
     .auth-section .auth-container {
         flex-direction: column;
-        padding: 40px 0;
-        height: calc(100vh + 100%);
     }
 
     .evacuation-button-container {

@@ -13,7 +13,10 @@ use App\Http\Controllers\EvacuationCenterController;
 use App\Http\Controllers\HazardReportController;
 
 Route::controller(AuthenticationController::class)->group(function () {
-    Route::post('/', 'authUser')->name('login');
+    Route::middleware('check.attempt')->group(function () {
+        Route::post('/', 'authUser')->name('login');
+    });
+
     Route::get('/logout', 'logout')->name('logout.user');
     Route::view('/recoverAccount', 'authentication.forgotPassword')->name('recoverAccount');
     Route::post('/findAccount', 'findAccount')->name('findAccount');
@@ -141,6 +144,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/guide/{guidelineId}', 'guide')->name('eligtas.guide');
         Route::post('/generateEvacueeData', 'generateExcelEvacueeData')->name('generate.evacuee.data');
         Route::get('/userAccounts/{operation}', 'userAccounts')->name('display.users.account');
+        Route::get('/userProfile', 'userProfile')->name('display.profile');
         Route::get('/hotlineNumber', 'hotlineNumbers')->name('hotline.number');
         Route::get('/about', 'about')->name('about');
         Route::get('/fetchDisasterData', 'fetchDisasterData')->name('fetchDisasterData');
@@ -150,7 +154,6 @@ Route::middleware('auth')->group(function () {
 
     Route::name('account.')->controller(UserAccountsController::class)->group(function () {
         Route::post('/createAccount', 'createAccount')->name('create');
-        Route::view('/userProfile', 'userpage.userAccount.userProfile')->name('display.profile');
         Route::put('/updateAccount/{userId}', 'updateAccount')->name('update');
         Route::get('/displayUserAccount/{operation}', 'userAccounts')->name('display.users');
         Route::patch('/disableAccount/{userId}', 'disableAccount')->name('disable');

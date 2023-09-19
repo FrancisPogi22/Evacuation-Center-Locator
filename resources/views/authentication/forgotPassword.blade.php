@@ -15,8 +15,12 @@
                         <div class="form-group">
                             <label>Please enter your email address to search your
                                 account.</label>
-                            <input type="email" name="email" class="form-control p-2.5" placeholder="Email Address"
-                                required>
+                            <input type="email" name="email" class="form-control p-2.5"
+                                @if (session('failed')) value="{{ session('email_attempt') }}" @endif
+                                placeholder="Email Address" required>
+                            @if (session('failed'))
+                                <span class="error">{{ session('error_message') }}</span>
+                            @endif
                         </div>
                         <hr>
                         <div class="button-container">
