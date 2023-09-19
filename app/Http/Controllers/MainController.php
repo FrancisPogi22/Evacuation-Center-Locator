@@ -22,11 +22,11 @@ class MainController extends Controller
 
     public function __construct()
     {
-        $this->guide = new Guide;
-        $this->evacuee = new Evacuee;
-        $this->disaster = new Disaster;
-        $this->guideline = new Guideline;
-        $this->notification = new NotificationEvent;
+        $this->guide            = new Guide;
+        $this->evacuee          = new Evacuee;
+        $this->disaster         = new Disaster;
+        $this->guideline        = new Guideline;
+        $this->notification     = new NotificationEvent;
         $this->evacuationCenter = new EvacuationCenter;
     }
 
@@ -124,6 +124,13 @@ class MainController extends Controller
         $notifications = $this->notification->notifications();
 
         return view('userpage.userAccount.userAccounts', compact('operation', 'notifications'));
+    }
+
+    public function userProfile()
+    {
+        $notifications = $this->notification->notifications();
+
+        return view('userpage.userAccount.userProfile', compact('notifications'));
     }
 
     public function manageHazardReport()
