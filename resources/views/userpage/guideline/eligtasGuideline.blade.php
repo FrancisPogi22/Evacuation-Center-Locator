@@ -51,7 +51,7 @@
                             @endguest
                         </div>
                     @endforeach
-                    @if (auth()->check() && auth()->user()->is_disable == 0)
+                    @auth
                         <div class="guideline-btn">
                             <div class="btn-container">
                                 <button id="createGuidelineBtn">
@@ -60,11 +60,11 @@
                             </div>
                         </div>
                         @include('userpage.guideline.guidelineModal')
-                    @endif
+                    @endauth
                 </div>
             </section>
+            @include('userpage.changePasswordModal')
         </main>
-        @include('userpage.changePasswordModal')
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"
@@ -207,7 +207,7 @@
 
                             return operation == "update" && guidelineType == $('#guidelineType').val() &&
                                 guideField <= 0 ?
-                                showWarningMessage('No changes were made.') :
+                                showWarningMessage() :
                                 $.ajax({
                                     data: formData,
                                     url: url,

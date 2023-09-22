@@ -22,7 +22,7 @@
                         <div class="swiper-slide">
                             <div class="guide-content">
                                 <div class="guide-header">
-                                    <img src="{{ asset("guide_photo/$guide->guide_photo") }}">
+                                    <img src="{{ asset('guide_photo/' . ($guide->guide_photo ?? 'default.jpg')) }}">
                                 </div>
                                 <div class="guide-details">
                                     <h1>{{ $guide->label }}</h1>
@@ -131,8 +131,7 @@
                                 },
                                 data: guideId,
                                 url: "{{ route('guide.remove', 'guideId') }}".replace(
-                                    'guideId',
-                                    guideId),
+                                    'guideId', guideId),
                                 type: "DELETE",
                                 success(response) {
                                     return response.status == 'warning' ? showWarningMessage(
@@ -163,7 +162,7 @@
                             if (!result.isConfirmed) return;
 
                             return operation == 'update' && defaultFormData === serializeFormData(formData) ?
-                                showWarningMessage('No changes were made.') :
+                                showWarningMessage() :
                                 $.ajax({
                                     data: formData,
                                     url: "{{ route('guide.update', 'guideId') }}".replace('guideId', guideId),

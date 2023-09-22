@@ -177,19 +177,11 @@
                 validator = $("#evacuationCenterForm").validate({
                     rules: {
                         name: 'required',
-                        barangayName: 'required',
-                        capacity: {
-                            required: true,
-                            number: true
-                        }
+                        barangayName: 'required'
                     },
                     messages: {
                         name: 'Please enter evacuation center name.',
-                        barangayName: 'Please select a barangay.',
-                        capacity: {
-                            required: 'Please enter evacuation center capacity.',
-                            number: 'Please enter a valid number.'
-                        }
+                        barangayName: 'Please select a barangay.'
                     },
                     showErrors: function() {
                         this.defaultShowErrors();
@@ -301,7 +293,7 @@
                         if (!result.isConfirmed) return;
 
                         return operation == 'update' && defaultFormData == formData ?
-                            showWarningMessage('No changes were made.') :
+                            showWarningMessage() :
                             $.ajax({
                                 data: formData,
                                 url: url,
@@ -321,7 +313,7 @@
 
                 function alterEvacuationCenter(url, type, operation) {
                     confirmModal(
-                        `Do you want to ${operation == "archive" ? "archive" : operation == "unarchive" ? "unarchive" : "change the status of"} this evacuation center?`
+                        `Do you want to ${operation == "change" ? "change the status of" : operation} this evacuation center?`
                     ).then((result) => {
                         return !result.isConfirmed ? $('#changeEvacuationStatus').val('') :
                             $.ajax({

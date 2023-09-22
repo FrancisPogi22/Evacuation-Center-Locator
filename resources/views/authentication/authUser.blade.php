@@ -54,8 +54,8 @@
             });
 
             @if (session('limit'))
-                var timeRemaining = {{ session('seconds') }};
-                var timer = $('#time');
+                let timeRemaining = {{ session('seconds') }};
+                let timer = $('#time');
 
                 function updateCountdown() {
                     if (timeRemaining <= 0) {
@@ -71,7 +71,6 @@
 
                 updateCountdown();
             @endif
-
         });
     </script>
 </body>

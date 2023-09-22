@@ -262,7 +262,7 @@
                         element = element.parent().parent().parent();
 
                     if (operation == "update" && element.find('p:last').text() == element.find('textarea').val())
-                        return showWarningMessage("No changes were made.");
+                        return showWarningMessage();
 
                     $.ajax({
                         type: type,

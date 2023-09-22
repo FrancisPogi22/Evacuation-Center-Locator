@@ -176,24 +176,22 @@
     }
 
     function changePasswordHandler(form) {
-        let changePasswordRoute = $('#changePasswordRoute').data('route');
-
         confirmModal('Do you want to change your password?').then((result) => {
-            if (result.isConfirmed) {
-                $.ajax({
-                    type: "PUT",
-                    url: changePasswordRoute,
-                    data: $(form).serialize(),
-                    success(response) {
-                        return response.status == "warning" ? showWarningMessage(response.message) :
-                            (showSuccessMessage('Password successfully changed.'), form[0].reset(),
-                                currentPassword.text(""), changePasswordModal.modal('hide'));
-                    },
-                    error() {
-                        showErrorMessage();
-                    }
-                });
-            }
+            if (!result.isConfirmed) return;
+
+            $.ajax({
+                type: "PUT",
+                url: $('#changePasswordRoute').data('route'),
+                data: $(form).serialize(),
+                success(response) {
+                    return response.status == "warning" ? showWarningMessage(response.message) :
+                        (showSuccessMessage('Password successfully changed.'), $(form)[0].reset(),
+                            currentPassword.text(""), changePasswordModal.modal('hide'));
+                },
+                error() {
+                    showErrorMessage();
+                }
+            });
         });
     }
     @endauth
@@ -245,7 +243,7 @@
         return table.row(currentRow).data();
     }
 
-    function showWarningMessage(message) {
+    function showWarningMessage(message = "No changes were made.") {
         return toastr.warning(message, 'Warning');
     }
 

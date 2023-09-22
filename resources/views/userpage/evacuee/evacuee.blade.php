@@ -260,7 +260,7 @@
                     if (!result.isConfirmed) return;
 
                     return operation == 'update' && defaultFormData == formData ?
-                        showWarningMessage('No changes were made.') :
+                        showWarningMessage() :
                         $.ajax({
                             headers: {
                                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')

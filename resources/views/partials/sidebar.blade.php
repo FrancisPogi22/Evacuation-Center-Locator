@@ -68,7 +68,7 @@
                                         <i class="bi bi-person-gear"></i>
                                         <span class="links_name">Manage Accounts</span>
                                     </a>
-                                    <a href="" class="menu-link">
+                                    <a href="{{ route('display.users.account', 'archived') }}" class="menu-link">
                                         <i class="bi bi-person-slash"></i>
                                         <span class="links_name">Archived Accounts</span>
                                     </a>

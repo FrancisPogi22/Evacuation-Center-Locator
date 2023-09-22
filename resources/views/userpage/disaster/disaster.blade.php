@@ -168,7 +168,7 @@
 
                 function alterDisasterData(operation, url) {
                     confirmModal(
-                            `Do you want to ${operation == 'archive' ? 'archive' : operation == "unarchive" ? 'unarchive' : 'change the status of'} this disaster?`
+                            `Do you want to ${operation == 'change' ? 'change the status of' : operation} this disaster?`
                         )
                         .then((result) => {
                             return !result.isConfirmed ? $('#changeDisasterStatus').val('') :
@@ -181,7 +181,7 @@
                                     success() {
                                         disasterTable.draw();
                                         showSuccessMessage(
-                                            `Disaster successfully ${operation == "archive" ? "archived" : operation == "unarchive" ? "unarchived" : "changed status"}.`
+                                            `Disaster successfully ${operation == "change" ? "changed status" : operation}.`
                                         );
                                     },
                                     error() {
@@ -202,7 +202,7 @@
                         if (!result.isConfirmed) return;
 
                         return operation == 'update' && defaultFormData == formData ?
-                            showWarningMessage('No changes were made.') :
+                            showWarningMessage() :
                             $.ajax({
                                 data: formData,
                                 url: url,
