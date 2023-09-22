@@ -139,7 +139,7 @@
                     messages: {
                         organization: 'Please select an organization.',
                         position: 'Please select a position.',
-                        name: 'Please enter name.',
+                        name: 'Please enter full name.',
                         email: 'Please enter an email address.',
                         suspend_time: 'Please enter a suspension time.'
                     },
@@ -321,7 +321,7 @@
                         if (!result.isConfirmed) return;
 
                         return operation == 'update' && defaultFormData == formData ?
-                            showWarningMessage('No changes were made.') :
+                            showWarningMessage() :
                             $.ajax({
                                 data: formData,
                                 url: url,
@@ -329,7 +329,7 @@
                                 success(response) {
                                     response.status == "warning" ? showWarningMessage(response
                                         .message) : (showSuccessMessage(
-                                        `Successfully ${operation}${operation == 'create' ? 'd' : operation == 'update' ? 'd' : 'ed'} user account.`
+                                        `Successfully ${operation}${operation == 'suspend' ? 'ed' : 'd'} user account.`
                                     ), modal.modal('hide'), accountTable.draw())
                                 },
                                 error() {

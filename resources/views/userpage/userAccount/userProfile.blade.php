@@ -114,10 +114,10 @@
                 let formData = $(form).serialize();
 
                 confirmModal('Do you want to update your details?').then((result) => {
-                    if (result.isConfirmed) return;
+                    if (!result.isConfirmed) return;
 
-                    return operation == 'update' && defaultFormData == formData ? showWarningMessage(
-                            'No changes were made.') :
+                    return operation == 'update' && defaultFormData == formData ?
+                        showWarningMessage() :
                         $.ajax({
                             url: "{{ route('account.update', 'accountId') }}".replace('accountId',
                                 accountId),
@@ -126,7 +126,7 @@
                             success(response) {
                                 response.status == 'warning' ? showWarningMessage(response
                                     .message) : showSuccessMessage(
-                                    'Successfully updated the account details.', true);
+                                    'Successfully updated the account details, Please wait...', true);
                             },
                             error() {
                                 showErrorMessage();

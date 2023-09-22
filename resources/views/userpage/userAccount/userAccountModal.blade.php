@@ -14,16 +14,26 @@
                                 <select name="organization" class="form-select" id="organization"
                                     placeholder="Enter Organization">
                                     <option value="" hidden selected disabled>Select Organization</option>
-                                    <option value="CDRRMO">CDRRMO</option>
-                                    <option value="CSWD">CSWD</option>
+                                    @if (auth()->user()->organization == 'CDRRMO')
+                                        <option value="CDRRMO">CDRRMO</option>
+                                    @else
+                                        <option value="CDRRMO">CDRRMO</option>
+                                        <option value="CSWD">CSWD</option>
+                                    @endif
                                 </select>
                             </div>
                             <div class="field-container" id="position-container">
                                 <label for="position">Position</label>
                                 <select name="position" class="form-select" id="position" placeholder="Enter Position">
                                     <option value="" hidden selected disabled>Select Position</option>
-                                    <option value="President">President</option>
-                                    <option value="Focal">Focal</option>
+                                    @if (auth()->user()->organization == 'CDRRMO')
+                                        <option value="President">President</option>
+                                        <option value="President">2nd Admin</option>
+                                    @else
+                                        <option value="President">President</option>
+                                        <option value="Focal">Focal</option>
+                                        <option value="President">2nd Admin</option>
+                                    @endif
                                 </select>
                             </div>
                             <div class="field-container" id="suspend-container">
@@ -34,7 +44,7 @@
                             <div class="field-container" id="name-container">
                                 <label for="name">Full Name</label>
                                 <input type="text" name="name" class="form-control" id="name"
-                                    placeholder="Enter Name">
+                                    placeholder="Enter Full Name">
                             </div>
                             <div class="field-container" id="email-container">
                                 <label for="email">Email Address</label>

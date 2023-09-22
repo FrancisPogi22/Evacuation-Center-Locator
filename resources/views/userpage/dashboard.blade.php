@@ -39,7 +39,7 @@
                                             @csrf
                                             <div class="form-content">
                                                 <div class="field-container">
-                                                    <label>On Going Disaster</label>
+                                                    <label for="disaster_id">On Going Disaster</label>
                                                     <select name="disaster_id" class="form-select">
                                                         <option value="" hidden disabled selected>Select Disaster
                                                         </option>
@@ -128,27 +128,29 @@
                 $('#generateReportForm')[0].reset();
             });
 
-            fetchEvacueeData();
+            evacueeData();
 
             // Echo.channel('active-evacuees').listen('ActiveEvacuees', (e) => {
             //     $("#totalEvacuee").text(e.activeEvacuees);
-            //     fetchEvacueeData();
+            //     evacueeData();
             // })
         });
 
-        function fetchEvacueeData() {
+        function evacueeData() {
             $.ajax({
                 url: "{{ route('fetchDisasterData') }}",
                 method: 'GET',
                 dataType: 'json',
                 success(disasterData) {
                     disasterData.forEach((disaster, count) => {
-                        initializePieChart(disaster, count);
-                        initializeBarGraph(disaster, count);
+                        if (disaster['totalEvacuee'] != 0) {
+                            initializePieChart(disaster, count);
+                            initializeBarGraph(disaster, count);
+                        }
                     });
                 },
                 error() {
-                    showErrorMessage("Unable to fetch data");
+                    showErrorMessage("Unable to fetch data.");
                 }
             });
         }
@@ -159,7 +161,7 @@
                     type: 'pie'
                 },
                 title: {
-                    text: `As Affected of ${disaster.disasterName}` 
+                    text: `As Affected of ${disaster.disasterName}`
                 },
                 tooltip: {
                     pointFormat: '{series.name}: <b>{point.y}</b>'
@@ -202,7 +204,7 @@
                     type: 'bar'
                 },
                 title: {
-                    text: `${disaster.disasterName} Statistics`
+                    text: "Evacuees Statistics"
                 },
                 xAxis: {
                     categories: ['SENIOR CITIZEN', 'MINORS', 'INFANTS', 'PWD', 'PREGNANT', 'LACTATING']

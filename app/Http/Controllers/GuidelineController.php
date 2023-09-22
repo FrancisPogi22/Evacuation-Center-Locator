@@ -77,12 +77,12 @@ class GuidelineController extends Controller
         if ($guidelineValidation->fails())
             return response(['status' => 'warning', 'message' => $guidelineValidation->errors()->first()]);
 
-        $guidelineId  = Crypt::decryptString($guidelineId);
-        $guideline    = $this->guideline->find($guidelineId)->update([
+        $guideline = $this->guideline->find(Crypt::decryptString($guidelineId));
+        $guideline->update([
             'type'    => Str::upper(trim($request->type)),
             'user_id' => auth()->user()->id
         ]);
-        $this->logActivity->generateLog($guidelineId, $guideline->type, 'updated a guideline');
+        $this->logActivity->generateLog($guideline->id, $guideline->type, 'updated a guideline');
 
         $labels   = $request->label;
         $contents = $request->content;
@@ -94,7 +94,7 @@ class GuidelineController extends Controller
                 $guide = $this->guide->create([
                     'label'        => $label,
                     'content'      => $contents[$count],
-                    'guideline_id' => $guidelineId,
+                    'guideline_id' => $guideline->id,
                     'user_id'      => auth()->user()->id
                 ]);
 
@@ -113,7 +113,7 @@ class GuidelineController extends Controller
     public function removeGuideline($guidelineId)
     {
         $guideline = $this->guideline->find(Crypt::decryptString($guidelineId));
-        $this->logActivity->generateLog($guidelineId, $guideline->type, 'removed a guideline');
+        $this->logActivity->generateLog($guideline->id, $guideline->type, 'removed a guideline');
         $guideline->delete();
 
         return response()->json();
