@@ -102,14 +102,13 @@ class IncidentReportController extends Controller
         $reportPhotoPath = $request->file('photo')->store();
         $request->photo->move(public_path('reports_image'), $reportPhotoPath);
         $incidentReport = [
-            'description' => Str::ucFirst(trim($request->description)),
-            'location'    => Str::of(trim($request->location))->title(),
-            'photo'       => $reportPhotoPath,
-            'latitude'    => null,
-            'longitude'   => null,
-            'status'      => 'On Process',
-            'user_ip'     => $request->ip(),
-            'is_archive'  => 0
+            'description'  => Str::ucFirst(trim($request->description)),
+            'location'     => Str::of(trim($request->location))->title(),
+            'photo'        => $reportPhotoPath,
+            'status'       => 'On Process',
+            'user_ip'      => $request->ip(),
+            'is_archive'   => 0,
+            'report_time'  => Carbon::now()->toDayDateTimeString()
         ];
 
         if ($resident) {
@@ -131,8 +130,8 @@ class IncidentReportController extends Controller
             $resident->update(['attempt' => $residentAttempt + 1]);
             $attempt = $resident->attempt;
             $attempt == 3 ? $resident->update(['report_time' => Carbon::now()->addHours(3)]) : null;
-            // event(new IncidentReportEvent());
-            // event(new NotificationEvent());
+            event(new IncidentReportEvent());
+            event(new NotificationEvent());
 
             return response()->json();
         }
@@ -143,7 +142,7 @@ class IncidentReportController extends Controller
             'attempt' => 1
         ]);
         //event(new IncidentReportEvent());
-        event(new NotificationEvent());
+        // event(new NotificationEvent());
 
         return response()->json();
     }
@@ -177,7 +176,6 @@ class IncidentReportController extends Controller
 
         $residentReport->update($dataToUpdate);
         //event(new IncidentReportEvent());
-        event(new NotificationEvent());
 
         return response()->json();
     }
@@ -211,10 +209,10 @@ class IncidentReportController extends Controller
 
     public function archiveIncidentReport($reportId, $operation)
     {
-        $dangerAreaReport = $this->reportEvent->archiveDangerAreaReport($dangerAreaId, $operation);
-        $$this->logActivity->generateLog($dangerAreaId, $dangerAreaReport, ($operation == "archive" ? "archived" : "unarchived") . " a dangerous area report");
+        $dangerAreaReport = $this->reportEvent->archiveDangerAreaReport($reportId, $operation);
+        $$this->logActivity->generateLog($reportId, $dangerAreaReport, ($operation == "archive" ? "archived" : "unarchived") . " a dangerous area report");
         //event(new IncidentReportEvent());
-        
+
         return response()->json();
     }
 

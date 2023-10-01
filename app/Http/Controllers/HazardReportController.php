@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\NotificationEvent;
 use Illuminate\Http\Request;
 use App\Models\HazardReport;
 use App\Models\ActivityUserLog;
@@ -44,6 +45,7 @@ class HazardReportController extends Controller
             'type'      => $request->type
         ]);
         // event(new HazardReportEvent());
+        // event(new NotificationEvent());
 
         return response()->json();
     }
