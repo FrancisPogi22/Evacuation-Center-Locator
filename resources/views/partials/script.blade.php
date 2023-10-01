@@ -117,32 +117,36 @@
         //     } = e.notifications;
         //     const dropdownMenu = $('#notification-container .dropdown-menu');
 
-        //     dropdownMenu.empty();
-
         //     if (hazard.length > 0 || incident.length > 0) {
+        //         const badge = document.createElement('span');
+        //         const container = document.querySelector('#notification-container');
+        //         dropdownMenu.empty();
+        //         badge.innerHTML =
+        //             `<span class="badge" id="badge">${hazard.length + incident.length}</span>`;
+        //         container.insertBefore(badge, container.firstChild);
+
         //         hazard.forEach((hazardNotification) => {
         //             dropdownMenu.append(`
-        //         <li>
-        //             <a href="{{ route('manage.hazard.report') }}" class="dropdown-item">
-        //                 <span>Resident reported a hazard: ${hazardNotification.type}</span>
-        //             </a>
-        //         </li>
-        //     `);
+        //                 <li>
+        //                     <a href="{{ route('manage.hazard.report') }}" class="dropdown-item">
+        //                         <p>Resident reported a hazard: ${hazardNotification.type}</p>
+        //                     </a>
+        //                 </li>
+        //             `);
         //         });
 
         //         incident.forEach((incidentNotification) => {
         //             dropdownMenu.append(`
-        //         <li>
-        //             <a href="{{ route('incident.report', 'pending') }}" class="dropdown-item">
-        //                 <span>Resident reported an incident: ${incidentNotification.description}</span>
-        //             </a>
-        //         </li>
-        //     `);
+        //                 <li>
+        //                     <a href="{{ route('incident.report', 'pending') }}" class="dropdown-item">
+        //                         <p>Resident report a incident: ${incidentNotification.description}</p>
+        //                         <span class="report_time">${incidentNotification.report_time}</span>
+        //                     </a>
+        //                 </li>
+        //             `);
         //         });
-
-        //         badge.prop('hidden', false).text(e.notifications.hazard.length + incident.length);
         //     } else {
-        //         dropdownMenu.html('<div class="empty-notification">No notification</div>');
+        //         dropdownMenu.html('<div class="empty-notification">No notification.</div>');
         //     }
         // });
     @endauth

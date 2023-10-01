@@ -13,11 +13,10 @@ return new class extends Migration
             $table->string('description');
             $table->string('location')->nullable();
             $table->string('photo')->nullable();
-            $table->string('latitude')->nullable();
-            $table->string('longitude')->nullable();
             $table->string('status');
             $table->string('user_ip');
             $table->boolean('is_archive');
+            $table->string('report_time');
         });
     }
 
