@@ -286,7 +286,8 @@
                 @endif
             @endauth
             @guest
-            let reportId, validator, operation, modal = $('#createAccidentReportModal'),
+            let reportId, report_description, report_location, validator, operation, modal = $(
+                    '#createAccidentReportModal'),
                 modalLabelContainer = $('.modal-label-container'),
                 modalLabel = $('.modal-label'),
                 formButton = $('#reportIncidentBtn');
@@ -370,6 +371,8 @@
                 reportId = id;
                 $('#description').val(description);
                 $('#location').val(location);
+                report_description = description;
+                report_location = location;
                 modalLabelContainer.addClass('bg-warning');
                 modalLabel.text('Update Report Incident');
                 formButton.removeClass('btn-submit').addClass('btn-update').text("Update");
@@ -409,34 +412,39 @@
             function formSubmitHandler(form) {
                 let formData = new FormData(form);
 
-                confirmModal('Do you want to report this incident?').then((result) => {
+                confirmModal(`Do you want to ${operation} this incident?`).then((result) => {
                     if (!result.isConfirmed) return;
 
-                    let url = operation == "update" ?
-                        "{{ route('resident.report.incident.update', 'reportId') }}".replace('reportId',
-                            reportId) : "{{ route('resident.report.accident') }}";
+                    if (operation == "update" && report_description == $('#description').val() &&
+                        report_location == $('#location').val()) {
+                        return showWarningMessage();
+                    } else {
+                        let url = operation == "update" ?
+                            "{{ route('resident.report.incident.update', 'reportId') }}".replace('reportId',
+                                reportId) : "{{ route('resident.report.accident') }}";
 
-                    $.ajax({
-                        type: 'POST',
-                        url: url,
-                        data: formData,
-                        contentType: false,
-                        processData: false,
-                        success(response) {
-                            let status = response.status,
-                                message = response.message;
+                        $.ajax({
+                            type: 'POST',
+                            url: url,
+                            data: formData,
+                            contentType: false,
+                            processData: false,
+                            success(response) {
+                                let status = response.status,
+                                    message = response.message;
 
-                            return status == 'warning' ? showWarningMessage(message) : status ==
-                                'blocked' ? (modal.modal('hide'), showWarningMessage(message)) : (
-                                    showSuccessMessage(
-                                        `Report Successfully ${operation == "update" ? 'updated': 'submitted'}, Thank for your concern.`
-                                    ),
-                                    modal.modal('hide'), pendingReport.draw());
-                        },
-                        error() {
-                            showErrorMessage();
-                        }
-                    });
+                                return status == 'warning' ? showWarningMessage(message) : status ==
+                                    'blocked' ? (modal.modal('hide'), showWarningMessage(message)) : (
+                                        showSuccessMessage(
+                                            `Report Successfully ${operation == "update" ? 'updated' : 'submitted'}, Thank for your concern.`
+                                        ),
+                                        modal.modal('hide'), pendingReport.draw());
+                            },
+                            error() {
+                                showErrorMessage();
+                            }
+                        });
+                    }
                 });
             }
 

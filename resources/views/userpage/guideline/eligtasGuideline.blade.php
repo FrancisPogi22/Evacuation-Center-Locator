@@ -175,8 +175,7 @@
                                 </div>
                                 <a href="javascript:void(0)" id="removeGuideField"><i class="bi bi-trash3-fill"></i>Remove</a>
                             </div>
-                        </div>
-                        `;
+                        </div>`;
                         guideContentFields.appendChild(newGuideInputField);
                         guideField++;
                     });
