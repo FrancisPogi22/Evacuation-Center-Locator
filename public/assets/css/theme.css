@@ -148,6 +148,7 @@ input::placeholder {
     display: flex;
     gap: 8px;
     padding: 8px 16px;
+    filter: none;
 }
 
 .btn-table-primary,
@@ -264,6 +265,26 @@ input::placeholder {
     border-radius: 50rem;
     background-color: var(--color-green);
     color: var(--color-text);
+}
+
+.notification a:active {
+    background: #f1f5f9;
+}
+
+.notification ul{
+    width: 250px;
+}
+
+.notification p {
+    margin: 0;
+    width: 100%;
+    white-space: normal;
+    color: var(--color-black);
+}
+
+.notification .report_time {
+    color: var(--color-d-sub-text);
+    font-size: 12px;
 }
 
 .empty-notification {
@@ -1033,7 +1054,7 @@ text {
 }
 
 .appendInput a i {
-    color: var(--color-black);
+    color: var(--color-text);
     font-size: 16px;
 }
 
