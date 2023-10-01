@@ -7,7 +7,6 @@
             @auth
                 @if (auth()->user()->organization == 'CDRRMO')
                     <div class="notification" id="notification-container">
-                        <span class="badge" id="badge" hidden></span>
                         <button class="bi bi-bell-fill" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                         </button>
                         <ul class="dropdown-menu">
@@ -15,8 +14,11 @@
                                 <li>
                                     @if (isset($notification['description']) && $notification['description'])
                                         <a href="{{ route('incident.report', 'pending') }}" class="dropdown-item">
-                                            <span>Resident report a incident:
+                                            <p>Resident report a incident:
                                                 {{ $notification['description'] }}
+                                            </p>
+                                            <span class="report_time">
+                                                {{ $notification['report_time'] }}
                                             </span>
                                         </a>
                                     @else
