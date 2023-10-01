@@ -21,7 +21,8 @@ class IncidentReport extends Model
         'longitude',
         'status',
         'user_ip',
-        'is_archive'
+        'is_archive',
+        'report_time'
     ];
 
     public $timestamps = false;
