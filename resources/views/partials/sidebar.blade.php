@@ -1,21 +1,19 @@
 <aside class="sidebar">
     <div class="sidebar-header">
-        <img id="logo" src="{{ asset('assets/img/e-ligtas-logo.png') }}" alt="Logo">
+        <img id="logo" src="{{ asset('assets/img/e-ligtas-logo-w.png') }}" alt="Logo">
         <button type="button" class="bi bi-x" id="btn-sidebar-close"></button>
     </div>
     <div class="sidebar-content">
         <div class="user-details">
             <div class="details-content">
                 @auth
-                    @if (auth()->user()->organization == 'CDRRMO' || auth()->user()->organization == 'CSWD')
-                        @if (auth()->user()->is_disable == 0)
-                            <div title="Active" class="user-active"></div>
-                        @else
-                            <div title="Currently Disabled" class="user-disable"></div>
-                        @endif
-                        <img src="{{ asset('assets/img/' . auth()->user()->organization . '-LOGO.png') }}" alt="Logo">
-                        <span>{{ auth()->user()->organization == 'CDRRMO' ? 'CDRRMO' : 'CSWDO' }} Panel</span>
+                    @if (auth()->user()->is_disable == 0)
+                        <div title="Active" class="user-active"></div>
+                    @else
+                        <div title="Currently Disabled" class="user-disable"></div>
                     @endif
+                    <img src="{{ asset('assets/img/' . auth()->user()->organization . '-LOGO.png') }}" alt="Logo">
+                    <span>{{ auth()->user()->organization }} Panel</span>
                 @endauth
                 @guest
                     <div title="Resident" class="resident"></div>
