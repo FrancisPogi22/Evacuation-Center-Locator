@@ -28,7 +28,7 @@ class GuidelineSeeder extends Seeder
         ]);
 
         Guideline::insert([
-            'type' => ('FLASHFLOOD guideliGUIDELINEne'),
+            'type' => ('FLASHFLOOD GUIDELINE'),
             'user_id' => 1,
             'organization' => 'CDRRMO'
         ]);
