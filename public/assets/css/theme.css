@@ -271,7 +271,7 @@ input::placeholder {
     background: #f1f5f9;
 }
 
-.notification ul{
+.notification ul {
     width: 250px;
 }
 
@@ -799,6 +799,11 @@ input::placeholder {
     align-items: center;
 }
 
+#reportForm .field-container span {
+    font-size: 12px;
+    font-style: italic;
+}
+
 .report-container p {
     margin: 0;
     font-weight: 600;
@@ -832,13 +837,6 @@ input::placeholder {
     animation: scaleIn 0.5s;
 }
 
-.widget-logo {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    position: relative;
-}
-
 .widget-content {
     margin: 8px 0;
     padding: 4px;
@@ -858,20 +856,17 @@ input::placeholder {
 
 .content-description p {
     margin: 0;
+    color: var(--color-green);
+    font-size: 34px;
+    font-weight: 700;
 }
 
-.wigdet-header img {
-    width: 30px;
+.wigdet-header i {
+    font-size: 30px;
 }
 
 .content-description {
     padding: 0 8px;
-}
-
-.content-description p {
-    color: var(--color-green);
-    font-size: 34px;
-    font-weight: 700;
 }
 
 .chart-container {
@@ -991,7 +986,8 @@ text {
     padding: 23px 0;
 }
 
-.myProfile {
+.guidePicture {
+    object-fit: contain;
     width: 200px;
     height: 200px;
 }

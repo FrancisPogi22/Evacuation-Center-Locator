@@ -9,7 +9,6 @@ class DisasterSeeder extends Seeder
 {
     public function run(): void
     {
-
         Disaster::insert([
             'name' => ('Typhoon Paeng'),
             'status' => "On Going",

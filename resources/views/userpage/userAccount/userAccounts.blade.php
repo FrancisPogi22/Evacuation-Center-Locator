@@ -16,11 +16,7 @@
         <main class="main-content">
             <div class="label-container">
                 <i class="bi bi-person-gear"></i>
-                @if (auth()->user()->organization == 'CDRRMO')
-                    <span>MANAGE CDRRMO ACCOUNT</span>
-                @else
-                    <span>MANAGE USERS ACCOUNT</span>
-                @endif
+                <span>MANAGE {{ auth()->user()->organization == 'CDRRMO' ? 'CDRRMO' : 'USERS' }} ACCOUNT</span>
             </div>
             <hr>
             @if (auth()->user()->is_disable == 0 && $operation == 'active')
@@ -33,11 +29,8 @@
             @endif
             <section class="table-container">
                 <div class="table-content">
-                    @if (auth()->user()->organization == 'CDRRMO')
-                        <header class="table-label">User CDRRMO Table</header>
-                    @else
-                        <header class="table-label">User Accounts Table</header>
-                    @endif
+                    <header class="table-label">{{ auth()->user()->organization == 'CDRRMO' ? 'CDRRMO' : 'User' }}
+                        Accounts Table</header>
                     <table class="table" id="accountTable" width="100%">
                         <thead>
                             <tr>

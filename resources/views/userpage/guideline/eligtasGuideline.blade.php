@@ -157,8 +157,8 @@
                         newGuideInputField.classList.add("guide-field");
                         newGuideInputField.innerHTML = `
                         <div class="image-container">
-                            <img src="{{ asset('assets/img/e-ligtas-logo.png') }}" alt="Profile"
-                                class="myProfile" id="image_preview_container${guideField}">
+                            <img src="{{ asset('assets/img/e-ligtas-logo-b.png') }}" alt="Profile"
+                                class="guidePicture" id="image_preview_container${guideField}">
                                 <span>
                                     <input type="file" name="guidePhoto[]" id="guidePhoto${guideField}" class="form-control guidePhoto">
                                 </span>

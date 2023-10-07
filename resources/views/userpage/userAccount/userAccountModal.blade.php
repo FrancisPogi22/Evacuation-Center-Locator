@@ -26,14 +26,11 @@
                                 <label for="position">Position</label>
                                 <select name="position" class="form-select" id="position" placeholder="Enter Position">
                                     <option value="" hidden selected disabled>Select Position</option>
-                                    @if (auth()->user()->organization == 'CDRRMO')
-                                        <option value="President">President</option>
-                                        <option value="President">2nd Admin</option>
-                                    @else
-                                        <option value="President">President</option>
+                                    <option value="President">President</option>
+                                    @if (auth()->user()->organization == 'CSWD')
                                         <option value="Focal">Focal</option>
-                                        <option value="President">2nd Admin</option>
                                     @endif
+                                    <option value="Vice President">Vice President</option>
                                 </select>
                             </div>
                             <div class="field-container" id="suspend-container">

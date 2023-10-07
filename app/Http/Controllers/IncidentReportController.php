@@ -27,7 +27,7 @@ class IncidentReportController extends Controller
 
     public function displayPendingIncidentReport($operation)
     {
-        $pendingReport = $this->incidentReport->where('status', 'On Process')->where('is_archive', $operation == "pending" ? 0 : 1)->whereNotNull('photo')->get();
+        $pendingReport = $this->incidentReport->where('status', 'On Process')->where('is_archive', $operation == "pending" ? 0 : 1)->get();
 
         return DataTables::of($pendingReport)
             ->addIndexColumn()
@@ -99,11 +99,16 @@ class IncidentReportController extends Controller
             return response(['status' => 'warning', 'message' => $incidentReportValidation->errors()->first()]);
 
         $resident = $this->reportLog->where('user_ip', $request->ip())->first();
-        $reportPhotoPath = $request->file('photo')->store();
-        $request->photo->move(public_path('reports_image'), $reportPhotoPath);
+        $reportPhotoPath = $request->file('photo');
+
+        if ($reportPhotoPath) {
+            $reportPhotoPath = $request->file('photo')->store();
+            $request->photo->move(public_path('reports_image'), $reportPhotoPath);
+        }
+
         $incidentReport = [
             'description'  => Str::ucFirst(trim($request->description)),
-            'location'     => Str::of(trim($request->location))->title(),
+            'location'     => Str::title(trim($request->location)),
             'photo'        => $reportPhotoPath,
             'status'       => 'On Process',
             'user_ip'      => $request->ip(),
@@ -122,7 +127,7 @@ class IncidentReportController extends Controller
                     $resident->update(['attempt' => 0, 'report_time' => null]);
                     $residentAttempt = 0;
                 } else {
-                    return response(['status' => 'blocked', 'message' => "You have been blocked until  $isBlock."]);
+                    return response(['status' => 'blocked', 'message' => "You have been blocked until $isBlock."]);
                 }
             }
 
@@ -141,7 +146,7 @@ class IncidentReportController extends Controller
             'user_ip' => $request->ip(),
             'attempt' => 1
         ]);
-        //event(new IncidentReportEvent());
+        // event(new IncidentReportEvent());
         // event(new NotificationEvent());
 
         return response()->json();
@@ -158,8 +163,9 @@ class IncidentReportController extends Controller
         if ($incidentReportValidation->fails())
             response(['status' => 'warning', 'message' => $incidentReportValidation->errors()->first()]);
 
-        $residentReport = $this->incidentReport->find($reportId);
-        $reportPhoto    = $request->file('photo');
+        $residentReport        = $this->incidentReport->find($reportId);
+        $residentReportPhoto   = $residentReport->value('photo');
+        $reportPhoto           = $request->file('photo');
 
         $dataToUpdate = [
             'description' => Str::ucFirst(trim($request->description)),
@@ -168,10 +174,13 @@ class IncidentReportController extends Controller
 
         if ($reportPhoto) {
             $reportPhoto           = $reportPhoto->store();
-            $request->photo->move(public_path('reports_image'), $reportPhoto);
             $dataToUpdate['photo'] = $reportPhoto;
-            $image_path            = public_path('reports_image/' . $residentReport->value('photo'));
-            if (file_exists($image_path)) unlink($image_path);
+            $request->photo->move(public_path('reports_image'), $reportPhoto);
+
+            if ($residentReportPhoto) {
+                $incidentPhoto = public_path('reports_image/' . $residentReportPhoto);
+                if (file_exists($incidentPhoto)) unlink($incidentPhoto);
+            }
         }
 
         $residentReport->update($dataToUpdate);
@@ -184,7 +193,7 @@ class IncidentReportController extends Controller
     {
         $this->reportEvent->approveStatus($reportId);
         $this->logActivity->generateLog($reportId, 'Resident Incident Report', 'approved a incident report');
-        //event(new IncidentReportEvent());
+        // event(new IncidentReportEvent());
 
         return response()->json();
     }
@@ -193,7 +202,7 @@ class IncidentReportController extends Controller
     {
         $this->reportEvent->declineStatus($reportId);
         $this->logActivity->generateLog($reportId, 'Resident Incident Report', 'declined a incident report');
-        //event(new IncidentReportEvent());
+        // event(new IncidentReportEvent());
 
         return response()->json();
     }
@@ -202,7 +211,7 @@ class IncidentReportController extends Controller
     {
         $reportPhotoPath = $this->incidentReport->find($reportId)->value('photo');
         $this->reportEvent->revertIncidentReport($reportId, $reportPhotoPath);
-        //event(new IncidentReportEvent());
+        // event(new IncidentReportEvent());
 
         return response()->json();
     }
@@ -210,7 +219,7 @@ class IncidentReportController extends Controller
     public function archiveIncidentReport($reportId, $operation)
     {
         $dangerAreaReport = $this->reportEvent->archiveDangerAreaReport($reportId, $operation);
-        $$this->logActivity->generateLog($reportId, $dangerAreaReport, ($operation == "archive" ? "archived" : "unarchived") . " a dangerous area report");
+        $$this->logActivity->generateLog($reportId, $dangerAreaReport, $operation . "d a dangerous area report");
         //event(new IncidentReportEvent());
 
         return response()->json();

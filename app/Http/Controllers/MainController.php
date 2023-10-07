@@ -11,6 +11,8 @@ use App\Models\ActivityUserLog;
 use App\Models\EvacuationCenter;
 use App\Events\NotificationEvent;
 use App\Exports\EvacueeDataExport;
+use App\Models\IncidentReport;
+use Illuminate\Support\Carbon;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Validator;
@@ -18,7 +20,7 @@ use Maatwebsite\Excel\Excel as FileFormat;
 
 class MainController extends Controller
 {
-    private $evacuationCenter, $disaster, $evacuee, $notification, $guide, $guideline;
+    private $evacuationCenter, $disaster, $evacuee, $notification, $guide, $guideline, $incidentReport;
 
     public function __construct()
     {
@@ -28,6 +30,7 @@ class MainController extends Controller
         $this->guideline        = new Guideline;
         $this->notification     = new NotificationEvent;
         $this->evacuationCenter = new EvacuationCenter;
+        $this->incidentReport   = new IncidentReport;
     }
 
     public function dashboard()
@@ -37,8 +40,9 @@ class MainController extends Controller
         $activeEvacuation = $this->evacuationCenter->where('status', "Active")->count();
         $totalEvacuee     = array_sum(array_column($disasterData, 'totalEvacuee'));
         $notifications    = $this->notification->notifications();
+        $incidentReport   = $this->incidentReport->where('report_time', '>=', Carbon::now()->format('Y-m-d H:i:s'))->count();
 
-        return view('userpage.dashboard', compact('activeEvacuation', 'disasterData', 'totalEvacuee', 'onGoingDisasters', 'notifications'));
+        return view('userpage.dashboard', compact('activeEvacuation', 'disasterData', 'totalEvacuee', 'onGoingDisasters', 'notifications', 'incidentReport'));
     }
 
     public function generateExcelEvacueeData(Request $request)
