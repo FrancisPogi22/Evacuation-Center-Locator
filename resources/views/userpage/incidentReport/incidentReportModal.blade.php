@@ -20,8 +20,8 @@
                         </div>
                         <div class="field-container">
                             <label for="photo">Report Photo</label>
-                            <input type="file" id="photo" name="photo" class="form-control form-control-lg"
-                                placeholder="Enter Incident Photo" accept=".jpeg">
+                            <input type="file" id="photo" name="photo" class="form-control form-control-lg" accept=".jpeg">
+                            <span>*This field is optional.</span>
                         </div>
                         <div class="form-button-container">
                             <button id="reportIncidentBtn"></button>

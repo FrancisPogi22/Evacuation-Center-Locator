@@ -415,36 +415,31 @@
                 confirmModal(`Do you want to ${operation} this incident?`).then((result) => {
                     if (!result.isConfirmed) return;
 
-                    if (operation == "update" && report_description == $('#description').val() &&
-                        report_location == $('#location').val()) {
-                        return showWarningMessage();
-                    } else {
-                        let url = operation == "update" ?
-                            "{{ route('resident.report.incident.update', 'reportId') }}".replace('reportId',
-                                reportId) : "{{ route('resident.report.accident') }}";
+                    let url = operation == "update" ?
+                        "{{ route('resident.report.incident.update', 'reportId') }}".replace('reportId',
+                            reportId) : "{{ route('resident.report.accident') }}";
 
-                        $.ajax({
-                            type: 'POST',
-                            url: url,
-                            data: formData,
-                            contentType: false,
-                            processData: false,
-                            success(response) {
-                                let status = response.status,
-                                    message = response.message;
+                    $.ajax({
+                        type: 'POST',
+                        url: url,
+                        data: formData,
+                        contentType: false,
+                        processData: false,
+                        success(response) {
+                            let status = response.status,
+                                message = response.message;
 
-                                return status == 'warning' ? showWarningMessage(message) : status ==
-                                    'blocked' ? (modal.modal('hide'), showWarningMessage(message)) : (
-                                        showSuccessMessage(
-                                            `Report Successfully ${operation == "update" ? 'updated' : 'submitted'}, Thank for your concern.`
-                                        ),
-                                        modal.modal('hide'), pendingReport.draw());
-                            },
-                            error() {
-                                showErrorMessage();
-                            }
-                        });
-                    }
+                            return status == 'warning' ? showWarningMessage(message) : status ==
+                                'blocked' ? (modal.modal('hide'), showWarningMessage(message)) : (
+                                    showSuccessMessage(
+                                        `Report Successfully ${operation == "update" ? 'updated' : 'submitted'}, Thank for your concern.`
+                                    ),
+                                    modal.modal('hide'), pendingReport.draw());
+                        },
+                        error() {
+                            showErrorMessage();
+                        }
+                    });
                 });
             }
 

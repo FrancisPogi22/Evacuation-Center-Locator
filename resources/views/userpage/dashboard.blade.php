@@ -67,7 +67,7 @@
                         <div class="content-description">
                             <div class="wigdet-header">
                                 <p>Evacuation Center (Active)</p>
-                                <img src="{{ asset('assets/img/evacuation.png') }}">
+                                <i class="bi bi-house-heart"></i>
                             </div>
                             <p>{{ $activeEvacuation }}</p>
                             <span>Total</span>
@@ -79,9 +79,21 @@
                         <div class="content-description">
                             <div class="wigdet-header">
                                 <p>Evacuee (On Evacuation)</p>
-                                <img src="{{ asset('assets/img/family.png') }}">
+                                <i class="bi bi-people"></i>
                             </div>
                             <p id="totalEvacuee">{{ $totalEvacuee }}</p>
+                            <span>Total</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="widget">
+                    <div class="widget-content">
+                        <div class="content-description">
+                            <div class="wigdet-header">
+                                <p>Today's Reports</p>
+                                <i class="bi bi-megaphone"></i>
+                            </div>
+                            <p id="totalReport">{{ $incidentReport }}</p>
                             <span>Total</span>
                         </div>
                     </div>
@@ -133,7 +145,11 @@
             // Echo.channel('active-evacuees').listen('ActiveEvacuees', (e) => {
             //     $("#totalEvacuee").text(e.activeEvacuees);
             //     evacueeData();
-            // })
+            // });
+
+            // Echo.channel('incident-report-event').listen('IncidentReportEvent', (e) => {
+            //     $("#totalReport").text(e.totalReport);
+            // });
         });
 
         function evacueeData() {
