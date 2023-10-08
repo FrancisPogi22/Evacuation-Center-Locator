@@ -2,14 +2,14 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 
-class Evacuee extends Model
+class FamilyRecord extends Model
 {
     use HasFactory;
 
-    protected $table = 'evacuee';
+    protected $table = 'family_record';
 
     protected $primaryKey = 'id';
 
@@ -26,14 +26,8 @@ class Evacuee extends Model
         'family_head',
         'birth_date',
         'barangay',
-        'family_id',
-        'disaster_id',
-        'evacuation_id',
         'user_id',
-        'status',
-        'is_archive',
+        'created_at',
         'updated_at'
     ];
-
-    public $timestamps = false;
 }
