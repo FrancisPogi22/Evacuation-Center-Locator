@@ -1,6 +1,6 @@
 <aside class="sidebar">
     <div class="sidebar-header">
-        <img id="logo" src="{{ asset('assets/img/e-ligtas-logo-w.png') }}" alt="Logo">
+        <img id="logo" src="{{ asset('assets/img/e-ligtas-logo-black.png') }}" alt="Logo">
         <button type="button" class="bi bi-x" id="btn-sidebar-close"></button>
     </div>
     <div class="sidebar-content">
@@ -13,7 +13,7 @@
                         <div title="Currently Disabled" class="user-disable"></div>
                     @endif
                     <img src="{{ asset('assets/img/' . auth()->user()->organization . '-LOGO.png') }}" alt="Logo">
-                    <span>{{ auth()->user()->organization }} Panel</span>
+                    <span>{{ auth()->user()->organization }}</span>
                 @endauth
                 @guest
                     <div title="Resident" class="resident"></div>
@@ -34,7 +34,7 @@
                         <div class="navigation-item">
                             <a href="{{ route('eligtas.guideline') }}" class="menu-link">
                                 <i class="bi bi-book"></i>
-                                <span class="links_name">E-LIGTAS Guidelines</span>
+                                <span class="links_name">E-LIGTAS Guideline</span>
                             </a>
                         </div>
                         <div class="navigation-item">
@@ -46,11 +46,11 @@
                             <div class="sub-menu">
                                 <a href="{{ route('incident.report', 'pending') }}" class="menu-link">
                                     <i class="bi bi-people"></i>
-                                    <span class="links_name">Manage Reports</span>
+                                    <span class="links_name">Manage Report</span>
                                 </a>
                                 <a href="{{ route('incident.report', 'report') }}" class="menu-link">
                                     <i class="bi bi-archive"></i>
-                                    <span class="links_name">Archived Reports</span>
+                                    <span class="links_name">Archived Report</span>
                                 </a>
                             </div>
                         </div>
@@ -64,11 +64,11 @@
                                 <div class="sub-menu">
                                     <a href="{{ route('display.users.account', 'active') }}" class="menu-link">
                                         <i class="bi bi-person-gear"></i>
-                                        <span class="links_name">Manage Accounts</span>
+                                        <span class="links_name">Manage Account</span>
                                     </a>
                                     <a href="{{ route('display.users.account', 'archived') }}" class="menu-link">
                                         <i class="bi bi-person-slash"></i>
-                                        <span class="links_name">Archived Accounts</span>
+                                        <span class="links_name">Archived Account</span>
                                     </a>
                                 </div>
                             </div>
@@ -76,7 +76,7 @@
                         <div class="navigation-item">
                             <a href="{{ route('manage.hazard.report') }}" class="menu-link">
                                 <i class="bi bi-flag"></i>
-                                <span class="links_name">Manage Hazard Area</span>
+                                <span class="links_name">Manage Hazard Report</span>
                             </a>
                         </div>
                         <div class="navigation-item">
@@ -101,13 +101,13 @@
                         <div class="navigation-item">
                             <a href="{{ route('eligtas.guideline') }}" class="menu-link">
                                 <i class="bi bi-book"></i>
-                                <span class="links_name">E-LIGTAS Guidelines</span>
+                                <span class="links_name">E-LIGTAS Guideline</span>
                             </a>
                         </div>
                         <div class="navigation-item">
                             <a class="sub-btn">
                                 <i class="bi bi-tropical-storm"></i>
-                                <span class="links_name">Disaster Information</span>
+                                <span class="links_name">Disaster</span>
                                 <i class="bi bi-caret-right-fill dropdown"></i>
                             </a>
                             <div class="sub-menu">
@@ -122,15 +122,26 @@
                             </div>
                         </div>
                         <div class="navigation-item">
-                            <a href="{{ route('manage.evacuee.record') }}" class="menu-link">
+                            <a class="sub-btn">
                                 <i class="bi bi-people"></i>
-                                <span class="links_name">Manage Evacuee Information</span>
+                                <span class="links_name">Evacuee</span>
+                                <i class="bi bi-caret-right-fill dropdown"></i>
                             </a>
+                            <div class="sub-menu">
+                                <a href="{{ route('manage.evacuee.record', 'manage') }}" class="menu-link">
+                                    <i class="bi bi-person-gear"></i>
+                                    <span class="links_name">Manage Evacuee</span>
+                                </a>
+                                <a href="{{ route('manage.evacuee.record', 'archived') }}" class="menu-link">
+                                    <i class="bi bi-person-slash"></i>
+                                    <span class="links_name">Evacuee History</span>
+                                </a>
+                            </div>
                         </div>
                         <div class="navigation-item">
                             <a class="sub-btn">
                                 <i class="bi bi-hospital"></i>
-                                <span class="links_name">Evacuation Centers</span>
+                                <span class="links_name">Evacuation Center</span>
                                 <i class="bi bi-caret-right-fill dropdown"></i>
                             </a>
                             <div class="sub-menu">

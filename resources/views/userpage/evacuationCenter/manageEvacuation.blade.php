@@ -14,11 +14,15 @@
         @include('partials.sidebar')
         <main class="main-content">
             <div class="label-container">
-                <i class="bi bi-house-gear"></i>
+                <div class="icon-container">
+                    <div class="icon-content">
+                        <i class="bi bi-house-gear"></i>
+                    </div>
+                </div>
                 <span>MANAGE EVACUATION CENTER</span>
             </div>
             <hr>
-            @if (auth()->user()->is_disable == 0 && $operation == "active")
+            @if (auth()->user()->is_disable == 0 && $operation == 'active')
                 <div class="page-button-container">
                     <button class="btn-submit" id="addEvacuationCenter">
                         <i class="bi bi-house-down-fill"></i>
@@ -64,9 +68,6 @@
     @include('partials.toastr')
     <script type="text/javascript">
         let evacuationCenterTable = $('#evacuationCenterTable').DataTable({
-            language: {
-                emptyTable: '<div class="message-text">No evacuation center added yet.</div>'
-            },
             ordering: false,
             responsive: true,
             processing: false,

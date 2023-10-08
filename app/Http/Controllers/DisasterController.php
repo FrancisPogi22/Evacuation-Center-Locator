@@ -3,19 +3,23 @@
 namespace App\Http\Controllers;
 
 use App\Models\Disaster;
+use App\Models\Evacuee;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Models\ActivityUserLog;
 use Yajra\DataTables\DataTables;
 use Illuminate\Support\Facades\Validator;
 
+use function Laravel\Prompts\select;
+
 class DisasterController extends Controller
 {
-    private $disaster, $logActivity;
+    private $disaster, $evacuee, $logActivity;
 
     public function __construct()
     {
         $this->disaster    = new Disaster;
+        $this->evacuee     = new Evacuee;
         $this->logActivity = new ActivityUserLog;
     }
     public function displayDisasterInformation($operation)
@@ -35,7 +39,9 @@ class DisasterController extends Controller
                 $updateButton  = '<button class="btn-table-update" id="updateDisaster"><i class="bi bi-pencil-square"></i>Update</button>';
                 $statusOptions = $disaster->status == 'On Going' ? '<option value="Inactive">Inactive</option>' : '<option value="On Going">On Going</option>';
                 $selectStatus  = '<select class="form-select" id="changeDisasterStatus"><option value="" disabled selected hidden>Change Status</option>' . $statusOptions . '</select>';
-                $archiveButton = $operation == "manage" ? '<button class="btn-table-remove" id="archiveDisaster"><i class="bi bi-trash3-fill"></i>Archive</button>' : '<button class="btn-table-remove" id="unArchiveDisaster"><i class="bi bi-arrow-repeat"></i>Unarchive</button>';
+                $archiveButton = $operation == "manage" ?
+                    ($disaster->status != "On Going" ? '<button class="btn-table-remove" id="archiveDisaster"><i class="bi bi-trash3-fill"></i>Archive</button>' : '') :
+                    '<button class="btn-table-remove" id="unArchiveDisaster"><i class="bi bi-arrow-repeat"></i>Unarchive</button>';
 
                 return '<div class="action-container">' . $updateButton . $archiveButton . $selectStatus . '</div>';
             })
@@ -59,7 +65,7 @@ class DisasterController extends Controller
             'is_archive' => 0
         ]);
         $this->logActivity->generateLog($disasterData->id, $disasterData->name, 'added a new disaster data');
-        
+
         return response()->json();
     }
 
@@ -78,12 +84,23 @@ class DisasterController extends Controller
             'user_id' => auth()->user()->id
         ]);
         $this->logActivity->generateLog($disasterId, $disasterData->name, 'updated a disaster data');
-        
+
         return response()->json();
     }
 
     public function archiveDisasterData($disasterId, $operation)
     {
+        if ($operation == 'archive') {
+            $evacueesCount = $this->evacuee->where('disaster_id', $disasterId)->where('status', 'Evacuated')->count();
+
+            if ($evacueesCount > 0)
+                return response(['status' => 'warning', 'message' => 'Cannot archive disaster. There are still evacuees under this disaster.']);
+            else
+                $this->evacuee->where('disaster_id', $disasterId)->update(['is_archive' => 1]);
+        } else {
+            $this->evacuee->where('disaster_id', $disasterId)->update(['is_archive' => 0]);
+        }
+
         $disasterData = $this->disaster->find($disasterId);
         $disasterData->update([
             'user_id'    => auth()->user()->id,
@@ -91,7 +108,7 @@ class DisasterController extends Controller
         ]);
 
         $this->logActivity->generateLog($disasterId, $disasterData->name, ($operation == "archive" ? "archived" : "unarchived") . " a disaster data");
-        
+
         return response()->json();
     }
 

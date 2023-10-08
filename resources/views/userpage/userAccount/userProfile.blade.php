@@ -11,7 +11,11 @@
         @include('partials.sidebar')
         <main class="main-content">
             <div class="label-container">
-                <i class="bi bi-person-circle"></i>
+                <div class="icon-container">
+                    <div class="icon-content">
+                        <i class="bi bi-person-circle"></i>
+                    </div>
+                </div>
                 <span>MY ACCOUNT</span>
             </div>
             <hr>
@@ -27,33 +31,31 @@
                     </button>
                 </div>
                 <hr>
-                <form id="userProfileForm">
-                    <div class="profile-details-container">
-                        <div class="details-section col-lg-2">
-                            <label class="profile-details-label">Position</label>
-                            <p class="profile-details">{{ auth()->user()->position }}</p>
-                        </div>
-                        <div class="details-section col-lg-4">
-                            <label class="profile-details-label">Organization</label>
-                            @if (auth()->user()->organization == 'CDRRMO')
-                                <p class="profile-details">Cabuyao City Disaster Risk Reduction
-                                    and Management Office (CDRRMO)</p>
-                            @else
-                                <p class="profile-details">City Social Welfare and
-                                    Development (CSWD)
-                                </p>
-                            @endif
-                        </div>
-                        <div class="details-section col-lg-4">
-                            <label class="profile-details-label">Email Address</label>
-                            <p class="profile-details">{{ auth()->user()->email }}</p>
-                        </div>
-                        <div class="details-section col-lg-2">
-                            <label class="profile-details-label">Account Status</label>
-                            <p class="profile-details">{{ auth()->user()->status }}</p>
-                        </div>
+                <div class="profile-details-container">
+                    <div class="details-section col-lg-2">
+                        <label class="profile-details-label">Position</label>
+                        <p class="profile-details">{{ auth()->user()->position }}</p>
                     </div>
-                </form>
+                    <div class="details-section col-lg-4">
+                        <label class="profile-details-label">Organization</label>
+                        @if (auth()->user()->organization == 'CDRRMO')
+                            <p class="profile-details">Cabuyao City Disaster Risk Reduction
+                                and Management Office (CDRRMO)</p>
+                        @else
+                            <p class="profile-details">City Social Welfare and
+                                Development (CSWD)
+                            </p>
+                        @endif
+                    </div>
+                    <div class="details-section col-lg-4">
+                        <label class="profile-details-label">Email Address</label>
+                        <p class="profile-details">{{ auth()->user()->email }}</p>
+                    </div>
+                    <div class="details-section col-lg-2">
+                        <label class="profile-details-label">Account Status</label>
+                        <p class="profile-details">{{ auth()->user()->status }}</p>
+                    </div>
+                </div>
             </section>
         </main>
         @include('userpage.userAccount.userAccountModal')
@@ -126,7 +128,8 @@
                             success(response) {
                                 response.status == 'warning' ? showWarningMessage(response
                                     .message) : showSuccessMessage(
-                                    'Successfully updated the account details, Please wait...', true);
+                                    'Successfully updated the account details, Please wait...', true
+                                );
                             },
                             error() {
                                 showErrorMessage();

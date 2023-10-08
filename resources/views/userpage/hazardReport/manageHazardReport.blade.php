@@ -13,7 +13,11 @@
         @include('partials.sidebar')
         <div class="main-content">
             <div class="label-container">
-                <i class="bi bi-flag"></i>
+                <div class="icon-container">
+                    <div class="icon-content">
+                        <i class="bi bi-flag"></i>
+                    </div>
+                </div>
                 <span>MANAGE HAZARD REPORTS</span>
             </div>
             <hr>
@@ -34,9 +38,9 @@
                         <img src="{{ asset('assets/img/floodedMarker.png') }}">
                         <span id="flooded-count"></span>
                     </div>
-                    <div class="count-container roadblock" hidden>
-                        <img src="{{ asset('assets/img/roadblock.png') }}">
-                        <span id="roadblock-count"></span>
+                    <div class="count-container roadblocked" hidden>
+                        <img src="{{ asset('assets/img/roadblocked.png') }}">
+                        <span id="roadblocked-count"></span>
                     </div>
                 </div>
             </div>
@@ -90,7 +94,7 @@
                             counts = {
                                 "Pending": 0,
                                 "Flooded": 0,
-                                "Roadblock": 0
+                                "Roadblocked": 0
                             };
 
                         while (reportMarkers.length) reportMarkers.pop().setMap(null);
@@ -108,7 +112,7 @@
                                 } else {
                                     counts[report.type] = (counts[report.type] || 0) + 1;
                                     picture = report.type == "Flooded" ? "floodedMarker" :
-                                        "roadblock";
+                                        "roadblocked";
                                     button = `<button class="btn btn-sm btn-primary updateBtn">
                                             <i class="bi bi-chat-square-text-fill"></i>
                                         </button>`;

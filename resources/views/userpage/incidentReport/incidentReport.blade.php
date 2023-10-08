@@ -15,7 +15,11 @@
         @include('partials.sidebar')
         <main class="main-content">
             <div class="label-container">
-                <i class="bi bi-megaphone"></i>
+                <div class="icon-container">
+                    <div class="icon-content">
+                        <i class="bi bi-megaphone"></i>
+                    </div>
+                </div>
                 <span>INCIDENT REPORT</span>
             </div>
             <hr>
@@ -132,9 +136,6 @@
 
                 @if ($operation == 'pending')
                     pendingReport = $('#pendingReport').DataTable({
-                        language: {
-                            emptyTable: '<div class="message-text">There are currently no pending reports.</div>',
-                        },
                         ordering: false,
                         responsive: true,
                         processing: false,
@@ -184,9 +185,6 @@
 
                 @if ($operation == 'report')
                     incidentReports = $('#incidentReports').DataTable({
-                        language: {
-                            emptyTable: '<div class="message-text">There are currently no reports.</div>',
-                        },
                         ordering: false,
                         responsive: true,
                         processing: false,
@@ -294,9 +292,6 @@
 
             @if ($operation == 'pending')
                 let pendingReport = $('#pendingReport').DataTable({
-                    language: {
-                        emptyTable: '<div class="message-text">You have no pending reports.</div>'
-                    },
                     ordering: false,
                     responsive: true,
                     processing: false,
