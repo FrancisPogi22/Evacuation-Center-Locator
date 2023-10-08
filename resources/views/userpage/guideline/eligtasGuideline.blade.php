@@ -11,7 +11,11 @@
         @include('partials.sidebar')
         <main class="main-content">
             <div class="label-container">
-                <i class="bi bi-book"></i>
+                <div class="icon-container">
+                    <div class="icon-content">
+                        <i class="bi bi-book"></i>
+                    </div>
+                </div>
                 <span>E-LIGTAS GUIDELINES</span>
             </div>
             <hr>

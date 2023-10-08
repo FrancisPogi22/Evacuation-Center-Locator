@@ -11,7 +11,11 @@
         @include('partials.sidebar')
         <main class="main-content">
             <div class="label-container">
-                <i class="bi bi-info-circle"></i>
+                <div class="icon-container">
+                    <div class="icon-content">
+                        <i class="bi bi-info-circle"></i>
+                    </div>
+                </div>
                 <span>ABOUT</span>
             </div>
             <hr>

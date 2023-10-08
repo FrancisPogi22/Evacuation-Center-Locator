@@ -1,6 +1,6 @@
 @if (auth()->user()->is_disable == 0)
     <div class="modal fade" id="evacueeInfoFormModal" tabindex="-1" role="dialog" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
+        <div class="modal-dialog modal-md">
             <div class="modal-content">
                 <header class="modal-label-container">
                     <h1 class="modal-label"></h1>
@@ -9,22 +9,31 @@
                     <form id="evacueeInfoForm">
                         @csrf
                         <div class="form-content">
-                            <div class="col-lg-6 field-container">
-                                <label for="disaster_id">Disaster</label>
-                                <select name="disaster_id" id="disaster_id" class="form-select">
-                                    <option value="" hidden disabled selected>Select Disaster</option>
-                                    @foreach ($disasterList as $disaster)
-                                        <option value="{{ $disaster->id }}">
-                                            {{ $disaster->name }}</option>
-                                    @endforeach
-                                </select>
+                            <div class="field-container toggle-form-button">
+                                <button type="button" id="newRecordBtn" class="btn-submit">
+                                    <i class="bi bi-file-earmark-plus"></i>
+                                    Add new record
+                                </button>
+                                <button type="button" id="existingRecordBtn" class="btn-submit">
+                                    <i class="bi bi-search"></i>
+                                    Find existing record
+                                </button>
                             </div>
-                            <div class="col-lg-6 field-container" id="dateEntryContainer">
-                                <label for="date_entry">Date Entry</label>
-                                <input type="text" name="date_entry" id="date_entry" class="form-control"
-                                    autocomplete="off" placeholder="Select Date Entry">
+                            <div class="field-container hidden_field" hidden>
+                                <input type="text" name="form_type" id="formType" class="form-control">
+                                <input type="text" name="family_id" id="family_id" class="form-control">
                             </div>
-                            <div class="field-container">
+                            <div class="field-container searchContainer" hidden>
+                                <div class="custom-dropdown">
+                                    <label for="searchInput">Search Family Record</label>
+                                    <input type="text" id="searchInput" class="form-control"
+                                        placeholder="Search Family Head">
+                                    <div class="dropdown-options" hidden id="dropdownOptions">
+                                        <ul id="searchResults"></ul>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="field-container" hidden>
                                 <label for="barangay">Barangay</label>
                                 <select name="barangay" class="form-select">
                                     <option value="" hidden selected disabled>Select Barangay</option>
@@ -48,73 +57,78 @@
                                     <option value="Barangay III Poblacion">Barangay III Poblacion</option>
                                 </select>
                             </div>
-                            <div class="field-container" id="evacuationSelectContainer">
-                                <label for="evacuation_assigned">Evacuation Assigned</label>
-                                <select name="evacuation_assigned" class="form-select">
-                                    <option value="" hidden selected disabled>Select Evacuation Assigned
-                                    </option>
-                                    @foreach ($evacuationList as $evacuationCenter)
-                                        <option value="{{ $evacuationCenter->name }}">
-                                            {{ $evacuationCenter->name }}</option>
-                                    @endforeach
-                                </select>
+                            <div class="col-lg-6 field-container" hidden>
+                                <label for="family_head">Family Head</label>
+                                <input type="text" name="family_head" id="family_head" class="form-control"
+                                    autocomplete="off" placeholder="Family Head">
                             </div>
-                            <div class="col-lg-4 field-container">
-                                <label for="infants">Infants</label>
-                                <input type="number" name="infants" id="infants" class="form-control"
-                                    autocomplete="off" placeholder="Infants">
+                            <div class="col-lg-6 field-container" hidden id="birthDateContainer">
+                                <label for="birth_date">Birth Date</label>
+                                <input type="text" name="birth_date" id="birth_date" class="form-control"
+                                    autocomplete="off" placeholder="Select Birth Date">
                             </div>
-                            <div class="col-lg-4 field-container">
-                                <label for="minors">Minors</label>
-                                <input type="number" name="minors" id="minors" class="form-control"
-                                    autocomplete="off" placeholder="Minors">
-                            </div>
-                            <div class="col-lg-4 field-container">
-                                <label for="senior_citizen">Senior Citizen</label>
-                                <input type="number" name="senior_citizen" id="senior_citizen" class="form-control"
-                                    autocomplete="off" placeholder="Senior Citizen">
-                            </div>
-                            <div class="col-lg-4 field-container">
-                                <label for="pwd">PWD</label>
-                                <input type="number" name="pwd" id="pwd" class="form-control"
-                                    autocomplete="off" placeholder="PWD">
-                            </div>
-                            <div class="col-lg-4 field-container">
-                                <label for="pregnant">Pregnant</label>
-                                <input type="number" name="pregnant" id="pregnant" class="form-control"
-                                    autocomplete="off" placeholder="Pregnant">
-                            </div>
-                            <div class="col-lg-4 field-container">
-                                <label for="lactating">Lactating</label>
-                                <input type="number" name="lactating" id="lactating" class="form-control"
-                                    autocomplete="off" placeholder="Lactating">
-                            </div>
-                            <div class="col-lg-3 field-container">
-                                <label for="families">Families</label>
-                                <input type="number" name="families" id="families" class="form-control"
-                                    autocomplete="off" placeholder="Families">
-                            </div>
-                            <div class="col-lg-3 field-container">
-                                <label for="individuals">No. Individual</label>
-                                <input type="number" name="individuals" id="individuals" class="form-control"
-                                    autocomplete="off" placeholder="No. Individual">
-                            </div>
-                            <div class="col-lg-3 field-container">
+                            <div class="col-lg-6 field-container" hidden>
                                 <label for="male">Male</label>
                                 <input type="number" name="male" id="male" class="form-control"
                                     autocomplete="off" placeholder="Male">
                             </div>
-                            <div class="col-lg-3 field-container">
+                            <div class="col-lg-6 field-container" hidden>
                                 <label for="female">Female</label>
                                 <input type="number" name="female" id="female" class="form-control"
                                     autocomplete="off" placeholder="Female">
                             </div>
-                            <div class="field-container">
-                                <label for="remarks">Remarks</label>
-                                <textarea type="text" name="remarks" id="remarks" rows="5" class="form-control" autocomplete="off"
-                                    placeholder="Leave a remarks..."></textarea>
+                            <div class="col-lg-4 field-container" hidden>
+                                <label for="infants">Infants</label>
+                                <input type="number" name="infants" id="infants" class="form-control"
+                                    autocomplete="off" placeholder="Infants">
                             </div>
-                            <div class="form-button-container">
+                            <div class="col-lg-4 field-container" hidden>
+                                <label for="minors">Minors</label>
+                                <input type="number" name="minors" id="minors" class="form-control"
+                                    autocomplete="off" placeholder="Minors">
+                            </div>
+                            <div class="col-lg-4 field-container" hidden>
+                                <label for="senior_citizen">Senior Citizen</label>
+                                <input type="number" name="senior_citizen" id="senior_citizen" class="form-control"
+                                    autocomplete="off" placeholder="Senior Citizen">
+                            </div>
+                            <div class="col-lg-4 field-container" hidden>
+                                <label for="pwd">PWD</label>
+                                <input type="number" name="pwd" id="pwd" class="form-control"
+                                    autocomplete="off" placeholder="PWD">
+                            </div>
+                            <div class="col-lg-4 field-container" hidden>
+                                <label for="pregnant">Pregnant</label>
+                                <input type="number" name="pregnant" id="pregnant" class="form-control"
+                                    autocomplete="off" placeholder="Pregnant">
+                            </div>
+                            <div class="col-lg-4 field-container" hidden>
+                                <label for="lactating">Lactating</label>
+                                <input type="number" name="lactating" id="lactating" class="form-control"
+                                    autocomplete="off" placeholder="Lactating">
+                            </div>
+                            <div class="field-container" hidden>
+                                <label for="disaster_id">Disaster</label>
+                                <select name="disaster_id" class="form-select">
+                                    <option value="" hidden disabled selected>Select Disaster</option>
+                                    @foreach ($disasterList as $disaster)
+                                        <option value="{{ $disaster->id }}">
+                                            {{ $disaster->name }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="field-container" hidden id="evacuationSelectContainer">
+                                <label for="evacuation_id">Evacuation Assigned</label>
+                                <select name="evacuation_id" class="form-select">
+                                    <option value="" hidden selected disabled>Select Evacuation Assigned
+                                    </option>
+                                    @foreach ($evacuationList as $evacuationCenter)
+                                        <option value="{{ $evacuationCenter->id }}">
+                                            {{ $evacuationCenter->name }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="form-button-container" hidden>
                                 <button id="recordEvacueeInfoBtn"></button>
                             </div>
                         </div>

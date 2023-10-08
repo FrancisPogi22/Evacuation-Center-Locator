@@ -38,7 +38,8 @@ class MainController extends Controller
         $disasterData     = $this->fetchDisasterData();
         $onGoingDisasters = $this->disaster->where('status', "On Going")->get();
         $activeEvacuation = $this->evacuationCenter->where('status', "Active")->count();
-        $totalEvacuee     = array_sum(array_column($disasterData, 'totalEvacuee'));
+        $totalEvacuee     = $this->evacuee->where('status', "Evacuated")->sum('individuals');
+        $totalEvacuee     = strval($totalEvacuee);
         $notifications    = $this->notification->notifications();
         $incidentReport   = $this->incidentReport->where('report_time', '>=', Carbon::now()->format('Y-m-d H:i:s'))->count();
 
@@ -82,12 +83,13 @@ class MainController extends Controller
         return view('userpage.guideline.guide', compact('guide', 'guidelineId', 'notifications'));
     }
 
-    public function manageEvacueeInformation(Request $request)
+    public function manageEvacueeInformation($operation)
     {
-        $disasterList   = $this->disaster->where('status', 'On Going')->get();
+        $disasterList   = $this->disaster->where('is_archive', 0)->get();
+        $archiveDisasterList = $this->disaster->where('is_archive', 1)->get();
         $evacuationList = $this->evacuationCenter->whereNotIn('status', ['Inactive', 'Archived'])->get();
 
-        return view('userpage.evacuee.evacuee', compact('evacuationList', 'disasterList'));
+        return view('userpage.evacuee.evacuee', compact('evacuationList', 'disasterList', 'archiveDisasterList', 'operation'));
     }
 
     public function disasterInformation($operation)

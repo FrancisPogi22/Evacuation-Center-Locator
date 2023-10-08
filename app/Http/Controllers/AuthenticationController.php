@@ -84,7 +84,6 @@ class AuthenticationController extends Controller
         $this->logActivity->generateLog(null, null, 'logged out');
         auth()->logout();
         session()->flush();
-        
         return redirect('/')->with('success', 'Successfully Logged out.');
     }
 

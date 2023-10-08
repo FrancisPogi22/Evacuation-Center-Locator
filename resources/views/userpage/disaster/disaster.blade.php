@@ -14,7 +14,11 @@
         @include('partials.sidebar')
         <main class="main-content">
             <div class="label-container">
-                <i class="bi bi-tropical-storm"></i>
+                <div class="icon-container">
+                    <div class="icon-content">
+                        <i class="bi bi-tropical-storm"></i>
+                    </div>
+                </div>
                 <span>MANAGE DISASTER INFORMATION</span>
             </div>
             <hr>
@@ -60,9 +64,6 @@
     <script>
         $(document).ready(() => {
             let disasterTable = $('#disasterTable').DataTable({
-                language: {
-                    emptyTable: '<div class="message-text">There are no disaster data available.</div>'
-                },
                 ordering: false,
                 responsive: true,
                 processing: false,
@@ -178,11 +179,12 @@
                                         status: status
                                     },
                                     url: url,
-                                    success() {
-                                        disasterTable.draw();
-                                        showSuccessMessage(
-                                            `Disaster successfully ${operation == "change" ? "changed status" : operation}.`
-                                        );
+                                    success(response) {
+                                        response.status == 'warning' ?
+                                            showWarningMessage(response.message) :
+                                            (disasterTable.draw(), showSuccessMessage(
+                                                `Disaster successfully ${operation == "change" ? "changed status" : operation}.`
+                                            ))
                                     },
                                     error() {
                                         showErrorMessage();

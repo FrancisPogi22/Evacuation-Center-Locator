@@ -11,7 +11,11 @@
         @include('partials.sidebar')
         <main class="main-content">
             <div class="label-container">
-                <i class="bi bi-telephone"></i>
+                <div class="icon-container">
+                    <div class="icon-content">
+                        <i class="bi bi-telephone"></i>
+                    </div>
+                </div>
                 <span>HOTLINE NUMBERS</span>
             </div>
             <hr>
