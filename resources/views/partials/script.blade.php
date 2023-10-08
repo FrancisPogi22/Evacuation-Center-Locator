@@ -154,16 +154,19 @@
     });
     @auth
 
-    function datePicker(id) {
+    function datePicker(id, enableTime = true) {
+        const dateFormat = enableTime ? "F j, Y h:i K" : "F j, Y";
+
         return flatpickr(id, {
-            enableTime: true,
+            enableTime,
             allowInput: true,
             static: false,
             timeFormat: "h:i K",
-            dateFormat: "D, M j, Y h:i K",
+            dateFormat,
             minuteIncrement: 1,
             secondIncrement: 1,
-            position: "below center"
+            position: "below center",
+            theme: "light",
         });
     }
 
@@ -210,6 +213,7 @@
         themeText.text('Light Mode');
         sessionStorage.setItem('theme', 'dark');
         $('hr').addClass('bg-white');
+        $('#logo').attr('src', '{{ asset("assets/img/e-ligtas-logo-white.png") }}');
     }
 
     function disableDarkMode() {
@@ -218,6 +222,7 @@
         themeText.text('Dark Mode');
         sessionStorage.setItem('theme', 'light');
         $('hr').removeClass('bg-white').addClass('bg-dark');
+        $('#logo').attr('src', '{{ asset("assets/img/e-ligtas-logo-black.png") }}');
     }
 
     function confirmModal(text) {
