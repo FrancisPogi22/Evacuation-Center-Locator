@@ -3,10 +3,11 @@
 
 :root {
     --color-gray: #334155;
+    --color-light-gray: #b3b3b3;
     --color-green: #28a745;
     --color-primary: #3575ff;
     --color-yellow: #ffc107;
-    --color-black: #000000;
+    --color-black: #212529;
     --color-red: #ef4444;
 
     --color-red-hover: #dc2626;
@@ -15,7 +16,7 @@
     --color-primary-hover: #1d4ed8;
 
     --color-text: #ffffff;
-    --color-background: #F6F7FB;
+    --color-background: #f6f7fb;
 
     --color-d-background: #1e293b;
     --color-d-text: #e2e8f0;
@@ -39,7 +40,8 @@ body {
     background: var(--color-background) !important;
 }
 
-.toast {
+.toast,
+button {
     opacity: 1 !important;
     box-shadow: none !important;
 }
@@ -55,21 +57,13 @@ body {
     width: 0.5vw;
 }
 
-::-webkit-scrollbar-track {
-    background: transparent;
-}
-
 ::-webkit-scrollbar-thumb {
-    background: var(--color-d-bg-container);
-}
-
-::-webkit-scrollbar-thumb:hover {
-    background: var(--color-gray);
+    background: var(--color-d-sub-text);
 }
 
 select::placeholder,
 input::placeholder {
-    color: #94a3b8 !important;
+    color: var(--color-gray) !important;
 }
 
 .wrapper {
@@ -87,9 +81,18 @@ input::placeholder {
     font-weight: 600;
     border-radius: 4px;
     padding: 8px 16px;
-    filter: drop-shadow(0 4px 3px rgb(0 0 0 / 0.07)) drop-shadow(0 2px 2px rgb(0 0 0 / 0.06));
-    transition-duration: 100ms;
+    filter: drop-shadow(0 4px 3px rgb(0 0 0 / 0.07))
+        drop-shadow(0 2px 2px rgb(0 0 0 / 0.06));
     border: none;
+}
+
+#changeEvacueeDataBtn {
+    background: var(--color-yellow);
+}
+
+#existingRecordBtn,
+#changeEvacueeStatusBtn {
+    background: var(--color-primary);
 }
 
 #locateNearestBtn {
@@ -110,14 +113,13 @@ input::placeholder {
     font-size: 14px;
     font-weight: 600;
     color: var(--color-text);
-    transition-duration: 100ms;
-    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
     border-radius: 4px;
     border: none;
 }
 
 .btn-update:hover,
-.btn-table-update:hover {
+.btn-table-update:hover,
+#changeEvacueeDataBtn:hover {
     background: var(--color-yellow-hover);
     transform: scale(1.05);
     border: none;
@@ -129,8 +131,6 @@ input::placeholder {
     font-size: 14px;
     font-weight: 600;
     color: var(--color-text);
-    transition-duration: 100ms;
-    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
     border-radius: 4px;
     border: none;
 }
@@ -156,8 +156,6 @@ input::placeholder {
     font-size: 14px;
     font-weight: 600;
     color: var(--color-text);
-    transition-duration: 100ms;
-    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
     border-radius: 4px;
     padding: 10px 16px;
     width: max-content;
@@ -165,15 +163,18 @@ input::placeholder {
 }
 
 .btn-table-primary:hover,
+#changeEvacueeStatusBtn:hover,
 #pinpointCurrentLocationBtn:hover {
     background: var(--color-primary-hover);
     transform: scale(1.05);
 }
 
+.btn-primary,
 .btn-update,
 .btn-remove,
 #pinpointCurrentLocationBtn {
-    filter: drop-shadow(0 4px 3px rgb(0 0 0 / 0.07)) drop-shadow(0 2px 2px rgb(0 0 0 / 0.06));
+    filter: drop-shadow(0 4px 3px rgb(0 0 0 / 0.07))
+        drop-shadow(0 2px 2px rgb(0 0 0 / 0.06));
 }
 
 .sendUpdateBtn,
@@ -195,11 +196,25 @@ input::placeholder {
     border: none;
 }
 
-.page-button-container {
+.evacuee-table-header {
+    display: flex;
+    justify-content: space-between;
+    padding-top: 6px;
+    border: none;
+}
+
+.page-button-container,
+.page-button-container.manage-evacuee-table {
     display: flex;
     justify-content: end;
     margin-bottom: 22px;
     border: none;
+    align-items: flex-end;
+    gap: 15px;
+}
+
+.page-button-container.manage-evacuee-table {
+    margin: -5px 0 15px 0;
 }
 
 .locator-button-container button i,
@@ -217,9 +232,10 @@ input::placeholder {
     top: 0;
     left: 0;
     height: 60px;
-    background: var(--color-red);
+    background: var(--color-light-gray);
     z-index: 1;
-    filter: drop-shadow(0 10px 8px rgb(0 0 0 / 0.04)) drop-shadow(0 4px 3px rgb(0 0 0 / 0.1));
+    filter: drop-shadow(0 10px 8px rgb(0 0 0 / 0.04))
+        drop-shadow(0 4px 3px rgb(0 0 0 / 0.1));
 }
 
 .header-section .container-fluid {
@@ -242,7 +258,7 @@ input::placeholder {
 }
 
 .dropdown button {
-    color: var(--color-text);
+    color: var(--color-black);
     font-size: 14px;
     line-height: 20px;
     margin: 0 15px;
@@ -287,28 +303,28 @@ input::placeholder {
 }
 
 .dropdown-item:hover {
-    background: #f1f5f9;
+    background: #dadadaea !important;
 }
 
 .dropdown-menu .changePasswordBtn:active {
-    background: var(--color-primary);
+    background: var(--color-primary) !important;
 }
 
 .dropdown-menu #changeTheme:active {
-    background: var(--color-yellow);
+    background: var(--color-yellow) !important;
 }
 
 .dropdown-menu .myAccount:active {
-    background: var(--color-green);
+    background: var(--color-green) !important;
 }
 
 .dropdown-menu .logout:active {
-    background: var(--color-red);
+    background: var(--color-red) !important;
 }
 
 .main-content {
     width: 100%;
-    margin: 90px auto 30px;
+    margin: 95px auto 30px;
     padding: 0 20px 0 90px;
     transition: 0.2s all ease-in-out;
 }
@@ -320,34 +336,40 @@ input::placeholder {
 .label-container {
     display: grid;
     grid-template-columns: repeat(1, minmax(0, 1fr));
-    align-items: center;
+    align-items: baseline;
 }
 
-.label-container i {
+.icon-container {
     display: grid;
-    margin-right: 16px;
+    margin-right: 14px;
     grid-column-end: 1;
-    background: var(--color-gray);
-    border-radius: 4px;
-    padding: 8px;
+}
+
+.icon-content {
+    color: var(--color-black);
     font-size: 24px;
-    color: var(--color-text);
+}
+
+.icon-content i {
+    padding: 8px;
+    border-radius: 4px;
+    background-color: var(--color-light-gray);
 }
 
 .label-container span {
     font-size: 20px;
     font-weight: 700;
 }
-
 .sidebar {
     position: fixed;
     width: 80px;
-    background: var(--color-gray);
+    background: var(--color-text);
     z-index: 100;
     left: 0;
     top: 0;
-    transition: 0.3s ease;
-    filter: drop-shadow(0 10px 8px rgb(0 0 0 / 0.04)) drop-shadow(0 4px 3px rgb(0 0 0 / 0.1));
+    transition: 0s ease;
+    filter: drop-shadow(0 10px 8px rgb(0 0 0 / 0.04))
+        drop-shadow(0 4px 3px rgb(0 0 0 / 0.1));
     overflow: hidden;
 }
 
@@ -367,7 +389,7 @@ input::placeholder {
     -ms-flex-pack: space-between;
     padding: 12px 12px;
     height: 60px;
-    color: var(--color-text);
+    color: var(--color-black);
     cursor: pointer;
 }
 
@@ -395,12 +417,16 @@ input::placeholder {
 }
 
 .sidebar .links_name {
-    color: var(--color-text);
+    color: var(--color-black);
     opacity: 0;
     text-align: start;
     pointer-events: none;
     overflow: hidden;
     font-size: 15px;
+}
+
+.sidebar .navigation-item i {
+    color: var(--color-black);
 }
 
 .sidebar.active .links_name,
@@ -413,7 +439,6 @@ input::placeholder {
 .sidebar #logo,
 .dark-mode .sidebar #logo {
     width: 55px;
-    transition: 100ms;
 }
 
 .sidebar.active #logo,
@@ -436,11 +461,12 @@ input::placeholder {
     position: absolute;
     right: 0;
     transition: 0.3s ease;
+    color: var(--color-black);
 }
 
 .sub-menu {
     padding: 0.1px 0;
-    background: var(--color-d-bg-container);
+    background: var(--color-d-text);
     display: none;
 }
 
@@ -457,18 +483,18 @@ input::placeholder {
 }
 
 .sidebar ul .navigation-item a:not(.active-link):hover {
-    background: rgb(170, 170, 170);
-    color: var(--color-text);
+    background: #dadadaea;
+    color: var(--color-black);
 }
 
 .active-link {
-    background: var(--color-red);
-    color: var(--color-text);
+    background: var(--color-light-gray);
+    color: var(--color-black);
 }
 
 .sidebar ul .navigation-item i {
     margin-left: -4px;
-    color: var(--color-text);
+    color: var(--color-black);
 }
 
 .sidebar ul .navigation-item i {
@@ -491,14 +517,14 @@ input::placeholder {
 .user-details {
     display: none;
     padding: 8px 0;
-    background: var(--color-d-background);
+    background: var(--color-light-gray);
 }
 
 .details-content {
     display: flex;
     justify-content: center;
     align-items: center;
-    color: var(--color-text);
+    color: var(--color-black);
     letter-spacing: 0.025em;
     font-weight: 700;
     gap: 16px;
@@ -519,7 +545,7 @@ input::placeholder {
 #btn-sidebar-mobile,
 #btn-sidebar-close {
     display: none;
-    color: var(--color-text);
+    color: var(--color-black) !important;
     cursor: pointer;
     font-size: 24px;
     line-height: 32px;
@@ -591,7 +617,8 @@ input::placeholder {
     width: 100%;
     max-width: 430px;
     border-radius: 6px;
-    filter: drop-shadow(0 10px 8px rgb(0 0 0 / 0.04)) drop-shadow(0 4px 3px rgb(0 0 0 / 0.1));
+    filter: drop-shadow(0 10px 8px rgb(0 0 0 / 0.04))
+        drop-shadow(0 4px 3px rgb(0 0 0 / 0.1));
 }
 
 .auth-form-section form {
@@ -613,7 +640,7 @@ input::placeholder {
     cursor: pointer;
     top: 12px;
     right: 15px;
-    color: #64748b;
+    color: var(--color-black);
 }
 
 .auth-form-section input {
@@ -629,12 +656,12 @@ input::placeholder {
     font-weight: 800;
     color: var(--color-text);
     border-radius: 6px;
-    background: var(--color-gray);
+    background: var(--color-green);
     border: none;
 }
 
 .btn-login:hover {
-    background: #1e293b;
+    background: var(--color-green-hover);
 }
 
 .btn-resident {
@@ -690,7 +717,8 @@ input::placeholder {
     width: 100%;
     max-width: 500px;
     border-radius: 6px;
-    filter: drop-shadow(0 10px 8px rgb(0 0 0 / 0.04)) drop-shadow(0 4px 3px rgb(0 0 0 / 0.1));
+    filter: drop-shadow(0 10px 8px rgb(0 0 0 / 0.04))
+        drop-shadow(0 4px 3px rgb(0 0 0 / 0.1));
 }
 
 .recover-form form label,
@@ -806,7 +834,8 @@ input::placeholder {
     position: relative;
     overflow: hidden;
     border-radius: 15px;
-    filter: drop-shadow(0 10px 8px rgb(0 0 0 / 0.04)) drop-shadow(0 4px 3px rgb(0 0 0 / 0.1));
+    filter: drop-shadow(0 10px 8px rgb(0 0 0 / 0.04))
+        drop-shadow(0 4px 3px rgb(0 0 0 / 0.1));
     -webkit-animation: scaleIn 0.5s;
     animation: scaleIn 0.5s;
 }
@@ -863,7 +892,8 @@ input::placeholder {
     width: 500px;
     border-radius: 15px;
     margin-right: 20px;
-    filter: drop-shadow(0 10px 8px rgb(0 0 0 / 0.04)) drop-shadow(0 4px 3px rgb(0 0 0 / 0.1));
+    filter: drop-shadow(0 10px 8px rgb(0 0 0 / 0.04))
+        drop-shadow(0 4px 3px rgb(0 0 0 / 0.1));
 }
 
 .highcharts-background {
@@ -874,7 +904,8 @@ input::placeholder {
     flex: 1;
     height: 400px;
     border-radius: 15px;
-    filter: drop-shadow(0 10px 8px rgb(0 0 0 / 0.04)) drop-shadow(0 4px 3px rgb(0 0 0 / 0.1));
+    filter: drop-shadow(0 10px 8px rgb(0 0 0 / 0.04))
+        drop-shadow(0 4px 3px rgb(0 0 0 / 0.1));
 }
 
 .highcharts-label path {
@@ -924,7 +955,8 @@ text {
     position: relative;
     max-width: 300px;
     transition: 0.1s all ease-in-out;
-    filter: drop-shadow(0 10px 8px rgb(0 0 0 / 0.04)) drop-shadow(0 4px 3px rgb(0 0 0 / 0.1));
+    filter: drop-shadow(0 10px 8px rgb(0 0 0 / 0.04))
+        drop-shadow(0 4px 3px rgb(0 0 0 / 0.1));
 }
 
 .guideline-widget:hover {
@@ -962,7 +994,8 @@ text {
     z-index: -50;
     position: relative;
     background: var(--color-text);
-    filter: drop-shadow(0 20px 13px rgb(0 0 0 / 0.03)) drop-shadow(0 8px 5px rgb(0 0 0 / 0.08));
+    filter: drop-shadow(0 20px 13px rgb(0 0 0 / 0.03))
+        drop-shadow(0 8px 5px rgb(0 0 0 / 0.08));
     border-radius: 4px;
 }
 
@@ -996,8 +1029,6 @@ text {
     color: var(--color-text);
     padding: 10px 0;
     margin: 0 14px;
-    transition-duration: 100ms;
-    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 #removeGuideField:hover {
@@ -1057,8 +1088,8 @@ text {
     width: 100%;
     height: 50%;
     top: 50%;
-    color: var(--color-text);
-    background: var(--color-gray);
+    color: var(--color-black);
+    background: #b3b3b3;
 }
 
 .guideline-btn {
@@ -1073,7 +1104,8 @@ text {
 .guideline-btn .btn-container button i {
     padding: 8px;
     font-size: 18px;
-    filter: drop-shadow(0 20px 13px rgb(0 0 0 / 0.03)) drop-shadow(0 8px 5px rgb(0 0 0 / 0.08));
+    filter: drop-shadow(0 20px 13px rgb(0 0 0 / 0.03))
+        drop-shadow(0 8px 5px rgb(0 0 0 / 0.08));
 }
 
 .guideline-btn div {
@@ -1148,7 +1180,8 @@ text {
     font-size: 1.5rem;
     line-height: 2rem;
     padding: 1rem;
-    background: var(--color-red);
+    color: var(--color-black);
+    background: var(--color-light-gray);
     border-radius: 0.375rem 0.375rem 0 0;
 }
 
@@ -1157,7 +1190,7 @@ text {
 }
 
 .map-section {
-    border: 2px solid var(--color-red);
+    border: 2px solid var(--color-light-gray);
     border-radius: 0 0 0.375rem 0.375rem;
 }
 
@@ -1184,7 +1217,7 @@ text {
 
 #loader-inner {
     border: 4px solid #f3f3f3;
-    border-top: 4px solid var(--color-red);
+    border-top: 4px solid var(--color-black);
     border-radius: 50%;
     width: 30px;
     height: 30px;
@@ -1215,7 +1248,7 @@ text {
 
 .info-window-hr {
     margin: 5px 0 !important;
-    background: black;
+    background: var(--color-black);
 }
 
 .info-window-action-container {
@@ -1273,13 +1306,14 @@ text {
     display: flex;
     align-items: center;
     border-radius: 4px;
-    border: 2px solid var(--color-red);
-    filter: drop-shadow(0 4px 3px rgb(0 0 0 / 0.07)) drop-shadow(0 2px 2px rgb(0 0 0 / 0.06));
+    border: 2px solid var(--color-light-gray);
+    filter: drop-shadow(0 4px 3px rgb(0 0 0 / 0.07))
+        drop-shadow(0 2px 2px rgb(0 0 0 / 0.06));
+    white-space: nowrap;
 }
 
 .hazard-markers {
     height: 50px;
-    white-space: nowrap;
 }
 
 .hazard-markers::-webkit-scrollbar,
@@ -1292,9 +1326,9 @@ text {
 .markers-header {
     position: relative;
     height: 100%;
-    background: var(--color-red);
+    background: var(--color-light-gray);
     text-align: center;
-    color: var(--color-text);
+    color: var(--color-black);
 }
 
 .markers-header p {
@@ -1307,6 +1341,20 @@ text {
     font-weight: 700;
 }
 
+.markers div.marker-count {
+    font-size: 14px;
+    color: var(--color-black);
+    background: var(--color-light-gray);
+    border-radius: 9999px;
+    height: fit-content;
+    padding: 1px 5.5px;
+    margin-right: -8px;
+}
+
+.markers div.marker-count.flooded,
+.markers div.marker-count.roadblocked {
+    margin-right: -3px;
+}
 .marker-container {
     display: flex;
     padding: 0 15px 0 10px;
@@ -1332,7 +1380,7 @@ hazard-markers .markers,
 
 #user-marker span.fw-bold,
 #flood-marker span.fw-bold,
-#roadblock-marker span.fw-bold {
+#roadblocked-marker span.fw-bold {
     margin-left: 6px;
 }
 
@@ -1378,7 +1426,8 @@ hazard-markers .markers,
     padding: 16px 0;
     border-radius: 4px;
     margin: 12px 0;
-    filter: drop-shadow(0 10px 8px rgb(0 0 0 / 0.04)) drop-shadow(0 4px 3px rgb(0 0 0 / 0.1));
+    filter: drop-shadow(0 10px 8px rgb(0 0 0 / 0.04))
+        drop-shadow(0 4px 3px rgb(0 0 0 / 0.1));
 }
 
 .incidentReportTable {
@@ -1389,7 +1438,8 @@ hazard-markers .markers,
 .incident-report-container {
     background: var(--color-text);
     border-radius: 4px;
-    filter: drop-shadow(0 4px 3px rgb(0 0 0 / 0.07)) drop-shadow(0 2px 2px rgb(0 0 0 / 0.06));
+    filter: drop-shadow(0 4px 3px rgb(0 0 0 / 0.07))
+        drop-shadow(0 2px 2px rgb(0 0 0 / 0.06));
 }
 
 .incident-report-content {
@@ -1399,7 +1449,8 @@ hazard-markers .markers,
 }
 
 .report-photo-container {
-    filter: drop-shadow(0 4px 3px rgb(0 0 0 / 0.07)) drop-shadow(0 2px 2px rgb(0 0 0 / 0.06));
+    filter: drop-shadow(0 4px 3px rgb(0 0 0 / 0.07))
+        drop-shadow(0 2px 2px rgb(0 0 0 / 0.06));
 }
 
 .incident-report-details {
@@ -1491,15 +1542,17 @@ hazard-markers .markers,
     flex: 3;
     margin: 0;
     padding: 24px;
-    background: var(--color-d-bg-container);
-    color: var(--color-text);
+    background: var(--color-text);
+    color: var(--color-black);
     border-radius: 6px;
-    filter: drop-shadow(0 20px 13px rgb(0 0 0 / 0.03)) drop-shadow(0 8px 5px rgb(0 0 0 / 0.08));
+    filter: drop-shadow(0 20px 13px rgb(0 0 0 / 0.03))
+        drop-shadow(0 8px 5px rgb(0 0 0 / 0.08));
 }
 
 .addressData,
 .right-side hr {
     margin: 0;
+    color: var(--color-black);
 }
 
 .location-section hr {
@@ -1532,13 +1585,18 @@ hazard-markers .markers,
 .social-section,
 .telephone-section {
     filter: drop-shadow(0 25px 25px rgb(0 0 0 / 0.15));
-    background: var(--color-d-bg-container);
-    color: var(--color-text);
+    background: var(--color-text);
+    color: var(--color-black);
     border-radius: 6px;
 }
 
 .social-section {
     margin-bottom: 16px;
+}
+
+.social-section hr,
+.telephone-section hr {
+    margin: 0 25px !important;
 }
 
 .social-section span,
@@ -1551,6 +1609,7 @@ hazard-markers .markers,
 .telephone-section p {
     margin: 0;
     padding: 24px;
+    color: var(--color-black);
 }
 
 .social-section i,
@@ -1573,10 +1632,11 @@ hazard-markers .markers,
 .hotline-content .number-section {
     flex: 3;
     padding: 24px;
-    background: var(--color-d-bg-container);
-    color: var(--color-text);
+    background: var(--color-text);
+    color: var(--color-black);
     border-radius: 4px;
-    filter: drop-shadow(0 20px 13px rgb(0 0 0 / 0.03)) drop-shadow(0 8px 5px rgb(0 0 0 / 0.08));
+    filter: drop-shadow(0 20px 13px rgb(0 0 0 / 0.03))
+        drop-shadow(0 8px 5px rgb(0 0 0 / 0.08));
 }
 
 .hotline-container {
@@ -1601,11 +1661,12 @@ hazard-markers .markers,
     margin-top: 18px;
     margin-bottom: 10px;
     border-radius: 4px;
-    filter: drop-shadow(0 10px 8px rgb(0 0 0 / 0.04)) drop-shadow(0 4px 3px rgb(0 0 0 / 0.1));
+    filter: drop-shadow(0 10px 8px rgb(0 0 0 / 0.04))
+        drop-shadow(0 4px 3px rgb(0 0 0 / 0.1));
 }
 
 .user-profile-container hr {
-    margin: 24px 24px 16px;
+    margin: 15px 24px 16px;
 }
 
 .profile-section {
@@ -1620,19 +1681,21 @@ hazard-markers .markers,
     height: 240px;
     border-radius: 50%;
     background: var(--color-d-sub-text);
-    border: 4px solid #60a5fa;
+    border: 4px solid var(--color-black);
     overflow: hidden;
 }
 
 .edit-profile-btn {
-    display: flex;
-    justify-content: end;
-    margin: -0.5rem 0;
-    padding-right: 1.5rem;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: center;
 }
 
 .edit-profile-btn button {
     padding: 8px 12px;
+    justify-self: end;
+    grid-column: 2;
+    margin-right: 25px;
 }
 
 .edit-profile-btn button i {
@@ -1648,8 +1711,8 @@ hazard-markers .markers,
 
 .profile-details-label {
     width: 100%;
-    background: var(--color-red);
-    color: var(--color-text);
+    background: #b3b3b3;
+    color: var(--color-black);
     padding: 8px;
     font-size: 16px;
     line-height: 28px;
@@ -1664,7 +1727,8 @@ hazard-markers .markers,
     height: max-content;
     padding: 10px;
     font-weight: 700;
-    filter: drop-shadow(0 10px 8px rgb(0 0 0 / 0.04)) drop-shadow(0 4px 3px rgb(0 0 0 / 0.1));
+    filter: drop-shadow(0 10px 8px rgb(0 0 0 / 0.04))
+        drop-shadow(0 4px 3px rgb(0 0 0 / 0.1));
     border-bottom-right-radius: 0.25rem;
     border-bottom-left-radius: 0.25rem;
 }
@@ -1693,6 +1757,13 @@ select {
     appearance: none;
     background-image: none;
     cursor: pointer;
+}
+
+select,
+input,
+textarea {
+    border-color: var(--color-gray) !important;
+    box-shadow: none !important;
 }
 
 input::-webkit-outer-spin-button,
@@ -1738,9 +1809,49 @@ input::-webkit-inner-spin-button {
 .form-content {
     display: flex;
     flex-wrap: wrap;
-    background-color: rgb(248 250 252 / 1);
+    background-color: var(--color-background);
     padding-top: 12px;
     border-radius: 4px;
+}
+
+.custom-dropdown {
+    width: 100%;
+    position: relative;
+    display: inline-block;
+}
+
+.custom-dropdown input[type="text"] {
+    padding: 10px;
+    width: 100%;
+}
+
+.custom-dropdown .dropdown-options {
+    margin-top: 3px;
+    position: absolute;
+    z-index: 1;
+    border: 1.1px solid rgb(157, 157, 157);
+    border-radius: 8px;
+    max-height: fit-content;
+    overflow-y: auto;
+    width: 100%;
+}
+
+.custom-dropdown .dropdown-options ul {
+    padding: 0;
+    margin: 0;
+    background: var(--color-background);
+}
+
+.custom-dropdown .dropdown-options li {
+    cursor: pointer;
+    padding: 0 10px;
+    font-size: 15px;
+    font-weight: 700;
+}
+
+.custom-dropdown .dropdown-options li:hover {
+    background-color: gray;
+    color: var(--color-text);
 }
 
 .field-container {
@@ -1748,6 +1859,12 @@ input::-webkit-inner-spin-button {
     width: 100%;
     margin-bottom: 12px;
     padding: 0 15px;
+}
+
+.field-container.toggle-form-button {
+    display: flex;
+    justify-content: end;
+    gap: 10px;
 }
 
 .field-container label {
@@ -1786,16 +1903,26 @@ input::-ms-clear {
     height: 40px;
 }
 
+#changeEvacueeDataSelect option,
+#changeArchiveEvacueeDataSelect option {
+    font-size: 14px;
+}
+
 #reportHazardForm select {
     height: fit-content;
     font-size: 12px;
 }
 
+#changeEvacueeDataSelect,
+#changeArchiveEvacueeDataSelect {
+    width: 262px;
+    border: solid var(--color-d-sub-text) 2px;
+}
+
 #guideForm textarea,
 #guidelineForm textarea,
 #reportForm textarea,
-.reportUpdateForm textarea,
-#evacueeInfoForm textarea {
+.reportUpdateForm textarea {
     border-radius: 5px;
     font-weight: 400;
     font-size: 0.875rem;
@@ -1804,14 +1931,14 @@ input::-ms-clear {
 
 .hazard-map {
     height: 600px;
-    border: 2px solid var(--color-red);
+    border: 2px solid var(--color-light-gray);
     border-radius: 6px;
     margin-bottom: 10px;
 }
 
 .count-container {
     background: var(--color-yellow);
-    color: black;
+    color: var(--color-black);
     padding: 4px;
     border-radius: 5px;
     font-size: 12px;
@@ -1838,13 +1965,13 @@ input::-ms-clear {
     background: rgb(255, 157, 0);
 }
 
-.count-container.roadblock {
-    background: rgb(255, 32, 32)
+.count-container.roadblocked {
+    background: rgb(255, 32, 32);
 }
 
 .form-map {
     height: 384px;
-    border: 2px solid var(--color-d-sub-text);
+    border: 2px solid var(--color-gray);
     border-radius: 6px;
 }
 
@@ -1914,14 +2041,15 @@ span.error {
 .table-container {
     padding: 12px;
     background: var(--color-text);
-    filter: drop-shadow(0 10px 8px rgb(0 0 0 / 0.04)) drop-shadow(0 4px 3px rgb(0 0 0 / 0.1));
+    filter: drop-shadow(0 10px 8px rgb(0 0 0 / 0.04))
+        drop-shadow(0 4px 3px rgb(0 0 0 / 0.1));
     border-radius: 8px;
 }
 
 .table-content {
     display: block;
     width: 100%;
-    overflow: auto;
+    overflow: hidden;
     padding-bottom: 8px;
 }
 
@@ -1932,6 +2060,12 @@ span.error {
     margin-bottom: 12px;
 }
 
+table,
+th,
+td {
+    border-color: var(--color-light-gray) !important;
+}
+
 table thead {
     background-color: rgb(234, 234, 234);
 }
@@ -1940,6 +2074,18 @@ table th,
 table td {
     text-align: center !important;
     vertical-align: middle !important;
+}
+
+#selectAllCheckBox,
+.rowCheckBox {
+    margin-top: 8px;
+    width: 16px;
+    height: 16px;
+    accent-color: var(--color-primary);
+}
+
+tr.selectedRow {
+    background: #eaeaeaea !important;
 }
 
 .status-container,
@@ -1965,6 +2111,7 @@ table td {
 .action-container select {
     width: 176px;
     border-radius: 4px;
+    border-color: var(--color-primary) !important;
     background-color: var(--color-primary);
     color: var(--color-text);
 }
@@ -1972,7 +2119,10 @@ table td {
 select.form-select {
     font-size: 14px;
     font-weight: 600;
-    border: var(--color-primary);
+}
+
+select.form-select:focus {
+    border-color: var(--color-d-sub-text);
 }
 
 select.form-select option {
@@ -1986,7 +2136,8 @@ select.form-select option {
     font-size: 12px !important;
 }
 
-.message-text {
+.message-text,
+.dataTables_empty {
     font-size: 12px;
     color: var(--color-red);
     font-weight: 600;
@@ -2002,25 +2153,138 @@ select.form-select option {
     color: var(--color-d-text);
 }
 
+.dark-mode .header-section {
+    background: var(--color-red);
+}
+
+.dark-mode #btn-sidebar-mobile {
+    color: var(--color-d-text) !important;
+}
+
+.dark-mode .sidebar {
+    background: var(--color-gray);
+}
+
+.dark-mode .sub-menu {
+    background: var(--color-d-bg-container);
+}
+
+.dark-mode .links_name,
+.dark-mode .navigation-item i {
+    color: var(--color-d-text) !important;
+}
+
+.dark-mode .sidebar ul .navigation-item a:not(.active-link):hover {
+    background: #9c9c9cea !important;
+}
+
+.dark-mode .sidebar .active-link {
+    background: var(--color-red) !important;
+}
+
+.dark-mode .user-details {
+    background: var(--color-d-background);
+    color: var(--color-d-text);
+}
+
+.dark-mode .guideline-type {
+    background: var(--color-gray);
+}
+
+.dark-mode .header-title {
+    color: var(--color-d-text);
+    background: var(--color-red);
+}
+
+.dark-mode .map-section,
+.dark-mode .hazard-map,
+.dark-mode .hazard-markers,
+.dark-mode .evacuation-markers {
+    border-color: var(--color-red);
+}
+
+.dark-mode .markers-header {
+    background: var(--color-red);
+}
+
+.dark-mode .number-section,
+.dark-mode .location-section,
+.dark-mode .social-section,
+.dark-mode .telephone-section,
+.dark-mode .hotline-container {
+    background: var(--color-d-bg-container) !important;
+}
+
+.dark-mode .social-section p,
+.dark-mode .telephone-section p {
+    color: var(--color-d-text);
+}
+
+.dark-mode select,
+.dark-mode input,
+.dark-mode textare,
+.dark-mode .form-map {
+    border-color: var(--color-d-sub-text) !important;
+}
+
+.dark-mode select::placeholder,
+.dark-mode input::placeholder,
+.dark-mode textarea::placeholder {
+    background: var(--color-d-bg-container) !important;
+    color: var(--color-d-text) !important;
+}
+
+.dark-mode::-webkit-scrollbar-thumb {
+    background: var(--color-d-bg-container) !important;
+}
+
+.dark-mode #loader-inner {
+    border-top-color: var(--color-red);
+}
+
+.dark-mode #btn-sidebar-close {
+    color: var(--color-d-text) !important;
+}
+
+.dark-mode .action-container select {
+    border: none;
+}
+
 .dark-mode .dropdown-menu {
     background: var(--color-d-bg-container);
 }
 
+.dark-mode .flatpickr-day:hover,
 .dark-mode #changeTheme:active #themeText,
 .dark-mode #changeTheme:active #themeIcon {
     color: var(--color-black);
 }
 
+.dark-mode .flatpickr-day.selected {
+    background: var(--color-gray);
+}
+
+.dark-mode .flatpickr-weekday,
+.dark-mode .flatpickr-day,
 .dark-mode .dropdown-menu a {
     color: var(--color-d-text);
 }
 
-.dark-mode .dropdown-item:hover {
-    background: var(--color-d-background);
+.dark-mode .flatpickr-day.prevMonthDay,
+.dark-mode .flatpickr-day.nextMonthDay {
+    color: var(--color-d-sub-text);
+}
+
+.dark-mode .dropdown-item:hover,
+.dark-mode .flatpickr-day.selected:hover,
+.dark-mode .flatpickr-day.prevMonthDay:hover,
+.dark-mode .flatpickr-day.nextMonthDay:hover,
+.dark-mode .custom-dropdown .dropdown-options ul {
+    background: var(--color-d-background) !important;
 }
 
 .dark-mode .dropdown-item:focus {
-    background: var(--color-d-bg-container);
+    background: var(--color-d-bg-container) !important;
 }
 
 .dark-mode .dropdown-menu:first:focus {
@@ -2032,15 +2296,15 @@ select.form-select option {
 }
 
 .dark-mode .changePasswordBtn:active {
-    background: var(--color-primary);
+    background: var(--color-primary) !important;
 }
 
 .dark-mode .myAccount:active {
-    background: var(--color-green);
+    background: var(--color-green) !important;
 }
 
 .dark-mode .logout:active {
-    background: var(--color-red);
+    background: var(--color-red) !important;
 }
 
 .dark-mode .label-container span,
@@ -2139,18 +2403,29 @@ select.form-select option {
     background: var(--color-d-background);
 }
 
+.dark-mode tr.selectedRow {
+    background: var(--color-d-background) !important;
+}
+
 .dark-mode .table-container select option {
     color: var(--color-black);
 }
 
 .dark-mode .dataTables_wrapper .dataTables_paginate .paginate_button.disabled,
-.dark-mode .dataTables_wrapper .dataTables_paginate .paginate_button.disabled:hover,
-.dark-mode .dataTables_wrapper .dataTables_paginate .paginate_button.disabled:active {
+.dark-mode
+    .dataTables_wrapper
+    .dataTables_paginate
+    .paginate_button.disabled:hover,
+.dark-mode
+    .dataTables_wrapper
+    .dataTables_paginate
+    .paginate_button.disabled:active {
     color: var(--color-d-sub-text) !important;
 }
 
 .dark-mode .modal-content {
     background: var(--color-d-background);
+    border-color: var(--color-background);
 }
 
 .dark-mode .modal-label,
@@ -2169,6 +2444,8 @@ select.form-select option {
 .dark-mode .reportUpdateForm textarea,
 .dark-mode .form-content textarea,
 .dark-mode .field-container input,
+.dark-mode #changeEvacueeDataSelect,
+.dark-mode #changeArchiveEvacueeDataSelect,
 .dark-mode .field-container select,
 .dark-mode #reportHazardForm select {
     background: var(--color-d-bg-container);
@@ -2178,18 +2455,31 @@ select.form-select option {
 .dark-mode .form-content textarea::placeholder,
 .dark-mode .field-container input::placeholder,
 .dark-mode .field-container .form-select,
+.dark-mode #changeEvacueeDataSelect,
+.dark-mode #changeArchiveEvacueeDataSelect,
 .dark-mode #reportHazardForm select {
     color: var(--color-d-text);
 }
 
+.dark-mode .flatpickr-monthDropdown-months {
+    color: var(--color-text) !important;
+}
+
+.dark-mode .flatpickr-monthDropdown-months option,
+.dark-mode #changeEvacueeDataSelect option,
+.dark-mode .dataTables_length select option,
 .dark-mode select.form-select option {
-    background: var(--color-d-background);
-    color: var(--color-d-text);
+    background: var(--color-d-background) !important;
+    color: var(--color-d-text) !important;
 }
 
 .dark-mode .swal2-popup {
     background: var(--color-d-background);
     border: 1px solid var(--color-d-sub-text);
+}
+
+.dark-mode .swal2-icon-content {
+    color: var(--color-primary);
 }
 
 .dark-mode .gm-style-iw,
@@ -2215,8 +2505,44 @@ select.form-select option {
     color: var(--color-black);
 }
 
-@media only screen and (max-width: 1150px) {
+.dark-mode .flatpickr-calendar {
+    background: var(--color-d-background);
+    color: var(--color-text) !important;
+}
 
+.dark-mode .profile-img {
+    border-color: var(--color-red);
+}
+
+.dark-mode .profile-details-label {
+    background: var(--color-red);
+    color: var(--color-d-text);
+}
+
+.dark-mode div.marker-count {
+    background: var(--color-red);
+    color: var(--color-d-text);
+}
+
+.dark-mode .guideline-widget button {
+    background: var(--color-d-bg-container);
+}
+
+@media only screen and (max-width: 1565px) {
+    .evacuation-button-container {
+        display: block;
+    }
+
+    .evacuation-markers {
+        height: 43px;
+    }
+
+    .locator-button-container {
+        margin-top: 16px;
+    }
+}
+
+@media only screen and (max-width: 1150px) {
     .auth-container,
     .recover-content,
     .res-password-content {
@@ -2248,10 +2574,6 @@ select.form-select option {
         flex-direction: column;
     }
 
-    .evacuation-button-container {
-        display: block;
-    }
-
     .auth-section .auth-form-section {
         margin: 0 auto;
     }
@@ -2260,7 +2582,7 @@ select.form-select option {
         display: contents;
     }
 
-    .about-content>div {
+    .about-content > div {
         margin: 15px;
     }
 
@@ -2288,22 +2610,14 @@ select.form-select option {
         overflow: auto;
     }
 
-    .evacuation-markers {
-        height: 43px;
-    }
-
     .marker-container {
         margin: auto;
-    }
-
-    .locator-button-container {
-        margin-top: 16px;
     }
 }
 
 @media only screen and (max-width: 767px) {
     .main-content {
-        margin: 80px 0 20px;
+        margin: 85px 0 20px;
         padding: 0;
     }
 
@@ -2317,6 +2631,7 @@ select.form-select option {
 
     .dropdown-menu li {
         font-size: 12px;
+        padding: 0.5px 5px !important;
     }
 
     .auth-section .auth-container .auth-header-desc h1 {
@@ -2355,11 +2670,6 @@ select.form-select option {
     .sidebar.active,
     .dark-mode .sidebar.active {
         width: 320px;
-    }
-
-    .label-container {
-        display: flex;
-        justify-content: start;
     }
 
     .widget-container {
@@ -2416,10 +2726,31 @@ select.form-select option {
     #locateNearestBtn {
         margin-left: 0;
     }
+
+    .evacuee-table-header {
+        display: block;
+        padding: 0;
+    }
+
+    .page-button-container.manage-evacuee {
+        flex-direction: column;
+    }
+
+    #changeEvacueeDataBtn {
+        margin: 0;
+    }
 }
 
 @media only screen and (max-width: 380px) {
-    #toast-container>.toast-warning {
+    .main-content {
+        margin: 81px 0 20px;
+    }
+
+    .label-container {
+        margin-bottom: 20px;
+    }
+
+    #toast-container > .toast-warning {
         width: 15em;
         background-size: 20px;
     }
@@ -2496,11 +2827,19 @@ select.form-select option {
     .content-description span,
     .content-description .wigdet-header p,
     .details-content span,
-    .sidebar.active .links_name,
+    .sidebar .navigation-item i,
     .toast,
     .hazard-markers,
     .evacuation-markers {
         font-size: 14px;
+    }
+
+    .sidebar.active .links_name {
+        font-size: 12px;
+    }
+
+    .sidebar i.bi-caret-right-fill {
+        font-size: 10px !important;
     }
 
     .form-group input {
@@ -2536,7 +2875,7 @@ select.form-select option {
 
     .sidebar.active,
     .dark-mode .sidebar.active {
-        width: 300px;
+        width: 280px;
     }
 
     .sidebar ul li {
@@ -2557,10 +2896,6 @@ select.form-select option {
 
     .details-content img {
         width: 50px;
-    }
-
-    .label-container {
-        align-items: center;
     }
 
     .label-container i {
@@ -2638,7 +2973,8 @@ select.form-select option {
     }
 
     .guide-btn-container button,
-    .message-text {
+    .message-text,
+    .dataTables_empty {
         font-size: 10px;
     }
 
@@ -2673,6 +3009,7 @@ select.form-select option {
     #reportHazardBtn,
     #stopLocatingBtn,
     #locateNearestBtn,
+    #changeEvacueeDataBtn,
     #pinpointCurrentLocationBtn,
     .page-button-container button,
     .generate-button-container button {
@@ -2710,7 +3047,7 @@ select.form-select option {
         font-size: 16px;
     }
 
-    .about-content>div {
+    .about-content > div {
         margin: 20px 0;
     }
 
@@ -2760,7 +3097,7 @@ select.form-select option {
     }
 
     .user-profile-container hr {
-        margin: 24px 24px 16px !important;
+        margin: 15px 24px 16px;
     }
 
     .profile-img {
@@ -2789,6 +3126,15 @@ select.form-select option {
         font-size: 12px;
     }
 
+    .location-section {
+        padding: 15px !important;
+    }
+
+    .social-section hr,
+    .telephone-section hr {
+        margin: 0 15px !important;
+    }
+
     .info-description,
     div.view-link span,
     div.title.full-width,
@@ -2809,6 +3155,8 @@ select.form-select option {
         background: transparent;
     }
 
+    #changeEvacueeDataSelect option,
+    #changeArchiveEvacueeDataSelect option,
     #reportHazardForm select.form-select option {
         font-size: 10px !important;
     }
@@ -2816,6 +3164,115 @@ select.form-select option {
     #reportHazardForm span.error,
     .reportUpdateForm span.error {
         font-size: 10px;
+    }
+
+    #changeEvacueeDataSelect,
+    #changeArchiveEvacueeDataSelect {
+        width: 100%;
+    }
+
+    .modal-dialog {
+        max-width: 350px !important;
+    }
+
+    .modal-body {
+        padding: 10px !important;
+    }
+
+    #changeEvacueeDataSelect,
+    #changeArchiveEvacueeDataSelect,
+    .modal-content button {
+        font-size: 12px !important;
+    }
+
+    .modal-label {
+        font-size: 16px;
+    }
+
+    #createGuidelineBtn i,
+    .modal-content label {
+        font-size: 14px !important;
+    }
+
+    .modal-content input,
+    .modal-content select,
+    .modal-content textarea {
+        font-size: 12px !important;
+        height: fit-content !important;
+    }
+
+    #changePasswordModal .toggle-password {
+        margin-top: -2px;
+        font-size: 14px;
+    }
+
+    #searchResults li,
+    .flatpickr-calendar,
+    .flatpickr-monthDropdown-months option,
+    .modal-content select option {
+        font-size: 10px !important;
+    }
+
+    .swal2-icon {
+        width: 50px !important;
+        height: 50px !important;
+    }
+
+    .swal2-icon-content {
+        font-size: 40px !important;
+    }
+
+    .swal2-title {
+        font-size: 20px !important;
+    }
+
+    .swal2-html-container {
+        font-size: 14px !important;
+    }
+
+    .swal2-actions {
+        font-size: 12px !important;
+    }
+
+    .flatpickr-calendar {
+        width: fit-content !important;
+    }
+
+    div.marker-count,
+    .dropdown-menu .dropdown-item {
+        font-size: 10px !important;
+    }
+
+    .guideline-type,
+    .guideline-widget button i,
+    .form-select.actionSelect {
+        font-size: 12px !important;
+    }
+
+    .guideline-widget button i {
+        padding: 6px !important;
+    }
+
+    #changeEvacueeDataSelect,
+    #changeArchiveEvacueeDataSelect {
+        height: fit-content;
+    }
+
+    #searchInput {
+        padding: 6px 10px;
+    }
+
+    #searchResults li {
+        padding: 8px 12px;
+    }
+
+    .page-button-container.manage-evacuee-table {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    div.marker-count {
+        padding: 1px 4px !important;
     }
 }
 
