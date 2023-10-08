@@ -10,9 +10,14 @@ use App\Http\Controllers\UserAccountsController;
 use App\Http\Controllers\AuthenticationController;
 use App\Http\Controllers\IncidentReportController;
 use App\Http\Controllers\EvacuationCenterController;
+use App\Http\Controllers\FamilyRecordController;
 use App\Http\Controllers\HazardReportController;
 
 Route::controller(AuthenticationController::class)->group(function () {
+    Route::middleware('check.login')->group(function () {
+        Route::view('/', 'authentication/authUser')->name('home');
+    });
+
     Route::middleware('check.attempt')->group(function () {
         Route::post('/', 'authUser')->name('login');
     });
@@ -22,10 +27,6 @@ Route::controller(AuthenticationController::class)->group(function () {
     Route::post('/findAccount', 'findAccount')->name('findAccount');
     Route::get('/resetPasswordForm/{token}', 'resetPasswordForm')->name('resetPasswordForm');
     Route::post('resetPassword', 'resetPassword')->name('resetPassword');
-
-    Route::middleware('check.login')->group(function () {
-        Route::view('/', 'authentication/authUser')->name('home');
-    });
 });
 
 Route::prefix('resident')->middleware('guest')->group(function () {
@@ -61,7 +62,7 @@ Route::middleware('auth')->group(function () {
     Route::prefix('cswd')->middleware('check.cswd')->group(function () {
         Route::controller(MainController::class)->group(function () {
             Route::get('/dashboard', 'dashboard')->name('dashboard.cswd');
-            Route::get('/evacuee', 'manageEvacueeInformation')->name('manage.evacuee.record');
+            Route::get('/evacuee/{operation}', 'manageEvacueeInformation')->name('manage.evacuee.record');
             Route::get('/evacuationCenter/{operation}', 'evacuationCenter')->name('evacuation.center');
             Route::get('/evacuationCenterLocator', 'evacuationCenterLocator')->name('evacuation.center.locator');
             Route::get('/dangerAreaReport/{operation}', 'dangerAreaReport')->name('danger.area.report');
@@ -78,10 +79,18 @@ Route::middleware('auth')->group(function () {
         });
 
         Route::prefix('evacuee')->name('evacuee.info.')->controller(EvacueeController::class)->group(function () {
-            Route::get('/getEvacueeInfo', 'getEvacueeData')->name('get');
+            Route::get('/getEvacueeInfo/{operation}/{disasterId}/{status}', 'getEvacueeData')->name('get');
             Route::get('/getArchivedEvacueeInfo/{disasterInfo}', 'getArchivedEvacueeInfo')->name('get.archived');
             Route::post('/recordEvacueeInfo', 'recordEvacueeInfo')->name('record');
             Route::put('/updateEvacueeInfo/{evacueeId}', 'updateEvacueeInfo')->name('update');
+            Route::patch('/archiveEvacueeInfo/{evacueeId}/{operation}', 'archiveEvacueeInfo')->name('archive');
+            Route::patch('/updateEvacueeStatus', 'updateEvacueeStatus')->name('update.status');
+        });
+
+        Route::prefix('family')->name('family.record.')->controller(FamilyRecordController::class)->group(function () {
+            Route::get('/getFamilyRecord/{data}/{operation}', 'getFamilyData')->name('get');
+            Route::post('/recordFamilyRecord', 'recordFamilyRecord')->name('record');
+            Route::put('/updateFamilyRecord', 'updateFamilyRecord')->name('update');
         });
 
         Route::prefix('evacuationCenter')->name('evacuation.center.')->controller(EvacuationCenterController::class)->group(function () {
