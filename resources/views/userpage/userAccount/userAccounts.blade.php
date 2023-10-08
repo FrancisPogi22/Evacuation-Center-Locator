@@ -15,7 +15,11 @@
         @include('partials.sidebar')
         <main class="main-content">
             <div class="label-container">
-                <i class="bi bi-person-gear"></i>
+                <div class="icon-container">
+                    <div class="icon-content">
+                        <i class="bi bi-person-gear"></i>
+                    </div>
+                </div>
                 @if (auth()->user()->organization == 'CDRRMO')
                     <span>MANAGE CDRRMO ACCOUNT</span>
                 @else
@@ -74,9 +78,6 @@
     <script>
         $(document).ready(() => {
             let accountTable = $('#accountTable').DataTable({
-                language: {
-                    emptyTable: '<div class="message-text">No accounts added yet.</div>'
-                },
                 ordering: false,
                 responsive: true,
                 processing: false,

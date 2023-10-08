@@ -11,7 +11,11 @@
         @include('partials.sidebar')
         <main class="main-content">
             <div class="label-container">
-                <i class="bi bi-card-checklist"></i>
+                <div class="icon-container">
+                    <div class="icon-content">
+                        <i class="bi bi-card-checklist"></i>
+                    </div>
+                </div>
                 <span>USER ACTIVITY LOG</span>
             </div>
             <hr>

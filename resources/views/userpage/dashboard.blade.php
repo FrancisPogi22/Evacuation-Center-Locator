@@ -12,7 +12,11 @@
         @include('partials.sidebar')
         <div class="main-content">
             <div class="label-container">
-                <i class="bi bi-speedometer2"></i>
+                <div class="icon-container">
+                    <div class="icon-content">
+                        <i class="bi bi-speedometer2"></i>
+                    </div>
+                </div>
                 <span>DASHBOARD</span>
             </div>
             <hr>

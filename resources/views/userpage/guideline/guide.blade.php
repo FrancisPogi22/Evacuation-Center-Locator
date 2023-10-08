@@ -12,7 +12,11 @@
         @include('partials.sidebar')
         <main class="main-content">
             <div class="label-container">
-                <i class="bi bi-file-earmark-richtext"></i>
+                <div class="icon-container">
+                    <div class="icon-content">
+                        <i class="bi bi-file-earmark-richtext"></i>
+                    </div>
+                </div>
                 <span>GUIDES</span>
             </div>
             <hr>

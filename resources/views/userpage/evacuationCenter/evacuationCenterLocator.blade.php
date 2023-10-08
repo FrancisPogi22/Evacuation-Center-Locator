@@ -15,7 +15,11 @@
         @include('partials.sidebar')
         <div class="main-content">
             <div class="label-container">
-                <i class="bi bi-search"></i>
+                <div class="icon-container">
+                    <div class="icon-content">
+                        <i class="bi bi-search"></i>
+                    </div>
+                </div>
                 <span>EVACUATION CENTER LOCATOR</span>
             </div>
             <hr>
@@ -34,24 +38,29 @@
                     </div>
                     <div class="marker-container">
                         <div class="markers">
+                            <div class="marker-count">12</div>
                             <img src="{{ asset('assets/img/evacMarkerActive.png') }}" alt="Icon">
-                            <span class="fw-bold">Active</span>
+                            <span class="fw-bold">Active Evacuation</span>
                         </div>
                         <div class="markers">
+                            <div class="marker-count">12</div>
                             <img src="{{ asset('assets/img/evacMarkerInactive.png') }}" alt="Icon">
-                            <span class="fw-bold">Inactive</span>
+                            <span class="fw-bold">Inactive Evacuation</span>
                         </div>
                         <div class="markers">
+                            <div class="marker-count">12</div>
                             <img src="{{ asset('assets/img/evacMarkerFull.png') }}" alt="Icon">
-                            <span class="fw-bold">Full</span>
+                            <span class="fw-bold">Full Evacuation</span>
                         </div>
                         <div class="markers" id="flood-marker">
+                            <div class="marker-count flooded">12</div>
                             <img src="{{ asset('assets/img/floodedMarker.png') }}" alt="Icon">
-                            <span class="fw-bold">Flooded</span>
+                            <span class="fw-bold">Flooded Area</span>
                         </div>
-                        <div class="markers" id="roadblock-marker">
-                            <img src="{{ asset('assets/img/roadBlock.png') }}" alt="Icon">
-                            <span class="fw-bold">Roadblock</span>
+                        <div class="markers" id="roadblocked-marker">
+                            <div class="marker-count roadblocked">12</div>
+                            <img src="{{ asset('assets/img/roadblocked.png') }}" alt="Icon">
+                            <span class="fw-bold">Roadblocked</span>
                         </div>
                         <div class="markers" id="user-marker" hidden>
                             <img src="{{ asset('assets/img/userMarker.png') }}" alt="Icon">
@@ -187,7 +196,7 @@
                     data.status == "Inactive" ? "evacMarkerInactive" :
                     "evacMarkerFull" :
                     data.type == "Flooded" ? "floodedMarker" :
-                    "roadBlock";
+                    "roadblocked";
 
                 let marker = generateMarker({
                     lat: parseFloat(data.latitude),
@@ -204,7 +213,7 @@
                         <span>Barangay:</span> ${data.barangay_name}
                     </div>
                     <div class="info-description">
-                        <span>Capacity:</span> ${data.capacity}
+                        <span>No. of evacuees:</span> ${data.evacuees}
                     </div>
                     <div class="info-description status">
                         <span>Status:</span>
@@ -514,9 +523,6 @@
             ajaxRequest('reportHazard');
             ajaxRequest().then(() => {
                 evacuationCenterTable = $('#evacuationCenterTable').DataTable({
-                    language: {
-                        emptyTable: '<div class="message-text">There are currently no evacuation centers available.</div>'
-                    },
                     ordering: false,
                     responsive: true,
                     data: evacuationCentersData,
@@ -576,8 +582,10 @@
             });
 
             $(document).on("click", "#pinpointCurrentLocationBtn", function() {
-                if (!locating)
+                if (!locating) {
+                    $('#loader').addClass('show');
                     getUserLocation().then((position) => {
+                        $('#loader').removeClass('show');
                         setMarker(newLatLng(position.coords.latitude, position.coords.longitude));
                         generateInfoWindow(userMarker,
                             `<div class="info-window-container">
@@ -589,6 +597,7 @@
                         zoomToUserLocation();
                         scrollMarkers();
                     });
+                }
             });
 
             $(document).on("click", "#locateNearestBtn, .locateEvacuationCenter", function() {
@@ -649,7 +658,7 @@
                                         <select name="type" class="form-select">
                                             <option value="" hidden selected disabled>Select Report Type</option>
                                             <option value="Flooded">Flooded</option>
-                                            <option value="Roadblock">Roadblock</option>
+                                            <option value="Roadblocked">Roadblocked</option>
                                         </select>
                                         <center>
                                             <button id="reportBtn">Submit</button>
