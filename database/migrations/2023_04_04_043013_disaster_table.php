@@ -12,6 +12,7 @@ return new class extends Migration
         Schema::create('disaster', function (Blueprint $table) {
             $table->id();
             $table->string('name');
+            $table->string('year');
             $table->string('status');
             $table->foreignId('user_id')->references('id')->on('user')->cascadeOnUpdate();
             $table->boolean('is_archive');

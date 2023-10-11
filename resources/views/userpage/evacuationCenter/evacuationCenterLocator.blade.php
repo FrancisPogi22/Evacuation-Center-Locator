@@ -38,27 +38,37 @@
                     </div>
                     <div class="marker-container">
                         <div class="markers">
-                            <div class="marker-count">12</div>
+                            <div class="marker-count-container active">
+                                <div class="marker-count active">0</div>
+                            </div>
                             <img src="{{ asset('assets/img/evacMarkerActive.png') }}" alt="Icon">
                             <span class="fw-bold">Active Evacuation</span>
                         </div>
                         <div class="markers">
-                            <div class="marker-count">12</div>
+                            <div class="marker-count-container inactive">
+                                <div class="marker-count inactive">0</div>
+                            </div>
                             <img src="{{ asset('assets/img/evacMarkerInactive.png') }}" alt="Icon">
                             <span class="fw-bold">Inactive Evacuation</span>
                         </div>
                         <div class="markers">
-                            <div class="marker-count">12</div>
+                            <div class="marker-count-container full">
+                                <div class="marker-count full">0</div>
+                            </div>
                             <img src="{{ asset('assets/img/evacMarkerFull.png') }}" alt="Icon">
                             <span class="fw-bold">Full Evacuation</span>
                         </div>
                         <div class="markers" id="flood-marker">
-                            <div class="marker-count flooded">12</div>
+                            <div class="marker-count-container flooded">
+                                <div class="marker-count flooded">0</div>
+                            </div>
                             <img src="{{ asset('assets/img/floodedMarker.png') }}" alt="Icon">
                             <span class="fw-bold">Flooded Area</span>
                         </div>
                         <div class="markers" id="roadblocked-marker">
-                            <div class="marker-count roadblocked">12</div>
+                            <div class="marker-count-container roadblocked">
+                                <div class="marker-count roadblocked">0</div>
+                            </div>
                             <img src="{{ asset('assets/img/roadblocked.png') }}" alt="Icon">
                             <span class="fw-bold">Roadblocked</span>
                         </div>
@@ -125,18 +135,24 @@
             hazardMarkers = [],
             activeEvacuationCenters = [];
 
-        const options = {
-            enableHighAccuracy: true
-        };
-
-        const errorCallback = () => {
-            showWarningMessage(
-                'Request for geolocation denied. To use this feature, please allow the browser to locate you.'
-            );
-            $('#locateNearestBtn').removeAttr('disabled');
-            locating = false;
-            geolocationBlocked = true;
-        };
+        const markerCount = {
+                active: $('.marker-count.active'),
+                inactive: $('.marker-count.inactive'),
+                full: $('.marker-count.full'),
+                flooded: $('.marker-count.flooded'),
+                roadblocked: $('.marker-count.roadblocked')
+            },
+            options = {
+                enableHighAccuracy: true
+            },
+            errorCallback = () => {
+                showWarningMessage(
+                    'Request for geolocation denied. To use this feature, please allow the browser to locate you.'
+                );
+                $('#locateNearestBtn').removeAttr('disabled');
+                locating = false;
+                geolocationBlocked = true;
+            };
 
         function initMap() {
             map = new google.maps.Map(document.getElementById("map"), {
@@ -308,8 +324,8 @@
 
         function scrollMarkers() {
             $('#user-marker').prop('hidden', false);
-            $('.evacuation-markers').animate({
-                scrollLeft: $('#user-marker').position().left + $('.evacuation-markers').scrollLeft()
+            $('.marker-container').animate({
+                scrollLeft: $('#user-marker').position().left + $('.marker-container').scrollLeft()
             }, 500);
         }
 
@@ -509,6 +525,33 @@
                             data = data.data;
                             evacuationCentersData = data;
                             getEvacuationCentersDistance();
+                            let count = {
+                                active: 0,
+                                inactive: 0,
+                                full: 0
+                            };
+
+                            evacuationCentersData.forEach((data) => {
+                                data.status == "Active" ?
+                                    count.active++ : data.status == "Inactive" ?
+                                    count.inactive++ : count.full++;
+                            });
+
+                            for (const key in count)
+                                markerCount[key].text(count[key]);
+                        } else {
+                            let count = {
+                                flooded: 0,
+                                roadblocked: 0
+                            };
+
+                            data.forEach((data) => {
+                                data.type == "Flooded" ?
+                                    count.flooded++ : count.roadblocked++;
+                            });
+
+                            for (const key in count)
+                                markerCount[key].text(count[key]);
                         }
 
                         initMarkers(data, type, type == "evacuationCenter" ?

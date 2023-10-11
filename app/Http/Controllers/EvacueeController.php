@@ -71,6 +71,17 @@ class EvacueeController extends Controller
         if ($evacueeInfoValidation->fails())
             return response(['status' => 'warning', 'message' => implode('<br>', $evacueeInfoValidation->errors()->all())]);
 
+        if ($this->evacuee
+            ->where([
+                'family_head' => $request->family_head,
+                'birth_date' => $request->birth_date,
+                'disaster_id' => $request->disaster_id,
+            ])
+            ->exists()
+        ) {
+            return response(['status' => 'warning', 'message' => 'Evacuee is already recorded']);
+        }
+
         $latestRecord = null;
 
         if ($request->form_type == "new") {
@@ -125,6 +136,7 @@ class EvacueeController extends Controller
         ]);
 
         $evacueeInfo['individuals'] = $evacueeInfo['male'] + $evacueeInfo['female'];
+        $evacueeInfo['updated_at']  = date('Y-m-d H:i:s');
         $evacueeInfo['family_id']   = $this->familyRecord->latest('updated_at')->first()->id;
         $evacueeInfo['user_id']     = auth()->user()->id;
         $evacueeInfo                = $this->evacuee->find($evacueeId)->update($evacueeInfo);
@@ -140,7 +152,7 @@ class EvacueeController extends Controller
 
         foreach ($request->evacueeIds as $id) {
             $evacuee = $this->evacuee->find(intval($id));
-            $familyIds[] = tap($evacuee)->update(['status' => $request->status])->id;
+            $familyIds[] = tap($evacuee)->update(['status' => $request->status, 'updated_at' => date('Y-m-d H:i:s')])->id;
         }
 
         $this->logActivity->generateLog(implode(', ', $familyIds), '', 'updated evacuee status to return home');

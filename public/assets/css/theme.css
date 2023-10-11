@@ -1225,7 +1225,7 @@ text {
     align-items: center;
     justify-content: center;
     transition: visibility 0.3s ease;
-    background-color: rgba(94, 94, 94, 0.7);
+    background-color: rgba(110, 110, 110, 0.7);
 }
 
 #loader.show {
@@ -1334,6 +1334,7 @@ text {
 }
 
 .hazard-markers::-webkit-scrollbar,
+.marker-container::-webkit-scrollbar,
 .evacuation-markers::-webkit-scrollbar {
     width: 0;
     display: none;
@@ -1358,24 +1359,57 @@ text {
     font-weight: 700;
 }
 
-.markers div.marker-count {
-    font-size: 14px;
-    color: var(--color-black);
-    background: var(--color-light-gray);
-    border-radius: 9999px;
+.marker-count-container {
+    background-color: var(--color-light-gray);
+    border-radius: 3px;
     height: fit-content;
-    padding: 1px 5.5px;
-    margin-right: -8px;
+    width: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
-.markers div.marker-count.flooded,
-.markers div.marker-count.roadblocked {
-    margin-right: -3px;
+.marker-count-container.active,
+.marker-count-container.inactive,
+.marker-count-container.full {
+    margin-right: -4px;
 }
+
+.marker-count-container.active {
+    background-color: var(--color-green);
+}
+
+.marker-count-container.inactive {
+    background-color: var(--color-red);
+}
+
+.marker-count-container.full {
+    background-color: var(--color-yellow);
+}
+
+.marker-count-container.flooded {
+    background-color: orange;
+}
+
+.marker-count-container.roadblocked {
+    background-color: var(--color-black);
+    margin-right: 1px;
+}
+
+.markers div.marker-count {
+    font-size: 12px;
+    font-weight: bold;
+    color: var(--color-text);
+    height: fit-content;
+}
+
 .marker-container {
     display: flex;
     padding: 0 15px 0 10px;
     gap: 15px;
+    align-items: center;
+    height: 100%;
+    overflow: scroll;
 }
 
 .marker-container.hazard {
@@ -1920,6 +1954,7 @@ input::-ms-clear {
     height: 40px;
 }
 
+#changeYearSelect option,
 #changeEvacueeDataSelect option,
 #changeArchiveEvacueeDataSelect option {
     font-size: 14px;
@@ -1930,6 +1965,7 @@ input::-ms-clear {
     font-size: 12px;
 }
 
+#changeYearSelect,
 #changeEvacueeDataSelect,
 #changeArchiveEvacueeDataSelect {
     width: 262px;
@@ -1983,7 +2019,7 @@ input::-ms-clear {
 }
 
 .count-container.roadblocked {
-    background: rgb(255, 32, 32);
+    background: var(--color-red);
 }
 
 .form-map {
@@ -2121,7 +2157,7 @@ tr.selectedRow {
 
 .action-container {
     display: flex;
-    justify-content: center;
+    justify-content: end;
     gap: 8px;
 }
 
@@ -2461,6 +2497,7 @@ select.form-select option {
 .dark-mode .reportUpdateForm textarea,
 .dark-mode .form-content textarea,
 .dark-mode .field-container input,
+.dark-mode #changeYearSelect,
 .dark-mode #changeEvacueeDataSelect,
 .dark-mode #changeArchiveEvacueeDataSelect,
 .dark-mode .field-container select,
@@ -2472,6 +2509,7 @@ select.form-select option {
 .dark-mode .form-content textarea::placeholder,
 .dark-mode .field-container input::placeholder,
 .dark-mode .field-container .form-select,
+.dark-mode #changeYearSelect,
 .dark-mode #changeEvacueeDataSelect,
 .dark-mode #changeArchiveEvacueeDataSelect,
 .dark-mode #reportHazardForm select {
@@ -2533,12 +2571,7 @@ select.form-select option {
 
 .dark-mode .profile-details-label {
     background: var(--color-red);
-    color: var(--color-d-text);
-}
-
-.dark-mode div.marker-count {
-    background: var(--color-red);
-    color: var(--color-d-text);
+    color: var(--color-d-text) !important;
 }
 
 .dark-mode .guideline-widget button {
@@ -2626,10 +2659,6 @@ select.form-select option {
     .evacuation-markers {
         overflow: auto;
     }
-
-    .marker-container {
-        margin: auto;
-    }
 }
 
 @media only screen and (max-width: 767px) {
@@ -2699,6 +2728,7 @@ select.form-select option {
 
     .action-container {
         flex-wrap: wrap;
+        justify-content: center;
     }
 
     .action-container button,
@@ -2722,12 +2752,9 @@ select.form-select option {
         font-size: 12px;
     }
 
-    .marker-container {
-        overflow: visible;
-    }
-
-    .marker-container {
-        margin: 0 auto;
+    .marker-container.hazard {
+        overflow: visible !important;
+        width: fit-content !important;
     }
 
     .locator-button-container {
@@ -3172,6 +3199,7 @@ select.form-select option {
         background: transparent;
     }
 
+    #changeYearSelect option,
     #changeEvacueeDataSelect option,
     #changeArchiveEvacueeDataSelect option,
     #reportHazardForm select.form-select option {
@@ -3183,6 +3211,7 @@ select.form-select option {
         font-size: 10px;
     }
 
+    #changeYearSelect,
     #changeEvacueeDataSelect,
     #changeArchiveEvacueeDataSelect {
         width: 100%;
@@ -3196,6 +3225,7 @@ select.form-select option {
         padding: 10px !important;
     }
 
+    #changeYearSelect,
     #changeEvacueeDataSelect,
     #changeArchiveEvacueeDataSelect,
     .modal-content button {
@@ -3270,6 +3300,7 @@ select.form-select option {
         padding: 6px !important;
     }
 
+    #changeYearSelect,
     #changeEvacueeDataSelect,
     #changeArchiveEvacueeDataSelect {
         height: fit-content;
@@ -3288,8 +3319,8 @@ select.form-select option {
         align-items: center;
     }
 
-    div.marker-count {
-        padding: 1px 4px !important;
+    .count-container span {
+        font-size: 10px !important;
     }
 }
 

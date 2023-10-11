@@ -36,6 +36,7 @@
                         <thead>
                             <tr>
                                 <th colspan="2">Disaster Name</th>
+                                <th>Year</th>
                                 <th>Status</th>
                                 <th>Action</th>
                             </tr>
@@ -68,7 +69,7 @@
                 responsive: true,
                 processing: false,
                 serverSide: true,
-                ajax: "{{ route('disaster.display', $operation) }}",
+                ajax: "{{ route('disaster.display', [$operation, 'none']) }}",
                 columns: [{
                         data: 'id',
                         name: 'id',
@@ -77,6 +78,11 @@
                     {
                         data: 'name',
                         name: 'name'
+                    },
+                    {
+                        data: 'year',
+                        name: 'year',
+                        width: '10%'
                     },
                     {
                         data: 'status',
