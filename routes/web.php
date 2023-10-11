@@ -71,7 +71,7 @@ Route::middleware('auth')->group(function () {
         });
 
         Route::prefix('disaster')->name('disaster.')->controller(DisasterController::class)->group(function () {
-            Route::get('/disasterInformation/{operation}', 'displayDisasterInformation')->name('display');
+            Route::get('/disasterInformation/{operation}/{year}', 'displayDisasterInformation')->name('display');
             Route::post('/createDisasterData', 'createDisasterData')->name('create');
             Route::patch('/updateDisaster/{disasterId}', 'updateDisasterData')->name('update');
             Route::patch('/archiveDisasterData/{disasterId}/{operation}', 'archiveDisasterData')->name('archive');
