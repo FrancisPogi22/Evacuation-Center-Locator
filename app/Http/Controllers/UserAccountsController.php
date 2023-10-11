@@ -181,7 +181,7 @@ class UserAccountsController extends Controller
             'suspend_time' => null
         ]);
         $this->logActivity->generateLog($userId, $userAccount->name, 'opened a account');
-        
+
         return response()->json();
     }
 
@@ -220,7 +220,7 @@ class UserAccountsController extends Controller
             'is_archive' => $operation == "archive" ? 1 : 0
         ]);
         $this->logActivity->generateLog($userId, $userAccount->name, ($operation == "archive" ? "archived" : "unarchived") . " a account");
-        
+
         return response()->json();
     }
 }

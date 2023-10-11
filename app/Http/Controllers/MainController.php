@@ -85,11 +85,13 @@ class MainController extends Controller
 
     public function manageEvacueeInformation($operation)
     {
-        $disasterList   = $this->disaster->where('is_archive', 0)->get();
+        $disasterList        = $this->disaster->where('is_archive', 0)->get();
         $archiveDisasterList = $this->disaster->where('is_archive', 1)->get();
-        $evacuationList = $this->evacuationCenter->whereNotIn('status', ['Inactive', 'Archived'])->get();
+        $yearList            = $archiveDisasterList->pluck('year')->unique();
+        $archiveDisasterList = $archiveDisasterList->where('year', $yearList->first());
+        $evacuationList      = $this->evacuationCenter->whereNotIn('status', ['Inactive', 'Archived'])->get();
 
-        return view('userpage.evacuee.evacuee', compact('evacuationList', 'disasterList', 'archiveDisasterList', 'operation'));
+        return view('userpage.evacuee.evacuee', compact('evacuationList', 'disasterList', 'yearList', 'archiveDisasterList', 'operation'));
     }
 
     public function disasterInformation($operation)

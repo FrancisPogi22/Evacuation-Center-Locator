@@ -22,9 +22,15 @@ class DisasterController extends Controller
         $this->evacuee     = new Evacuee;
         $this->logActivity = new ActivityUserLog;
     }
-    public function displayDisasterInformation($operation)
+    public function displayDisasterInformation($operation, $year)
     {
-        $disasterInformation = $this->disaster->where('is_archive', $operation == "manage" ? 0 : 1)->orderBy('id', 'asc')->get();
+        $disasterInformation = $this->disaster
+            ->where('is_archive', $operation == "manage" ? 0 : 1)
+            ->when($year != "none", fn ($query) => $query->where('year', $year))->orderBy('id', 'desc')
+            ->get();
+
+        if ($year != "none")
+            return $disasterInformation;
 
         return DataTables::of($disasterInformation)
             ->addIndexColumn()
@@ -35,13 +41,14 @@ class DisasterController extends Controller
                 . '">' . $disaster->status . '</div></div>')
             ->addColumn('action', function ($disaster) use ($operation) {
                 if (auth()->user()->is_disable == 1) return;
+                $evacuees = $this->evacuee->where('disaster_id', $disaster->id)->where('status', 'Evacuated')->count();
 
-                $updateButton  = '<button class="btn-table-update" id="updateDisaster"><i class="bi bi-pencil-square"></i>Update</button>';
+                $updateButton  = $operation == "manage" ? '<button class="btn-table-update" id="updateDisaster"><i class="bi bi-pencil-square"></i>Update</button>' : '';
                 $statusOptions = $disaster->status == 'On Going' ? '<option value="Inactive">Inactive</option>' : '<option value="On Going">On Going</option>';
-                $selectStatus  = '<select class="form-select" id="changeDisasterStatus"><option value="" disabled selected hidden>Change Status</option>' . $statusOptions . '</select>';
+                $selectStatus  = $operation == "manage" ? '<select class="form-select" id="changeDisasterStatus"><option value="" disabled selected hidden>Change Status</option>' . $statusOptions . '</select>' : '';
                 $archiveButton = $operation == "manage" ?
-                    ($disaster->status != "On Going" ? '<button class="btn-table-remove" id="archiveDisaster"><i class="bi bi-trash3-fill"></i>Archive</button>' : '') :
-                    '<button class="btn-table-remove" id="unArchiveDisaster"><i class="bi bi-arrow-repeat"></i>Unarchive</button>';
+                    ($evacuees == 0 ? '<button class="btn-table-remove" id="archiveDisaster"><i class="bi bi-box-arrow-in-down-right"></i>Archive</button>' : '') :
+                    '<button class="btn-table-remove" id="unArchiveDisaster"><i class="bi bi-box-arrow-up-left"></i>Unarchive</button>';
 
                 return '<div class="action-container">' . $updateButton . $archiveButton . $selectStatus . '</div>';
             })
@@ -60,6 +67,7 @@ class DisasterController extends Controller
 
         $disasterData = $this->disaster->create([
             'name'       => Str::title(trim($request->name)),
+            'year'       => date('Y'),
             'status'     => "On Going",
             'user_id'    => auth()->user()->id,
             'is_archive' => 0
@@ -90,22 +98,14 @@ class DisasterController extends Controller
 
     public function archiveDisasterData($disasterId, $operation)
     {
-        if ($operation == 'archive') {
-            $evacueesCount = $this->evacuee->where('disaster_id', $disasterId)->where('status', 'Evacuated')->count();
-
-            if ($evacueesCount > 0)
-                return response(['status' => 'warning', 'message' => 'Cannot archive disaster. There are still evacuees under this disaster.']);
-            else
-                $this->evacuee->where('disaster_id', $disasterId)->update(['is_archive' => 1]);
-        } else {
-            $this->evacuee->where('disaster_id', $disasterId)->update(['is_archive' => 0]);
-        }
-
+        $archiveValue = $operation == 'archive' ? 1 : 0;
         $disasterData = $this->disaster->find($disasterId);
         $disasterData->update([
             'user_id'    => auth()->user()->id,
-            'is_archive' => $operation == "archive" ? 1 : 0
+            'status'     => 'Inactive',
+            'is_archive' =>  $archiveValue
         ]);
+        $this->evacuee->where('disaster_id', $disasterId)->update(['is_archive' => $archiveValue]);
 
         $this->logActivity->generateLog($disasterId, $disasterData->name, ($operation == "archive" ? "archived" : "unarchived") . " a disaster data");
 
