@@ -11,6 +11,7 @@ class DisasterSeeder extends Seeder
     {
         Disaster::insert([
             'name' => ('Typhoon Paeng'),
+            'year' => ('2021'),
             'status' => "On Going",
             'is_archive' => 0,
             'user_id' => 2
@@ -18,6 +19,7 @@ class DisasterSeeder extends Seeder
 
         Disaster::insert([
             'name' => ('Typhoon Ondoy'),
+            'year' => ('2022'),
             'status' => "Inactive",
             'is_archive' => 0,
             'user_id' => 2
