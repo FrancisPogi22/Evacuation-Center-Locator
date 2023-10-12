@@ -87,10 +87,10 @@ class UserAccountsController extends Controller
             'position'     => $request->position,
             'name'         => Str::title(trim($request->name)),
             'email'        => trim($request->email),
-            'password'     =>  Hash::make($defaultPassword),
-            'status'       =>  "Active",
-            'is_disable'   =>  0,
-            'is_suspend'   =>  0,
+            'password'     => Hash::make($defaultPassword),
+            'status'       => "Active",
+            'is_disable'   => 0,
+            'is_suspend'   => 0,
             'is_archive'   => 0
         ]);
         Mail::to(trim($request->email))->send(new UserCredentialsMail([
@@ -181,7 +181,7 @@ class UserAccountsController extends Controller
             'suspend_time' => null
         ]);
         $this->logActivity->generateLog($userId, $userAccount->name, 'opened a account');
-        
+
         return response()->json();
     }
 
@@ -219,8 +219,8 @@ class UserAccountsController extends Controller
         $userAccount->update([
             'is_archive' => $operation == "archive" ? 1 : 0
         ]);
-        $this->logActivity->generateLog($userId, $userAccount->name, ($operation == "archive" ? "archived" : "unarchived") . " a account");
-        
+        $this->logActivity->generateLog($userId, $userAccount->name, $operation . "d a account");
+
         return response()->json();
     }
 }

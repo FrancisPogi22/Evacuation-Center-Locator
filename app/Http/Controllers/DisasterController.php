@@ -10,8 +10,6 @@ use App\Models\ActivityUserLog;
 use Yajra\DataTables\DataTables;
 use Illuminate\Support\Facades\Validator;
 
-use function Laravel\Prompts\select;
-
 class DisasterController extends Controller
 {
     private $disaster, $evacuee, $logActivity;
@@ -94,7 +92,7 @@ class DisasterController extends Controller
             $evacueesCount = $this->evacuee->where('disaster_id', $disasterId)->where('status', 'Evacuated')->count();
 
             if ($evacueesCount > 0)
-                return response(['status' => 'warning', 'message' => 'Cannot archive disaster. There are still evacuees under this disaster.']);
+                return response(['status' => 'warning', 'message' => 'Cannot archive disaster, there are still evacuees under this disaster.']);
             else
                 $this->evacuee->where('disaster_id', $disasterId)->update(['is_archive' => 1]);
         } else {
@@ -106,8 +104,7 @@ class DisasterController extends Controller
             'user_id'    => auth()->user()->id,
             'is_archive' => $operation == "archive" ? 1 : 0
         ]);
-
-        $this->logActivity->generateLog($disasterId, $disasterData->name, ($operation == "archive" ? "archived" : "unarchived") . " a disaster data");
+        $this->logActivity->generateLog($disasterId, $disasterData->name, $operation . "d a disaster data");
 
         return response()->json();
     }

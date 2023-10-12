@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 
 use App\Models\Evacuee;
-use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Events\ActiveEvacuees;
 use App\Models\ActivityUserLog;
@@ -19,10 +18,10 @@ class EvacueeController extends Controller
 
     function __construct()
     {
-        $this->evacuee     = new Evacuee;
-        $this->logActivity = new ActivityUserLog;
-        $this->familyRecord = new FamilyRecord();
-        $this->familyController = new FamilyRecordController();
+        $this->evacuee          = new Evacuee;
+        $this->logActivity      = new ActivityUserLog;
+        $this->familyRecord     = new FamilyRecord;
+        $this->familyController = new FamilyRecordController;
     }
 
     public function getEvacueeData($operation, $disasterId, $status = null)
@@ -87,6 +86,7 @@ class EvacueeController extends Controller
         ]);
 
         $evacueeInfo['individuals'] = $evacueeInfo['male'] + $evacueeInfo['female'];
+        $evacueeInfo['updated_at']  = date('Y-m-d H:i:s');
         $evacueeInfo['family_id']   = $latestRecord->id;
         $evacueeInfo['user_id']     = auth()->user()->id;
         $evacueeInfo                = $this->evacuee->create($evacueeInfo);
@@ -125,6 +125,7 @@ class EvacueeController extends Controller
         ]);
 
         $evacueeInfo['individuals'] = $evacueeInfo['male'] + $evacueeInfo['female'];
+        $evacueeInfo['updated_at']  = date('Y-m-d H:i:s');
         $evacueeInfo['family_id']   = $this->familyRecord->latest('updated_at')->first()->id;
         $evacueeInfo['user_id']     = auth()->user()->id;
         $evacueeInfo                = $this->evacuee->find($evacueeId)->update($evacueeInfo);
@@ -140,7 +141,7 @@ class EvacueeController extends Controller
 
         foreach ($request->evacueeIds as $id) {
             $evacuee = $this->evacuee->find(intval($id));
-            $familyIds[] = tap($evacuee)->update(['status' => $request->status])->id;
+            $familyIds[] = tap($evacuee)->update(['status' => $request->status, 'updated_at' => date('Y-m-d H:i:s')])->id;
         }
 
         $this->logActivity->generateLog(implode(', ', $familyIds), '', 'updated evacuee status to return home');
