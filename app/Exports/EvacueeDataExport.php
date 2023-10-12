@@ -21,52 +21,61 @@ class EvacueeDataExport implements FromView, ShouldAutoSize, WithStyles, WithDef
 {
     use Exportable;
 
-    private $evacuee, $evacueeData, $onGoingDisaster, $totalEvacuationCenter, $total, $totalFamilies, $totalIndividuals, $totalMale, $totalFemale, $totalSeniorCitizen, $totalMinors, $totalInfants, $totalPwd, $totalPregnant, $totalLactating;
+    private $evacuee, $evacueeData, $onGoingDisaster, $evacuationCenter, $total, $families, $individuals, $male, $female, $seniorCitizen, $minors, $infants, $pwd, $pregnant, $lactating;
 
     public function __construct($disasterId)
     {
-        $this->evacuee = new Evacuee;
-        $this->evacueeData = $this->evacuee->where('disaster_id', $disasterId)->get();
-        $this->onGoingDisaster = Disaster::where('id', $disasterId)->value('name');
-        $this->totalEvacuationCenter = EvacuationCenter::where('status', 'Active')->count();
-        $this->total = $this->evacuee->where('disaster_id', $disasterId)->selectRaw('SUM(families) as totalFamilies, SUM(individuals) as totalIndividuals, SUM(male) as totalMale, SUM(female) as totalFemale, SUM(senior_citizen) as totalSeniorCitizen, SUM(minors) as totalMinors, SUM(infants) as totalInfants, SUM(pwd) as totalPwd, SUM(pregnant) as totalPregnant, SUM(lactating) as totalLactating');
-        $computedData = $this->total->first();
-        $this->totalFamilies = $computedData['totalFamilies'];
-        $this->totalIndividuals = $computedData['totalIndividuals'];
-        $this->totalMale = $computedData['totalMale'];
-        $this->totalFemale = $computedData['totalFemale'];
-        $this->totalSeniorCitizen = $computedData['totalSeniorCitizen'];
-        $this->totalMinors = $computedData['totalMinors'];
-        $this->totalInfants = $computedData['totalInfants'];
-        $this->totalPwd = $computedData['totalPwd'];
-        $this->totalPregnant = $computedData['totalPregnant'];
-        $this->totalLactating = $computedData['totalLactating'];
+        $this->evacuee          = new Evacuee;
+        $this->onGoingDisaster  = Disaster::where('id', $disasterId)->value('name');
+        $this->evacuationCenter = EvacuationCenter::where('status', 'Active')->count();
+        $this->evacueeData      = $this->evacuee
+            ->selectRaw('COUNT(evacuee.id) AS families, SUM(infants) AS infants, SUM(minors) AS minors, SUM(senior_citizen) AS seniorCitizen, 
+                SUM(pwd) AS pwd, SUM(pregnant) AS pregnant, SUM(lactating) AS lactating, SUM(individuals) AS individuals, SUM(male) AS male, 
+                SUM(female) AS female, barangay, MAX(evacuation_center.name) AS evacuationAssigned, MAX(updated_at) AS dateEntry')
+            ->join('evacuation_center', 'evacuee.evacuation_id', '=', 'evacuation_center.id')
+            ->where('evacuee.disaster_id', $disasterId)
+            ->groupBy('barangay')
+            ->havingRaw('MAX(updated_at)')
+            ->get();
+        $evacueeData            = $this->evacuee->where('disaster_id', $disasterId)->selectRaw('SUM(infants) as infants, SUM(minors) as minors, 
+            SUM(senior_citizen) as seniorCitizen, SUM(pwd) as pwd, SUM(pregnant) as pregnant, SUM(lactating) as lactating, SUM(individuals) as individuals, 
+            SUM(male) as male, SUM(female) as female, COUNT(id) as families')->first();
+        $this->infants          = $evacueeData['infants'];
+        $this->minors           = $evacueeData['minors'];
+        $this->seniorCitizen    = $evacueeData['seniorCitizen'];
+        $this->pwd              = $evacueeData['pwd'];
+        $this->pregnant         = $evacueeData['pregnant'];
+        $this->lactating        = $evacueeData['lactating'];
+        $this->individuals      = $evacueeData['individuals'];
+        $this->male             = $evacueeData['male'];
+        $this->female           = $evacueeData['female'];
+        $this->families         = $evacueeData['families'];
     }
 
     public function view(): View
     {
         return view('userpage.evacuee.evacueeDataExcel', [
-            'evacueeData' => $this->evacueeData,
-            'onGoingDisaster' => $this->onGoingDisaster,
-            'totalEvacuationCenter' => $this->totalEvacuationCenter,
-            'totalFamilies' => $this->totalFamilies,
-            'totalIndividuals' => $this->totalIndividuals,
-            'totalMale' => $this->totalMale,
-            'totalFemale' => $this->totalFemale,
-            'totalSeniorCitizen' => $this->totalSeniorCitizen,
-            'totalMinors' => $this->totalMinors,
-            'totalInfants' => $this->totalInfants,
-            'totalPwd' => $this->totalPwd,
-            'totalPregnant' => $this->totalPregnant,
-            'totalLactating' => $this->totalLactating
+            'evacueeData'      => $this->evacueeData,
+            'onGoingDisaster'  => $this->onGoingDisaster,
+            'evacuationCenter' => $this->evacuationCenter,
+            'infants'          => $this->infants,
+            'minors'           => $this->minors,
+            'seniorCitizen'    => $this->seniorCitizen,
+            'pwd'              => $this->pwd,
+            'pregnant'         => $this->pregnant,
+            'lactating'        => $this->lactating,
+            'individuals'      => $this->individuals,
+            'male'             => $this->male,
+            'female'           => $this->female,
+            'families'         => $this->families,
         ]);
     }
 
     public function styles(Worksheet $sheet)
     {
-        $highestRow = $sheet->getHighestRow();
+        $highestRow    = $sheet->getHighestRow();
         $highestColumn = $sheet->getHighestColumn();
-        $header = 'A6:' . $highestColumn . '6';
+        $header        = 'A6:' . $highestColumn . '6';
 
         $mergedCells = ['A1:N1', 'A2:N2', 'A3:N3', 'A4:N4', 'A5:N5'];
 
@@ -112,7 +121,7 @@ class EvacueeDataExport implements FromView, ShouldAutoSize, WithStyles, WithDef
             ],
             'alignment' => [
                 'horizontal' => Alignment::HORIZONTAL_CENTER,
-                'vertical' => Alignment::VERTICAL_CENTER,
+                'vertical'   => Alignment::VERTICAL_CENTER,
             ]
         ];
     }
