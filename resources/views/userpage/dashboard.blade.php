@@ -90,18 +90,20 @@
                         </div>
                     </div>
                 </div>
-                <div class="widget">
-                    <div class="widget-content">
-                        <div class="content-description">
-                            <div class="wigdet-header">
-                                <p>Today's Reports</p>
-                                <i class="bi bi-megaphone"></i>
+                @if (auth()->user()->organization == 'CDRRMO')
+                    <div class="widget">
+                        <div class="widget-content">
+                            <div class="content-description">
+                                <div class="wigdet-header">
+                                    <p>Today's Reports</p>
+                                    <i class="bi bi-megaphone"></i>
+                                </div>
+                                <p id="totalReport">{{ $incidentReport }}</p>
+                                <span>Total</span>
                             </div>
-                            <p id="totalReport">{{ $incidentReport }}</p>
-                            <span>Total</span>
                         </div>
                     </div>
-                </div>
+                @endif
             </section>
             @foreach ($disasterData as $count => $disaster)
                 @if ($disaster['totalEvacuee'] != 0)
