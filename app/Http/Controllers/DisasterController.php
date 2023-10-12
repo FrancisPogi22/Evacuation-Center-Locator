@@ -20,6 +20,7 @@ class DisasterController extends Controller
         $this->evacuee     = new Evacuee;
         $this->logActivity = new ActivityUserLog;
     }
+    
     public function displayDisasterInformation($operation, $year)
     {
         $disasterInformation = $this->disaster
@@ -103,7 +104,6 @@ class DisasterController extends Controller
             'status'     => 'Inactive',
             'is_archive' => $archiveValue
         ]);
-
         $this->evacuee->where('disaster_id', $disasterId)->update(['is_archive' => $archiveValue]);
         $this->logActivity->generateLog($disasterId, $disasterData->name, $operation . "d a disaster data");
 

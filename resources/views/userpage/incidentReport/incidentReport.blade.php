@@ -264,7 +264,7 @@
                             route[operation] = route[operation].replace('reportId', reportId);
 
                             $.ajax({
-                                type: operation == 'archive' || operation == 'unarchive' ? 'PATCH' :
+                                method: operation == 'archive' || operation == 'unarchive' ? 'PATCH' :
                                     operation == 'approve' ? 'POST' : 'DELETE',
                                 url: route[operation],
                                 success() {

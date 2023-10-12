@@ -33,7 +33,7 @@
             submitHandler: changePasswordHandler
         });
 
-        $(document).on('input', '#current_password', function() {
+        $(document).on('keyup', '#current_password', function() {
             current_password = $('#current_password').val();
 
             clearTimeout($(this).data('checkingDelay'));
@@ -53,7 +53,7 @@
                     headers: {
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                     },
-                    type: 'POST',
+                    method: 'POST',
                     url: checkPasswordRoute,
                     data: {
                         current_password: current_password
@@ -187,7 +187,7 @@
             if (!result.isConfirmed) return;
 
             $.ajax({
-                type: "PUT",
+                method: "PUT",
                 url: $('#changePasswordRoute').data('route'),
                 data: $(form).serialize(),
                 success(response) {

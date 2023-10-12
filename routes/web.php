@@ -157,6 +157,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/hotlineNumber', 'hotlineNumbers')->name('hotline.number');
         Route::get('/about', 'about')->name('about');
         Route::get('/fetchDisasterData', 'fetchDisasterData')->name('fetchDisasterData');
+        Route::get('/initDisasterData/{disasterName}', 'initDisasterData')->name('initDisasterData');
     });
 
     Route::get('/notifications', NotificationEvent::class . '@notifications')->name('notifications');

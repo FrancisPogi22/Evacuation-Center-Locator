@@ -143,7 +143,7 @@
                                 data: guidelineId,
                                 url: "{{ route('guideline.remove', 'guidelineId') }}"
                                     .replace('guidelineId', guidelineId),
-                                type: "DELETE",
+                                method: "DELETE",
                                 success(response) {
                                     return response.status == 'warning' ? showWarningMessage(
                                         response.message) : showSuccessMessage(
@@ -214,7 +214,7 @@
                                 $.ajax({
                                     data: formData,
                                     url: url,
-                                    type: "POST",
+                                    method: "POST",
                                     cache: false,
                                     contentType: false,
                                     processData: false,

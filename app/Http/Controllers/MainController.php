@@ -7,12 +7,12 @@ use App\Models\Evacuee;
 use App\Models\Disaster;
 use App\Models\Guideline;
 use Illuminate\Http\Request;
+use App\Models\IncidentReport;
+use Illuminate\Support\Carbon;
 use App\Models\ActivityUserLog;
 use App\Models\EvacuationCenter;
 use App\Events\NotificationEvent;
 use App\Exports\EvacueeDataExport;
-use App\Models\IncidentReport;
-use Illuminate\Support\Carbon;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Validator;
@@ -45,14 +45,23 @@ class MainController extends Controller
         return view('userpage.dashboard', compact('activeEvacuation', 'disasterData', 'totalEvacuee', 'onGoingDisasters', 'notifications', 'incidentReport'));
     }
 
+    public function initDisasterData($disasterName)
+    {
+        $disaterData = $this->disaster->select('id', 'name', 'year')
+            ->where('name', 'LIKE', "%{$disasterName}%")
+            ->get();
+
+        return response()->json($disaterData);
+    }
+
     public function generateExcelEvacueeData(Request $request)
     {
-        $generateReportValidation = Validator::make($request->all(), [
+        $generateReportValidation = Validator::make($request->only('disaster_id'), [
             'disaster_id' => 'required'
         ]);
 
         if ($generateReportValidation->fails())
-            return back()->with('warning', $generateReportValidation->errors()->first());
+            return back()->with('warning', "Disaster is not exist.");
 
         return Excel::download(new EvacueeDataExport($request->disaster_id), 'evacuee-data.xlsx', FileFormat::XLSX);
     }

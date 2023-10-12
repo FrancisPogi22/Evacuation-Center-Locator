@@ -298,7 +298,7 @@
                             $.ajax({
                                 data: formData,
                                 url: url,
-                                type: type,
+                                method: type,
                                 success(response) {
                                     response.status == "warning" ? showWarningMessage(response
                                         .message) : (showSuccessMessage(
@@ -321,7 +321,7 @@
                                 headers: {
                                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                                 },
-                                type: type,
+                                method: type,
                                 data: {
                                     status
                                 },

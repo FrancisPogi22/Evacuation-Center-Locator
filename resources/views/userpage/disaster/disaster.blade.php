@@ -180,7 +180,7 @@
                         .then((result) => {
                             return !result.isConfirmed ? $('#changeDisasterStatus').val('') :
                                 $.ajax({
-                                    type: 'PATCH',
+                                    method: 'PATCH',
                                     data: {
                                         status: status
                                     },

@@ -123,7 +123,7 @@
                         $.ajax({
                             url: "{{ route('account.update', 'accountId') }}".replace('accountId',
                                 accountId),
-                            type: 'PUT',
+                            method: 'PUT',
                             data: formData,
                             success(response) {
                                 response.status == 'warning' ? showWarningMessage(response
