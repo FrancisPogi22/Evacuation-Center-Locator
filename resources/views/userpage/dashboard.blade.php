@@ -24,7 +24,7 @@
                 <p>Current Disaster:
                     <span>{{ $onGoingDisasters->isEmpty() ? 'No Disaster' : implode(' | ', $onGoingDisasters->pluck('name')->toArray()) }}</span>
                 </p>
-                @if (auth()->user()->position == 'President' || auth()->user()->position == 'Focal')
+                @if (auth()->user()->position == 'President' || (auth()->user()->position == 'Focal' && !$onGoingDisasters->isEmpty()))
                     <div class="generate-button-container">
                         <button type="button" data-bs-toggle="modal" data-bs-target="#generateReportModal"
                             class="btn-submit generateBtn">
@@ -70,18 +70,6 @@
                     <div class="widget-content">
                         <div class="content-description">
                             <div class="wigdet-header">
-                                <p>Evacuation Center (Active)</p>
-                                <i class="bi bi-house-heart"></i>
-                            </div>
-                            <p>{{ $activeEvacuation }}</p>
-                            <span>Total</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="widget">
-                    <div class="widget-content">
-                        <div class="content-description">
-                            <div class="wigdet-header">
                                 <p>Evacuee (On Evacuation)</p>
                                 <i class="bi bi-people"></i>
                             </div>
@@ -90,7 +78,20 @@
                         </div>
                     </div>
                 </div>
-                @if (auth()->user()->organization == 'CDRRMO')
+                @if (auth()->user()->organization == 'CSWD')
+                    <div class="widget">
+                        <div class="widget-content">
+                            <div class="content-description">
+                                <div class="wigdet-header">
+                                    <p>Evacuation Center (Active)</p>
+                                    <i class="bi bi-house-heart"></i>
+                                </div>
+                                <p>{{ $activeEvacuation }}</p>
+                                <span>Total</span>
+                            </div>
+                        </div>
+                    </div>
+                @else
                     <div class="widget">
                         <div class="widget-content">
                             <div class="content-description">

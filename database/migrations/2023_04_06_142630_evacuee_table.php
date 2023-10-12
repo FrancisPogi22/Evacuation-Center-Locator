@@ -27,7 +27,7 @@ return new class extends Migration
             $table->foreignId('user_id')->references('id')->on('user')->cascadeOnUpdate();
             $table->string('status')->default('Evacuated');
             $table->boolean('is_archive')->default(0);
-            $table->timestamp('updated_at')->nullable();
+            $table->timestamp('updated_at')->default(date('Y-m-d H:i:s'));
         });
     }
 

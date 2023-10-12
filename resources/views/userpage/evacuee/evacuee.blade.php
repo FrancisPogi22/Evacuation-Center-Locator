@@ -34,7 +34,7 @@
             <div class="page-button-container manage-evacuee">
                 @if ($operation == 'manage')
                     @if (auth()->user()->is_disable == 0)
-                        @if ($disasterList->count() > 0)
+                        @if (!$disasterList->isEmpty())
                             <select id="changeEvacueeDataSelect" class="form-control form-select disasterSelect">
                                 @foreach ($disasterList as $disaster)
                                     <option value="{{ $disaster->id }}">
@@ -42,20 +42,22 @@
                                 @endforeach
                             </select>
                             <button class="btn-submit" id="changeEvacueeDataBtn"></button>
-                        @else
-                            <div class="message-text">No on going disaster available</div>
                         @endif
                     @endif
                 @else
-                    @if ($archiveDisasterList->count() > 0)
+                    @if (!$archiveDisasterList->isEmpty())
+                        <select id="changeYearSelect" class="form-control form-select yearSelect">
+                            @foreach ($yearList as $year)
+                                <option value="{{ $year }}">
+                                    {{ $year }}</option>
+                            @endforeach
+                        </select>
                         <select id="changeArchiveEvacueeDataSelect" class="form-control form-select disasterSelect">
                             @foreach ($archiveDisasterList as $disaster)
                                 <option value="{{ $disaster->id }}">
                                     {{ $disaster->name }}</option>
                             @endforeach
                         </select>
-                    @else
-                        <div class="message-text">No archived disaster available</div>
                     @endif
                 @endif
             </div>
@@ -63,7 +65,7 @@
                 <div class="table-content">
                     <div class="evacuee-table-header">
                         <header class="table-label">Evacuees Informations Table</header>
-                        @if (auth()->user()->is_disable == 0 && $operation == 'manage' && $disasterList->count() > 0)
+                        @if (auth()->user()->is_disable == 0 && $operation == 'manage' && !$disasterList->isEmpty())
                             <div class="page-button-container manage-evacuee-table">
                                 <button id="recordEvacueeBtn" data-toggle="modal" data-target="#evacueeInfoFormModal"
                                     class="btn-submit">
@@ -121,38 +123,48 @@
         crossorigin="anonymous"></script>
     @include('partials.toastr')
     <script>
+        if ('{{ $operation }}' == 'manage') {
+            if (!sessionStorage.getItem('status'))
+                sessionStorage.setItem('status', 'Evacuated');
+
+            $('#changeEvacueeDataBtn').html(
+                sessionStorage.getItem('status') == 'Evacuated' ?
+                '<i class="bi bi-house pr-2"></i> Show Returned to Residence' :
+                '<i class="bi bi-hospital pr-2"></i> Show Evacuee'
+            );
+
+            $('#changeEvacueeStatusBtn').html(
+                sessionStorage.getItem('status') == 'Evacuated' ?
+                '<i class="bi bi-person-up"></i> Returning Home' :
+                '<i class="bi bi-person-down"></i> Evacuated Again'
+            );
+
+            '{{ !$disasterList->isEmpty() }}' ?
+            sessionStorage.setItem('ongoingDisaster', $('#changeEvacueeDataSelect option:first').val()):
+                (sessionStorage.setItem('ongoingDisaster', '-1'),
+                    $('.page-button-container.manage-evacuee').prop('hidden', true));
+
+            $('#changeEvacueeDataSelect').val(sessionStorage.getItem('ongoingDisaster'));
+        } else {
+            '{{ !$yearList->isEmpty() }}' ?
+            sessionStorage.setItem('archiveYear', $('#changeYearSelect option:first').val()):
+                sessionStorage.setItem('archiveYear', '-1');
+
+            '{{ !$archiveDisasterList->isEmpty() }}' ?
+            sessionStorage.setItem('archiveDisaster', $('#changeArchiveEvacueeDataSelect option:first').val()):
+                (sessionStorage.setItem('archiveDisaster', '-1'),
+                    $('.page-button-container.manage-evacuee').prop('hidden', true));
+
+            $('#changeYearSelect').val(sessionStorage.getItem('archiveYear'));
+            $('#changeArchiveEvacueeDataSelect').val(sessionStorage.getItem('archiveDisaster'));
+        }
+
         $(document).ready(() => {
-            let url;
+            if ('{{ $operation }}' == 'manage' && '{{ $disasterList->isEmpty() }}')
+                showInfoMessage('There is no on going disaster.');
 
-            if ('{{ $operation }}' == 'manage') {
-                if (!sessionStorage.getItem('status'))
-                    sessionStorage.setItem('status', 'Evacuated');
-
-                $('#changeEvacueeDataBtn').html(
-                    sessionStorage.getItem('status') == 'Evacuated' ?
-                    '<i class="bi bi-house pr-2"></i> Show Returned to Residence' :
-                    '<i class="bi bi-hospital pr-2"></i> Show Evacuee'
-                );
-
-                $('#changeEvacueeStatusBtn').html(
-                    sessionStorage.getItem('status') == 'Evacuated' ?
-                    '<i class="bi bi-person-up"></i> Returning Home' :
-                    '<i class="bi bi-person-down"></i> Evacuated Again'
-                );
-
-                '{{ $disasterList->count() > 0 }}' ?
-                sessionStorage.setItem('ongoingDisaster', $('#changeEvacueeDataSelect option:first').val()):
-                    sessionStorage.setItem('ongoingDisaster', '-1');
-
-                $('#changeEvacueeDataSelect').val(sessionStorage.getItem('ongoingDisaster'));
-            } else {
-                '{{ $archiveDisasterList->count() > 0 }}' ?
-                sessionStorage.setItem('archiveDisaster', $('#changeArchiveEvacueeDataSelect option:first')
-                        .val()):
-                    sessionStorage.setItem('archiveDisaster', '-1');
-
-                $('#changeArchiveEvacueeDataSelect').val(sessionStorage.getItem('archiveDisaster'));
-            }
+            if ('{{ $operation }}' == 'archived' && '{{ $archiveDisasterList->isEmpty() }}')
+                showInfoMessage('There is no archived disaster.');
 
             $.ajaxSetup({
                 headers: {
@@ -160,7 +172,7 @@
                 }
             });
 
-            let evacueeId, operation, defaultFormData, validator, evacueeTable;
+            let url, evacueeId, operation, defaultFormData, validator, evacueeTable;
 
             const modal = $('#evacueeInfoFormModal'),
                 birthDateInput = datePicker("#birth_date", false),
@@ -432,7 +444,8 @@
                     return showWarningMessage('Please select at least one evacuee.');
                 }
 
-                confirmModal("Are these evacuees going back to their homes?").then((result) => {
+                confirmModal(`Are these evacuees ${sessionStorage.getItem('status') == 'Evacuated' ?
+                    'going back to their homes' : 'evacuated again'}?`).then((result) => {
                     if (!result.isConfirmed) return;
 
                     $.ajax({
@@ -498,6 +511,41 @@
                 initializeDataTable(url);
             });
 
+            $('#changeYearSelect').on('change', function() {
+                sessionStorage.setItem('archiveYear', $(this).val());
+
+                $.ajax({
+                    url: "{{ route('disaster.display', ['archived', 'year']) }}"
+                        .replace('year', sessionStorage.getItem('archiveYear')),
+                    method: 'GET',
+                    success(data) {
+                        $('#changeArchiveEvacueeDataSelect').empty();
+
+                        if (data.length == 0) return;
+
+                        data.forEach(disaster => {
+                            $('#changeArchiveEvacueeDataSelect').append(
+                                `<option value="${disaster.id}">${disaster.name}</option>`
+                            );
+                        });
+
+                        sessionStorage.setItem('archiveDisaster', $(
+                            '#changeArchiveEvacueeDataSelect option:first').val());
+                        $('#changeArchiveEvacueeDataSelect').val(sessionStorage.getItem(
+                            'archiveDisaster'));
+
+                        url =
+                            "{{ route('evacuee.info.get', [$operation, 'disaster', 'archive']) }}"
+                            .replace('disaster', sessionStorage.getItem("archiveDisaster"));
+
+                        initializeDataTable(url);
+                    },
+                    error() {
+                        showErrorMessage()
+                    }
+                });
+            });
+
             $('#changeArchiveEvacueeDataSelect').on('change', function() {
                 sessionStorage.setItem('archiveDisaster', $(this).val());
                 url = "{{ route('evacuee.info.get', [$operation, 'disaster', 'archive']) }}"
@@ -552,8 +600,8 @@
                 dropdownOptions.prop('hidden', true);
 
                 $.ajax({
-                    url: `{{ route('family.record.get', ['data', 'all']) }}`.replace('data', target
-                        .data('id')),
+                    url: `{{ route('family.record.get', ['data', 'all']) }}`
+                        .replace('data', target.data('id')),
                     method: 'GET',
                     success: data => {
                         showForm('existing', true, true, false);

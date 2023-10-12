@@ -70,6 +70,17 @@ class EvacueeController extends Controller
         if ($evacueeInfoValidation->fails())
             return response(['status' => 'warning', 'message' => implode('<br>', $evacueeInfoValidation->errors()->all())]);
 
+        if ($this->evacuee
+            ->where([
+                'family_head' => $request->family_head,
+                'birth_date' => $request->birth_date,
+                'disaster_id' => $request->disaster_id,
+            ])
+            ->exists()
+        ) {
+            return response(['status' => 'warning', 'message' => 'Evacuee is already recorded']);
+        }
+
         $latestRecord = null;
 
         if ($request->form_type == "new") {
