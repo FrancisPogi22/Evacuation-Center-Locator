@@ -37,35 +37,36 @@
             @foreach ($evacueeData as $evacuee)
                 <tr>
                     <td data-column="Barangay">{{ $evacuee->barangay }}</td>
-                    <td data-column="Time and Date">As of {{ $evacuee->date_entry }}</td>
-                    <td data-column="Name of Evacuation">{{ $evacuee->evacuation_assigned }}</td>
+                    <td data-column="Time and Date">As of
+                        {{ (new DateTime($evacuee->dateEntry))->format('g:i a M. j, Y') }}</td>
+                    <td data-column="Name of Evacuation">{{ $evacuee->evacuationAssigned }}</td>
                     <td data-column="Family/Families">{{ $evacuee->families }}</td>
                     <td data-column="No. of Individuals">{{ $evacuee->individuals }}</td>
                     <td data-column="Male">{{ $evacuee->male }}</td>
                     <td data-column="Female">{{ $evacuee->female }}</td>
-                    <td data-column="Senior Citizen">{{ $evacuee->senior_citizen }}</td>
+                    <td data-column="Senior Citizen">{{ $evacuee->seniorCitizen }}</td>
                     <td data-column="Minors">{{ $evacuee->minors }}</td>
                     <td data-column="Infants">{{ $evacuee->infants }}</td>
                     <td data-column="Pwd">{{ $evacuee->pwd }}</td>
                     <td data-column="Pregnant">{{ $evacuee->pregnant }}</td>
                     <td data-column="Lactating">{{ $evacuee->lactating }}</td>
-                    <td data-column="Remarks">{{ $evacuee->remarks }}</td>
+                    <td data-column="Remarks"></td>
                 </tr>
             @endforeach
             <tr>
                 <td>Total</td>
                 <td></td>
-                <td>{{ $totalEvacuationCenter }} Active Evacuation Sites</td>
-                <td>{{ $totalFamilies }}</td>
-                <td>{{ $totalIndividuals }}</td>
-                <td>{{ $totalMale }}</td>
-                <td>{{ $totalFemale }}</td>
-                <td>{{ $totalSeniorCitizen }}</td>
-                <td>{{ $totalMinors }}</td>
-                <td>{{ $totalInfants }}</td>
-                <td>{{ $totalPwd }}</td>
-                <td>{{ $totalPregnant }}</td>
-                <td>{{ $totalLactating }}</td>
+                <td>{{ $evacuationCenter }} Active Evacuation Sites</td>
+                <td>{{ $families }}</td>
+                <td>{{ $individuals }}</td>
+                <td>{{ $male }}</td>
+                <td>{{ $female }}</td>
+                <td>{{ $seniorCitizen }}</td>
+                <td>{{ $minors }}</td>
+                <td>{{ $infants }}</td>
+                <td>{{ $pwd }}</td>
+                <td>{{ $pregnant }}</td>
+                <td>{{ $lactating }}</td>
                 <td></td>
             </tr>
         </tbody>

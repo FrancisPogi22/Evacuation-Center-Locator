@@ -87,10 +87,10 @@ class UserAccountsController extends Controller
             'position'     => $request->position,
             'name'         => Str::title(trim($request->name)),
             'email'        => trim($request->email),
-            'password'     =>  Hash::make($defaultPassword),
-            'status'       =>  "Active",
-            'is_disable'   =>  0,
-            'is_suspend'   =>  0,
+            'password'     => Hash::make($defaultPassword),
+            'status'       => "Active",
+            'is_disable'   => 0,
+            'is_suspend'   => 0,
             'is_archive'   => 0
         ]);
         Mail::to(trim($request->email))->send(new UserCredentialsMail([

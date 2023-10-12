@@ -10,8 +10,6 @@ use App\Models\ActivityUserLog;
 use Yajra\DataTables\DataTables;
 use Illuminate\Support\Facades\Validator;
 
-use function Laravel\Prompts\select;
-
 class DisasterController extends Controller
 {
     private $disaster, $evacuee, $logActivity;
@@ -98,15 +96,14 @@ class DisasterController extends Controller
 
     public function archiveDisasterData($disasterId, $operation)
     {
-        $archiveValue = $operation == 'archive' ? 1 : 0;
         $disasterData = $this->disaster->find($disasterId);
         $disasterData->update([
             'user_id'    => auth()->user()->id,
             'status'     => 'Inactive',
-            'is_archive' =>  $archiveValue
+            'is_archive' =>  $operation == 'archive' ? 1 : 0
         ]);
-        $this->evacuee->where('disaster_id', $disasterId)->update(['is_archive' => $archiveValue]);
 
+        $this->evacuee->where('disaster_id', $disasterId)->update(['is_archive' => $archiveValue]);
         $this->logActivity->generateLog($disasterId, $disasterData->name, ($operation == "archive" ? "archived" : "unarchived") . " a disaster data");
 
         return response()->json();
