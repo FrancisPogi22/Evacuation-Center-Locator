@@ -97,14 +97,15 @@ class DisasterController extends Controller
     public function archiveDisasterData($disasterId, $operation)
     {
         $disasterData = $this->disaster->find($disasterId);
+        $archiveValue = $operation == 'archive' ? 1 : 0;
         $disasterData->update([
             'user_id'    => auth()->user()->id,
             'status'     => 'Inactive',
-            'is_archive' =>  $operation == 'archive' ? 1 : 0
+            'is_archive' => $archiveValue
         ]);
 
         $this->evacuee->where('disaster_id', $disasterId)->update(['is_archive' => $archiveValue]);
-        $this->logActivity->generateLog($disasterId, $disasterData->name, ($operation == "archive" ? "archived" : "unarchived") . " a disaster data");
+        $this->logActivity->generateLog($disasterId, $disasterData->name, $operation . "d a disaster data");
 
         return response()->json();
     }
