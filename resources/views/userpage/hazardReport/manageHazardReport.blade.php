@@ -261,7 +261,7 @@
                     });
                 });
 
-                function submitHandler(element, type, operation, url) {
+                function submitHandler(element, method, operation, url) {
                     if (operation != 'update')
                         element = element.parent().parent().parent();
 
@@ -269,7 +269,7 @@
                         return showWarningMessage();
 
                     $.ajax({
-                        type: type,
+                        method: method,
                         url: url.replace('reportId', element.find('p:first').text()),
                         data: element.serialize(),
                         success(response) {

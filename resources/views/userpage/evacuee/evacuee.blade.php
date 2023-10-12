@@ -455,17 +455,16 @@
                                 'Return Home' : 'Evacuated'
                         },
                         url: "{{ route('evacuee.info.update.status') }}",
-                        type: "PATCH",
+                        method: "PATCH",
                         success(response) {
                             evacueeTable.draw();
                             showSuccessMessage(
                                 `Successfully updated the evacuee status to ${sessionStorage.getItem('status').toLowerCase()}.`
                             );
-
                             selectAllCheckBox.prop('checked', false);
                             initializeDataTable(url);
                         },
-                        error: function(jqXHR, error, data) {
+                        error() {
                             selectAllCheckBox.prop('checked', false);
                             showErrorMessage();
                         }
@@ -473,13 +472,13 @@
                 });
             });
 
-            $(document).on('mouseenter mouseleave', '#changeEvacueeStatusBtn', function(e) {
-                const marginOne = window.innerWidth <= 380 ? '7' : '8';
-                const marginTwo = window.innerWidth <= 380 ? '4' : '5';
+            // $(document).on('mouseenter mouseleave', '#changeEvacueeStatusBtn', function(e) {
+            //     const marginOne = window.innerWidth <= 380 ? '7' : '8';
+            //     const marginTwo = window.innerWidth <= 380 ? '4' : '5';
 
-                this.style.marginRight = e.type === 'mouseenter' ? (this.textContent.includes(
-                    'Show Returned') ? `${marginOne}px` : `${marginTwo}px`) : '0';
-            });
+            //     this.style.marginRight = e.type === 'mouseenter' ? (this.textContent.includes(
+            //         'Show Returned') ? `${marginOne}px` : `${marginTwo}px`) : '0';
+            // });
 
             $(document).on('click', '#changeEvacueeDataBtn', function() {
                 sessionStorage.setItem('status', this.textContent.includes('Show Returned') ?

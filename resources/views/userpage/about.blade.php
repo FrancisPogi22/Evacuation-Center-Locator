@@ -26,7 +26,7 @@
                     </div>
                     <div class="location-detail">
                         <i class="bi bi-geo-alt-fill"></i>
-                        <span>CDDRRMO Address:</span>
+                        <span>CDRRMO Address:</span>
                         <hr>
                         <a
                             href="https://www.google.com/maps/place/Retail+Plaza+City+of+Cabuyao/@14.2772989,121.1214,17z/data=!3m1!4b1!4m6!3m5!1s0x3397d8604aa8f17d:0x4e0371b3a9d5540e!8m2!3d14.2772937!4d121.1235887!16s%2Fg%2F11bxg2qw2w">
