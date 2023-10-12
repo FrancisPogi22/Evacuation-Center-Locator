@@ -104,7 +104,6 @@ input::placeholder {
 #locateNearestBtn:hover {
     background: var(--color-green-hover);
     transform: scale(1.05);
-    border: none;
 }
 
 .btn-update,
@@ -122,7 +121,6 @@ input::placeholder {
 #changeEvacueeDataBtn:hover {
     background: var(--color-yellow-hover);
     transform: scale(1.05);
-    border: none;
 }
 
 .btn-remove,
@@ -139,7 +137,6 @@ input::placeholder {
 .btn-table-remove:hover {
     background: var(--color-red-hover);
     transform: scale(1.05);
-    border: none;
 }
 
 .btn-table-submit,
@@ -194,28 +191,31 @@ input::placeholder {
     display: flex;
     justify-content: space-between;
     padding: 20px 0;
-    border: none;
 }
 
 .evacuee-table-header {
     display: flex;
     justify-content: space-between;
-    padding-top: 6px;
-    border: none;
+    padding: 6px 0 18px 0;
 }
 
-.page-button-container,
-.page-button-container.manage-evacuee-table {
+.evacuee-table-header .table-label{
+    margin: auto 0;
+}
+
+.page-button-container{
     display: flex;
     justify-content: end;
     margin-bottom: 22px;
-    border: none;
     align-items: flex-end;
     gap: 15px;
 }
 
 .page-button-container.manage-evacuee-table {
-    margin: -5px 0 15px 0;
+    display: flex;
+    margin: 0;
+    gap: 15px;
+    align-items: center;
 }
 
 .locator-button-container button i,
@@ -347,7 +347,6 @@ input::placeholder {
     width: 100%;
     margin: 95px auto 30px;
     padding: 0 20px 0 90px;
-    transition: 0.2s all ease-in-out;
 }
 
 .main-content hr {
@@ -381,6 +380,7 @@ input::placeholder {
     font-size: 20px;
     font-weight: 700;
 }
+
 .sidebar {
     position: fixed;
     width: 80px;
@@ -388,7 +388,6 @@ input::placeholder {
     z-index: 100;
     left: 0;
     top: 0;
-    transition: 0s ease;
     filter: drop-shadow(0 10px 8px rgb(0 0 0 / 0.04))
         drop-shadow(0 4px 3px rgb(0 0 0 / 0.1));
     overflow: hidden;
@@ -473,7 +472,6 @@ input::placeholder {
     position: absolute;
     font-size: 12px;
     right: 0;
-    transition: 0.3s ease;
 }
 
 .sidebar.active .navigation-item .sub-btn .dropdown,
@@ -481,7 +479,6 @@ input::placeholder {
     display: block;
     position: absolute;
     right: 0;
-    transition: 0.3s ease;
     color: var(--color-black);
 }
 
@@ -1635,7 +1632,7 @@ hazard-markers .markers,
 
 .social-section,
 .telephone-section {
-    filter: drop-shadow(0 25px 25px rgb(0 0 0 / 0.15));
+    filter: drop-shadow(0 20px 13px rgb(0 0 0 / 0.03)) drop-shadow(0 8px 5px rgb(0 0 0 / 0.08));
     background: var(--color-text);
     color: var(--color-black);
     border-radius: 6px;
@@ -2102,7 +2099,6 @@ span.error {
 .table-content {
     display: block;
     width: 100%;
-    overflow: hidden;
     padding-bottom: 8px;
 }
 
