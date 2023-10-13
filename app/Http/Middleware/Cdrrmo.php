@@ -10,9 +10,6 @@ class Cdrrmo
 {
     public function handle(Request $request, Closure $next): Response
     {
-        if (auth()->check() && auth()->user()->organization == 'CDRRMO')
-            return $next($request);
-
-        return back()->with('warning', "Request Can't Perform.");
+        return auth()->check() && auth()->user()->organization == 'CDRRMO' ? $next($request) : back()->with('warning', "Request Can't Perform.");
     }
 }
