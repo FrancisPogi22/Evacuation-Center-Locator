@@ -30,7 +30,7 @@ class NotificationEvent implements ShouldBroadcast
 
     public function notifications()
     {
-        $notifications = [];
+        $notifications             = [];
         $notifications['incident'] = IncidentReport::where('status', 'On Process')->get();
         $notifications['hazard']   = HazardReport::where('status', 'Pending')->get();
 

@@ -17,26 +17,26 @@ class IncidentReportEvent implements ShouldBroadcast
 
     public function __construct()
     {
-        $this->totalReport = IncidentReport::where('report_time', '>=', Carbon::now()->format('Y-m-d H:i:s'))->count();
+        $this->totalReport = IncidentReport::where('report_time', '>=', now()->format('Y-m-d H:i:s'))->count();
     }
 
-    function approveStatus($accidentReportId)
+    function approveStatus($incidentReportId)
     {
         $this->incidentReport = new IncidentReport;
-        $this->incidentReport->find($accidentReportId)->update([
+        $this->incidentReport->find($incidentReportId)->update([
             'status' => 'Approved'
         ]);
     }
 
-    function declineStatus($accidentReportId)
+    function declineStatus($incidentReportId)
     {
         $this->incidentReport = new IncidentReport;
-        $this->incidentReport->find($accidentReportId)->update([
+        $this->incidentReport->find($incidentReportId)->update([
             'status' => 'Declined'
         ]);
     }
 
-    function revertIncidentReport($accidentReportId, $reportPhotoPath)
+    function revertIncidentReport($incidentReportId, $reportPhotoPath)
     {
         $this->incidentReport = new IncidentReport;
 
@@ -48,7 +48,7 @@ class IncidentReportEvent implements ShouldBroadcast
             }
         }
 
-        $this->incidentReport->find($accidentReportId)->delete();
+        $this->incidentReport->find($incidentReportId)->delete();
     }
 
     function confirmDangerAreaReport($dangerAreaId)
@@ -59,6 +59,7 @@ class IncidentReportEvent implements ShouldBroadcast
             'status' => 'Confirmed'
         ]);
         $reportDescription = $dangerAreaReport->description;
+
         return $reportDescription;
     }
 
@@ -69,6 +70,7 @@ class IncidentReportEvent implements ShouldBroadcast
         $dangerAreaReport->find($dangerAreaId)->update([
             'is_archive' => $operation == 'archive' ? 1 : 0
         ]);
+        
         return $dangerAreaReport->description;
     }
 
