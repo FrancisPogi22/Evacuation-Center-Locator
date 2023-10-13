@@ -217,7 +217,7 @@
         themeText.text('Light Mode');
         sessionStorage.setItem('theme', 'dark');
         $('hr').addClass('bg-white');
-        $('#logo').attr('src', '{{ asset("assets/img/e-ligtas-logo-white.png") }}');
+        $('#logo').attr('src', '{{ asset('assets/img/e-ligtas-logo-white.png') }}');
     }
 
     function disableDarkMode() {
@@ -226,7 +226,7 @@
         themeText.text('Dark Mode');
         sessionStorage.setItem('theme', 'light');
         $('hr').removeClass('bg-white').addClass('bg-dark');
-        $('#logo').attr('src', '{{ asset("assets/img/e-ligtas-logo-black.png") }}');
+        $('#logo').attr('src', '{{ asset('assets/img/e-ligtas-logo-black.png') }}');
     }
 
     function confirmModal(text) {
