@@ -9,9 +9,6 @@ class Cswd
 {
     public function handle(Request $request, Closure $next)
     {
-        if (auth()->check() && auth()->user()->organization == "CSWD")
-            return $next($request);
-
-        return back()->with('warning', "Request Can't Perform.");
+        return auth()->check() && auth()->user()->organization == "CSWD" ? $next($request) : back()->with('warning', "Request Can't Perform.");
     }
 }

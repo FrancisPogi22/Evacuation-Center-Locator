@@ -280,9 +280,7 @@
 
                             ajaxRequest();
                         },
-                        error() {
-                            showErrorMessage();
-                        }
+                        error: () => showErrorMessage()
                     });
                 }
 

@@ -171,9 +171,7 @@
                                                 'Successfully disabled account.');
                                             accountTable.draw();
                                         },
-                                        error() {
-                                            showErrorMessage();
-                                        }
+                                        error: () => showErrorMessage()
                                     })
                             });
                             break;
@@ -190,9 +188,7 @@
                                                 'Successfully enabled account.');
                                             accountTable.draw();
                                         },
-                                        error() {
-                                            showErrorMessage();
-                                        }
+                                        error: () => showErrorMessage()
                                     });
                             });
                             break;
@@ -223,9 +219,7 @@
                                                 'Successfully archive account.');
                                             accountTable.draw();
                                         },
-                                        error() {
-                                            showErrorMessage();
-                                        }
+                                        error: () => showErrorMessage()
                                     });
                             });
                             break;
@@ -242,9 +236,7 @@
                                                 'Successfully unarchived account.');
                                             accountTable.draw();
                                         },
-                                        error() {
-                                            showErrorMessage();
-                                        }
+                                        error: () => showErrorMessage()
                                     })
                             });
                             break;
@@ -274,9 +266,7 @@
                                                 'Successfully opened account.');
                                             accountTable.draw();
                                         },
-                                        error() {
-                                            showErrorMessage();
-                                        }
+                                        error: () => showErrorMessage()
                                     });
                             });
                             break;
@@ -325,9 +315,7 @@
                                         `Successfully ${operation}${operation == 'suspend' ? 'ed' : 'd'} user account.`
                                     ), modal.modal('hide'), accountTable.draw())
                                 },
-                                error() {
-                                    showErrorMessage();
-                                }
+                                error: () => showErrorMessage()
                             });
                     });
                 }

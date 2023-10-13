@@ -113,7 +113,7 @@ class IncidentReportController extends Controller
             'status'       => 'On Process',
             'user_ip'      => $request->ip(),
             'is_archive'   => 0,
-            'report_time'  => Carbon::now()->toDayDateTimeString()
+            'report_time'  => now()->toDayDateTimeString()
         ];
 
         if ($resident) {
@@ -134,7 +134,7 @@ class IncidentReportController extends Controller
             $this->incidentReport->create($incidentReport);
             $resident->update(['attempt' => $residentAttempt + 1]);
             $attempt = $resident->attempt;
-            $attempt == 3 ? $resident->update(['report_time' => Carbon::now()->addHours(3)]) : null;
+            $attempt == 3 ? $resident->update(['report_time' => now()->addHours(3)]) : null;
             event(new IncidentReportEvent());
             event(new NotificationEvent());
 
@@ -219,7 +219,7 @@ class IncidentReportController extends Controller
     public function archiveIncidentReport($reportId, $operation)
     {
         $dangerAreaReport = $this->reportEvent->archiveDangerAreaReport($reportId, $operation);
-        $$this->logActivity->generateLog($reportId, $dangerAreaReport, $operation . "d a dangerous area report");
+        $this->logActivity->generateLog($reportId, $dangerAreaReport, $operation . "d a dangerous area report");
         //event(new IncidentReportEvent());
 
         return response()->json();
@@ -240,6 +240,6 @@ class IncidentReportController extends Controller
 
     private function isBlocked($reportTime)
     {
-        return $reportTime <= Carbon::now()->toDateTimeString() ? false : Carbon::parse($reportTime)->format('F j, Y H:i:s');
+        return $reportTime <= now()->toDateTimeString() ? false : Carbon::parse($reportTime)->format('F j, Y H:i:s');
     }
 }

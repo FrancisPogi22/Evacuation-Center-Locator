@@ -17,18 +17,10 @@
             <div class="label-container">
                 <div class="icon-container">
                     <div class="icon-content">
-                        @if ($operation == 'manage')
-                            <i class="bi bi-person-gear"></i>
-                        @else
-                            <i class="bi bi-person-fill-slash"></i>
-                        @endif
+                        <i class="bi bi-person-{{ $operation == 'manage' ? 'gear' : 'fill-slash' }}"></i>
                     </div>
                 </div>
-                @if ($operation == 'manage')
-                    <span>MANAGE EVACUEE</span>
-                @else
-                    <span>EVACUEE HISTORY</span>
-                @endif
+                <span>{{ $operation == 'manage' ? 'MANAGE EVACUEE' : 'EVACUEE HISTORY' }}</span>
             </div>
             <hr>
             <div class="page-button-container manage-evacuee">
@@ -337,7 +329,6 @@
                     {
                         targets: 1,
                         visible: '{{ $operation }}' == 'archived' ? false : true
-
                     }
                 ]
             });
@@ -398,7 +389,7 @@
 
             modal.on('hidden.bs.modal', () => {
                 validator.resetForm();
-                $('#evacueeInfoForm').trigger('reset');
+                $('#evacueeInfoForm')[0].reset();
                 fieldContainer.prop('hidden', true);
                 submitButtonContainer.prop('hidden', true);
                 formButtonContainer.prop('hidden', false);
@@ -406,10 +397,10 @@
             });
 
             $(document).on('click', '.rowCheckBox', function() {
-                var $row = $(this).closest('tr');
+                let $row = $(this).closest('tr');
                 $row.toggleClass('selectedRow', $(this).is(':checked'));
 
-                var $childRow = $row.next('.child');
+                let $childRow = $row.next('.child');
                 $childRow.toggleClass('selectedRow', $(this).is(':checked'));
 
                 selectAllCheckBox.prop('checked', $('.rowCheckBox:checked').length === $(
@@ -520,7 +511,7 @@
                     success(data) {
                         $('#changeArchiveEvacueeDataSelect').empty();
 
-                        if (data.length == 0) return;
+                        if (!data) return;
 
                         data.forEach(disaster => {
                             $('#changeArchiveEvacueeDataSelect').append(
@@ -539,9 +530,7 @@
 
                         initializeDataTable(url);
                     },
-                    error() {
-                        showErrorMessage()
-                    }
+                    error: () => showErrorMessage()
                 });
             });
 
@@ -566,13 +555,13 @@
             searchInput.on('keyup', function() {
                 const value = $(this).val();
 
-                if (value.length == 0) return dropdownOptions.prop('hidden', true);
+                if (!value) return dropdownOptions.prop('hidden', true);
 
                 $.ajax({
                     url: `{{ route('family.record.get', ['data', 'searchData']) }}`
                         .replace('data', value),
                     method: 'GET',
-                    success: data => {
+                    success(data) {
                         searchResults.empty();
 
                         if (data.length == 0) return dropdownOptions.prop('hidden', true);
@@ -587,9 +576,7 @@
 
                         dropdownOptions.prop('hidden', false);
                     },
-                    error() {
-                        showErrorMessage()
-                    }
+                    error: () => showErrorMessage()
                 });
             });
 
@@ -602,7 +589,7 @@
                     url: `{{ route('family.record.get', ['data', 'all']) }}`
                         .replace('data', target.data('id')),
                     method: 'GET',
-                    success: data => {
+                    success(data) {
                         showForm('existing', true, true, false);
                         familyId.val(data.id);
 
@@ -616,9 +603,7 @@
                             targetElement.val(data[key]);
                         }
                     },
-                    error() {
-                        showErrorMessage()
-                    }
+                    error: () => showErrorMessage()
                 });
             });
 
@@ -626,18 +611,16 @@
                 let formData = $(form).serialize();
                 let submitUrl = operation == 'record' ? "{{ route('evacuee.info.record') }}" :
                     "{{ route('evacuee.info.update', 'evacueeId') }}".replace('evacueeId', evacueeId);
-                let type = operation == 'record' ? "POST" : "PUT";
 
                 confirmModal(`Do you want to ${operation} this evacuee info?`).then((result) => {
                     if (!result.isConfirmed) return;
 
-                    console.log(formData)
                     return operation == 'update' && defaultFormData == formData ?
                         showWarningMessage() :
                         $.ajax({
                             data: formData,
                             url: submitUrl,
-                            type: type,
+                            type: operation == 'record' ? "POST" : "PUT",
                             success(response) {
                                 response.status == 'warning' ? showWarningMessage(response
                                     .message) : (modal.modal('hide'), evacueeTable.draw(),
@@ -647,9 +630,7 @@
 
                                 initializeDataTable(url);
                             },
-                            error() {
-                                showErrorMessage();
-                            }
+                            error: () => showErrorMessage()
                         });
                 });
             }

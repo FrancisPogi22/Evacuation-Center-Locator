@@ -142,9 +142,7 @@
                                         response.message) : showSuccessMessage(
                                         'Guide removed successfully, Please wait...', true);
                                 },
-                                error() {
-                                    showErrorMessage();
-                                }
+                                error: () => showErrorMessage()
                             });
                         });
                     });
@@ -180,9 +178,7 @@
                                                 `Guide successfully ${operation}d, Please wait...`, true),
                                             modal.modal('hide'))
                                     },
-                                    error() {
-                                        showErrorMessage();
-                                    }
+                                    error: () => showErrorMessage()
                                 });
                         });
                     }

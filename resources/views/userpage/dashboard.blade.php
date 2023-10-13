@@ -44,7 +44,7 @@
                                             <div class="form-content">
                                                 <div class="field-container searchContainer">
                                                     <div class="custom-dropdown">
-                                                        <label for="searchInput">Search Disaster</label>
+                                                        <label for="disaster_id">Search Disaster</label>
                                                         <input type="text" name="disaster_id" id="disaster_id"
                                                             hidden>
                                                         <input type="text" name="disaster_input" id="disaster_input"
@@ -173,9 +173,7 @@
                         });
                         dropdownOptions.prop('hidden', false);
                     },
-                    error() {
-                        showErrorMessage();
-                    }
+                    error: () => showErrorMessage()
                 });
             });
 

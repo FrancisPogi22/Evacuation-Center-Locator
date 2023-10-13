@@ -192,9 +192,7 @@
                                                 `Disaster successfully ${operation == "change" ? "changed status" : operation}.`
                                             ))
                                     },
-                                    error() {
-                                        showErrorMessage();
-                                    }
+                                    error: () => showErrorMessage()
                                 });
                         });
                 }
@@ -204,7 +202,6 @@
                     let url = operation == 'add' ? "{{ route('disaster.create') }}" :
                         "{{ route('disaster.update', 'disasterId') }}".replace('disasterId',
                             disasterId);
-                    let type = operation == 'add' ? "POST" : "PATCH";
 
                     confirmModal(`Do you want to ${operation} this disaster?`).then((result) => {
                         if (!result.isConfirmed) return;
@@ -214,7 +211,7 @@
                             $.ajax({
                                 data: formData,
                                 url: url,
-                                type: type,
+                                type: operation == 'add' ? "POST" : "PATCH",
                                 success(response) {
                                     response.status == 'warning' ? showWarningMessage(response
                                         .message) : (
@@ -223,9 +220,7 @@
                                         ),
                                         modal.modal('hide'), disasterTable.draw());
                                 },
-                                error() {
-                                    showErrorMessage();
-                                }
+                                error: () => showErrorMessage()
                             });
                     });
                 }

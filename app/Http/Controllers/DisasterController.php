@@ -20,7 +20,7 @@ class DisasterController extends Controller
         $this->evacuee     = new Evacuee;
         $this->logActivity = new ActivityUserLog;
     }
-    
+
     public function displayDisasterInformation($operation, $year)
     {
         $disasterInformation = $this->disaster
@@ -65,7 +65,7 @@ class DisasterController extends Controller
             return response(['status' => 'warning', 'message' => $validatedDisasterValidation->errors()->first()]);
 
         $disasterData = $this->disaster->create([
-            'name'       => Str::title(trim($request->name)),
+            'name'       => "Typhoon " . Str::title(trim($request->name)),
             'year'       => date('Y'),
             'status'     => "On Going",
             'user_id'    => auth()->user()->id,
