@@ -269,15 +269,9 @@
                                 url: route[operation],
                                 success() {
                                     showSuccessMessage(`Incident report successfully ${operation}d.`);
-                                    @if ($operation == 'pending')
-                                        pendingReport.draw();
-                                    @else
-                                        incidentReports.draw();
-                                    @endif
+                                    {{ $operation == 'pending' ? 'pendingReport.draw()' : 'incidentReports.draw()' }}
                                 },
-                                error() {
-                                    showErrorMessage();
-                                }
+                                error: () => showErrorMessage()
                             });
                         });
                     }
@@ -384,23 +378,17 @@
                         type: "DELETE",
                         url: "{{ route('resident.report.revert', 'reportId') }}"
                             .replace('reportId', reportId),
-                        success() {
-                            revertReport(reportId);
-                        },
-                        error() {
-                            showErrorMessage();
-                        }
+                        success: () => revertReport(reportId),
+                        error: () => showErrorMessage()
                     });
                 });
             });
 
             $('#report_photo').change(function() {
                 let reader = new FileReader();
-
                 reader.onload = (e) => {
                     $('#preview-image').attr('src', e.target.result);
                 }
-
                 reader.readAsDataURL(this.files[0]);
             });
 
@@ -421,8 +409,10 @@
                         contentType: false,
                         processData: false,
                         success(response) {
-                            let status = response.status,
-                                message = response.message;
+                            let {
+                                status,
+                                message
+                            } = response;
 
                             return status == 'warning' ? showWarningMessage(message) : status ==
                                 'blocked' ? (modal.modal('hide'), showWarningMessage(message)) : (
@@ -431,9 +421,7 @@
                                     ),
                                     modal.modal('hide'), pendingReport.draw());
                         },
-                        error() {
-                            showErrorMessage();
-                        }
+                        error: () => showErrorMessage()
                     });
                 });
             }
@@ -446,9 +434,7 @@
                         showSuccessMessage('Incident report successfully reverted.');
                         pendingReport.draw();
                     },
-                    error() {
-                        showErrorMessage();
-                    }
+                    error: () => showErrorMessage()
                 });
             }
 

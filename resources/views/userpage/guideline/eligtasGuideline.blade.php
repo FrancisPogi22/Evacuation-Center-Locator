@@ -149,9 +149,7 @@
                                         response.message) : showSuccessMessage(
                                         'Guideline removed successfully.', true);
                                 },
-                                error() {
-                                    showErrorMessage();
-                                }
+                                error: () => showErrorMessage()
                             });
                         });
                     });
@@ -161,7 +159,7 @@
                         newGuideInputField.classList.add("guide-field");
                         newGuideInputField.innerHTML = `
                         <div class="image-container">
-                            <img src="{{ asset('assets/img/e-ligtas-logo-b.png') }}" alt="Profile"
+                            <img src="{{ asset('assets/img/e-ligtas-logo-black.png') }}" alt="Picture"
                                 class="guidePicture" id="image_preview_container${guideField}">
                                 <span>
                                     <input type="file" name="guidePhoto[]" id="guidePhoto${guideField}" class="form-control guidePhoto">
@@ -224,9 +222,7 @@
                                             `Guideline successfully ${operation}d, Please wait...`, true
                                         ));
                                     },
-                                    error() {
-                                        showErrorMessage();
-                                    }
+                                    error: () => showErrorMessage()
                                 });
                         });
                     }

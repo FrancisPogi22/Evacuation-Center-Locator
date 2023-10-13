@@ -12,7 +12,7 @@
                             <div class="field-container">
                                 <label for="name">Disaster Name</label>
                                 <input type="text" name="name" class="form-control" autocomplete="off"
-                                    placeholder="Enter Disaster Name" id="disasterName">
+                                    placeholder="e.g. Ondoy" id="disasterName">
                             </div>
                             <div class="form-button-container">
                                 <button id="submitDisasterBtn"></button>

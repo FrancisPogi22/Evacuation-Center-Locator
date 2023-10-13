@@ -131,9 +131,7 @@
                                     'Successfully updated the account details, Please wait...', true
                                 );
                             },
-                            error() {
-                                showErrorMessage();
-                            }
+                            error: () => showErrorMessage()
                         });
                 });
             }

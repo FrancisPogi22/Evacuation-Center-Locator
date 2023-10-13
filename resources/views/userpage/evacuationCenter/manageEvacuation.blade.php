@@ -288,7 +288,6 @@
                     let url = operation == 'add' ? "{{ route('evacuation.center.create') }}" :
                         "{{ route('evacuation.center.update', 'evacuationCenterId') }}".
                     replace('evacuationCenterId', evacuationCenterId);
-                    let type = operation == 'add' ? 'POST' : 'PUT';
 
                     confirmModal(`Do you want to ${operation} this evacuation center?`).then((result) => {
                         if (!result.isConfirmed) return;
@@ -298,16 +297,14 @@
                             $.ajax({
                                 data: formData,
                                 url: url,
-                                method: type,
+                                method: operation == 'add' ? 'POST' : 'PUT',
                                 success(response) {
                                     response.status == "warning" ? showWarningMessage(response
                                         .message) : (showSuccessMessage(
                                         `Successfully ${operation == 'add' ? 'added' : 'updated'} evacuation center.`
                                     ), evacuationCenterTable.draw(), modal.modal('hide'));
                                 },
-                                error() {
-                                    showErrorMessage();
-                                }
+                                error: () => showErrorMessage()
                             });
                     });
                 }
@@ -338,9 +335,7 @@
                                     );
                                     evacuationCenterTable.draw();
                                 },
-                                error() {
-                                    showErrorMessage();
-                                }
+                                error: () => showErrorMessage()
                             });
                     });
                 }
