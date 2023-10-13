@@ -40,7 +40,7 @@ class MainController extends Controller
         $activeEvacuation = $this->evacuationCenter->where('status', "Active")->count();
         $totalEvacuee     = strval($this->evacuee->where('status', "Evacuated")->sum('individuals'));
         $notifications    = $this->notification->notifications();
-        $incidentReport   = $this->incidentReport->where('report_time', '>=', Carbon::now()->format('Y-m-d H:i:s'))->count();
+        $incidentReport   = $this->incidentReport->where('report_time', '>=', now()->format('Y-m-d H:i:s'))->count();
 
         return view('userpage.dashboard', compact('activeEvacuation', 'disasterData', 'totalEvacuee', 'onGoingDisasters', 'notifications', 'incidentReport'));
     }
