@@ -211,7 +211,7 @@
                             $.ajax({
                                 data: formData,
                                 url: url,
-                                type: operation == 'add' ? "POST" : "PATCH",
+                                method: operation == 'add' ? "POST" : "PATCH",
                                 success(response) {
                                     response.status == 'warning' ? showWarningMessage(response
                                         .message) : (

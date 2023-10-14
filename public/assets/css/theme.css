@@ -81,8 +81,7 @@ input::placeholder {
     font-weight: 600;
     border-radius: 4px;
     padding: 8px 16px;
-    filter: drop-shadow(0 4px 3px rgb(0 0 0 / 0.07))
-        drop-shadow(0 2px 2px rgb(0 0 0 / 0.06));
+    filter: drop-shadow(0 4px 3px rgb(0 0 0 / 0.07)) drop-shadow(0 2px 2px rgb(0 0 0 / 0.06));
     border: none;
 }
 
@@ -171,8 +170,7 @@ input::placeholder {
 .btn-update,
 .btn-remove,
 #pinpointCurrentLocationBtn {
-    filter: drop-shadow(0 4px 3px rgb(0 0 0 / 0.07))
-        drop-shadow(0 2px 2px rgb(0 0 0 / 0.06));
+    filter: drop-shadow(0 4px 3px rgb(0 0 0 / 0.07)) drop-shadow(0 2px 2px rgb(0 0 0 / 0.06));
 }
 
 .sendUpdateBtn,
@@ -199,11 +197,11 @@ input::placeholder {
     padding: 6px 0 18px 0;
 }
 
-.evacuee-table-header .table-label{
+.evacuee-table-header .table-label {
     margin: auto 0;
 }
 
-.page-button-container{
+.page-button-container {
     display: flex;
     justify-content: end;
     margin-bottom: 22px;
@@ -235,8 +233,7 @@ input::placeholder {
     height: 60px;
     background: var(--color-light-gray);
     z-index: 1;
-    filter: drop-shadow(0 10px 8px rgb(0 0 0 / 0.04))
-        drop-shadow(0 4px 3px rgb(0 0 0 / 0.1));
+    filter: drop-shadow(0 10px 8px rgb(0 0 0 / 0.04)) drop-shadow(0 4px 3px rgb(0 0 0 / 0.1));
 }
 
 .header-section .container-fluid {
@@ -388,8 +385,7 @@ input::placeholder {
     z-index: 100;
     left: 0;
     top: 0;
-    filter: drop-shadow(0 10px 8px rgb(0 0 0 / 0.04))
-        drop-shadow(0 4px 3px rgb(0 0 0 / 0.1));
+    filter: drop-shadow(0 10px 8px rgb(0 0 0 / 0.04)) drop-shadow(0 4px 3px rgb(0 0 0 / 0.1));
     overflow: hidden;
 }
 
@@ -635,8 +631,7 @@ input::placeholder {
     width: 100%;
     max-width: 430px;
     border-radius: 6px;
-    filter: drop-shadow(0 10px 8px rgb(0 0 0 / 0.04))
-        drop-shadow(0 4px 3px rgb(0 0 0 / 0.1));
+    filter: drop-shadow(0 10px 8px rgb(0 0 0 / 0.04)) drop-shadow(0 4px 3px rgb(0 0 0 / 0.1));
 }
 
 .auth-form-section form {
@@ -735,8 +730,7 @@ input::placeholder {
     width: 100%;
     max-width: 500px;
     border-radius: 6px;
-    filter: drop-shadow(0 10px 8px rgb(0 0 0 / 0.04))
-        drop-shadow(0 4px 3px rgb(0 0 0 / 0.1));
+    filter: drop-shadow(0 10px 8px rgb(0 0 0 / 0.04)) drop-shadow(0 4px 3px rgb(0 0 0 / 0.1));
 }
 
 .recover-form form label,
@@ -857,8 +851,7 @@ input::placeholder {
     position: relative;
     overflow: hidden;
     border-radius: 15px;
-    filter: drop-shadow(0 10px 8px rgb(0 0 0 / 0.04))
-        drop-shadow(0 4px 3px rgb(0 0 0 / 0.1));
+    filter: drop-shadow(0 10px 8px rgb(0 0 0 / 0.04)) drop-shadow(0 4px 3px rgb(0 0 0 / 0.1));
     -webkit-animation: scaleIn 0.5s;
     animation: scaleIn 0.5s;
 }
@@ -905,8 +898,7 @@ input::placeholder {
     width: 500px;
     border-radius: 15px;
     margin-right: 20px;
-    filter: drop-shadow(0 10px 8px rgb(0 0 0 / 0.04))
-        drop-shadow(0 4px 3px rgb(0 0 0 / 0.1));
+    filter: drop-shadow(0 10px 8px rgb(0 0 0 / 0.04)) drop-shadow(0 4px 3px rgb(0 0 0 / 0.1));
 }
 
 .highcharts-background {
@@ -917,8 +909,7 @@ input::placeholder {
     flex: 1;
     height: 400px;
     border-radius: 15px;
-    filter: drop-shadow(0 10px 8px rgb(0 0 0 / 0.04))
-        drop-shadow(0 4px 3px rgb(0 0 0 / 0.1));
+    filter: drop-shadow(0 10px 8px rgb(0 0 0 / 0.04)) drop-shadow(0 4px 3px rgb(0 0 0 / 0.1));
 }
 
 .highcharts-label path {
@@ -954,6 +945,43 @@ text {
     grid-column-gap: 15px;
 }
 
+.guideline-header {
+    display: flex;
+    justify-content: end;
+    align-items: flex-end;
+    gap: 15px;
+    margin: 20px 0;
+}
+
+.guideline-header .search-container {
+    display: flex;
+    align-items: center;
+}
+
+.guideline-header button i {
+    margin-right: 5px;
+}
+
+.guideline-header .search-container input {
+    width: 250px;
+    border-radius: 5px 0 0 5px;
+}
+
+.guideline-header .search-container .search-icon {
+    padding: 3px 20px;
+    background-color: var(--color-light-gray);
+    color: var(--color-black);
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 5px;
+    cursor: pointer;
+    border: 1px solid var(--color-black);
+    border-left: 0;
+}
+
+.guideline-header .search-container .search-icon i {
+    font-size: 20px;
+}
+
 .horizontal-line {
     margin-top: 20px;
 }
@@ -968,8 +996,7 @@ text {
     position: relative;
     max-width: 300px;
     transition: 0.1s all ease-in-out;
-    filter: drop-shadow(0 10px 8px rgb(0 0 0 / 0.04))
-        drop-shadow(0 4px 3px rgb(0 0 0 / 0.1));
+    filter: drop-shadow(0 10px 8px rgb(0 0 0 / 0.04)) drop-shadow(0 4px 3px rgb(0 0 0 / 0.1));
 }
 
 .guideline-widget:hover {
@@ -1007,8 +1034,7 @@ text {
     z-index: -50;
     position: relative;
     background: var(--color-text);
-    filter: drop-shadow(0 20px 13px rgb(0 0 0 / 0.03))
-        drop-shadow(0 8px 5px rgb(0 0 0 / 0.08));
+    filter: drop-shadow(0 20px 13px rgb(0 0 0 / 0.03)) drop-shadow(0 8px 5px rgb(0 0 0 / 0.08));
     border-radius: 4px;
 }
 
@@ -1038,20 +1064,8 @@ text {
 }
 
 #removeGuideField {
-    background: var(--color-red);
-    border-radius: 4px;
-    color: var(--color-text);
     padding: 10px 0;
     margin: 0 14px;
-}
-
-#removeGuideField:hover {
-    background: var(--color-red-hover);
-    transform: scale(1.01);
-}
-
-#removeGuideField i {
-    margin-right: 5px;
 }
 
 .guide-field {
@@ -1118,8 +1132,7 @@ text {
 .guideline-btn .btn-container button i {
     padding: 8px;
     font-size: 18px;
-    filter: drop-shadow(0 20px 13px rgb(0 0 0 / 0.03))
-        drop-shadow(0 8px 5px rgb(0 0 0 / 0.08));
+    filter: drop-shadow(0 20px 13px rgb(0 0 0 / 0.03)) drop-shadow(0 8px 5px rgb(0 0 0 / 0.08));
 }
 
 .guideline-btn div {
@@ -1321,8 +1334,7 @@ text {
     align-items: center;
     border-radius: 4px;
     border: 2px solid var(--color-light-gray);
-    filter: drop-shadow(0 4px 3px rgb(0 0 0 / 0.07))
-        drop-shadow(0 2px 2px rgb(0 0 0 / 0.06));
+    filter: drop-shadow(0 4px 3px rgb(0 0 0 / 0.07)) drop-shadow(0 2px 2px rgb(0 0 0 / 0.06));
     white-space: nowrap;
 }
 
@@ -1474,8 +1486,7 @@ hazard-markers .markers,
     padding: 16px 0;
     border-radius: 4px;
     margin: 12px 0;
-    filter: drop-shadow(0 10px 8px rgb(0 0 0 / 0.04))
-        drop-shadow(0 4px 3px rgb(0 0 0 / 0.1));
+    filter: drop-shadow(0 10px 8px rgb(0 0 0 / 0.04)) drop-shadow(0 4px 3px rgb(0 0 0 / 0.1));
 }
 
 .incidentReportTable {
@@ -1486,8 +1497,7 @@ hazard-markers .markers,
 .incident-report-container {
     background: var(--color-text);
     border-radius: 4px;
-    filter: drop-shadow(0 4px 3px rgb(0 0 0 / 0.07))
-        drop-shadow(0 2px 2px rgb(0 0 0 / 0.06));
+    filter: drop-shadow(0 4px 3px rgb(0 0 0 / 0.07)) drop-shadow(0 2px 2px rgb(0 0 0 / 0.06));
 }
 
 .incident-report-content {
@@ -1497,8 +1507,7 @@ hazard-markers .markers,
 }
 
 .report-photo-container {
-    filter: drop-shadow(0 4px 3px rgb(0 0 0 / 0.07))
-        drop-shadow(0 2px 2px rgb(0 0 0 / 0.06));
+    filter: drop-shadow(0 4px 3px rgb(0 0 0 / 0.07)) drop-shadow(0 2px 2px rgb(0 0 0 / 0.06));
 }
 
 .incident-report-details {
@@ -1593,8 +1602,7 @@ hazard-markers .markers,
     background: var(--color-text);
     color: var(--color-black);
     border-radius: 6px;
-    filter: drop-shadow(0 20px 13px rgb(0 0 0 / 0.03))
-        drop-shadow(0 8px 5px rgb(0 0 0 / 0.08));
+    filter: drop-shadow(0 20px 13px rgb(0 0 0 / 0.03)) drop-shadow(0 8px 5px rgb(0 0 0 / 0.08));
 }
 
 .addressData,
@@ -1683,8 +1691,7 @@ hazard-markers .markers,
     background: var(--color-text);
     color: var(--color-black);
     border-radius: 4px;
-    filter: drop-shadow(0 20px 13px rgb(0 0 0 / 0.03))
-        drop-shadow(0 8px 5px rgb(0 0 0 / 0.08));
+    filter: drop-shadow(0 20px 13px rgb(0 0 0 / 0.03)) drop-shadow(0 8px 5px rgb(0 0 0 / 0.08));
 }
 
 .hotline-container {
@@ -1709,8 +1716,7 @@ hazard-markers .markers,
     margin-top: 18px;
     margin-bottom: 10px;
     border-radius: 4px;
-    filter: drop-shadow(0 10px 8px rgb(0 0 0 / 0.04))
-        drop-shadow(0 4px 3px rgb(0 0 0 / 0.1));
+    filter: drop-shadow(0 10px 8px rgb(0 0 0 / 0.04)) drop-shadow(0 4px 3px rgb(0 0 0 / 0.1));
 }
 
 .user-profile-container hr {
@@ -1775,8 +1781,7 @@ hazard-markers .markers,
     height: max-content;
     padding: 10px;
     font-weight: 700;
-    filter: drop-shadow(0 10px 8px rgb(0 0 0 / 0.04))
-        drop-shadow(0 4px 3px rgb(0 0 0 / 0.1));
+    filter: drop-shadow(0 10px 8px rgb(0 0 0 / 0.04)) drop-shadow(0 4px 3px rgb(0 0 0 / 0.1));
     border-bottom-right-radius: 0.25rem;
     border-bottom-left-radius: 0.25rem;
 }
@@ -2091,8 +2096,7 @@ span.error {
 .table-container {
     padding: 12px;
     background: var(--color-text);
-    filter: drop-shadow(0 10px 8px rgb(0 0 0 / 0.04))
-        drop-shadow(0 4px 3px rgb(0 0 0 / 0.1));
+    filter: drop-shadow(0 10px 8px rgb(0 0 0 / 0.04)) drop-shadow(0 4px 3px rgb(0 0 0 / 0.1));
     border-radius: 8px;
 }
 
@@ -2461,14 +2465,8 @@ select.form-select option {
 }
 
 .dark-mode .dataTables_wrapper .dataTables_paginate .paginate_button.disabled,
-.dark-mode
-    .dataTables_wrapper
-    .dataTables_paginate
-    .paginate_button.disabled:hover,
-.dark-mode
-    .dataTables_wrapper
-    .dataTables_paginate
-    .paginate_button.disabled:active {
+.dark-mode .dataTables_wrapper .dataTables_paginate .paginate_button.disabled:hover,
+.dark-mode .dataTables_wrapper .dataTables_paginate .paginate_button.disabled:active {
     color: var(--color-d-sub-text) !important;
 }
 
@@ -2589,6 +2587,7 @@ select.form-select option {
 }
 
 @media only screen and (max-width: 1150px) {
+
     .auth-container,
     .recover-content,
     .res-password-content {
@@ -2628,7 +2627,7 @@ select.form-select option {
         display: contents;
     }
 
-    .about-content > div {
+    .about-content>div {
         margin: 15px;
     }
 
@@ -2790,7 +2789,7 @@ select.form-select option {
         margin-bottom: 20px;
     }
 
-    #toast-container > .toast-warning {
+    #toast-container>.toast-warning {
         width: 15em;
         background-size: 20px;
     }
@@ -3087,7 +3086,7 @@ select.form-select option {
         font-size: 16px;
     }
 
-    .about-content > div {
+    .about-content>div {
         margin: 20px 0;
     }
 

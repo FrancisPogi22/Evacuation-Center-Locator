@@ -20,8 +20,23 @@
             </div>
             <hr>
             <section class="content-item">
+                <div class="guideline-header">
+                    @auth
+                        <button class="btn-submit" id="createGuidelineBtn">
+                            <i class="bi bi-plus-lg"></i> Create Guideline
+                        </button>
+                        @include('userpage.guideline.guidelineModal')
+                    @endauth
+                    <form action="{{ route('guideline.search') }}" method="POST" class="search-container">
+                        @method('GET')
+                        @csrf
+                        <input type="text" name="guideline_name" id="search_guideline" class="form-control"
+                            placeholder="Search Guideline" autocomplete="off" required>
+                        <button type="submit" class="search-icon"><i class="bi bi-search"></i></button>
+                    </form>
+                </div>
                 <div class="guideline-container">
-                    @foreach ($guidelineData as $guidelineItem)
+                    @forelse ($guidelineData as $guidelineItem)
                         <div class="guideline-widget">
                             @auth
                                 @if (auth()->user()->is_disable == 0)
@@ -54,17 +69,11 @@
                                 </a>
                             @endguest
                         </div>
-                    @endforeach
-                    @auth
-                        <div class="guideline-btn">
-                            <div class="btn-container">
-                                <button id="createGuidelineBtn">
-                                    <i class="btn-submit bi bi-plus-lg"></i>
-                                </button>
-                            </div>
+                    @empty
+                        <div class="empty-guidelines">
+                            Sorry, we couldn't find any result.
                         </div>
-                        @include('userpage.guideline.guidelineModal')
-                    @endauth
+                    @endforelse
                 </div>
             </section>
             @include('userpage.changePasswordModal')
@@ -84,15 +93,15 @@
         @if (auth()->user()->is_disable == 0)
             <script>
                 $(document).ready(() => {
-                    let guidelineId, guidelineWidget, guidelineItem, defaultFormData, operation, guideField = 0,
+                    let validator, guidelineId, guidelineWidget, guidelineItem, defaultFormData, operation, guideField = 0,
                         guidelineType, modal = $('#guidelineModal'),
                         addGuideInput = $('#addGuideInput'),
                         modalLabel = $('.modal-label'),
                         modalLabelContainer = $('.modal-label-container'),
-                        formButton = $('#submitGuidelineBtn');
-                    const guideContentFields = document.getElementById("guideContentFields");
+                        formButton = $('#submitGuidelineBtn'),
+                        guideContentFields = document.getElementById("guideContentFields");
 
-                    const validator = $("#guidelineForm").validate({
+                    validator = $("#guidelineForm").validate({
                         rules: {
                             type: 'required'
                         },
@@ -175,7 +184,7 @@
                                     <label>Guide Content</label>
                                     <textarea name="content[]" class="form-control" autocomplete="off" placeholder="Enter Guide Content" rows="7"></textarea>
                                 </div>
-                                <a href="javascript:void(0)" id="removeGuideField"><i class="bi bi-trash3-fill"></i>Remove</a>
+                                <button class="btn-remove" id="removeGuideField"><i class="bi bi-trash3-fill"></i>Remove</button>
                             </div>
                         </div>`;
                         guideContentFields.appendChild(newGuideInputField);
