@@ -150,6 +150,7 @@ Route::middleware('auth')->group(function () {
 
     Route::controller(MainController::class)->group(function () {
         Route::get('/eligtasGuideline', 'eligtasGuideline')->name('eligtas.guideline');
+        Route::get('/searchGuideline', 'searchGuideline')->name('guideline.search');
         Route::get('/guide/{guidelineId}', 'guide')->name('eligtas.guide');
         Route::post('/generateEvacueeData', 'generateExcelEvacueeData')->name('generate.evacuee.data');
         Route::get('/userAccounts/{operation}', 'userAccounts')->name('display.users.account');

@@ -77,8 +77,25 @@ class MainController extends Controller
             return view('userpage.guideline.eligtasGuideline', compact('guidelineData'));
         }
 
-        $guidelineData = auth()->user()->organization == "CDRRMO" ? $this->guideline->where('organization', "CDRRMO")->get() :
-            $this->guideline->where('organization', "CSWD")->get();
+        $guidelineData = $this->guideline->where('organization', auth()->user()->organization)->get();
+
+        return view('userpage.guideline.eligtasGuideline', compact('guidelineData', 'notifications'));
+    }
+
+    public function searchGuideline(Request $request)
+    {
+        $searchGuidelineValdation = Validator::make($request->all(), [
+            'guideline_name' => 'required'
+        ]);
+
+        if ($searchGuidelineValdation->fails())
+            return back()->with('warning', $searchGuidelineValdation->errors()->first());
+
+        $notifications = $this->notification->notifications();
+        $guidelineData = $this->guideline->select('id', 'type')
+            ->where('type', 'LIKE', "%{$request->guideline_name}%")
+            ->where('organization', auth()->user()->organization)
+            ->get();
 
         return view('userpage.guideline.eligtasGuideline', compact('guidelineData', 'notifications'));
     }

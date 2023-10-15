@@ -1,7 +1,7 @@
 @auth
     @if (auth()->user()->is_disable == 0)
         <div class="modal fade" id="guidelineModal" tabindex="-1" aria-hidden="true">
-            <div class="modal-dialog modal-xl">
+            <div class="modal-dialog modal-lg">
                 <div class="modal-content">
                     <header class="modal-label-container">
                         <h1 class="modal-label"></h1>
