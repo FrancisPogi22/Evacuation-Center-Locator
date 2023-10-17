@@ -4,7 +4,7 @@
 /public/hot
 /public/storage
 /public/reports_image
-/public/guide_photo
+/public/guideline_image
 /storage/*.key
 /vendor
 .env.backup

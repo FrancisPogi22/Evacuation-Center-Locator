@@ -221,7 +221,12 @@ input::placeholder {
 .generate-button-container button i,
 .locateEvacuationCenter i,
 #stopLocatingBtn i,
-#reportHazardBtn i {
+#reportHazardBtn i,
+.guideline-header button i,
+.selectImage i,
+.guideImgBtn i,
+.guidelineImgBtn i,
+.guide-header a i {
     padding-right: 8px;
 }
 
@@ -958,8 +963,31 @@ text {
     align-items: center;
 }
 
-.guideline-header button i {
-    margin-right: 5px;
+.guideImgBtn {
+    text-align: center;
+}
+
+.guideline-input {
+    flex: 1;
+    margin: auto 0;
+}
+
+.guide-image,
+.guideline-img {
+    display: flex;
+    flex-direction: column;
+}
+
+.image-preview {
+    position: relative;
+}
+
+.removeImage {
+    position: absolute;
+    top: 0;
+    right: 0;
+    padding: 8px;
+    clip-path: circle();
 }
 
 .guideline-header .search-container input {
@@ -994,7 +1022,7 @@ text {
 .guideline-widget,
 .guide-widget {
     position: relative;
-    max-width: 300px;
+    width: 300px;
     transition: 0.1s all ease-in-out;
     filter: drop-shadow(0 10px 8px rgb(0 0 0 / 0.04)) drop-shadow(0 4px 3px rgb(0 0 0 / 0.1));
 }
@@ -1038,11 +1066,27 @@ text {
     border-radius: 4px;
 }
 
-.image-container {
+.guideline-img {
+    position: relative;
     padding: 23px 0;
+    width: 300px;
 }
 
-.guidePicture {
+.image-container {
+    padding: 23px 0;
+    width: 400px;
+}
+
+.guide-img-field {
+    padding: 10px 0;
+    width: 400px;
+    display: flex;
+    flex-direction: column;
+}
+
+.guideImage,
+.guidelineImage {
+    margin: 0 auto;
     object-fit: contain;
     width: 200px;
     height: 200px;
@@ -1054,13 +1098,18 @@ text {
 }
 
 #guideForm #image_preview_container {
-    margin: 0 72px;
+    margin-bottom: 15px;
+    width: 100%;
 }
 
 #guideForm input[type="file"],
 #guidelineForm input[type="file"] {
     margin: 4px 0;
     height: 37px;
+}
+
+#guidelineForm .guideline-field {
+    display: flex;
 }
 
 #removeGuideField {
@@ -1106,6 +1155,18 @@ text {
 
 .guideline-content img {
     width: 100%;
+    height: 300px;
+    object-fit: cover;
+}
+
+.empty-guidelines img {
+    width: 250px;
+    margin: 40px 0;
+}
+
+.empty-guidelines p {
+    font-size: 20px;
+    font-weight: 700;
 }
 
 .guideline-type {
@@ -1149,34 +1210,107 @@ text {
     margin: 12px 0;
 }
 
-.guide-content {
+.guide-items-section {
     display: flex;
-    align-items: center;
-    flex-direction: column;
-    text-align: center;
-    margin: 0 auto;
-    color: var(--color-text);
-    background: var(--color-gray);
+    gap: 10px;
 }
 
-.guide-header {
-    width: 100%;
+.guides-container {
     background: var(--color-text);
+    padding: 10px;
+    flex: 3;
 }
 
-.guide-header img {
-    object-fit: fill;
-    width: 250px;
-    height: 350px;
+.location-description {
+    margin: auto;
 }
 
-.guide-details {
-    padding: 20px;
+.weather-section {
+    display: flex;
+    flex: 1;
+    height: 100%;
+    background: var(--color-text);
+    border-radius: 10px;
+    filter: drop-shadow(0 20px 13px rgb(0 0 0 / 0.03)) drop-shadow(0 8px 5px rgb(0 0 0 / 0.08));
+}
+
+.current-temp {
+    font-size: 40px;
+}
+
+.weather-img img {
+    width: 100px;
+}
+
+.weather-section p {
+    margin: 0;
+}
+
+.current-temp-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin: auto;
+}
+
+.guide-label {
+    position: relative;
+    padding: 10px;
+    background: var(--color-gray);
+    color: var(--color-text);
+    cursor: pointer;
+}
+
+.guide-label::before {
+    content: '+';
+    position: absolute;
+    top: 50%;
+    right: 20px;
+    transform: translateY(-50%);
+    font-size: 1.5em;
+}
+
+.guide-content {
+    margin: 20px 0;
+}
+
+.guide-content.active .guide-label::before {
+    content: '-';
+}
+
+.guide-item {
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    background: var(--color-text);
+    height: 0;
+    overflow: hidden;
+    overflow-y: auto;
+}
+
+.guide-content.active .guide-item {
+    height: 320px;
+    padding: 10px;
+}
+
+.guide-img {
+    margin: 20px auto;
+}
+
+.guide-img img {
+    width: 300px;
+    height: 200px;
+    object-fit: contain;
 }
 
 .guide-details h1 {
-    padding: 10px;
-    font-weight: 700;
+    padding: 15px 0;
+}
+
+.guide-header {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 20px;
 }
 
 .guide-btn-container {
@@ -1187,8 +1321,8 @@ text {
     gap: 10px;
 }
 
-#updateGuideBtn,
-#removeGuideBtn {
+.updateGuideBtn,
+.removeGuideBtn {
     padding: 8px 16px;
 }
 
@@ -1595,7 +1729,8 @@ hazard-markers .markers,
     color: var(--color-text);
 }
 
-.about-content .location-section {
+.about-content .location-section,
+.guides-container {
     flex: 3;
     margin: 0;
     padding: 24px;
@@ -1827,8 +1962,7 @@ input::-webkit-inner-spin-button {
 
 .modal-label-container,
 .change-modal-label-container {
-    display: flex;
-    justify-content: center;
+    text-align: center;
     background-color: var(--color-green);
     padding: 12px;
     border-top-left-radius: 4px;
@@ -2435,7 +2569,6 @@ select.form-select option {
     stroke: var(--color-text);
 }
 
-.dark-mode .guide-header,
 .dark-mode .guideline-content {
     background: var(--color-d-bg-container);
 }
@@ -2495,10 +2628,38 @@ select.form-select option {
 .dark-mode #changeEvacueeDataSelect,
 .dark-mode #changeArchiveEvacueeDataSelect,
 .dark-mode .field-container select,
-.dark-mode #reportHazardForm select {
+.dark-mode #reportHazardForm select,
+.dark-mode #search_guideline,
+.dark-mode .guideline-header .search-container .search-icon {
     background: var(--color-d-bg-container);
     color: var(--color-d-text);
 }
+
+.dark-mode #guidelineForm textarea,
+.dark-mode #guideForm textarea {
+    border: 2px solid var(--color-d-sub-text) !important;
+}
+
+.dark-mode .guideline-header .search-container .search-icon {
+    border: 1px solid var(--color-d-sub-text);
+}
+
+.dark-mode .weather-section {
+    background: var(--color-d-bg-container);
+}
+
+.dark-mode .guides-container {
+    background: var(--color-d-bg-container);
+}
+
+.dark-mode .guide-label {
+    background: var(--color-d-background);
+}
+
+.dark-mode .guide-item {
+    background: var(--color-gray);
+}
+
 
 .dark-mode .form-content textarea::placeholder,
 .dark-mode .field-container input::placeholder,

@@ -8,7 +8,6 @@ use App\Models\Disaster;
 use App\Models\Guideline;
 use Illuminate\Http\Request;
 use App\Models\IncidentReport;
-use Illuminate\Support\Carbon;
 use App\Models\ActivityUserLog;
 use App\Models\EvacuationCenter;
 use App\Events\NotificationEvent;
@@ -84,7 +83,7 @@ class MainController extends Controller
 
     public function searchGuideline(Request $request)
     {
-        $searchGuidelineValdation = Validator::make($request->all(), [
+        $searchGuidelineValdation = Validator::make($request->only('guideline_name'), [
             'guideline_name' => 'required'
         ]);
 
@@ -97,15 +96,20 @@ class MainController extends Controller
             ->where('organization', auth()->user()->organization)
             ->get();
 
+        if ($guidelineData->isEmpty())
+            return back()->with('warning', "Sorry, we couldn't find any result.");
+
         return view('userpage.guideline.eligtasGuideline', compact('guidelineData', 'notifications'));
     }
 
     public function guide($guidelineId)
     {
-        $notifications = $this->notification->notifications();
-        $guide         = $this->guide->where('guideline_id', Crypt::decryptString($guidelineId))->get();
+        $notifications  = $this->notification->notifications();
+        $guidelineId    = Crypt::decryptString($guidelineId);
+        $guide          = $this->guide->where('guideline_id', $guidelineId)->get();
+        $guidelineLabel = $this->guideline->where('id', $guidelineId)->value('type');
 
-        return view('userpage.guideline.guide', compact('guide', 'guidelineId', 'notifications'));
+        return view('userpage.guideline.guide', compact('guide', 'guidelineId', 'guidelineLabel', 'notifications'));
     }
 
     public function manageEvacueeInformation($operation)
