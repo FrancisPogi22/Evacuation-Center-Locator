@@ -10,10 +10,18 @@
                         <form id="guidelineForm">
                             @csrf
                             <div class="form-content">
-                                <div class="field-container">
-                                    <label for="type">Guideline Type</label>
-                                    <input type="text" name="type" class="form-control" autocomplete="off"
-                                        placeholder="Enter Guideline Type" id="guidelineType">
+                                <div class="field-container guideline-field">
+                                    <div class="guideline-img">
+                                        <img src="{{ asset('assets/img/e-ligtas-logo-black.png') }}" class="guidelineImage"
+                                            alt="Picture">
+                                        <input type="file" name="guidelineImg" class="guidelineImgInput" id="guidelineImgInput" hidden>
+                                        <a href="javascript:void(0)" class="btn-submit guidelineImgBtn"><i class="bi bi-image"></i>Choose Image</a>
+                                    </div>
+                                    <div class="guideline-input">
+                                        <label for="type">Guideline Type</label>
+                                        <input type="text" name="type" class="form-control" autocomplete="off"
+                                            placeholder="Enter Guideline Type" id="guidelineType">
+                                    </div>
                                 </div>
                                 <div class="field-container guide-section" id="guideContentFields">
                                 </div>

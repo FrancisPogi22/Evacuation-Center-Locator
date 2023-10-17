@@ -13,6 +13,7 @@ return new class extends Migration
             $table->string('type')->unique();
             $table->foreignId('user_id')->references('id')->on('user')->cascadeOnUpdate();
             $table->string('organization');
+            $table->string('guideline_img')->nullable();
         });
     }
 

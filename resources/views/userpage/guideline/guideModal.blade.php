@@ -12,13 +12,13 @@
                             <div class="form-content">
                                 <div class="field-container guide-input-container">
                                     <div class="guide-field">
-                                        <div class="image-container">
-                                            <img src="{{ asset('assets/img/e-ligtas-logo.png') }}" alt="Pictue"
-                                                class="myProfile" id="image_preview_container">
-                                            <span>
-                                                <input type="file" name="guidePhoto" id="guidePhoto"
-                                                    class="form-control">
-                                            </span>
+                                        <div class="guide-img-field">
+                                            <img src="{{ asset('assets/img/e-ligtas-logo-white.png') }}" alt="Picture"
+                                                class="guideImage" id="image_preview_container">
+                                            <input type="file" name="guidePhoto" class="guidePhoto" id="guidePhoto" class="form-control"
+                                                hidden>
+                                            <a href="javascript:void(0)" class="btn-submit guideImgBtn"><i
+                                                    class="bi bi-image"></i>Choose Image</a>
                                         </div>
                                         <div class="guide-field-container">
                                             <div class="field-container">
