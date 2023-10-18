@@ -34,14 +34,20 @@ class MainController extends Controller
 
     public function dashboard()
     {
-        $disasterData     = $this->fetchDisasterData();
-        $onGoingDisasters = $this->disaster->where('status', "On Going")->get();
-        $activeEvacuation = $this->evacuationCenter->where('status', "Active")->count();
-        $totalEvacuee     = strval($this->evacuee->where('status', "Evacuated")->sum('individuals'));
-        $notifications    = $this->notification->notifications();
-        $incidentReport   = $this->incidentReport->where('report_time', '>=', now()->format('Y-m-d H:i:s'))->count();
+        $disaster              = $this->disaster->all();
+        $disasterData          = $this->fetchDisasterData();
+        $onGoingDisasters      = $disaster->where('status', "On Going");
+        $activeEvacuation      = $this->evacuationCenter->where('status', "Active")->count();
+        $totalEvacuee          = strval($this->evacuee->where('status', "Evacuated")->sum('individuals'));
+        $notifications         = $this->notification->notifications();
+        $incidentReport        = $this->incidentReport->where('report_time', '>=', now()->format('Y-m-d H:i:s'))->count();
 
-        return view('userpage.dashboard', compact('activeEvacuation', 'disasterData', 'totalEvacuee', 'onGoingDisasters', 'notifications', 'incidentReport'));
+        return view('userpage.dashboard', compact('activeEvacuation', 'disasterData', 'totalEvacuee', 'onGoingDisasters', 'disaster', 'notifications', 'incidentReport'));
+    }
+
+    public function fetchDisasters($year)
+    {
+        return $this->disaster->where('year', $year)->get();
     }
 
     public function initDisasterData($disasterName)
