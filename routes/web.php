@@ -150,6 +150,7 @@ Route::middleware('auth')->group(function () {
     });
 
     Route::controller(MainController::class)->group(function () {
+        Route::get('/fetchDisasters/{year}', 'fetchDisasters')->name('fetch.disasters');
         Route::get('/eligtasGuideline', 'eligtasGuideline')->name('eligtas.guideline');
         Route::get('/searchGuideline', 'searchGuideline')->name('guideline.search');
         Route::get('/guide/{guidelineId}', 'guide')->name('eligtas.guide');

@@ -24,7 +24,8 @@
                 <p>Current Disaster:
                     <span>{{ $onGoingDisasters->isEmpty() ? 'No Disaster' : implode(' | ', $onGoingDisasters->pluck('name')->toArray()) }}</span>
                 </p>
-                @if (auth()->user()->position == 'President' || auth()->user()->position == 'Focal')
+                @if (auth()->user()->position == 'President' ||
+                        (auth()->user()->position == 'Focal' && !$disaster->isEmpty()))
                     <div class="generate-button-container">
                         <button type="button" data-bs-toggle="modal" data-bs-target="#generateReportModal"
                             class="btn-submit generateBtn">
@@ -42,18 +43,23 @@
                                             id="generateReportForm">
                                             @csrf
                                             <div class="form-content">
-                                                <div class="field-container searchContainer">
-                                                    <div class="custom-dropdown">
-                                                        <label for="disaster_id">Search Disaster</label>
-                                                        <input type="text" name="disaster_id" id="disaster_id"
-                                                            hidden>
-                                                        <input type="text" name="disaster_input" id="disaster_input"
-                                                            class="form-control" placeholder="Disaster Name"
-                                                            autocomplete="off">
-                                                        <div class="dropdown-options" hidden id="dropdownOptions">
-                                                            <ul id="searchResults"></ul>
-                                                        </div>
-                                                    </div>
+                                                <div class="field-container">
+                                                    <select class="form-control form-select" name="disaster_year"
+                                                        id="disaster_year">
+                                                        <option value="" selected hidden disabled>Select year
+                                                        </option>
+                                                        @foreach ($disaster as $disasterYear)
+                                                            <option value="{{ $disasterYear->year }}">
+                                                                {{ $disasterYear->year }}
+                                                            </option>
+                                                        @endforeach
+                                                    </select>
+                                                </div>
+                                                <div class="field-container" id="disaster-list" hidden>
+                                                    <label for="disaster_name">Available Disaster</label>
+                                                    <select class="form-control form-select" name="disaster_id"
+                                                        id="disaster_id">
+                                                    </select>
                                                 </div>
                                                 <div class="form-button-container">
                                                     <button class="btn-submit">Generate</button>
@@ -135,57 +141,43 @@
     @include('partials.toastr')
     <script>
         $(document).ready(() => {
-            let dropdownOptions = $('#dropdownOptions'),
-                searchResults = $('#searchResults'),
-                disasterInput = $('#disaster_input'),
-                disasterId = $('#disaster_id');
+            let disasterList = $('#disaster-list'),
+                searchResults = $('#disaster_id');
 
-            const validator = $("#generateReportForm").validate({
-                rules: {
-                    disaster_input: 'required'
-                },
-                messages: {
-                    disaster_input: 'Please select disaster.'
-                },
-                errorElement: 'span'
-            });
-
-            disasterInput.on('keyup', function() {
-                let disasterName = $(this).val();
-                disasterId.val("");
-
-                if (!disasterName) return dropdownOptions.prop('hidden', true);
-
+            $(document).on('change', '#disaster_year', function() {
                 $.ajax({
-                    url: `{{ route('initDisasterData', 'disasterName') }}`
-                        .replace('disasterName', disasterName),
+                    url: `{{ route('fetch.disasters', 'disasterYear') }}`
+                        .replace('disasterYear', $(this).val()),
                     method: 'GET',
-                    success(data) {
+                    success(response) {
                         searchResults.empty();
-                        if (data.length == 0) return dropdownOptions.prop('hidden', true);
 
-                        data.forEach(disasterData => {
+                        response.forEach(disasters => {
                             searchResults.append(
-                                `<li class="searchResult" data-id="${disasterData.id}">
-                                    ${disasterData.name} - ${disasterData.year}
-                                </li>`
+                                `<option class="searchResult">${disasters.name}</option>`
                             );
                         });
-                        dropdownOptions.prop('hidden', false);
+
+                        disasterList.prop('hidden', false);
                     },
                     error: () => showErrorMessage()
                 });
             });
 
-            searchResults.on('click', function(e) {
-                const target = $(e.target);
-                disasterInput.val($.trim(target.text().split('-')[0]));
-                disasterId.val(target.data('id'));
-                dropdownOptions.prop('hidden', true);
+            const validator = $("#generateReportForm").validate({
+                rules: {
+                    disaster_year: 'required'
+                },
+                messages: {
+                    disaster_year: 'Please select year.'
+                },
+                errorElement: 'span'
             });
 
             $('#generateReportModal').on('hidden.bs.modal', () => {
                 validator.resetForm();
+                searchResults.empty();
+                disasterList.prop('hidden', true);
                 $('#generateReportForm')[0].reset();
             });
 
