@@ -27,7 +27,9 @@
                         </button>
                         @include('userpage.guideline.guidelineModal')
                     @endauth
-                    <form action="{{ route('guideline.search') }}" method="POST" class="search-container">
+                    <form
+                        action="{{ auth()->check() ? route('guideline.search') : route('resident.guideline.search') }}"
+                        method="POST" class="search-container">
                         @method('GET')
                         @csrf
                         <input type="text" name="guideline_name" id="search_guideline" class="form-control"
@@ -87,12 +89,12 @@
         integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous">
     </script>
     @include('partials.script')
+    @include('partials.toastr')
     @auth
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/jquery.validate.min.js"
             integrity="sha512-rstIgDs0xPgmG6RX1Aba4KV5cWJbAMcvRCVmglpam9SoHZiUCyQVDdH2LPlxoHtrv17XWblE/V/PP+Tr04hbtA=="
             crossorigin="anonymous"></script>
-        @include('partials.toastr')
         @if (auth()->user()->is_disable == 0)
             <script>
                 $(document).ready(() => {

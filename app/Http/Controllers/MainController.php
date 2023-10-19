@@ -97,14 +97,14 @@ class MainController extends Controller
         if ($searchGuidelineValdation->fails())
             return back()->with('warning', $searchGuidelineValdation->errors()->first());
 
-        $notifications = $this->notification->notifications();
-        $guidelineData = $this->guideline->select('id', 'type')
-            ->where('type', 'LIKE', "%{$request->guideline_name}%")
-            ->where('organization', auth()->user()->organization)
-            ->get();
+        $guideline = $this->guideline->select('id', 'type');
 
-        if ($guidelineData->isEmpty())
-            return back()->with('warning', "Sorry, we couldn't find any result.");
+        if (auth()->check()) $guideline->where('organization', auth()->user()->organization);
+
+        $guidelineData = $guideline->where('type', 'LIKE', "%{$request->guideline_name}%")->get();
+        $notifications = $this->notification->notifications();
+
+        if ($guidelineData->isEmpty()) return back()->with('warning', "Sorry, we couldn't find any result.");
 
         return view('userpage.guideline.eligtasGuideline', compact('guidelineData', 'notifications'));
     }
