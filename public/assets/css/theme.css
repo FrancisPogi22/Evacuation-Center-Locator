@@ -1751,7 +1751,7 @@ hazard-markers .markers,
     padding: 20px 0;
 }
 
-.about-header{
+.about-header {
     font-size: 20px;
     font-weight: 700;
     padding: 20px 0;
@@ -1861,17 +1861,79 @@ hazard-markers .markers,
     margin-bottom: 0;
 }
 
-.hotline-content .number-section {
+.hotline-header {
+    font-weight: 800;
+    display: flex;
+    justify-content: space-between;
+}
+
+.hotline-content {
+    width: 100%;
+    margin: auto 10px;
+}
+
+.header-btn-container button i {
+    padding: 10px;
+    font-size: 15px;
+    margin: auto;
+}
+
+.input-container {
     flex: 3;
+}
+
+.logo-container {
+    margin: 0 10px;
+    display: flex;
+    flex-direction: column;
+}
+
+#hotlineForm .logo-container img {
+    width: 200px;
+    object-fit: contain;
+    height: 87px;
+    padding: 5px 20px;
+}
+
+.input-field-section {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+}
+
+.hotline-logo img {
+    width: 100px;
+}
+
+#hotlineForm .logo-container a {
+    text-align: center;
+    width: 100%;
+}
+
+#hotlineForm .logo-container a i {
+    padding-right: 8px;
+}
+
+.input-field-section .field-container {
+    flex: 1;
+}
+
+#hotlineForm .form-content {
+    display: flex;
+}
+
+.hotline-container {
+    display: flex;
+    flex-direction: row;
+    margin: 10px 0;
     padding: 24px;
     background: var(--color-text);
-    color: var(--color-black);
     border-radius: 4px;
     filter: drop-shadow(0 20px 13px rgb(0 0 0 / 0.03)) drop-shadow(0 8px 5px rgb(0 0 0 / 0.08));
 }
 
-.hotline-container {
-    margin-top: 32px;
+.hotline-container hr {
+    margin: 15px 0;
 }
 
 .number-section .font-bold a {
@@ -2435,11 +2497,10 @@ select.form-select option {
     background: var(--color-red);
 }
 
-.dark-mode .number-section,
 .dark-mode .location-section,
 .dark-mode .social-section,
 .dark-mode .telephone-section,
-.dark-mode .hotline-container {
+.dark-mode .hotline-container{
     background: var(--color-d-bg-container) !important;
 }
 
