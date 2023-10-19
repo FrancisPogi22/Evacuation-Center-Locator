@@ -26,7 +26,7 @@
             </div>
             <section class="guide-items-section">
                 <div class="guides-container">
-                    @foreach ($guide as $count => $guide)
+                    @foreach ($guide as $guide)
                         <div class="guide-content">
                             <div class="guide-label">{{ $guide->label }}</div>
                             <div class="guide-item">

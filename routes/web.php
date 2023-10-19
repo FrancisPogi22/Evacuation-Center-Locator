@@ -1,18 +1,18 @@
 <?php
 
 use App\Events\NotificationEvent;
-use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\MainController;
 use App\Http\Controllers\EvacueeController;
 use App\Http\Controllers\DisasterController;
 use App\Http\Controllers\GuidelineController;
 use App\Http\Controllers\UserAccountsController;
+use App\Http\Controllers\FamilyRecordController;
+use App\Http\Controllers\HazardReportController;
+use App\Http\Controllers\HotlineNumberController;
 use App\Http\Controllers\AuthenticationController;
 use App\Http\Controllers\IncidentReportController;
 use App\Http\Controllers\EvacuationCenterController;
-use App\Http\Controllers\FamilyRecordController;
-use App\Http\Controllers\HazardReportController;
 
 Route::controller(AuthenticationController::class)->group(function () {
     Route::middleware('check.login')->group(function () {
@@ -161,6 +161,12 @@ Route::middleware('auth')->group(function () {
         Route::get('/about', 'about')->name('about');
         Route::get('/fetchDisasterData', 'fetchDisasterData')->name('fetchDisasterData');
         Route::get('/initDisasterData/{disasterName}', 'initDisasterData')->name('initDisasterData');
+    });
+
+    Route::controller(HotlineNumberController::class)->group(function () {
+        Route::post('/addHotlineNumber', 'addHotlineNumber')->name('hotline.add');
+        Route::post('/updateHotlineNumber/{hotlineId}', 'updateHotlineNumber')->name('hotline.update');
+        Route::delete('/removeHotlineNumber/{hotlineId}', 'removeHotlineNumber')->name('hotline.remove');
     });
 
     Route::get('/notifications', NotificationEvent::class . '@notifications')->name('notifications');

@@ -12,6 +12,7 @@ use App\Models\ActivityUserLog;
 use App\Models\EvacuationCenter;
 use App\Events\NotificationEvent;
 use App\Exports\EvacueeDataExport;
+use App\Models\HotlineNumbers;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Validator;
@@ -211,9 +212,10 @@ class MainController extends Controller
 
     public function hotlineNumbers()
     {
-        $notifications = $this->notification->notifications();
+        $notifications  = $this->notification->notifications();
+        $hotlineNumbers = HotlineNumbers::all();
 
-        return view('userpage.hotlineNumbers', compact('notifications'));
+        return view('userpage.hotlineNumbers', compact('notifications', 'hotlineNumbers'));
     }
 
     public function about()
