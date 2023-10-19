@@ -2505,9 +2505,7 @@ select.form-select option {
 .dark-mode .location-section,
 .dark-mode .social-section,
 .dark-mode .telephone-section,
-.dark-mode .hotline-container,
-.dark-mode .about-eligtas,
-.dark-mode .about-header {
+.dark-mode .hotline-container {
     background: var(--color-d-bg-container) !important;
 }
 
