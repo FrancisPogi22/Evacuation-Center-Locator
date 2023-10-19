@@ -12,6 +12,7 @@ use App\Models\ActivityUserLog;
 use App\Models\EvacuationCenter;
 use App\Events\NotificationEvent;
 use App\Exports\EvacueeDataExport;
+use App\Models\HotlineNumbers;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Validator;
@@ -96,14 +97,14 @@ class MainController extends Controller
         if ($searchGuidelineValdation->fails())
             return back()->with('warning', $searchGuidelineValdation->errors()->first());
 
-        $notifications = $this->notification->notifications();
-        $guidelineData = $this->guideline->select('id', 'type')
-            ->where('type', 'LIKE', "%{$request->guideline_name}%")
-            ->where('organization', auth()->user()->organization)
-            ->get();
+        $guideline = $this->guideline->select('id', 'type');
 
-        if ($guidelineData->isEmpty())
-            return back()->with('warning', "Sorry, we couldn't find any result.");
+        if (auth()->check()) $guideline->where('organization', auth()->user()->organization);
+
+        $guidelineData = $guideline->where('type', 'LIKE', "%{$request->guideline_name}%")->get();
+        $notifications = $this->notification->notifications();
+
+        if ($guidelineData->isEmpty()) return back()->with('warning', "Sorry, we couldn't find any result.");
 
         return view('userpage.guideline.eligtasGuideline', compact('guidelineData', 'notifications'));
     }
@@ -211,9 +212,10 @@ class MainController extends Controller
 
     public function hotlineNumbers()
     {
-        $notifications = $this->notification->notifications();
+        $notifications  = $this->notification->notifications();
+        $hotlineNumbers = HotlineNumbers::all();
 
-        return view('userpage.hotlineNumbers', compact('notifications'));
+        return view('userpage.hotlineNumbers', compact('notifications', 'hotlineNumbers'));
     }
 
     public function about()
