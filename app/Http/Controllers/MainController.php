@@ -95,24 +95,21 @@ class MainController extends Controller
         ]);
 
         if ($searchGuidelineValdation->fails())
-            return back()->with('warning', $searchGuidelineValdation->errors()->first());
+            return response(['warning' => $searchGuidelineValdation->errors()->first()]);
 
-        $guideline = $this->guideline->select('id', 'type');
+        $guideline = $this->guideline->select('id', 'type', 'guideline_img');
 
         if (auth()->check()) $guideline->where('organization', auth()->user()->organization);
 
         $guidelineData = $guideline->where('type', 'LIKE', "%{$request->guideline_name}%")->get();
-        $notifications = $this->notification->notifications();
 
         if ($guidelineData->isEmpty()) return back()->with('warning', "Sorry, we couldn't find any result.");
-
-        return view('userpage.guideline.eligtasGuideline', compact('guidelineData', 'notifications'));
+        return response(['guidelineData' => $guidelineData]);
     }
 
     public function guide($guidelineId)
     {
         $notifications  = $this->notification->notifications();
-        $guidelineId    = Crypt::decryptString($guidelineId);
         $guide          = $this->guide->where('guideline_id', $guidelineId)->get();
         $guidelineLabel = $this->guideline->where('id', $guidelineId)->value('type');
 

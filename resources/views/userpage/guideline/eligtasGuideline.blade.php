@@ -23,14 +23,11 @@
                 <div class="guideline-header">
                     @auth
                         <button class="btn-submit" id="createGuidelineBtn">
-                            <i class="bi bi-plus-lg"></i> Create Guideline
+                            <i class="bi bi-plus-lg"></i>Create Guideline
                         </button>
                         @include('userpage.guideline.guidelineModal')
                     @endauth
-                    <form
-                        action="{{ auth()->check() ? route('guideline.search') : route('resident.guideline.search') }}"
-                        method="POST" class="search-container">
-                        @method('GET')
+                    <form class="search-container" id="searchGuidelineForm">
                         @csrf
                         <input type="text" name="guideline_name" id="search_guideline" class="form-control"
                             placeholder="Search Guideline" autocomplete="off" required>
@@ -49,8 +46,7 @@
                                         <i class="btn-remove bi bi-x-lg"></i>
                                     </button>
                                 @endif
-                                <a class="guidelines-item"
-                                    href="{{ route('eligtas.guide', Crypt::encryptString($guidelineItem->id)) }}">
+                                <a class="guidelines-item" href="{{ route('eligtas.guide', $guidelineItem->id) }}">
                                     <div class="guideline-content">
                                         <img
                                             src="{{ $guidelineItem->guideline_img ? asset('guideline_image/' . $guidelineItem->guideline_img) : asset('assets/img/empty-data.svg') }}">
@@ -61,8 +57,7 @@
                                 </a>
                             @endauth
                             @guest
-                                <a class="guidelines-item"
-                                    href="{{ route('resident.eligtas.guide', Crypt::encryptString($guidelineItem->id)) }}">
+                                <a class="guidelines-item" href="{{ route('resident.eligtas.guide', $guidelineItem->id) }}">
                                     <div class="guideline-content">
                                         <img
                                             src="{{ $guidelineItem->guideline_img ? asset('guideline_image/' . $guidelineItem->guideline_img) : asset('assets/img/empty-data.svg') }}">
@@ -98,7 +93,7 @@
         @if (auth()->user()->is_disable == 0)
             <script>
                 $(document).ready(() => {
-                    let validator, guidelineId, guidelineWidget, guidelineItem, defaultFormData, operation, guideField = 0,
+                    let validator, guidelineId, guidelineWidget, guidelineItem, operation, guideField = 0,
                         guidelineType, modal = $('#guidelineModal'),
                         removeGuidelinebtn = $('.removeGuidelineImg'),
                         guidelineBtn = $('.guidelineImgBtn'),
@@ -111,7 +106,8 @@
                         modalLabelContainer = $('.modal-label-container'),
                         guidelineForm = $("#guidelineForm"),
                         formBtn = $('#submitGuidelineBtn'),
-                        guideContentFields = document.getElementById("guideContentFields");
+                        guidelineContainer = $('.guideline-container'),
+                        guideContentFields = $("#guideContentFields");
 
                     validator = guidelineForm.validate({
                         rules: {
@@ -122,6 +118,33 @@
                         },
                         errorElement: 'span',
                         submitHandler: guidelineFormSubmit
+                    });
+
+                    $('#searchGuidelineForm').on('submit', (e) => {
+                        e.preventDefault();
+
+                        $.ajax({
+                            url: "{{ auth()->check() ? route('guideline.search') : route('resident.guideline.search') }}",
+                            data: {
+                                guideline_name: $('#search_guideline').val()
+                            },
+                            method: "GET",
+                            success(response) {
+                                guidelineContainer.empty();
+
+                                $.each(response.guidelineData, (index, guideline) => {
+                                    let result_guideline_img = guideline.guideline_img ?
+                                        `guideline_image/${guideline.guideline_img}` :
+                                        'assets/img/empty-data.svg';
+
+                                    guidelineContainer.append(initGuidelineItem(guideline.id,
+                                        result_guideline_img, guideline.type));
+                                });
+
+                                $('#search_guideline').val("");
+                            },
+                            error: () => showErrorMessage()
+                        });
                     });
 
                     $(document).on('click', '#createGuidelineBtn', () => {
@@ -155,7 +178,6 @@
                         guidelineType = guidelineLabel;
                         operation = "update";
                         modal.modal('show');
-                        defaultFormData = guidelineForm.serialize();
                     });
 
                     $(document).on('click', '#removeGuidelineBtn', function() {
@@ -170,14 +192,22 @@
                                 headers: {
                                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                                 },
-                                data: guidelineId,
                                 url: "{{ route('guideline.remove', 'guidelineId') }}"
                                     .replace('guidelineId', guidelineId),
                                 method: "DELETE",
                                 success(response) {
-                                    return response.status == 'warning' ? showWarningMessage(
-                                        response.message) : showSuccessMessage(
-                                        'Guideline removed successfully, Please wait...', true);
+                                    if (response.status == 'warning')
+                                        showWarningMessage(response.message)
+
+                                    showSuccessMessage('Guideline removed successfully.');
+                                    guidelineWidget.remove();
+
+                                    if (guidelineContainer.text().trim() == "") {
+                                        guidelineContainer.append(`<div class="empty-guidelines">
+                                            <img src="{{ asset('assets/img/empty-data.svg') }}" alt="Picture">
+                                            <p>No guidelines uploaded.</p>
+                                        </div>`);
+                                    }
                                 },
                                 error: () => showErrorMessage()
                             });
@@ -185,34 +215,33 @@
                     });
 
                     $(document).on('click', '#addGuideInput', () => {
-                        let newGuideInputField = document.createElement("div");
-                        newGuideInputField.classList.add("guide-field");
-                        newGuideInputField.innerHTML = `
-                        <div class="image-container">
-                            <div class="guide-image">
-                                <div class="image-preview">
-                                    <a href="javascript:void(0)" class="btn-remove removeImage" id="removeImage${guideField}" hidden><i class="bi bi-trash3"></i></a>
-                                    <img src="{{ asset('assets/img/e-ligtas-logo-${checkThemeColor()}.png') }}" alt="Image"
-                                        class="guideImage" id="image_preview_container${guideField}">
+                        guideContentFields.append(`
+                        <div class="guide-field">
+                            <div class="image-container">
+                                <div class="guide-image">
+                                    <div class="image-preview">
+                                        <a href="javascript:void(0)" class="btn-remove removeImage" id="removeImage${guideField}" hidden><i class="bi bi-trash3"></i></a>
+                                        <img src="{{ asset('assets/img/e-ligtas-logo-${checkThemeColor()}.png') }}" alt="Image"
+                                            class="guideImage" id="image_preview_container${guideField}">
+                                    </div>
+                                    <input type="file" name="guidePhoto[]" id="guidePhoto${guideField}" class="form-control guidePhoto" hidden>
+                                    <a href="javascript:void(0)" class="btn-submit selectImage" id="selectImage${guideField}"><i class="bi bi-image"></i>Choose Image</a>
                                 </div>
-                                <input type="file" name="guidePhoto[]" id="guidePhoto${guideField}" class="form-control guidePhoto" hidden>
-                                <a href="javascript:void(0)" class="btn-submit selectImage" id="selectImage${guideField}"><i class="bi bi-image"></i>Choose Image</a>
-                            </div>
-                            </div>
-                            <div class="guide-field-container">
-                                <div class="field-container">
-                                    <label>Guide Label</label>
-                                    <input type="text" name="label[]" class="form-control" autocomplete="off"
-                                        placeholder="Enter Guide Label">
                                 </div>
-                                <div class="field-container">
-                                    <label>Guide Content</label>
-                                    <textarea name="content[]" class="form-control" autocomplete="off" placeholder="Enter Guide Content" rows="7"></textarea>
+                                <div class="guide-field-container">
+                                    <div class="field-container">
+                                        <label>Guide Label</label>
+                                        <input type="text" name="label[]" class="form-control" autocomplete="off"
+                                            placeholder="Enter Guide Label">
+                                    </div>
+                                    <div class="field-container">
+                                        <label>Guide Content</label>
+                                        <textarea name="content[]" class="form-control" autocomplete="off" placeholder="Enter Guide Content" rows="7"></textarea>
+                                    </div>
+                                    <button class="btn-remove" id="removeGuideField"><i class="bi bi-trash3-fill"></i>Remove</button>
                                 </div>
-                                <button class="btn-remove" id="removeGuideField"><i class="bi bi-trash3-fill"></i>Remove</button>
                             </div>
-                        </div>`;
-                        guideContentFields.appendChild(newGuideInputField);
+                        </div>`);
                         changeModalSize('change');
                         guideField++;
                     });
@@ -272,7 +301,7 @@
                         changeModalSize('remove');
                         validator.resetForm();
                         guideField = 0;
-                        guideContentFields.innerHTML = '';
+                        guideContentFields.html("");
                         guidelineForm[0].reset();
                     });
 
@@ -295,18 +324,69 @@
                                     contentType: false,
                                     processData: false,
                                     success(response) {
-                                        response.status == 'warning' ? showWarningMessage(response
-                                            .message) : (modal.modal('hide'), showSuccessMessage(
-                                            `Guideline successfully ${operation}d, Please wait...`, true
-                                        ));
+                                        if (response.status == 'warning') {
+                                            showWarningMessage(response.message)
+                                        } else {
+                                            let emptyGuideline = $('.empty-guidelines'),
+                                                {
+                                                    guideline_id,
+                                                    type,
+                                                    guideline_img
+                                                } = response;
+
+                                            if (operation == 'create') {
+                                                if (guidelineContainer.find(emptyGuideline).length > 0)
+                                                    emptyGuideline.remove();
+
+                                                guideline_img = guideline_img ?
+                                                    `guideline_image/${guideline_img}` :
+                                                    'assets/img/empty-data.svg';
+                                                guidelineContainer.append(initGuidelineItem(guideline_id,
+                                                    guideline_img, type));
+                                            } else {
+                                                if (guidelineImgChanged)
+                                                    $(guidelineWidget).find('.guideline-content img').attr(
+                                                        'src',
+                                                        `{{ asset('guideline_image/${guideline_img}') }}`);
+
+                                                guidelineWidget.querySelector('.guideline-type p').textContent =
+                                                    type;
+                                            }
+                                            modal.modal('hide');
+                                            showSuccessMessage(`Guideline successfully ${operation}d.`);
+                                        }
                                     },
                                     error: () => showErrorMessage()
                                 });
                         });
                     }
 
+                    function initGuidelineItem(id, img, type) {
+                        return `<div class="guideline-widget">
+                                    @auth
+                                        @if (auth()->user()->is_disable == 0)
+                                            <button id="updateGuidelineBtn">
+                                                <i class="btn-update bi bi-pencil-square"></i>
+                                            </button>
+                                            <button id="removeGuidelineBtn">
+                                                <i class="btn-remove bi bi-x-lg"></i>
+                                            </button>
+                                        @endif
+                                        <a class="guidelines-item"
+                                            href="{{ route('eligtas.guide', '') }}/${id}">
+                                            <div class="guideline-content">
+                                                <img src="{{ asset('${img}') }}">
+                                                <div class="guideline-type">
+                                                    <p>${type}</p>
+                                                </div>
+                                            </div>
+                                        </a>
+                                    @endauth
+                                </div>`;
+                    }
+
                     function checkGuideFields() {
-                        return guideContentFields.textContent.trim() == '' ? true : false;
+                        return guideContentFields.text().trim() == '' ? true : false;
                     }
 
                     function checkThemeColor() {

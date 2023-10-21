@@ -7,7 +7,6 @@ use App\Models\Guideline;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Models\ActivityUserLog;
-use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Validator;
 
 class GuidelineController extends Controller
@@ -79,7 +78,7 @@ class GuidelineController extends Controller
             }
         }
 
-        return response()->json();
+        return response(['guideline_id' =>  $guideline->id, 'type' => $guideline->type, 'guideline_img' => $guideline->guideline_img]);
     }
 
     public function updateGuideline(Request $request, $guidelineId)
@@ -100,7 +99,7 @@ class GuidelineController extends Controller
             return response(['status' => 'warning', 'message' => "All guide fields are required, fill them out."]);
 
         $userId          = auth()->user()->id;
-        $guideline       = $this->guideline->find(Crypt::decryptString($guidelineId));
+        $guideline       = $this->guideline->find($guidelineId);
         $guidelineImg    = $request->file('guidelineImg');
         $guidelineData   = [
             'type'    => Str::upper(trim($request->type)),
@@ -148,13 +147,18 @@ class GuidelineController extends Controller
             }
         }
 
-        return response()->json();
+        return response(['type' => $guideline->type, 'guideline_img' => $guideline->guideline_img]);
     }
 
     public function removeGuideline($guidelineId)
     {
-        $guideline    = $this->guideline->find(Crypt::decryptString($guidelineId));
+        $guideline    = $this->guideline->find($guidelineId);
         $guidelineImg = $guideline->guideline_img;
+        $guide        = $this->guide->where('guideline_id', $guidelineId)->get();
+
+        foreach ($guide as $guide) {
+            $this->removeGuideImage($guide->guide_photo);
+        }
 
         if ($guidelineImg) {
             $guidelineImgPath = public_path('guideline_image/' . $guidelineImg);
@@ -172,16 +176,16 @@ class GuidelineController extends Controller
     {
         $guideValidation = Validator::make($request->only('guidePhoto', 'label', 'content'), [
             'guidePhoto' => 'image|mimes:jpeg|max:2048',
-            'label'   => 'required',
-            'content' => 'required'
+            'label'      => 'required',
+            'content'    => 'required'
         ]);
 
         if ($guideValidation->fails())
             return response(['status' => 'warning', 'message' => $guideValidation->errors()->first()]);
 
-        $guide = $this->guide->find($guideId);
+        $guide       = $this->guide->find($guideId);
         $guideImg    = $request->file('guidePhoto');
-        $guideData = [
+        $guideData   = [
             'label'   => Str::upper(trim($request->label)),
             'content' => Str::ucfirst(trim($request->content)),
             'user_id' => auth()->user()->id
@@ -203,23 +207,26 @@ class GuidelineController extends Controller
         $guide->update($guideData);
         $this->logActivity->generateLog($guideId, $guide->label, 'updated a guide');
 
-        return response()->json();
+        return response(['label' => $guide->label, 'content' => $guide->content, 'guide_photo' => $guide->guide_photo]);
     }
 
     public function removeGuide($guideId)
     {
         $guide      = $this->guide->find($guideId);
         $guideImage = $guide->guide_photo;
+        $this->removeGuideImage($guideImage);
+        $this->logActivity->generateLog($guideId, $guide->label, 'removed a guide');
+        $guide->delete();
 
+        return response()->json();
+    }
+
+    private function removeGuideImage($guideImage)
+    {
         if ($guideImage) {
             $guideImgPath = public_path('guideline_image/' . $guideImage);
 
             if (file_exists($guideImgPath)) unlink($guideImgPath);
         }
-
-        $this->logActivity->generateLog($guideId, $guide->label, 'removed a guide');
-        $guide->delete();
-
-        return response()->json();
     }
 }

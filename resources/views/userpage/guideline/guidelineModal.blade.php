@@ -1,10 +1,11 @@
 @auth
     @if (auth()->user()->is_disable == 0)
-        <div class="modal fade" id="guidelineModal" tabindex="-1" aria-hidden="true">
+        <div class="modal fade" id="guidelineModal" data-bs-backdrop="static" tabindex="-1" aria-hidden="true">
             <div class="modal-dialog modal-lg">
                 <div class="modal-content">
                     <header class="modal-label-container">
                         <h1 class="modal-label"></h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </header>
                     <div class="modal-body">
                         <form id="guidelineForm">
