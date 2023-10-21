@@ -24,6 +24,7 @@
                     <div class="profile-img">
                         <img src="{{ asset('assets/img/profile.png') }}" alt="Profile" id="profile">
                     </div>
+                    <p>{{ auth()->user()->name }}</p>
                 </div>
                 <div class="edit-profile-btn">
                     <button class="btn-update" id="updateProfileBtn">
