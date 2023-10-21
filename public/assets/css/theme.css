@@ -1068,12 +1068,12 @@ text {
 
 .guideline-img {
     position: relative;
-    padding: 23px 0;
+    padding-right: 15px;
     width: 300px;
 }
 
 .image-container {
-    padding: 23px 0;
+    padding: 26px 0;
     width: 400px;
 }
 
@@ -1084,8 +1084,14 @@ text {
     flex-direction: column;
 }
 
-.guideImage,
 .guidelineImage {
+    margin: 0 auto;
+    object-fit: contain;
+    width: 200px;
+    height: 100px;
+}
+
+.guideImage {
     margin: 0 auto;
     object-fit: contain;
     width: 200px;
@@ -1159,15 +1165,22 @@ text {
     object-fit: cover;
 }
 
-.empty-guidelines img {
+.empty-guide {
+    text-align: center;
+}
+
+.empty-guidelines img,
+.empty-guide img {
     width: 250px;
     margin: 40px 0;
 }
 
-.empty-guidelines p {
+.empty-guidelines p,
+.empty-guide p{
     font-size: 20px;
     font-weight: 700;
 }
+
 
 .guideline-type {
     display: flex;
@@ -1183,6 +1196,15 @@ text {
 
 .guideline-btn {
     width: 288px;
+}
+
+#guidelineModal .modal-label-container {
+    display: flex;
+    justify-content: space-between;
+}
+
+#guidelineModal .modal-label-container button {
+    margin: auto 0;
 }
 
 .guideline-btn .btn-container button {
@@ -1256,8 +1278,9 @@ text {
 .guide-label {
     position: relative;
     padding: 10px;
-    background: var(--color-gray);
-    color: var(--color-text);
+    background: var(--color-light-gray);
+    color: var(--color-black);
+    font-weight: 700;
     cursor: pointer;
 }
 
@@ -1968,9 +1991,15 @@ hazard-markers .markers,
 
 .profile-section {
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
     padding: 16px 0 24px 0;
+}
+
+.profile-section p {
+    margin: 0;
+    font-size: 40px;
 }
 
 .profile-img {
@@ -2505,7 +2534,9 @@ select.form-select option {
 .dark-mode .location-section,
 .dark-mode .social-section,
 .dark-mode .telephone-section,
-.dark-mode .hotline-container {
+.dark-mode .hotline-container,
+.dark-mode .about-eligtas,
+.dark-mode .about-header {
     background: var(--color-d-bg-container) !important;
 }
 
