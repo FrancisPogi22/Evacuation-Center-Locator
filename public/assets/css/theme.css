@@ -996,7 +996,7 @@ text {
 }
 
 .guideline-header .search-container .search-icon {
-    padding: 3px 20px;
+    padding: 2px 20px;
     background-color: var(--color-light-gray);
     color: var(--color-black);
     border-top-right-radius: 5px;
