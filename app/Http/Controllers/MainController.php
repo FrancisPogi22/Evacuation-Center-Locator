@@ -62,7 +62,7 @@ class MainController extends Controller
 
     public function generateExcelEvacueeData(Request $request)
     {
-        $generateReportValidation = Validator::make($request->only('disaster_id'), [
+        $generateReportValidation = Validator::make($request->all(), [
             'disaster_id' => 'required'
         ]);
 
@@ -90,7 +90,7 @@ class MainController extends Controller
 
     public function searchGuideline(Request $request)
     {
-        $searchGuidelineValdation = Validator::make($request->only('guideline_name'), [
+        $searchGuidelineValdation = Validator::make($request->all(), [
             'guideline_name' => 'required'
         ]);
 
@@ -212,7 +212,7 @@ class MainController extends Controller
         $notifications  = $this->notification->notifications();
         $hotlineNumbers = HotlineNumbers::all();
 
-        return view('userpage.hotlineNumbers', compact('notifications', 'hotlineNumbers'));
+        return view('userpage.hotlineNumber.hotlineNumbers', compact('notifications', 'hotlineNumbers'));
     }
 
     public function about()

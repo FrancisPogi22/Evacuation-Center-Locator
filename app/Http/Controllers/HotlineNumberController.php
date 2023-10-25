@@ -20,7 +20,7 @@ class HotlineNumberController extends Controller
 
     public function addHotlineNumber(Request $request)
     {
-        $hotlineNumberValidation = Validator::make($request->only('logo', 'label', 'number'), [
+        $hotlineNumberValidation = Validator::make($request->all(), [
             'logo'   => 'image',
             'label'  => 'required',
             'number' => 'required|numeric'
@@ -52,7 +52,7 @@ class HotlineNumberController extends Controller
 
     public function updateHotlineNumber(Request $request, $hotlineId)
     {
-        $hotlineNumberValidation = Validator::make($request->only('logo', 'label', 'number'), [
+        $hotlineNumberValidation = Validator::make($request->all(), [
             'logo'   => 'image',
             'label'  => 'required',
             'number' => 'required|numeric'

@@ -22,7 +22,7 @@ class GuidelineController extends Controller
 
     public function createGuideline(Request $request)
     {
-        $guidelineValidation = Validator::make($request->only('type', 'guidelineImg'), [
+        $guidelineValidation = Validator::make($request->all(), [
             'guidelineImg' => 'image|mimes:jpeg|max:2048',
             'type'         => 'required|unique:guideline,type'
         ]);
@@ -83,7 +83,7 @@ class GuidelineController extends Controller
 
     public function updateGuideline(Request $request, $guidelineId)
     {
-        $guidelineValidation = Validator::make($request->only('type', 'guidelineImg'), [
+        $guidelineValidation = Validator::make($request->all(), [
             'guidelineImg' => 'image|mimes:jpeg|max:2048',
             'type'         => 'required'
         ]);
@@ -174,7 +174,7 @@ class GuidelineController extends Controller
 
     public function updateGuide(Request $request, $guideId)
     {
-        $guideValidation = Validator::make($request->only('guidePhoto', 'label', 'content'), [
+        $guideValidation = Validator::make($request->all(), [
             'guidePhoto' => 'image|mimes:jpeg|max:2048',
             'label'      => 'required',
             'content'    => 'required'

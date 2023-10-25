@@ -23,15 +23,15 @@ class FamilyRecordController extends Controller
         $familyData = $operation == 'searchData' ?
             $this->familyRecord->select('id', 'family_head', 'birth_date')
             ->where('family_head', 'LIKE', "%{$data}%")
-            ->get() :
-            $this->familyRecord->where('id', $data)->first();
+            ->get() : $this->familyRecord->where('id', $data)->first();
 
-        return response()->json($familyData);
+        return response($familyData);
     }
 
     public function recordFamilyRecord(Request $request)
     {
-        $familyRecordValidation = Validator::make($request->all(), [
+        $familyRecord           = $request->all();
+        $familyRecordValidation = Validator::make($familyRecord, [
             'family_head'    => 'required',
             'birth_date'     => 'required',
             'barangay'       => 'required',
@@ -47,11 +47,6 @@ class FamilyRecordController extends Controller
 
         if ($familyRecordValidation->fails())
             return response(['status' => 'warning', 'message' => implode('<br>', $familyRecordValidation->errors()->all())]);
-
-        $familyRecord = $request->only([
-            'infants', 'minors', 'senior_citizen', 'pwd', 'pregnant', 'lactating', 'male',
-            'female', 'barangay', 'family_head', 'birth_date'
-        ]);
 
         $familyRecord['individuals'] = $familyRecord['male'] + $familyRecord['female'];
         $familyRecord['user_id']     = auth()->user()->id;
@@ -63,7 +58,8 @@ class FamilyRecordController extends Controller
 
     public function updateFamilyRecord(Request $request)
     {
-        $familyRecordValidation = Validator::make($request->all(), [
+        $familyRecord           = $request->all();
+        $familyRecordValidation = Validator::make($familyRecord, [
             'family_head'    => 'required',
             'birth_date'     => 'required',
             'barangay'       => 'required',
@@ -80,14 +76,8 @@ class FamilyRecordController extends Controller
         if ($familyRecordValidation->fails())
             return response(['status' => 'warning', 'message' => implode('<br>', $familyRecordValidation->errors()->all())]);
 
-        $familyRecord = $request->only([
-            'infants', 'minors', 'senior_citizen', 'pwd', 'pregnant', 'lactating', 'male',
-            'female', 'barangay', 'family_head', 'birth_date'
-        ]);
-
         $familyRecord['individuals'] = $familyRecord['male'] + $familyRecord['female'];
         $familyRecord['user_id']     = auth()->user()->id;
-
         Log::info($request->family_id);
         $familyRecord                = $this->familyRecord->find($request->family_id)->update($familyRecord);
 
