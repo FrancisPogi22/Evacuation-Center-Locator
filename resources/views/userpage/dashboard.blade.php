@@ -24,8 +24,7 @@
                 <p>Current Disaster:
                     <span>{{ $onGoingDisasters->isEmpty() ? 'No Disaster' : implode(' | ', $onGoingDisasters->pluck('name')->toArray()) }}</span>
                 </p>
-                @if (auth()->user()->position == 'President' ||
-                        (auth()->user()->position == 'Focal' && !$disaster->isEmpty()))
+                @if (auth()->user()->position == 'President' || (auth()->user()->position == 'Focal' && !$disaster->isEmpty()))
                     <div class="generate-button-container">
                         <button type="button" data-bs-toggle="modal" data-bs-target="#generateReportModal"
                             class="btn-submit generateBtn">
@@ -154,7 +153,7 @@
 
                         response.forEach(disasters => {
                             searchResults.append(
-                                `<option class="searchResult">${disasters.name}</option>`
+                                `<option class="searchResult" value="${disasters.id}">${disasters.name}</option>`
                             );
                         });
 
