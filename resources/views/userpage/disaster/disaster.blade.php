@@ -199,9 +199,6 @@
 
                 function disasterFormHandler(form) {
                     let formData = $(form).serialize();
-                    let url = operation == 'add' ? "{{ route('disaster.create') }}" :
-                        "{{ route('disaster.update', 'disasterId') }}".replace('disasterId',
-                            disasterId);
 
                     confirmModal(`Do you want to ${operation} this disaster?`).then((result) => {
                         if (!result.isConfirmed) return;
@@ -210,15 +207,16 @@
                             showWarningMessage() :
                             $.ajax({
                                 data: formData,
-                                url: url,
+                                url: operation == 'add' ? "{{ route('disaster.create') }}" :
+                                    "{{ route('disaster.update', 'disasterId') }}".replace('disasterId',
+                                        disasterId),
                                 method: operation == 'add' ? "POST" : "PATCH",
                                 success(response) {
                                     response.status == 'warning' ? showWarningMessage(response
                                         .message) : (
                                         showSuccessMessage(
                                             `Disaster successfully ${operation == "add" ? "added" : "updated"}.`
-                                        ),
-                                        modal.modal('hide'), disasterTable.draw());
+                                        ), modal.modal('hide'), disasterTable.draw());
                                 },
                                 error: () => showErrorMessage()
                             });

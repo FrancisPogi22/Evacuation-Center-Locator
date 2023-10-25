@@ -22,10 +22,12 @@
             <section class="content-item">
                 <div class="guideline-header">
                     @auth
-                        <button class="btn-submit" id="createGuidelineBtn">
-                            <i class="bi bi-plus-lg"></i>Create Guideline
-                        </button>
-                        @include('userpage.guideline.guidelineModal')
+                        @if (auth()->user()->is_disable == 0)
+                            <button class="btn-submit" id="createGuidelineBtn">
+                                <i class="bi bi-plus-lg"></i>Create Guideline
+                            </button>
+                            @include('userpage.guideline.guidelineModal')
+                        @endif
                     @endauth
                     <form class="search-container" id="searchGuidelineForm">
                         @csrf
@@ -130,9 +132,11 @@
                             },
                             method: "GET",
                             success(response) {
-                                guidelineContainer.empty();
+                                if (response.guidelineData == null) return showWarningMessage(
+                                    'No guidelines uploaded.');
 
-                                $.each(response.guidelineData, (index, guideline) => {
+                                guidelineContainer.empty();
+                                response.guidelineData.forEach(guideline => {
                                     let result_guideline_img = guideline.guideline_img ?
                                         `guideline_image/${guideline.guideline_img}` :
                                         'assets/img/empty-data.svg';
@@ -140,7 +144,6 @@
                                     guidelineContainer.append(initGuidelineItem(guideline.id,
                                         result_guideline_img, guideline.type));
                                 });
-
                                 $('#search_guideline').val("");
                             },
                             error: () => showErrorMessage()

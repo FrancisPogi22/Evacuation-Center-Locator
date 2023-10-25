@@ -285,9 +285,6 @@
                     if (!marker) return;
 
                     let formData = $(form).serialize();
-                    let url = operation == 'add' ? "{{ route('evacuation.center.create') }}" :
-                        "{{ route('evacuation.center.update', 'evacuationCenterId') }}".
-                    replace('evacuationCenterId', evacuationCenterId);
 
                     confirmModal(`Do you want to ${operation} this evacuation center?`).then((result) => {
                         if (!result.isConfirmed) return;
@@ -296,7 +293,9 @@
                             showWarningMessage() :
                             $.ajax({
                                 data: formData,
-                                url: url,
+                                url: operation == 'add' ? "{{ route('evacuation.center.create') }}" :
+                                    "{{ route('evacuation.center.update', 'evacuationCenterId') }}".
+                                replace('evacuationCenterId', evacuationCenterId),
                                 method: operation == 'add' ? 'POST' : 'PUT',
                                 success(response) {
                                     response.status == "warning" ? showWarningMessage(response

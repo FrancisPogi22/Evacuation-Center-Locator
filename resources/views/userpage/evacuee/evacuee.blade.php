@@ -184,7 +184,6 @@
                 fieldContainerSearch = $('.searchContainer'),
                 hiddenFieldContainer = $('.hidden_field'),
                 formButtonContainer = $('.toggle-form-button'),
-
                 fieldNames = [
                     'infants', 'minors', 'senior_citizen', 'pwd',
                     'pregnant', 'lactating', 'male', 'female'
@@ -364,11 +363,9 @@
                 modalLabel.text('Update Evacuee Information');
                 formButton.addClass('btn-update').removeClass('btn-submit').text('Update');
                 modalDialog.addClass('modal-lg');
-                fieldContainer.prop('hidden', false);
-                submitButtonContainer.prop('hidden', false);
-                hiddenFieldContainer.prop('hidden', true);
-                formButtonContainer.prop('hidden', true);
-                fieldContainerSearch.prop('hidden', true);
+                fieldContainer.add(submitButtonContainer).prop('hidden', false);
+                hiddenFieldContainer.add(formButtonContainer).add(fieldContainerSearch).prop('hidden',
+                    true);
 
                 let data = getRowData(this, evacueeTable);
                 evacueeId = data.id;
@@ -390,22 +387,18 @@
             modal.on('hidden.bs.modal', () => {
                 validator.resetForm();
                 $('#evacueeInfoForm')[0].reset();
-                fieldContainer.prop('hidden', true);
-                submitButtonContainer.prop('hidden', true);
+                fieldContainer.add(submitButtonContainer).prop('hidden', true);
                 formButtonContainer.prop('hidden', false);
                 modalDialog.removeClass('modal-lg');
             });
 
             $(document).on('click', '.rowCheckBox', function() {
-                let $row = $(this).closest('tr');
-                $row.toggleClass('selectedRow', $(this).is(':checked'));
+                let row = $(this).closest('tr'),
+                    childRow = row.next('.child');
 
-                let $childRow = $row.next('.child');
-                $childRow.toggleClass('selectedRow', $(this).is(':checked'));
-
+                row.add(childRow).toggleClass('selectedRow', $(this).is(':checked'));
                 selectAllCheckBox.prop('checked', $('.rowCheckBox:checked').length === $(
                     '.rowCheckBox').length);
-
             });
 
             selectAllCheckBox.click(function() {
@@ -463,32 +456,20 @@
                 });
             });
 
-            // $(document).on('mouseenter mouseleave', '#changeEvacueeStatusBtn', function(e) {
-            //     const marginOne = window.innerWidth <= 380 ? '7' : '8';
-            //     const marginTwo = window.innerWidth <= 380 ? '4' : '5';
-
-            //     this.style.marginRight = e.type === 'mouseenter' ? (this.textContent.includes(
-            //         'Show Returned') ? `${marginOne}px` : `${marginTwo}px`) : '0';
-            // });
-
             $(document).on('click', '#changeEvacueeDataBtn', function() {
                 sessionStorage.setItem('status', this.textContent.includes('Show Returned') ?
                     'Return Home' : 'Evacuated');
-
                 $(this).html(this.textContent.includes('Show Returned') ?
                     '<i class="bi bi-hospital pr-2"></i> Show Evacuee' :
                     '<i class="bi bi-house pr-2"></i> Show Returned to Residence');
-
                 $('#changeEvacueeStatusBtn').html(
                     sessionStorage.getItem('status') == 'Evacuated' ?
                     '<i class="bi bi-person-up"></i> Returning Home' :
                     '<i class="bi bi-person-down"></i> Evacuated Again'
                 );
-
                 url = "{{ route('evacuee.info.get', [$operation, 'disaster', 'status']) }}"
                     .replace('disaster', sessionStorage.getItem("ongoingDisaster"))
                     .replace('status', sessionStorage.getItem('status'));
-
                 initializeDataTable(url);
             });
 
@@ -497,7 +478,6 @@
                 url = "{{ route('evacuee.info.get', [$operation, 'disaster', 'status']) }}"
                     .replace('disaster', sessionStorage.getItem("ongoingDisaster"))
                     .replace('status', sessionStorage.getItem('status'));
-
                 initializeDataTable(url);
             });
 
@@ -518,16 +498,13 @@
                                 `<option value="${disaster.id}">${disaster.name}</option>`
                             );
                         });
-
                         sessionStorage.setItem('archiveDisaster', $(
                             '#changeArchiveEvacueeDataSelect option:first').val());
                         $('#changeArchiveEvacueeDataSelect').val(sessionStorage.getItem(
                             'archiveDisaster'));
-
                         url =
                             "{{ route('evacuee.info.get', [$operation, 'disaster', 'archive']) }}"
                             .replace('disaster', sessionStorage.getItem("archiveDisaster"));
-
                         initializeDataTable(url);
                     },
                     error: () => showErrorMessage()
@@ -538,15 +515,13 @@
                 sessionStorage.setItem('archiveDisaster', $(this).val());
                 url = "{{ route('evacuee.info.get', [$operation, 'disaster', 'archive']) }}"
                     .replace('disaster', sessionStorage.getItem("archiveDisaster"));
-
                 initializeDataTable(url);
             });
 
             $(document).on('click', '#newRecordBtn, #existingRecordBtn', function() {
                 modalDialog.addClass('modal-lg');
-                evacueeInfoForm.trigger('reset');
+                evacueeInfoForm[0].reset();
                 validator.resetForm();
-
                 this.textContent.includes('Add new record') ?
                     showForm('new', true, true, false) :
                     showForm('existing', false, false, true);
@@ -609,8 +584,6 @@
 
             function formSubmitHandler(form) {
                 let formData = $(form).serialize();
-                let submitUrl = operation == 'record' ? "{{ route('evacuee.info.record') }}" :
-                    "{{ route('evacuee.info.update', 'evacueeId') }}".replace('evacueeId', evacueeId);
 
                 confirmModal(`Do you want to ${operation} this evacuee info?`).then((result) => {
                     if (!result.isConfirmed) return;
@@ -619,7 +592,9 @@
                         showWarningMessage() :
                         $.ajax({
                             data: formData,
-                            url: submitUrl,
+                            url: operation == 'record' ? "{{ route('evacuee.info.record') }}" :
+                                "{{ route('evacuee.info.update', 'evacueeId') }}".replace('evacueeId',
+                                    evacueeId),
                             type: operation == 'record' ? "POST" : "PUT",
                             success(response) {
                                 response.status == 'warning' ? showWarningMessage(response
@@ -627,7 +602,6 @@
                                     showSuccessMessage(
                                         `Successfully ${operation == 'record' ? 'recorded new' : 'updated the'} evacuee info.`
                                     ));
-
                                 initializeDataTable(url);
                             },
                             error: () => showErrorMessage()
