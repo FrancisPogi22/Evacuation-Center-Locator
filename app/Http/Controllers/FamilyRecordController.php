@@ -58,7 +58,7 @@ class FamilyRecordController extends Controller
         $familyRecord                = $this->familyRecord->create($familyRecord);
         $this->logActivity->generateLog($familyRecord->id, $familyRecord->barangay, 'recorded a new family record');
 
-        return response()->json();
+        return $familyRecord->id;
     }
 
     public function updateFamilyRecord(Request $request)
@@ -87,10 +87,8 @@ class FamilyRecordController extends Controller
 
         $familyRecord['individuals'] = $familyRecord['male'] + $familyRecord['female'];
         $familyRecord['user_id']     = auth()->user()->id;
-
-        Log::info($request->family_id);
         $familyRecord                = $this->familyRecord->find($request->family_id)->update($familyRecord);
 
-        return response()->json();
+        return $request->family_id;
     }
 }

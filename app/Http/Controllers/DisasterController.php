@@ -10,8 +10,6 @@ use App\Models\ActivityUserLog;
 use Yajra\DataTables\DataTables;
 use Illuminate\Support\Facades\Validator;
 
-use function Laravel\Prompts\select;
-
 class DisasterController extends Controller
 {
     private $disaster, $evacuee, $logActivity;

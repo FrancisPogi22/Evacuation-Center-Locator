@@ -9,9 +9,9 @@ use App\Models\Guideline;
 use Illuminate\Http\Request;
 use App\Models\ActivityUserLog;
 use App\Models\EvacuationCenter;
-use App\Events\NotificationEvent;
+use App\Events\Notification;
 use App\Exports\EvacueeDataExport;
-use App\Models\IncidentReport;
+use App\Models\ResidentReport;
 use Illuminate\Support\Carbon;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Crypt;
@@ -20,7 +20,7 @@ use Maatwebsite\Excel\Excel as FileFormat;
 
 class MainController extends Controller
 {
-    private $evacuationCenter, $disaster, $evacuee, $notification, $guide, $guideline, $incidentReport;
+    private $evacuationCenter, $disaster, $evacuee, $notification, $guide, $guideline, $residentReport;
 
     public function __construct()
     {
@@ -28,9 +28,9 @@ class MainController extends Controller
         $this->evacuee          = new Evacuee;
         $this->disaster         = new Disaster;
         $this->guideline        = new Guideline;
-        $this->notification     = new NotificationEvent;
+        $this->notification     = new Notification;
         $this->evacuationCenter = new EvacuationCenter;
-        $this->incidentReport   = new IncidentReport;
+        $this->residentReport   = new ResidentReport;
     }
 
     public function dashboard()
@@ -41,9 +41,9 @@ class MainController extends Controller
         $totalEvacuee     = $this->evacuee->where('status', "Evacuated")->sum('individuals');
         $totalEvacuee     = strval($totalEvacuee);
         $notifications    = $this->notification->notifications();
-        $incidentReport   = $this->incidentReport->where('report_time', '>=', Carbon::now()->format('Y-m-d H:i:s'))->count();
+        $residentReport   = $this->residentReport->where('report_time', '>=', Carbon::now()->format('Y-m-d H:i:s'))->count();
 
-        return view('userpage.dashboard', compact('activeEvacuation', 'disasterData', 'totalEvacuee', 'onGoingDisasters', 'notifications', 'incidentReport'));
+        return view('userpage.dashboard', compact('activeEvacuation', 'disasterData', 'totalEvacuee', 'onGoingDisasters', 'notifications', 'residentReport'));
     }
 
     public function generateExcelEvacueeData(Request $request)
@@ -87,7 +87,7 @@ class MainController extends Controller
     {
         $disasterList        = $this->disaster->where('is_archive', 0)->get();
         $archiveDisasterList = $this->disaster->where('is_archive', 1)->get();
-        $yearList            = $archiveDisasterList->pluck('year')->unique();
+        $yearList            = $archiveDisasterList->pluck('year')->unique()->orderBy('year', 'desc');
         $archiveDisasterList = $archiveDisasterList->where('year', $yearList->first());
         $evacuationList      = $this->evacuationCenter->whereNotIn('status', ['Inactive', 'Archived'])->get();
 
@@ -111,11 +111,9 @@ class MainController extends Controller
         return view('userpage.evacuationCenter.manageEvacuation', compact('operation'));
     }
 
-    public function incidentReport($operation)
+    public function incidentReporting()
     {
-        $notifications = $this->notification->notifications();
-
-        return view('userpage.incidentReport.incidentReport', compact('operation', 'notifications'));
+        return view('userpage.residentReport.incidentReporting');
     }
 
     public function userActivityLog()
@@ -141,11 +139,22 @@ class MainController extends Controller
         return view('userpage.userAccount.userProfile', compact('notifications'));
     }
 
-    public function manageHazardReport()
+    public function manageReport($operation)
     {
         $notifications = $this->notification->notifications();
+        $prefix = request()->route()->getPrefix();
+        $reportType = ['All', 'Emergency', 'Incident', 'Flooded', 'Roadblocked'];
+        $yearList = [];
 
-        return view('userpage.hazardReport.manageHazardReport', compact('notifications'));
+        if ($operation == "archived")
+            $yearList = $this->residentReport
+                ->where('is_archive', 1)
+                ->selectRaw('YEAR(report_time) as year')
+                ->distinct()
+                ->orderBy('year', 'desc')
+                ->get();
+
+        return view('userpage.residentReport.manageReport', compact('notifications', 'operation', 'prefix', 'yearList', 'reportType'));
     }
 
     public function fetchDisasterData()

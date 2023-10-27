@@ -8,33 +8,33 @@ use App\Models\ResidentReport;
 use App\Models\ActivityUserLog;
 use Yajra\DataTables\DataTables;
 use App\Events\Notification;
-use App\Events\IncidentReport;
+use App\Events\EmergencyReport;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Controllers\ResidentReportController;
 
-class IncidentReportController extends Controller
+class EmergencyReportController extends Controller
 {
-    private $reportLog, $logActivity, $incidentReport, $residentReport;
+    private $reportLog, $logActivity, $emergencyReport, $residentReport;
 
     function __construct()
     {
         $this->reportLog      = new ReportLog;
-        $this->incidentReport = new ResidentReport;
+        $this->emergencyReport = new ResidentReport;
         $this->logActivity    = new ActivityUserLog;
         $this->residentReport = new ResidentReportController;
     }
 
-    public function getIncidentReport($operation, $year, $type)
+    public function getEmergencyReport($operation, $year, $type)
     {
-        $incidentReports = $this->incidentReport->where('is_archive', $operation == "manage" ? 0 : 1);
+        $emergencyReport = $this->emergencyReport->where('is_archive', $operation == "manage" ? 0 : 1);
 
         if ($operation == "manage")
-            return response($incidentReports->where('type', 'Incident')->get());
+            return response($emergencyReport->where('type', 'Emergency')->get());
         else
             return DataTables::of(
-                $incidentReports->where('type', $type)
+                $emergencyReport->where('type', $type)
                     ->whereYear('report_time', $year)
                     ->get()
             )
@@ -53,31 +53,31 @@ class IncidentReportController extends Controller
                 ->make(true);
     }
 
-    public function createIncidentReport(Request $request)
+    public function createEmergencyReport(Request $request)
     {
-        $incidentReportValidation = Validator::make($request->all(), [
+        $emergencyReportValidation = Validator::make($request->all(), [
             'latitude'  => 'required',
             'longitude' => 'required',
             'details'   => 'required',
             'image'     => 'required|image|mimes:jpeg,png,jpg'
         ]);
 
-        if ($incidentReportValidation->fails())
-            return response(['status' => 'warning', 'message' => implode('<br>', $incidentReportValidation->errors()->all())]);
+        if ($emergencyReportValidation->fails())
+            return response(['status' => 'warning', 'message' => implode('<br>', $emergencyReportValidation->errors()->all())]);
 
         $resident = $this->reportLog
             ->where('user_ip', $request->ip())
-            ->where('report_type', 'Incident')
+            ->where('report_type', 'Emergency')
             ->first();
 
         $reportPhotoPath = $request->file('image');
         $reportPhotoPath = $request->file('image')->store();
         $request->image->move(public_path('reports_image'), $reportPhotoPath);
 
-        $incidentReport = [
+        $emergencyReport = [
             'latitude'    => $request->latitude,
             'longitude'   => $request->longitude,
-            'type'        => 'Incident',
+            'type'        => 'Emergency',
             'photo'       => $reportPhotoPath,
             'details'     => trim($request->details),
             'status'      => 'Pending',
@@ -104,53 +104,53 @@ class IncidentReportController extends Controller
         } else {
             $this->reportLog->create([
                 'user_ip'     => $request->ip(),
-                'report_type' => 'Incident',
+                'report_type' => 'Emergency',
                 'attempt'     => 1,
             ]);
         }
 
-        $this->incidentReport->create($incidentReport);
+        $this->emergencyReport->create($emergencyReport);
         // event(new IncidentReport());
         // event(new Notification());
 
         return response()->json();
     }
 
-    public function changeIncidentReportStatus($reportId)
+    public function changeEmergencyReportStatus($reportId)
     {
-        $report = $this->incidentReport->find($reportId);
+        $report = $this->emergencyReport->find($reportId);
         $status = $report->status == "Pending" ? "Resolving" : "Resolved";
         $report->update([
             'status' => $status
         ]);
-        $this->logActivity->generateLog($reportId, 'Incident', 'set the incident report status to resolving');
+        $this->logActivity->generateLog($reportId, 'Emergency', 'set the emergency report status to resolving');
         // event(new IncidentReport());
 
         return response()->json();
     }
 
-    public function removeIncidentReport($reportId)
+    public function removeEmergencyReport($reportId)
     {
-        $report = $this->incidentReport->find($reportId);
+        $report = $this->emergencyReport->find($reportId);
         $report->delete();
 
         if ($report->photo) {
             $image_path = public_path('reports_image/' . $report->photo);
             File::delete($image_path);
         }
-        $this->logActivity->generateLog($reportId, ' Incident', 'removed incident report');
+        $this->logActivity->generateLog($reportId, ' Emergency', 'removed emergency report');
         // event(new IncidentReport());
 
         return response()->json();
     }
 
-    public function archiveIncidentReport($reportId)
+    public function archiveEmergencyReport($reportId)
     {
-        $report = $this->incidentReport->find($reportId);
+        $report = $this->emergencyReport->find($reportId);
         $report->update([
             'is_archive' => 1
         ]);
-        $this->logActivity->generateLog($reportId, 'Incident', "archived incident report");
+        $this->logActivity->generateLog($reportId, 'Emergency', "archived emergency report");
         //event(new IncidentReport());
 
         return response()->json();
