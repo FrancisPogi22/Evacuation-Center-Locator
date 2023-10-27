@@ -2,6 +2,7 @@
     const body = $('body'),
         themeIcon = $('#themeIcon'),
         themeText = $('#themeText'),
+        themeIconResident = $('#themeIconResident'),
         theme = sessionStorage.getItem('theme');
 
     @auth
@@ -110,26 +111,26 @@
             badge.prop('hidden', true).text(0);
         });
 
-        // Echo.channel('notification').listen('NotificationEvent', (e) => {
+        // Echo.channel('notification').listen('Notification', (e) => {
         //     let {
-        //         hazard,
+        //         area,
         //         incident
         //     } = e.notifications;
         //     const dropdownMenu = $('#notification-container .dropdown-menu');
 
-        //     if (hazard.length > 0 || incident.length > 0) {
+        //     if (area.length > 0 || incident.length > 0) {
         //         const badge = document.createElement('span');
         //         const container = document.querySelector('#notification-container');
         //         dropdownMenu.empty();
         //         badge.innerHTML =
-        //             `<span class="badge" id="badge">${hazard.length + incident.length}</span>`;
+        //             `<span class="badge" id="badge">${area.length + incident.length}</span>`;
         //         container.insertBefore(badge, container.firstChild);
 
-        //         hazard.forEach((hazardNotification) => {
+        //         area.forEach((areaNotification) => {
         //             dropdownMenu.append(`
         //                 <li>
-        //                     <a href="{{ route('manage.hazard.report') }}" class="dropdown-item">
-        //                         <p>Resident reported a hazard: ${hazardNotification.type}</p>
+        //                     <a href="{{ route('manage.report', 'manage') }}" class="dropdown-item">
+        //                         <p>Resident reported a area: ${areaNotification.type}</p>
         //                     </a>
         //                 </li>
         //             `);
@@ -138,8 +139,8 @@
         //         incident.forEach((incidentNotification) => {
         //             dropdownMenu.append(`
         //                 <li>
-        //                     <a href="{{ route('incident.report', 'pending') }}" class="dropdown-item">
-        //                         <p>Resident report a incident: ${incidentNotification.description}</p>
+        //                     <a href="{{ route('manage.report', 'manage') }}" class="dropdown-item">
+        //                         <p>Resident report a incident: ${incidentNotification.details}</p>
         //                         <span class="report_time">${incidentNotification.report_time}</span>
         //                     </a>
         //                 </li>
@@ -152,7 +153,7 @@
     @endauth
     theme == 'dark' ? enableDarkMode() : disableDarkMode();
 
-    $(document).on('click', '#changeTheme', () => {
+    $(document).on('click', '.changeTheme', () => {
         body.hasClass('dark-mode') ? disableDarkMode() : enableDarkMode();
     });
     });
@@ -170,7 +171,7 @@
             minuteIncrement: 1,
             secondIncrement: 1,
             position: "below center",
-            theme: "light",
+            theme: "light"
         });
     }
 
@@ -202,31 +203,157 @@
         });
     }
     @endauth
-    function displayReportPhoto(reportPhotoUrl) {
-        let overlay = $('<div class="overlay show"><img src="' + reportPhotoUrl +
-            '" class="overlay-image"></div>');
-        $('body').append(overlay);
-        overlay.click(() => {
-            overlay.remove();
+
+    function setInfoWindowButtonStyles(button, bgColor) {
+        button.css({
+            'background-color': bgColor + ')',
+            'border-color': bgColor + ')'
+        }).hover(
+            function() {
+                $(this).css({
+                    'background-color': bgColor + '-hover)',
+                    'border-color': bgColor + '-hover)'
+                });
+            },
+            function() {
+                $(this).css({
+                    'background-color': bgColor + ')',
+                    'border-color': bgColor + ')'
+                });
+            }
+        );
+    }
+
+    function toggleShowImageBtn(button, content, markers) {
+        const [latitude, longitude] = button.prev().text().split(',');
+        markers.find(marker => {
+            let position = marker.getPosition();
+            if (position.lat() == latitude && position.lng() == longitude)
+                google.maps.event.trigger(marker, 'click');
         });
+
+        const isView = button.text().includes('View');
+        const icon = isView ? '<i class="bi bi-chevron-contract"></i> Hide' :
+            '<i class="bi bi-chevron-expand"></i> View';
+        const bgColor = isView ? 'var(--color-red' : 'var(--color-primary';
+
+        button.html(icon);
+        content.attr('hidden', !isView);
+        setInfoWindowButtonStyles(button, bgColor);
+
+        button.closest('.gm-style-iw-d').animate({
+            scrollTop: button.closest('.info-description.photo').position().top - 6
+        }, 500);
+
+    }
+
+    function formatDateTime(dateTimeString, condition) {
+        let arguments;
+
+        switch (condition) {
+            case 'date':
+                arguments = {
+                    weekday: 'short',
+                    year: 'numeric',
+                    month: 'short',
+                    day: 'numeric'
+                };
+                break;
+            case 'time':
+                arguments = {
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    hour12: true
+                };
+                break;
+            default:
+                arguments = {
+                    weekday: 'short',
+                    year: 'numeric',
+                    month: 'short',
+                    day: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    hour12: true
+                };
+        }
+
+        return new Date(dateTimeString).toLocaleString('en-US', arguments);
     }
 
     function enableDarkMode() {
         body.addClass('dark-mode');
-        themeIcon.removeClass('bi-moon').addClass('bi-brightness-high');
+        themeIcon.removeClass('bi-moon').addClass('bi-sun');
+        themeIconResident.removeClass('bi-sun-fill').addClass('bi-moon-fill');
         themeText.text('Light Mode');
         sessionStorage.setItem('theme', 'dark');
         $('hr').addClass('bg-white');
-        $('#logo').attr('src', '{{ asset("assets/img/e-ligtas-logo-white.png") }}');
+        $('#logo').attr('src', '{{ asset('assets/img/E-LIGTAS-Logo-White.png') }}');
+        if (typeof map != 'undefined') {
+            map.setOptions({
+                styles: mapDarkModeStyle
+            });
+
+            if (typeof directionDisplay != 'undefined') {
+                directionDisplay.setOptions({
+                    polylineOptions: {
+                        strokeColor: '#ffffff',
+                        strokeOpacity: 1.0,
+                        strokeWeight: 3
+                    }
+                });
+
+                if (directionDisplay.getDirections() != null)
+                    directionDisplay.setDirections(directionDisplay.getDirections());
+            }
+
+
+            if (typeof userBounds != 'undefined')
+                userBounds.setOptions({
+                    fillColor: "#ffffff",
+                    fillOpacity: 0.3,
+                    strokeColor: "#ffffff",
+                    strokeOpacity: 0.8,
+                    strokeWeight: 2
+                });
+        }
     }
 
     function disableDarkMode() {
         body.removeClass('dark-mode');
-        themeIcon.removeClass('bi-brightness-high').addClass('bi-moon');
+        themeIcon.removeClass('bi-sun').addClass('bi-moon');
+        themeIconResident.removeClass('bi-moon-fill').addClass('bi-sun-fill');
         themeText.text('Dark Mode');
         sessionStorage.setItem('theme', 'light');
         $('hr').removeClass('bg-white').addClass('bg-dark');
-        $('#logo').attr('src', '{{ asset("assets/img/e-ligtas-logo-black.png") }}');
+        $('#logo').attr('src', '{{ asset('assets/img/E-LIGTAS-Logo-Black.png') }}');
+        if (typeof map != 'undefined') {
+            map.setOptions({
+                styles: mapLightModeStyle
+            });
+
+            if (typeof directionDisplay != 'undefined') {
+                directionDisplay.setOptions({
+                    polylineOptions: {
+                        strokeColor: '#3388FF',
+                        strokeOpacity: 1.0,
+                        strokeWeight: 3
+                    }
+                });
+
+                if (directionDisplay.getDirections() != null)
+                    directionDisplay.setDirections(directionDisplay.getDirections());
+            }
+
+            if (typeof userBounds != 'undefined')
+                userBounds.setOptions({
+                    fillColor: "#3388FF",
+                    fillOpacity: 0.3,
+                    strokeColor: "#3388FF",
+                    strokeOpacity: 0.8,
+                    strokeWeight: 2
+                });
+        }
     }
 
     function confirmModal(text) {
@@ -271,4 +398,124 @@
     function showErrorMessage(message = 'An error occurred while processing your request.') {
         return toastr.error(message, 'Error');
     }
+
+    const mapLightModeStyle = [{
+        "featureType": "poi.business",
+        "stylers": [{
+            "visibility": "off"
+        }]
+    }];
+
+    const mapDarkModeStyle = [{
+            "featureType": "all",
+            "elementType": "labels.text.fill",
+            "stylers": [{
+                "color": "#b3b3b3"
+            }]
+        },
+        {
+            "featureType": "all",
+            "elementType": "labels.text.stroke",
+            "stylers": [{
+                    "color": "#212529"
+                },
+                {
+                    "weight": 3
+                },
+                {
+                    "gamma": 0.84
+                }
+            ]
+        },
+        {
+            "featureType": "landscape",
+            "elementType": "geometry",
+            "stylers": [{
+                "color": "#1a528b"
+            }]
+        },
+        {
+            "featureType": "landscape",
+            "elementType": "geometry.fill",
+            "stylers": [{
+                "color": "#1e293b"
+            }]
+        },
+        {
+            "featureType": "road",
+            "elementType": "geometry.fill",
+            "stylers": [{
+                "color": "#475569"
+            }]
+        },
+        {
+            "featureType": "road.highway",
+            "elementType": "geometry.fill",
+            "stylers": [{
+                "color": "#d8aa1e"
+            }]
+        },
+        {
+            "featureType": "road.highway",
+            "elementType": "geometry.stroke",
+            "stylers": [{
+                "color": "#475569"
+            }]
+        },
+        {
+            "featureType": "road.local",
+            "elementType": "geometry.stroke",
+            "stylers": [{
+                "color": "#212529"
+            }]
+        },
+        {
+            "featureType": "water",
+            "elementType": "geometry",
+            "stylers": [{
+                "color": "#111d37"
+            }]
+        },
+        {
+            "featureType": "water",
+            "elementType": "geometry.fill",
+            "stylers": [{
+                "color": "#111d37"
+            }]
+        },
+        {
+            "featureType": "poi",
+            "elementType": "geometry",
+            "stylers": [{
+                "visibility": "off"
+            }]
+        },
+        {
+            "featureType": "transit.station.airport",
+            "elementType": "geometry",
+            "stylers": [{
+                "visibility": "off"
+            }]
+        },
+        {
+            "featureType": "landscape.man_made",
+            "elementType": "geometry.fill",
+            "stylers": [{
+                "visibility": "off"
+            }]
+        },
+        {
+            "featureType": "landscape.man_made",
+            "elementType": "geometry.stroke",
+            "stylers": [{
+                "color": "#ffc107"
+            }]
+        },
+        {
+            "featureType": "poi.business",
+            "stylers": [{
+                "visibility": "off"
+            }]
+        }
+    ];
 </script>

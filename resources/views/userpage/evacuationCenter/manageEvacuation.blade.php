@@ -16,10 +16,18 @@
             <div class="label-container">
                 <div class="icon-container">
                     <div class="icon-content">
-                        <i class="bi bi-house-gear"></i>
+                        @if ($operation == 'active')
+                            <i class="bi bi-house-gear"></i>
+                        @else
+                            <i class="bi bi-house-slash"></i>
+                        @endif
                     </div>
                 </div>
-                <span>MANAGE EVACUATION CENTER</span>
+                @if ($operation == 'active')
+                    <span>MANAGE EVACUATION CENTER</span>
+                @else
+                    <span>ARCHIVED EVACUATION CENTER</span>
+                @endif
             </div>
             <hr>
             @if (auth()->user()->is_disable == 0 && $operation == 'active')
@@ -155,7 +163,7 @@
                             position: location,
                             map: map,
                             icon: {
-                                url: "{{ asset('assets/img/evacMarkerDefault.png') }}",
+                                url: "{{ asset('assets/img/Default.png') }}",
                                 scaledSize: new google.maps.Size(35, 35)
                             }
                         });
@@ -229,7 +237,7 @@
                         },
                         map: map,
                         icon: {
-                            url: "{{ asset('assets/img/evacMarkerDefault.png') }}",
+                            url: "{{ asset('assets/img/Default.png') }}",
                             scaledSize: new google.maps.Size(35, 35),
                         },
                     });

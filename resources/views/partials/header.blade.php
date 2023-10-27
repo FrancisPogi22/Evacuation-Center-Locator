@@ -3,27 +3,27 @@
         <div class="mobile-header">
             <button type="button" class="bi bi-list" id="btn-sidebar-mobile"></button>
         </div>
-        <div class="dropdown">
-            @auth
+        @auth
+            <div class="dropdown">
                 @if (auth()->user()->organization == 'CDRRMO')
                     <div class="notification" id="notification-container">
                         <button class="bi bi-bell-fill" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                         </button>
                         <ul class="dropdown-menu">
-                            @forelse (array_merge($notifications['incident']->toArray(), $notifications['hazard']->toArray()) as $notification)
+                            @forelse (array_merge($notifications['incident']->toArray(), $notifications['area']->toArray()) as $notification)
                                 <li>
-                                    @if (isset($notification['description']) && $notification['description'])
-                                        <a href="{{ route('incident.report', 'pending') }}" class="dropdown-item">
+                                    @if (isset($notification['details']) && $notification['details'])
+                                        <a href="{{ route('manage.report', 'manage', '','') }}" class="dropdown-item">
                                             <p>Resident report a incident:
-                                                {{ $notification['description'] }}
+                                                {{ $notification['details'] }}
                                             </p>
                                             <span class="report_time">
                                                 {{ $notification['report_time'] }}
                                             </span>
                                         </a>
                                     @else
-                                        <a href="{{ route('manage.hazard.report') }}" class="dropdown-item">
-                                            <span>Resident report a hazard:
+                                        <a href="{{ route('manage.report', 'manage') }}" class="dropdown-item">
+                                            <span>Resident report an area:
                                                 {{ $notification['type'] }}
                                             </span>
                                         </a>
@@ -35,14 +35,12 @@
                         </ul>
                     </div>
                 @endif
-            @endauth
-            <div class="header-menu">
-                <button class="bi bi-caret-down-fill" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                </button>
-                <ul class="dropdown-menu">
-                    <li><a class="dropdown-item" id="changeTheme">
-                            <i class="bi bi-moon" id="themeIcon"></i><span id="themeText">Dark Mode</span></a></li>
-                    @auth
+                <div class="header-menu">
+                    <button class="bi bi-caret-down-fill" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item changeTheme">
+                                <i class="bi bi-moon" id="themeIcon"></i><span id="themeText">Dark Mode</span></a></li>
                         <li><a class="changePasswordBtn dropdown-item" href="#changePasswordModal" data-bs-toggle="modal">
                                 <i class="bi bi-shield-lock"></i>Change Password</a></li>
                         <li><a class="myAccount dropdown-item" href="{{ route('display.profile') }}">
@@ -50,9 +48,14 @@
                         <li id="logoutBtn"><a class="logout dropdown-item" href="{{ route('logout.user') }}">
                                 <i class="bi bi-box-arrow-in-left"></i>Logout</a>
                         </li>
-                    @endauth
-                </ul>
+                    </ul>
+                </div>
             </div>
-        </div>
+        @endauth
+        @guest
+            <button class="changeTheme">
+                <i class="bi bi-sun-fill" id="themeIconResident"></i>
+            </button>
+        @endguest
     </div>
 </header>

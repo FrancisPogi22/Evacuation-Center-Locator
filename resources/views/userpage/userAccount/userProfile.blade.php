@@ -22,7 +22,7 @@
             <section class="user-profile-container">
                 <div class="profile-section">
                     <div class="profile-img">
-                        <img src="{{ asset('assets/img/profile.png') }}" alt="Profile" id="profile">
+                        <img src="{{ asset('assets/img/Profile.png') }}" alt="Profile" id="profile">
                     </div>
                 </div>
                 <div class="edit-profile-btn">

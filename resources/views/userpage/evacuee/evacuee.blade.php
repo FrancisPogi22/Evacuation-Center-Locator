@@ -20,7 +20,7 @@
                         @if ($operation == 'manage')
                             <i class="bi bi-person-gear"></i>
                         @else
-                            <i class="bi bi-person-fill-slash"></i>
+                            <i class="bi bi-person-slash"></i>
                         @endif
                     </div>
                 </div>
@@ -35,7 +35,7 @@
                 @if ($operation == 'manage')
                     @if (auth()->user()->is_disable == 0)
                         @if (!$disasterList->isEmpty())
-                            <select id="changeEvacueeDataSelect" class="form-control form-select disasterSelect">
+                            <select id="changeEvacueeDataSelect" class="form-control form-select">
                                 @foreach ($disasterList as $disaster)
                                     <option value="{{ $disaster->id }}">
                                         {{ $disaster->name }}</option>
@@ -46,13 +46,13 @@
                     @endif
                 @else
                     @if (!$archiveDisasterList->isEmpty())
-                        <select id="changeYearSelect" class="form-control form-select yearSelect">
+                        <select id="changeYearSelect" class="form-control form-select">
                             @foreach ($yearList as $year)
                                 <option value="{{ $year }}">
                                     {{ $year }}</option>
                             @endforeach
                         </select>
-                        <select id="changeArchiveEvacueeDataSelect" class="form-control form-select disasterSelect">
+                        <select id="changeArchiveEvacueeDataSelect" class="form-control form-select">
                             @foreach ($archiveDisasterList as $disaster)
                                 <option value="{{ $disaster->id }}">
                                     {{ $disaster->name }}</option>

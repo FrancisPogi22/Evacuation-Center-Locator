@@ -13,7 +13,7 @@
             <div class="label-container">
                 <div class="icon-container">
                     <div class="icon-content">
-                        <i class="bi bi-card-checklist"></i>
+                        <i class="bi bi-card-list"></i>
                     </div>
                 </div>
                 <span>USER ACTIVITY LOG</span>

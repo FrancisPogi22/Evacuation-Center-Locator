@@ -99,7 +99,7 @@
                                     <p>Today's Reports</p>
                                     <i class="bi bi-megaphone"></i>
                                 </div>
-                                <p id="totalReport">{{ $incidentReport }}</p>
+                                <p id="totalReport">{{ $residentReport }}</p>
                                 <span>Total</span>
                             </div>
                         </div>
@@ -154,7 +154,7 @@
             //     evacueeData();
             // });
 
-            // Echo.channel('incident-report-event').listen('IncidentReportEvent', (e) => {
+            // Echo.channel('incident-report').listen('IncidentReport', (e) => {
             //     $("#totalReport").text(e.totalReport);
             // });
         });

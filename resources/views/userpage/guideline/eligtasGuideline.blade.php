@@ -35,7 +35,7 @@
                                 <a class="guidelines-item"
                                     href="{{ route('eligtas.guide', Crypt::encryptString($guidelineItem->id)) }}">
                                     <div class="guideline-content">
-                                        <img src="{{ asset('assets/img/cdrrmo-logo.png') }}" alt="Logo">
+                                        <img src="{{ asset('assets/img/CDRRMO-Logo.png') }}" alt="Logo">
                                         <div class="guideline-type">
                                             <p>{{ $guidelineItem->type }}</p>
                                         </div>
@@ -46,7 +46,7 @@
                                 <a class="guidelines-item"
                                     href="{{ route('resident.eligtas.guide', Crypt::encryptString($guidelineItem->id)) }}">
                                     <div class="guideline-content">
-                                        <img src="{{ asset('assets/img/cdrrmo-logo.png') }}" alt="Logo">
+                                        <img src="{{ asset('assets/img/CDRRMO-Logo.png') }}" alt="Logo">
                                         <div class="guideline-type">
                                             <p>{{ $guidelineItem->type }}</p>
                                         </div>
@@ -161,7 +161,7 @@
                         newGuideInputField.classList.add("guide-field");
                         newGuideInputField.innerHTML = `
                         <div class="image-container">
-                            <img src="{{ asset('assets/img/e-ligtas-logo-b.png') }}" alt="Profile"
+                            <img src="{{ asset('assets/img/E-LIGTAS-Logo-Black.png') }}" alt="Profile"
                                 class="guidePicture" id="image_preview_container${guideField}">
                                 <span>
                                     <input type="file" name="guidePhoto[]" id="guidePhoto${guideField}" class="form-control guidePhoto">

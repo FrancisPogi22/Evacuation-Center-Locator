@@ -16,10 +16,18 @@
             <div class="label-container">
                 <div class="icon-container">
                     <div class="icon-content">
-                        <i class="bi bi-tropical-storm"></i>
+                        @if ($operation == 'manage')
+                            <i class="bi bi-cloud-upload"></i>
+                        @else
+                            <i class="bi bi-cloud-slash"></i>
+                        @endif
                     </div>
                 </div>
-                <span>MANAGE DISASTER INFORMATION</span>
+                @if ($operation == 'manage')
+                    <span>MANAGE DISASTER</span>
+                @else
+                    <span>ARCHIVED DISASTER</span>
+                @endif
             </div>
             <hr>
             @if (auth()->user()->is_disable == 0 && $operation == 'manage')

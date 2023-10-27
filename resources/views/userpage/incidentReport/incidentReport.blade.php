@@ -4,8 +4,6 @@
 <head>
     @include('partials.headPackage')
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css">
-    <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.4.1/css/responsive.dataTables.min.css">
     {{-- @vite(['resources/js/app.js']) --}}
 </head>
 
@@ -23,80 +21,12 @@
                 <span>INCIDENT REPORT</span>
             </div>
             <hr>
-            @if ($operation == 'pending')
-                <section class="table-container">
-                    <div class="table-content">
-                        <header class="table-label">Pending Incident Report</header>
-                        <table class="table" id="pendingReport" width="100%">
-                            <thead>
-                                <tr>
-                                    <th colspan="2">Description</th>
-                                    <th>Location</th>
-                                    <th>Status</th>
-                                    <th>Photo</th>
-                                    <th>Action</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                            </tbody>
-                        </table>
-                    </div>
-                </section>
-            @endif
-            {{-- @guest
-                <section class="incident-report">
-                    <div class="incidentReportTable">
-                        @foreach ($incidentReport as $report)
-                            <div class="incident-report-container">
-                                <div class="incident-report-content">
-                                    <div class="report-photo-container">
-                                        <img class="report-photo" src="{{ asset('reports_image/' . $report->photo) }}"
-                                            alt="logo">
-                                    </div>
-                                    <div class="incident-report-details">
-                                        <div class="pt-2">
-                                            <p class="fw-bold">Report Description</p>
-                                            <p class="fs-6 text-secondary">{{ $report->description }}</p>
-                                        </div>
-                                        <div class="py-2">
-                                            <p class="fw-bold">Report Location</p>
-                                            <p class="fs-6 text-secondary">{{ $report->location }}</p>
-                                        </div>
-                                        <div class="py-2">
-                                            <p class="fw-bold">Report Status :
-                                                <span class="status-content bg-success">{{ $report->status }}</span>
-                                            </p>
-                                        </div>
-                                        <p class="pb-2 fw-bold">Date Reported: <span
-                                                class="text-danger">{{ date('Y') }}</span>
-                                        </p>
-                                    </div>
-                                </div>
-                            </div>
-                        @endforeach
-                    </div>
-                </section>
-            @endguest --}}
+            @guest
+
+            @endguest
             @auth
                 @if ($operation == 'report')
-                    <section class="table-container">
-                        <div class="table-content">
-                            <header class="table-label">Incident Report</header>
-                            <table class="table" id="incidentReports" width="100%">
-                                <thead>
-                                    <tr>
-                                        <th colspan="2">Description</th>
-                                        <th>Location</th>
-                                        <th>Status</th>
-                                        <th>Photo</th>
-                                        <th>Action</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                </tbody>
-                            </table>
-                        </div>
-                    </section>
+                   
                 @endif
             @endauth
         </main>
@@ -463,7 +393,7 @@
         displayReportPhoto(reportPhotoUrl);
         });
 
-        // Echo.channel('incident-report-event').listen('IncidentReportEvent', (e) => {
+        // Echo.channel('incident-report').listen('IncidentReport', (e) => {
         // pendingReport.draw();
         // @auth
         // incidentReports.draw();
