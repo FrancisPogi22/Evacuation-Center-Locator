@@ -24,6 +24,7 @@
                     <div class="profile-img">
                         <img src="{{ asset('assets/img/Profile.png') }}" alt="Profile" id="profile">
                     </div>
+                    <p>{{ auth()->user()->name }}</p>
                 </div>
                 <div class="edit-profile-btn">
                     <button class="btn-update" id="updateProfileBtn">
@@ -123,7 +124,7 @@
                         $.ajax({
                             url: "{{ route('account.update', 'accountId') }}".replace('accountId',
                                 accountId),
-                            type: 'PUT',
+                            method: 'PUT',
                             data: formData,
                             success(response) {
                                 response.status == 'warning' ? showWarningMessage(response
@@ -131,9 +132,7 @@
                                     'Successfully updated the account details, Please wait...', true
                                 );
                             },
-                            error() {
-                                showErrorMessage();
-                            }
+                            error: () => showErrorMessage()
                         });
                 });
             }

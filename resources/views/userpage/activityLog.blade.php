@@ -43,9 +43,7 @@
                 </table>
             </section>
         </main>
-        @auth
-            @include('userpage.changePasswordModal')
-        @endauth
+        @include('userpage.changePasswordModal')
     </div>
 
     @include('partials.script')

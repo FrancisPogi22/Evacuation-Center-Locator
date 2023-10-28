@@ -188,7 +188,7 @@
                         .then((result) => {
                             return !result.isConfirmed ? $('#changeDisasterStatus').val('') :
                                 $.ajax({
-                                    type: 'PATCH',
+                                    method: 'PATCH',
                                     data: {
                                         status: status
                                     },
@@ -200,19 +200,13 @@
                                                 `Disaster successfully ${operation == "change" ? "changed status" : operation}.`
                                             ))
                                     },
-                                    error() {
-                                        showErrorMessage();
-                                    }
+                                    error: () => showErrorMessage()
                                 });
                         });
                 }
 
                 function disasterFormHandler(form) {
                     let formData = $(form).serialize();
-                    let url = operation == 'add' ? "{{ route('disaster.create') }}" :
-                        "{{ route('disaster.update', 'disasterId') }}".replace('disasterId',
-                            disasterId);
-                    let type = operation == 'add' ? "POST" : "PATCH";
 
                     confirmModal(`Do you want to ${operation} this disaster?`).then((result) => {
                         if (!result.isConfirmed) return;
@@ -221,19 +215,18 @@
                             showWarningMessage() :
                             $.ajax({
                                 data: formData,
-                                url: url,
-                                type: type,
+                                url: operation == 'add' ? "{{ route('disaster.create') }}" :
+                                    "{{ route('disaster.update', 'disasterId') }}".replace('disasterId',
+                                        disasterId),
+                                method: operation == 'add' ? "POST" : "PATCH",
                                 success(response) {
                                     response.status == 'warning' ? showWarningMessage(response
                                         .message) : (
                                         showSuccessMessage(
                                             `Disaster successfully ${operation == "add" ? "added" : "updated"}.`
-                                        ),
-                                        modal.modal('hide'), disasterTable.draw());
+                                        ), modal.modal('hide'), disasterTable.draw());
                                 },
-                                error() {
-                                    showErrorMessage();
-                                }
+                                error: () => showErrorMessage()
                             });
                     });
                 }

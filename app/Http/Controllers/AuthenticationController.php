@@ -94,7 +94,7 @@ class AuthenticationController extends Controller
         $userAuthenticated = auth()->user();
 
         if ($userAuthenticated->is_suspend == 1) {
-            if ($userAuthenticated->suspend_time <= Carbon::now()->format('Y-m-d H:i:s')) {
+            if ($userAuthenticated->suspend_time <= now()->format('Y-m-d H:i:s')) {
                 $this->user->find($userAuthenticated->id)->update([
                     'status'       => 'Active',
                     'is_suspend'   => 0,

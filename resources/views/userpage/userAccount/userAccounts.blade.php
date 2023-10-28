@@ -171,7 +171,7 @@
                             confirmModal('Do you want to disable this account?').then((result) => {
                                 return !result.isConfirmed ? $(this).val('') :
                                     $.ajax({
-                                        type: "PATCH",
+                                        method: "PATCH",
                                         url: "{{ route('account.disable', 'userId') }}"
                                             .replace('userId', userId),
                                         success() {
@@ -179,9 +179,7 @@
                                                 'Successfully disabled account.');
                                             accountTable.draw();
                                         },
-                                        error() {
-                                            showErrorMessage();
-                                        }
+                                        error: () => showErrorMessage()
                                     })
                             });
                             break;
@@ -190,7 +188,7 @@
                             confirmModal('Do you want to enable this account?').then((result) => {
                                 return !result.isConfirmed ? $(this).val('') :
                                     $.ajax({
-                                        type: "PATCH",
+                                        method: "PATCH",
                                         url: "{{ route('account.enable', 'userId') }}"
                                             .replace('userId', userId),
                                         success() {
@@ -198,9 +196,7 @@
                                                 'Successfully enabled account.');
                                             accountTable.draw();
                                         },
-                                        error() {
-                                            showErrorMessage();
-                                        }
+                                        error: () => showErrorMessage()
                                     });
                             });
                             break;
@@ -223,7 +219,7 @@
                             confirmModal('Do you want to archive this user account?').then((result) => {
                                 return !result.isConfirmed ? $(this).val('') :
                                     $.ajax({
-                                        type: "PATCH",
+                                        method: "PATCH",
                                         url: "{{ route('account.archive', ['userId', 'archive']) }}"
                                             .replace('userId', userId),
                                         success() {
@@ -231,9 +227,7 @@
                                                 'Successfully archive account.');
                                             accountTable.draw();
                                         },
-                                        error() {
-                                            showErrorMessage();
-                                        }
+                                        error: () => showErrorMessage()
                                     });
                             });
                             break;
@@ -242,7 +236,7 @@
                             confirmModal('Do you want to unarchive this account?').then((result) => {
                                 return !result.isConfirmed ? $(this).val('') :
                                     $.ajax({
-                                        type: "PATCH",
+                                        method: "PATCH",
                                         url: "{{ route('account.archive', ['userId', 'unarchive']) }}"
                                             .replace('userId', userId),
                                         success() {
@@ -250,9 +244,7 @@
                                                 'Successfully unarchived account.');
                                             accountTable.draw();
                                         },
-                                        error() {
-                                            showErrorMessage();
-                                        }
+                                        error: () => showErrorMessage()
                                     })
                             });
                             break;
@@ -274,7 +266,7 @@
                             confirmModal('Do you want to open this user account?').then((result) => {
                                 return !result.isConfirmed ? $(this).val('') :
                                     $.ajax({
-                                        type: "PATCH",
+                                        method: "PATCH",
                                         url: "{{ route('account.open', 'userId') }}"
                                             .replace('userId', userId),
                                         success() {
@@ -282,9 +274,7 @@
                                                 'Successfully opened account.');
                                             accountTable.draw();
                                         },
-                                        error() {
-                                            showErrorMessage();
-                                        }
+                                        error: () => showErrorMessage()
                                     });
                             });
                             break;
@@ -317,7 +307,6 @@
                         update: "{{ route('account.update', 'userId') }}".replace('userId', userId),
                         suspend: "{{ route('account.suspend', 'userId') }}".replace('userId', userId)
                     } [operation];
-                    let type = operation == 'create' ? "POST" : "PUT";
 
                     confirmModal(`Do you want to ${operation} this user details?`).then((result) => {
                         if (!result.isConfirmed) return;
@@ -327,16 +316,14 @@
                             $.ajax({
                                 data: formData,
                                 url: url,
-                                type: type,
+                                method: operation == 'create' ? "POST" : "PUT",
                                 success(response) {
                                     response.status == "warning" ? showWarningMessage(response
                                         .message) : (showSuccessMessage(
                                         `Successfully ${operation}${operation == 'suspend' ? 'ed' : 'd'} user account.`
                                     ), modal.modal('hide'), accountTable.draw())
                                 },
-                                error() {
-                                    showErrorMessage();
-                                }
+                                error: () => showErrorMessage()
                             });
                     });
                 }

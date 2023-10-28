@@ -8,17 +8,17 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('guideline', function (Blueprint $table) {
+        Schema::create('hotline_numbers', function (Blueprint $table) {
             $table->id();
-            $table->string('type')->unique();
+            $table->string('label');
+            $table->string('number');
+            $table->string('logo')->nullable();
             $table->foreignId('user_id')->references('id')->on('user')->cascadeOnUpdate();
-            $table->string('organization');
-            $table->string('guideline_img')->nullable();
         });
     }
 
     public function down(): void
     {
-        Schema::dropIfExists('guideline');
+        Schema::dropIfExists('hotline_numbers');
     }
 };

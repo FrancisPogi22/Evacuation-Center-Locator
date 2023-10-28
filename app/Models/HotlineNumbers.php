@@ -2,22 +2,22 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 
-class Guideline extends Model
+class HotlineNumbers extends Model
 {
     use HasFactory;
 
-    protected $table = 'guideline';
+    protected $table = 'hotline_numbers';
 
     protected $primaryKey = 'id';
-    
+
     protected $fillable = [
-        'type',
-        'user_id',
-        'organization',
-        'guideline_img'
+        'label',
+        'number',
+        'logo',
+        'user_id'
     ];
 
     public $timestamps = false;

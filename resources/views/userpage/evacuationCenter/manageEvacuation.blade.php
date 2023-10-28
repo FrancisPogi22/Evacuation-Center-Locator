@@ -293,10 +293,6 @@
                     if (!marker) return;
 
                     let formData = $(form).serialize();
-                    let url = operation == 'add' ? "{{ route('evacuation.center.create') }}" :
-                        "{{ route('evacuation.center.update', 'evacuationCenterId') }}".
-                    replace('evacuationCenterId', evacuationCenterId);
-                    let type = operation == 'add' ? 'POST' : 'PUT';
 
                     confirmModal(`Do you want to ${operation} this evacuation center?`).then((result) => {
                         if (!result.isConfirmed) return;
@@ -305,17 +301,17 @@
                             showWarningMessage() :
                             $.ajax({
                                 data: formData,
-                                url: url,
-                                type: type,
+                                url: operation == 'add' ? "{{ route('evacuation.center.create') }}" :
+                                    "{{ route('evacuation.center.update', 'evacuationCenterId') }}".
+                                replace('evacuationCenterId', evacuationCenterId),
+                                method: operation == 'add' ? 'POST' : 'PUT',
                                 success(response) {
                                     response.status == "warning" ? showWarningMessage(response
                                         .message) : (showSuccessMessage(
                                         `Successfully ${operation == 'add' ? 'added' : 'updated'} evacuation center.`
                                     ), evacuationCenterTable.draw(), modal.modal('hide'));
                                 },
-                                error() {
-                                    showErrorMessage();
-                                }
+                                error: () => showErrorMessage()
                             });
                     });
                 }
@@ -329,7 +325,7 @@
                                 headers: {
                                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                                 },
-                                type: type,
+                                method: type,
                                 data: {
                                     status
                                 },
@@ -346,9 +342,7 @@
                                     );
                                     evacuationCenterTable.draw();
                                 },
-                                error() {
-                                    showErrorMessage();
-                                }
+                                error: () => showErrorMessage()
                             });
                     });
                 }

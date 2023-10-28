@@ -1,7 +1,6 @@
 <?php
 
 return [
-
     'mailgun' => [
         'domain' => env('MAILGUN_DOMAIN'),
         'secret' => env('MAILGUN_SECRET'),
@@ -23,4 +22,7 @@ return [
         'key' => env('GOOGLE_MAP_KEY'),
     ],
 
+    'openWeather' => [
+        'key' => env('OPENWEATHER_KEY'),
+    ],
 ];

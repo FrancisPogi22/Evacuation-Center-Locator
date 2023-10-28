@@ -17,18 +17,10 @@
             <div class="label-container">
                 <div class="icon-container">
                     <div class="icon-content">
-                        @if ($operation == 'manage')
-                            <i class="bi bi-person-gear"></i>
-                        @else
-                            <i class="bi bi-person-slash"></i>
-                        @endif
+                        <i class="bi bi-person-{{ $operation == 'manage' ? 'gear' : 'slash' }}"></i>
                     </div>
                 </div>
-                @if ($operation == 'manage')
-                    <span>MANAGE EVACUEE</span>
-                @else
-                    <span>EVACUEE HISTORY</span>
-                @endif
+                <span>{{ $operation == 'manage' ? 'MANAGE EVACUEE' : 'EVACUEE HISTORY' }}</span>
             </div>
             <hr>
             <div class="page-button-container manage-evacuee">
@@ -192,7 +184,6 @@
                 fieldContainerSearch = $('.searchContainer'),
                 hiddenFieldContainer = $('.hidden_field'),
                 formButtonContainer = $('.toggle-form-button'),
-
                 fieldNames = [
                     'infants', 'minors', 'senior_citizen', 'pwd',
                     'pregnant', 'lactating', 'male', 'female'
@@ -337,7 +328,6 @@
                     {
                         targets: 1,
                         visible: '{{ $operation }}' == 'archived' ? false : true
-
                     }
                 ]
             });
@@ -373,11 +363,9 @@
                 modalLabel.text('Update Evacuee Information');
                 formButton.addClass('btn-update').removeClass('btn-submit').text('Update');
                 modalDialog.addClass('modal-lg');
-                fieldContainer.prop('hidden', false);
-                submitButtonContainer.prop('hidden', false);
-                hiddenFieldContainer.prop('hidden', true);
-                formButtonContainer.prop('hidden', true);
-                fieldContainerSearch.prop('hidden', true);
+                fieldContainer.add(submitButtonContainer).prop('hidden', false);
+                hiddenFieldContainer.add(formButtonContainer).add(fieldContainerSearch).prop('hidden',
+                    true);
 
                 let data = getRowData(this, evacueeTable);
                 evacueeId = data.id;
@@ -398,23 +386,19 @@
 
             modal.on('hidden.bs.modal', () => {
                 validator.resetForm();
-                $('#evacueeInfoForm').trigger('reset');
-                fieldContainer.prop('hidden', true);
-                submitButtonContainer.prop('hidden', true);
+                $('#evacueeInfoForm')[0].reset();
+                fieldContainer.add(submitButtonContainer).prop('hidden', true);
                 formButtonContainer.prop('hidden', false);
                 modalDialog.removeClass('modal-lg');
             });
 
             $(document).on('click', '.rowCheckBox', function() {
-                var $row = $(this).closest('tr');
-                $row.toggleClass('selectedRow', $(this).is(':checked'));
+                let row = $(this).closest('tr'),
+                    childRow = row.next('.child');
 
-                var $childRow = $row.next('.child');
-                $childRow.toggleClass('selectedRow', $(this).is(':checked'));
-
+                row.add(childRow).toggleClass('selectedRow', $(this).is(':checked'));
                 selectAllCheckBox.prop('checked', $('.rowCheckBox:checked').length === $(
                     '.rowCheckBox').length);
-
             });
 
             selectAllCheckBox.click(function() {
@@ -455,17 +439,16 @@
                                 'Return Home' : 'Evacuated'
                         },
                         url: "{{ route('evacuee.info.update.status') }}",
-                        type: "PATCH",
+                        method: "PATCH",
                         success(response) {
                             evacueeTable.draw();
                             showSuccessMessage(
                                 `Successfully updated the evacuee status to ${sessionStorage.getItem('status').toLowerCase()}.`
                             );
-
                             selectAllCheckBox.prop('checked', false);
                             initializeDataTable(url);
                         },
-                        error: function(jqXHR, error, data) {
+                        error() {
                             selectAllCheckBox.prop('checked', false);
                             showErrorMessage();
                         }
@@ -473,32 +456,20 @@
                 });
             });
 
-            $(document).on('mouseenter mouseleave', '#changeEvacueeStatusBtn', function(e) {
-                const marginOne = window.innerWidth <= 380 ? '7' : '8';
-                const marginTwo = window.innerWidth <= 380 ? '4' : '5';
-
-                this.style.marginRight = e.type === 'mouseenter' ? (this.textContent.includes(
-                    'Show Returned') ? `${marginOne}px` : `${marginTwo}px`) : '0';
-            });
-
             $(document).on('click', '#changeEvacueeDataBtn', function() {
                 sessionStorage.setItem('status', this.textContent.includes('Show Returned') ?
                     'Return Home' : 'Evacuated');
-
                 $(this).html(this.textContent.includes('Show Returned') ?
                     '<i class="bi bi-hospital pr-2"></i> Show Evacuee' :
                     '<i class="bi bi-house pr-2"></i> Show Returned to Residence');
-
                 $('#changeEvacueeStatusBtn').html(
                     sessionStorage.getItem('status') == 'Evacuated' ?
                     '<i class="bi bi-person-up"></i> Returning Home' :
                     '<i class="bi bi-person-down"></i> Evacuated Again'
                 );
-
                 url = "{{ route('evacuee.info.get', [$operation, 'disaster', 'status']) }}"
                     .replace('disaster', sessionStorage.getItem("ongoingDisaster"))
                     .replace('status', sessionStorage.getItem('status'));
-
                 initializeDataTable(url);
             });
 
@@ -507,7 +478,6 @@
                 url = "{{ route('evacuee.info.get', [$operation, 'disaster', 'status']) }}"
                     .replace('disaster', sessionStorage.getItem("ongoingDisaster"))
                     .replace('status', sessionStorage.getItem('status'));
-
                 initializeDataTable(url);
             });
 
@@ -521,28 +491,23 @@
                     success(data) {
                         $('#changeArchiveEvacueeDataSelect').empty();
 
-                        if (data.length == 0) return;
+                        if (!data) return;
 
                         data.forEach(disaster => {
                             $('#changeArchiveEvacueeDataSelect').append(
                                 `<option value="${disaster.id}">${disaster.name}</option>`
                             );
                         });
-
                         sessionStorage.setItem('archiveDisaster', $(
                             '#changeArchiveEvacueeDataSelect option:first').val());
                         $('#changeArchiveEvacueeDataSelect').val(sessionStorage.getItem(
                             'archiveDisaster'));
-
                         url =
                             "{{ route('evacuee.info.get', [$operation, 'disaster', 'archive']) }}"
                             .replace('disaster', sessionStorage.getItem("archiveDisaster"));
-
                         initializeDataTable(url);
                     },
-                    error() {
-                        showErrorMessage()
-                    }
+                    error: () => showErrorMessage()
                 });
             });
 
@@ -550,15 +515,13 @@
                 sessionStorage.setItem('archiveDisaster', $(this).val());
                 url = "{{ route('evacuee.info.get', [$operation, 'disaster', 'archive']) }}"
                     .replace('disaster', sessionStorage.getItem("archiveDisaster"));
-
                 initializeDataTable(url);
             });
 
             $(document).on('click', '#newRecordBtn, #existingRecordBtn', function() {
                 modalDialog.addClass('modal-lg');
-                evacueeInfoForm.trigger('reset');
+                evacueeInfoForm[0].reset();
                 validator.resetForm();
-
                 this.textContent.includes('Add new record') ?
                     showForm('new', true, true, false) :
                     showForm('existing', false, false, true);
@@ -567,13 +530,13 @@
             searchInput.on('keyup', function() {
                 const value = $(this).val();
 
-                if (value.length == 0) return dropdownOptions.prop('hidden', true);
+                if (!value) return dropdownOptions.prop('hidden', true);
 
                 $.ajax({
                     url: `{{ route('family.record.get', ['data', 'searchData']) }}`
                         .replace('data', value),
                     method: 'GET',
-                    success: data => {
+                    success(data) {
                         searchResults.empty();
 
                         if (data.length == 0) return dropdownOptions.prop('hidden', true);
@@ -588,9 +551,7 @@
 
                         dropdownOptions.prop('hidden', false);
                     },
-                    error() {
-                        showErrorMessage()
-                    }
+                    error: () => showErrorMessage()
                 });
             });
 
@@ -603,7 +564,7 @@
                     url: `{{ route('family.record.get', ['data', 'all']) }}`
                         .replace('data', target.data('id')),
                     method: 'GET',
-                    success: data => {
+                    success(data) {
                         showForm('existing', true, true, false);
                         familyId.val(data.id);
 
@@ -617,40 +578,33 @@
                             targetElement.val(data[key]);
                         }
                     },
-                    error() {
-                        showErrorMessage()
-                    }
+                    error: () => showErrorMessage()
                 });
             });
 
             function formSubmitHandler(form) {
                 let formData = $(form).serialize();
-                let submitUrl = operation == 'record' ? "{{ route('evacuee.info.record') }}" :
-                    "{{ route('evacuee.info.update', 'evacueeId') }}".replace('evacueeId', evacueeId);
-                let type = operation == 'record' ? "POST" : "PUT";
 
                 confirmModal(`Do you want to ${operation} this evacuee info?`).then((result) => {
                     if (!result.isConfirmed) return;
 
-                    console.log(formData)
                     return operation == 'update' && defaultFormData == formData ?
                         showWarningMessage() :
                         $.ajax({
                             data: formData,
-                            url: submitUrl,
-                            type: type,
+                            url: operation == 'record' ? "{{ route('evacuee.info.record') }}" :
+                                "{{ route('evacuee.info.update', 'evacueeId') }}".replace('evacueeId',
+                                    evacueeId),
+                            type: operation == 'record' ? "POST" : "PUT",
                             success(response) {
                                 response.status == 'warning' ? showWarningMessage(response
                                     .message) : (modal.modal('hide'), evacueeTable.draw(),
                                     showSuccessMessage(
                                         `Successfully ${operation == 'record' ? 'recorded new' : 'updated the'} evacuee info.`
                                     ));
-
                                 initializeDataTable(url);
                             },
-                            error() {
-                                showErrorMessage();
-                            }
+                            error: () => showErrorMessage()
                         });
                 });
             }

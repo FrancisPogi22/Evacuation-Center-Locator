@@ -18,10 +18,10 @@ class EvacueeController extends Controller
 
     function __construct()
     {
-        $this->evacuee     = new Evacuee;
-        $this->logActivity = new ActivityUserLog;
-        $this->familyRecord = new FamilyRecord();
-        $this->familyController = new FamilyRecordController();
+        $this->evacuee          = new Evacuee;
+        $this->logActivity      = new ActivityUserLog;
+        $this->familyRecord     = new FamilyRecord;
+        $this->familyController = new FamilyRecordController;
     }
 
     public function getEvacueeData($operation, $disasterId, $status = null)
@@ -91,6 +91,7 @@ class EvacueeController extends Controller
         ]);
 
         $evacueeInfo['individuals'] = $evacueeInfo['male'] + $evacueeInfo['female'];
+        $evacueeInfo['updated_at']  = date('Y-m-d H:i:s');
         $evacueeInfo['family_id']   = $latestRecordId;
         $evacueeInfo['user_id']     = auth()->user()->id;
         $evacueeInfo                = $this->evacuee->create($evacueeInfo);

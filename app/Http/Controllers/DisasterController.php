@@ -20,6 +20,7 @@ class DisasterController extends Controller
         $this->evacuee     = new Evacuee;
         $this->logActivity = new ActivityUserLog;
     }
+
     public function displayDisasterInformation($operation, $year)
     {
         $disasterInformation = $this->disaster
@@ -64,7 +65,7 @@ class DisasterController extends Controller
             return response(['status' => 'warning', 'message' => $validatedDisasterValidation->errors()->first()]);
 
         $disasterData = $this->disaster->create([
-            'name'       => Str::title(trim($request->name)),
+            'name'       => "Typhoon " . Str::title(trim($request->name)),
             'year'       => date('Y'),
             'status'     => "On Going",
             'user_id'    => auth()->user()->id,
@@ -96,16 +97,15 @@ class DisasterController extends Controller
 
     public function archiveDisasterData($disasterId, $operation)
     {
-        $archiveValue = $operation == 'archive' ? 1 : 0;
         $disasterData = $this->disaster->find($disasterId);
+        $archiveValue = $operation == 'archive' ? 1 : 0;
         $disasterData->update([
             'user_id'    => auth()->user()->id,
             'status'     => 'Inactive',
-            'is_archive' =>  $archiveValue
+            'is_archive' => $archiveValue
         ]);
         $this->evacuee->where('disaster_id', $disasterId)->update(['is_archive' => $archiveValue]);
-
-        $this->logActivity->generateLog($disasterId, $disasterData->name, ($operation == "archive" ? "archived" : "unarchived") . " a disaster data");
+        $this->logActivity->generateLog($disasterId, $disasterData->name, $operation . "d a disaster data");
 
         return response()->json();
     }

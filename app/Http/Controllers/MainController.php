@@ -11,6 +11,7 @@ use App\Models\ActivityUserLog;
 use App\Models\EvacuationCenter;
 use App\Events\Notification;
 use App\Exports\EvacueeDataExport;
+use App\Models\HotlineNumbers;
 use App\Models\ResidentReport;
 use Illuminate\Support\Carbon;
 use Maatwebsite\Excel\Facades\Excel;
@@ -35,15 +36,29 @@ class MainController extends Controller
 
     public function dashboard()
     {
-        $disasterData     = $this->fetchDisasterData();
-        $onGoingDisasters = $this->disaster->where('status', "On Going")->get();
-        $activeEvacuation = $this->evacuationCenter->where('status', "Active")->count();
-        $totalEvacuee     = $this->evacuee->where('status', "Evacuated")->sum('individuals');
-        $totalEvacuee     = strval($totalEvacuee);
-        $notifications    = $this->notification->notifications();
-        $residentReport   = $this->residentReport->where('report_time', '>=', Carbon::now()->format('Y-m-d H:i:s'))->count();
+        $disaster              = $this->disaster->all();
+        $disasterData          = $this->fetchDisasterData();
+        $onGoingDisasters      = $disaster->where('status', "On Going");
+        $activeEvacuation      = $this->evacuationCenter->where('status', "Active")->count();
+        $totalEvacuee          = strval($this->evacuee->where('status', "Evacuated")->sum('individuals'));
+        $notifications         = $this->notification->notifications();
+        $residentReport        = $this->residentReport->where('report_time', '>=', now()->format('Y-m-d H:i:s'))->count();
 
-        return view('userpage.dashboard', compact('activeEvacuation', 'disasterData', 'totalEvacuee', 'onGoingDisasters', 'notifications', 'residentReport'));
+        return view('userpage.dashboard', compact('activeEvacuation', 'disasterData', 'totalEvacuee', 'onGoingDisasters', 'disaster', 'notifications', 'residentReport'));
+    }
+
+    public function fetchDisasters($year)
+    {
+        return $this->disaster->where('year', $year)->get();
+    }
+
+    public function initDisasterData($disasterName)
+    {
+        $disaterData = $this->disaster->select('id', 'name', 'year')
+            ->where('name', 'LIKE', "%{$disasterName}%")
+            ->get();
+
+        return response()->json($disaterData);
     }
 
     public function generateExcelEvacueeData(Request $request)
@@ -53,7 +68,7 @@ class MainController extends Controller
         ]);
 
         if ($generateReportValidation->fails())
-            return back()->with('warning', $generateReportValidation->errors()->first());
+            return back()->with('warning', "Disaster is not exist.");
 
         return Excel::download(new EvacueeDataExport($request->disaster_id), 'evacuee-data.xlsx', FileFormat::XLSX);
     }
@@ -69,18 +84,37 @@ class MainController extends Controller
             return view('userpage.guideline.eligtasGuideline', compact('guidelineData'));
         }
 
-        $guidelineData = auth()->user()->organization == "CDRRMO" ? $this->guideline->where('organization', "CDRRMO")->get() :
-            $this->guideline->where('organization', "CSWD")->get();
+        $guidelineData = $this->guideline->where('organization', auth()->user()->organization)->get();
 
         return view('userpage.guideline.eligtasGuideline', compact('guidelineData', 'notifications'));
     }
 
+    public function searchGuideline(Request $request)
+    {
+        $searchGuidelineValdation = Validator::make($request->all(), [
+            'guideline_name' => 'required'
+        ]);
+
+        if ($searchGuidelineValdation->fails())
+            return response(['warning' => $searchGuidelineValdation->errors()->first()]);
+
+        $guideline = $this->guideline->select('id', 'type', 'guideline_img');
+
+        if (auth()->check()) $guideline->where('organization', auth()->user()->organization);
+
+        $guidelineData = $guideline->where('type', 'LIKE', "%{$request->guideline_name}%")->get();
+
+        if ($guidelineData->isEmpty()) return back()->with('warning', "Sorry, we couldn't find any result.");
+        return response(['guidelineData' => $guidelineData]);
+    }
+
     public function guide($guidelineId)
     {
-        $notifications = $this->notification->notifications();
-        $guide         = $this->guide->where('guideline_id', Crypt::decryptString($guidelineId))->get();
+        $notifications  = $this->notification->notifications();
+        $guide          = $this->guide->where('guideline_id', $guidelineId)->get();
+        $guidelineLabel = $this->guideline->where('id', $guidelineId)->value('type');
 
-        return view('userpage.guideline.guide', compact('guide', 'guidelineId', 'notifications'));
+        return view('userpage.guideline.guide', compact('guide', 'guidelineId', 'guidelineLabel', 'notifications'));
     }
 
     public function manageEvacueeInformation($operation)
@@ -185,9 +219,10 @@ class MainController extends Controller
 
     public function hotlineNumbers()
     {
-        $notifications = $this->notification->notifications();
+        $notifications  = $this->notification->notifications();
+        $hotlineNumbers = HotlineNumbers::all();
 
-        return view('userpage.hotlineNumbers', compact('notifications'));
+        return view('userpage.hotlineNumber.hotlineNumbers', compact('notifications', 'hotlineNumbers'));
     }
 
     public function about()
