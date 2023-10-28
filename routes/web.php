@@ -51,7 +51,7 @@ Route::prefix('resident')->middleware('guest')->group(function () {
 
         Route::name('area.')->controller(AreaReportController::class)->group(function () {
             Route::post('/areaReport', 'createAreaReport')->name('report');
-            Route::get('/getAreaReport', 'getAreaReport')->name('get');
+            Route::get('/getAreaReport/{operation}/{year}/{type}', 'getAreaReport')->name('get');
         });
 
         Route::get('/viewEvacuationCenter/{operation}/{type}', EvacuationCenterController::class . '@getEvacuationData')->name('evacuation.center.get');
@@ -101,7 +101,7 @@ Route::middleware('auth')->group(function () {
             Route::patch('/changeEvacuationStatus/{evacuationId}', 'changeEvacuationStatus')->name('change.status');
         });
 
-        Route::get('/getAreaReport/{operation}', AreaReportController::class . '@getAreaReport')->name('cswd.area.get');
+        Route::get('/getAreaReport/{operation}/{year}/{type}', AreaReportController::class . '@getAreaReport')->name('cswd.area.get');
     });
 
     Route::prefix('cdrrmo')->middleware('check.cdrrmo')->group(function () {

@@ -547,8 +547,8 @@
         function ajaxRequest(type = "evacuationCenter") {
             let url = type == "reportArea" ?
                 '{{ $prefix }}' == 'resident' ?
-                "{{ route('resident.area.get') }}" :
-                "{{ route('cswd.area.get', 'locator') }}" :
+                "{{ route('resident.area.get', ['locator', 'null', 'null']) }}" :
+                "{{ route('cswd.area.get', ['locator', 'null', 'null']) }}" :
                 '{{ $prefix }}' == 'resident' ?
                 "{{ route('resident.evacuation.center.get', ['locator', 'active']) }}" :
                 "{{ route('evacuation.center.get', ['locator', 'active']) }}";
