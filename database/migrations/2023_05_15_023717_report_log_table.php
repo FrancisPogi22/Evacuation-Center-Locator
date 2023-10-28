@@ -11,6 +11,7 @@ return new class extends Migration
         Schema::create('report_log', function (Blueprint $table) {
             $table->id();
             $table->string('user_ip');
+            $table->string('report_type')->nullable();
             $table->tinyInteger('attempt');
             $table->timestamp('report_time')->nullable();
         });

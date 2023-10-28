@@ -15,7 +15,8 @@ class ReportLog extends Model
     protected $fillable = [
         'user_ip',
         'attempt',
-        'report_time',
+        'report_type',
+        'report_time'
     ];
 
     public $timestamps = false;

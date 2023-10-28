@@ -1,6 +1,6 @@
 <aside class="sidebar">
     <div class="sidebar-header">
-        <img id="logo" src="{{ asset('assets/img/e-ligtas-logo-black.png') }}" alt="Logo">
+        <img id="logo" src="{{ asset('assets/img/E-LIGTAS-Logo-Black.png') }}" alt="Logo">
         <button type="button" class="bi bi-x" id="btn-sidebar-close"></button>
     </div>
     <div class="sidebar-content">
@@ -31,34 +31,11 @@
                                 <span class="links_name">Dashboard</span>
                             </a>
                         </div>
-                        <div class="navigation-item">
-                            <a href="{{ route('eligtas.guideline') }}" class="menu-link">
-                                <i class="bi bi-book"></i>
-                                <span class="links_name">E-LIGTAS Guideline</span>
-                            </a>
-                        </div>
-                        <div class="navigation-item">
-                            <a class="sub-btn">
-                                <i class="bi bi-megaphone"></i>
-                                <span class="links_name">Report Incident</span>
-                                <i class="bi bi-caret-right-fill dropdown"></i>
-                            </a>
-                            <div class="sub-menu">
-                                <a href="{{ route('incident.report', 'pending') }}" class="menu-link">
-                                    <i class="bi bi-people"></i>
-                                    <span class="links_name">Manage Report</span>
-                                </a>
-                                <a href="{{ route('incident.report', 'report') }}" class="menu-link">
-                                    <i class="bi bi-archive"></i>
-                                    <span class="links_name">Archived Report</span>
-                                </a>
-                            </div>
-                        </div>
                         @if (auth()->user()->position == 'President')
                             <div class="navigation-item">
                                 <a class="sub-btn">
                                     <i class="bi bi-people"></i>
-                                    <span class="links_name">CDRRMO Account</span>
+                                    <span class="links_name">Users Account</span>
                                     <i class="bi bi-caret-right-fill dropdown"></i>
                                 </a>
                                 <div class="sub-menu">
@@ -74,10 +51,29 @@
                             </div>
                         @endif
                         <div class="navigation-item">
-                            <a href="{{ route('manage.hazard.report') }}" class="menu-link">
-                                <i class="bi bi-flag"></i>
-                                <span class="links_name">Manage Hazard Report</span>
+                            <a href="{{ route('eligtas.guideline') }}" class="menu-link">
+                                <i class="bi bi-book"></i>
+                                <span class="links_name">E-LIGTAS Guideline</span>
                             </a>
+                        </div>
+                        <div class="navigation-item">
+                            <div class="navigation-item">
+                                <a class="sub-btn">
+                                    <i class="bi bi-megaphone"></i>
+                                    <span class="links_name">Resident Report</span>
+                                    <i class="bi bi-caret-right-fill dropdown"></i>
+                                </a>
+                                <div class="sub-menu">
+                                    <a href="{{ route('manage.report', 'manage') }}" class="menu-link">
+                                        <i class="bi bi-flag"></i>
+                                        <span class="links_name">Manage Report</span>
+                                    </a>
+                                    <a href="{{ route('manage.report', 'archived') }}" class="menu-link">
+                                        <i class="bi bi-journal-bookmark-fill"></i>
+                                        <span class="links_name">Archived Report</span>
+                                    </a>
+                                </div>
+                            </div>
                         </div>
                         <div class="navigation-item">
                             <a href="{{ route('hotline.number') }}" class="menu-link">
@@ -106,7 +102,7 @@
                         </div>
                         <div class="navigation-item">
                             <a class="sub-btn">
-                                <i class="bi bi-tropical-storm"></i>
+                                <i class="bi bi-clouds"></i>
                                 <span class="links_name">Disaster</span>
                                 <i class="bi bi-caret-right-fill dropdown"></i>
                             </a>
@@ -140,7 +136,7 @@
                         </div>
                         <div class="navigation-item">
                             <a class="sub-btn">
-                                <i class="bi bi-hospital"></i>
+                                <i class="bi bi-house"></i>
                                 <span class="links_name">Evacuation Center</span>
                                 <i class="bi bi-caret-right-fill dropdown"></i>
                             </a>
@@ -164,26 +160,24 @@
                         @if (auth()->user()->position == 'Focal')
                             <div class="navigation-item">
                                 <a class="sub-btn">
-                                    <i class="bi bi-people"></i>
-                                    <span class="links_name">Manage Users Account</span>
+                                    <i class="bi bi-person-vcard"></i>
+                                    <span class="links_name">Users Account</span>
                                     <i class="bi bi-caret-right-fill dropdown"></i>
                                 </a>
                                 <div class="sub-menu">
                                     <a href="{{ route('display.users.account', 'active') }}" class="menu-link">
                                         <i class="bi bi-person-gear"></i>
-                                        <span class="links_name">Users Account</span>
+                                        <span class="links_name">Manage Account</span>
                                     </a>
                                     <a href="{{ route('display.users.account', 'archived') }}" class="menu-link">
                                         <i class="bi bi-person-slash"></i>
                                         <span class="links_name">Archived Account</span>
                                     </a>
+                                    <a href="{{ route('activity.log') }}" class="menu-link">
+                                        <i class="bi bi-card-list"></i>
+                                        <span class="links_name">User Activity Log</span>
+                                    </a>
                                 </div>
-                            </div>
-                            <div class="navigation-item">
-                                <a href="{{ route('activity.log') }}" class="menu-link">
-                                    <i class="bi bi-card-checklist"></i>
-                                    <span class="links_name">User Activity Log</span>
-                                </a>
                             </div>
                         @endif
                         <div class="navigation-item">
@@ -214,7 +208,7 @@
                         </a>
                     </div>
                     <div class="navigation-item">
-                        <a href="{{ route('resident.display.incident.report', 'pending') }}" class="menu-link">
+                        <a href="{{ route('resident.reporting') }}" class="menu-link">
                             <i class="bi bi-megaphone"></i>
                             <span class="links_name">Report Incident</span>
                         </a>

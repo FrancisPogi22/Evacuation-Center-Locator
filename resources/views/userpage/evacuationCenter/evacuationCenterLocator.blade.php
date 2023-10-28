@@ -41,39 +41,39 @@
                             <div class="marker-count-container active">
                                 <div class="marker-count active">0</div>
                             </div>
-                            <img src="{{ asset('assets/img/evacMarkerActive.png') }}" alt="Icon">
+                            <img src="{{ asset('assets/img/Active.png') }}" alt="Icon">
                             <span class="fw-bold">Active Evacuation</span>
                         </div>
                         <div class="markers">
                             <div class="marker-count-container inactive">
                                 <div class="marker-count inactive">0</div>
                             </div>
-                            <img src="{{ asset('assets/img/evacMarkerInactive.png') }}" alt="Icon">
+                            <img src="{{ asset('assets/img/Inactive.png') }}" alt="Icon">
                             <span class="fw-bold">Inactive Evacuation</span>
                         </div>
                         <div class="markers">
                             <div class="marker-count-container full">
                                 <div class="marker-count full">0</div>
                             </div>
-                            <img src="{{ asset('assets/img/evacMarkerFull.png') }}" alt="Icon">
+                            <img src="{{ asset('assets/img/Full.png') }}" alt="Icon">
                             <span class="fw-bold">Full Evacuation</span>
                         </div>
                         <div class="markers" id="flood-marker">
                             <div class="marker-count-container flooded">
                                 <div class="marker-count flooded">0</div>
                             </div>
-                            <img src="{{ asset('assets/img/floodedMarker.png') }}" alt="Icon">
+                            <img src="{{ asset('assets/img/Flooded.png') }}" alt="Icon">
                             <span class="fw-bold">Flooded Area</span>
                         </div>
                         <div class="markers" id="roadblocked-marker">
                             <div class="marker-count-container roadblocked">
                                 <div class="marker-count roadblocked">0</div>
                             </div>
-                            <img src="{{ asset('assets/img/roadblocked.png') }}" alt="Icon">
+                            <img src="{{ asset('assets/img/Roadblocked.png') }}" alt="Icon">
                             <span class="fw-bold">Roadblocked</span>
                         </div>
                         <div class="markers" id="user-marker" hidden>
-                            <img src="{{ asset('assets/img/userMarker.png') }}" alt="Icon">
+                            <img src="{{ asset('assets/img/User.png') }}" alt="Icon">
                             <span class="fw-bold">You</span>
                         </div>
                     </div>
@@ -132,7 +132,7 @@
             hasActiveEvacuationCenter = false,
             evacuationCenterJson = [],
             evacuationCenterMarkers = [],
-            hazardMarkers = [],
+            areaMarkers = [],
             activeEvacuationCenters = [];
 
         const markerCount = {
@@ -143,7 +143,8 @@
                 roadblocked: $('.marker-count.roadblocked')
             },
             options = {
-                enableHighAccuracy: true
+                enableHighAccuracy: true,
+                maximumAge: 0
             },
             errorCallback = () => {
                 showWarningMessage(
@@ -173,7 +174,7 @@
                 preserveViewport: true,
                 markerOptions: {
                     icon: {
-                        url: "{{ asset('assets/img/userMarker.png') }}",
+                        url: "{{ asset('assets/img/User.png') }}",
                         scaledSize: new google.maps.Size(35, 35)
                     }
                 }
@@ -191,15 +192,15 @@
                 const reportBtnContainer = document.createElement('div');
                 reportBtnContainer.className = 'report-btn-container';
                 reportBtnContainer.innerHTML =
-                    `<button id="reportHazardBtn" class="btn-update">
-                        <i class="bi bi-exclamation-circle-fill"></i>Report Hazard Area
+                    `<button id="reportAreaBtn" class="btn-update">
+                        <i class="bi bi-megaphone"></i>Report Area
                     </button>`;
                 map.controls[google.maps.ControlPosition.BOTTOM_RIGHT].push(reportBtnContainer);
             }
 
             const loader = document.createElement('div');
             loader.id = 'loader';
-            loader.innerHTML = '<div id="loader-inner"></div>';
+            loader.innerHTML = '<div id="loader-inner"></div><div id="loading-text"></div>';
             map.controls[google.maps.ControlPosition.CENTER].push(loader);
         }
 
@@ -207,12 +208,7 @@
             while (markersArray.length) markersArray.pop().setMap(null);
 
             markersData.forEach((data) => {
-                let picture = type == "evacuationCenter" ?
-                    data.status == "Active" ? "evacMarkerActive" :
-                    data.status == "Inactive" ? "evacMarkerInactive" :
-                    "evacMarkerFull" :
-                    data.type == "Flooded" ? "floodedMarker" :
-                    "roadblocked";
+                let picture = type == "evacuationCenter" ? data.status : data.type;
 
                 let marker = generateMarker({
                     lat: parseFloat(data.latitude),
@@ -221,27 +217,70 @@
 
                 markersArray.push(marker);
 
-                let content = type == "evacuationCenter" ?
-                    `<div class="info-description">
+                let content = `
+                    <div class="areaReportContainer">
+                        ${type == "evacuationCenter" ?
+                        `<div class="info-description">
                             <span>Name:</span> ${data.name}
-                    </div>
-                    <div class="info-description">
-                        <span>Barangay:</span> ${data.barangay_name}
-                    </div>
-                    <div class="info-description">
-                        <span>No. of evacuees:</span> ${data.evacuees}
-                    </div>
-                    <div class="info-description status">
-                        <span>Status:</span>
-                        <span class="status-content bg-${getStatusColor(data.status)}">
-                            ${data.status}
-                        </span>
-                    </div>` :
-                    `<div class="info-description">
-                        ${data.type}
-                    </div>
-                    <div class="info-description update" ${!data.update && "hidden"}>
-                        <span>Update:</span> ${data.update}
+                        </div>
+                        <div class="info-description">
+                            <span>Barangay:</span> ${data.barangay_name}
+                        </div>
+                        <div class="info-description">
+                            <span>No. of evacuees:</span> ${data.evacuees}
+                        </div>
+                        <div class="info-description status">
+                            <span>Status:</span>
+                            <span class="status-content bg-${getStatusColor(data.status)}">
+                                ${data.status}
+                            </span>
+                        </div>` :
+                        `<div class="info-description">
+                            <span>Report Date:</span> ${formatDateTime(data.report_time)}
+                        </div>
+                        <div class="info-description">
+                            <span>
+                                ${data.type == "Flooded" ? `${data.type} Area` : data.type }
+                            </span>
+                        </div>
+                        <div class="info-description details">
+                            <span>Details: </span>
+                            <div class="info-window-details-container">
+                                ${data.details}
+                            </div>
+                        </div>
+                        <div class="info-description photo">
+                            <span>Image: </span>
+                            <div hidden>
+                                ${data.latitude}, ${data.longitude}
+                            </div>
+                            <button class="btn btn-sm btn-primary toggleImageBtn">
+                                <i class="bi bi-chevron-expand"></i> View
+                            </button>
+                            <img src="{{ asset('reports_image/${data.photo}') }}" class="form-control" hidden>
+                        </div>
+                        <div class="info-description update" ${data.update.length == 0 && "hidden"}>
+                            <span>Updates Today: </span>
+                            <div class="info-window-update-container">
+                                <div class="update-date">
+                                    ${data.update.length > 0 ? formatDateTime(data.update[0].update_time, 'date') : ''}
+                                </div>
+                                ${
+                                    data.update.length > 0 ?
+                                        data.update.map((update) => {
+                                            return `
+                        <p class="update-details-container">
+                            <small>
+                                as of ${formatDateTime(update.update_time, 'time')}
+                            </small><br>
+                            <span class="update-details">
+                                ${update.update_details}
+                            </span>
+                        </p>`;
+                                        }).join('') : ''
+                                }
+                            </div>
+                        </div>`}
                     </div>`;
 
                 generateInfoWindow(marker, content);
@@ -256,43 +295,46 @@
             });
 
             marker.addListener('click', () => {
-                if (!marker.icon.url.includes('reportMarker')) {
+                if (!marker.icon.url.includes('Reporting')) {
                     closeInfoWindow();
                     activeInfoWindow = infoWindow;
                 }
 
-                if (marker.icon.url.includes('userMarker'))
+                if (marker.icon.url.includes('User'))
                     zoomToUserLocation();
 
                 openInfoWindow(infoWindow, marker);
             });
 
-            if (marker.icon.url.includes('reportMarker')) {
+            if (marker.icon.url.includes('Reporting')) {
                 reportMarker = marker;
                 reportWindow = infoWindow;
                 openInfoWindow(infoWindow, marker);
             }
         }
 
-        function generateMarker(position, icon) {
+        function generateMarker(position, icon, draggable = false) {
             return new google.maps.Marker({
                 position,
                 map,
+                draggable,
                 icon: {
                     url: icon,
-                    scaledSize: new google.maps.Size(35, 35)
+                    scaledSize: new google.maps.Size(35, 35),
                 }
             });
         }
 
         function generateCircle(center) {
+            const color = sessionStorage.getItem('theme') == 'dark' ? "#ffffff" : "#557ed8";
+
             return new google.maps.Circle({
                 map,
                 center,
                 radius: 14,
-                fillColor: "#557ed8",
+                fillColor: color,
                 fillOpacity: 0.3,
-                strokeColor: "#557ed8",
+                strokeColor: color,
                 strokeOpacity: 0.8,
                 strokeWeight: 2
             });
@@ -344,7 +386,7 @@
             activeInfoWindow?.close();
         }
 
-        function getUserLocation(locating = false) {
+        function getUserLocation() {
             return new Promise((resolve, reject) => {
                 if (!navigator.geolocation) {
                     showInfoMessage('Geolocation is not supported by this browser.');
@@ -353,9 +395,8 @@
                 }
 
                 navigator.geolocation.getCurrentPosition((position) => {
-                    position.coords.accuracy <= 250 ?
-                        (geolocationBlocked = false, resolve(position)) :
-                        getUserLocation();
+                    geolocationBlocked = false;
+                    resolve(position);
                 }, errorCallback, options);
             });
         }
@@ -367,7 +408,7 @@
                     userMarker.setPosition(userlocation),
                     userBounds.setCenter(userMarker.getPosition())) :
                 (userMarker = generateMarker(userlocation,
-                        "{{ asset('assets/img/userMarker.png') }}"),
+                        "{{ asset('assets/img/User.png') }}"),
                     userBounds = generateCircle(userMarker.getPosition()));
         }
 
@@ -439,31 +480,30 @@
             watchId = navigator.geolocation.watchPosition(async (position) => {
                 geolocationBlocked = false;
 
-                if (position.coords.accuracy <= 250) {
-                    if (findNearestActive && evacuationCenterJson.length == 0) {
-                        await getEvacuationCentersDistance();
-                        if (!hasActiveEvacuationCenter) return;
-                    }
+                if (findNearestActive && evacuationCenterJson.length == 0) {
+                    await getEvacuationCentersDistance();
+                    if (!hasActiveEvacuationCenter) return;
+                }
 
-                    const {
-                        latitude,
-                        longitude
-                    } = findNearestActive ?
-                        evacuationCenterJson[0] : rowData;
+                const {
+                    latitude,
+                    longitude
+                } = findNearestActive ?
+                    evacuationCenterJson[0] : rowData;
 
-                    const directionService = new google.maps.DirectionsService();
+                const directionService = new google.maps.DirectionsService();
 
-                    directionService.route(
-                        request(
-                            newLatLng(position.coords.latitude, position.coords.longitude),
-                            newLatLng(latitude, longitude)
-                        ),
-                        function(response, status) {
-                            if (status == 'OK' && locating) {
-                                setMarker(response.routes[0].legs[0].start_location);
-                                generateInfoWindow(
-                                    userMarker,
-                                    `<div class="info-window-container">
+                directionService.route(
+                    request(
+                        newLatLng(position.coords.latitude, position.coords.longitude),
+                        newLatLng(latitude, longitude)
+                    ),
+                    function(response, status) {
+                        if (status == 'OK' && locating) {
+                            setMarker(response.routes[0].legs[0].start_location);
+                            generateInfoWindow(
+                                userMarker,
+                                `<div class="info-window-container">
                                         <center>You are here.</center>
                                         <div class="info-description">
                                             <span>Pathway distance to evacuation: </span>
@@ -472,44 +512,43 @@
                                             )} km
                                         </div>
                                     </div>`
-                                );
+                            );
 
-                                if ($('.stop-btn-container').is(':hidden')) {
-                                    $('#reportHazardBtn').attr('hidden', false);
-                                    $('#loader').removeClass('show');
-                                    directionDisplay.setMap(map);
-                                    var bounds = new google.maps.LatLngBounds();
-                                    response.routes[0].legs.forEach(({
-                                            steps
+                            if ($('.stop-btn-container').is(':hidden')) {
+                                $('#reportAreaBtn').attr('hidden', false);
+                                $('#loader').removeClass('show');
+                                directionDisplay.setMap(map);
+                                var bounds = new google.maps.LatLngBounds();
+                                response.routes[0].legs.forEach(({
+                                        steps
+                                    }) =>
+                                    steps.forEach(({
+                                            start_location,
+                                            end_location
                                         }) =>
-                                        steps.forEach(({
-                                                start_location,
-                                                end_location
-                                            }) =>
-                                            (bounds.extend(start_location), bounds.extend(
-                                                end_location))
-                                        )
-                                    );
-                                    map.fitBounds(bounds);
-                                    $('.stop-btn-container').show();
-                                    scrollMarkers();
-                                }
-
-                                directionDisplay.setDirections(response);
-                                if (findNearestActive)
-                                    prevNearestEvacuationCenter = evacuationCenterJson[0];
+                                        (bounds.extend(start_location), bounds.extend(
+                                            end_location))
+                                    )
+                                );
+                                map.fitBounds(bounds);
+                                $('.stop-btn-container').show();
+                                scrollMarkers();
                             }
+
+                            directionDisplay.setDirections(response);
+                            if (findNearestActive)
+                                prevNearestEvacuationCenter = evacuationCenterJson[0];
                         }
-                    );
-                }
+                    }
+                );
             }, errorCallback, options);
         }
 
         function ajaxRequest(type = "evacuationCenter") {
-            let url = type == "reportHazard" ?
+            let url = type == "reportArea" ?
                 '{{ $prefix }}' == 'resident' ?
-                "{{ route('resident.hazard.get') }}" :
-                "{{ route('cswd.hazard.get') }}" :
+                "{{ route('resident.area.get') }}" :
+                "{{ route('cswd.area.get', 'locator') }}" :
                 '{{ $prefix }}' == 'resident' ?
                 "{{ route('resident.evacuation.center.get', ['locator', 'active']) }}" :
                 "{{ route('evacuation.center.get', ['locator', 'active']) }}";
@@ -555,7 +594,7 @@
                         }
 
                         initMarkers(data, type, type == "evacuationCenter" ?
-                            evacuationCenterMarkers : hazardMarkers);
+                            evacuationCenterMarkers : areaMarkers);
                         resolve();
                     }
                 });
@@ -563,7 +602,7 @@
         }
 
         $(document).ready(() => {
-            ajaxRequest('reportHazard');
+            ajaxRequest('reportArea');
             ajaxRequest().then(() => {
                 evacuationCenterTable = $('#evacuationCenterTable').DataTable({
                     ordering: false,
@@ -625,8 +664,11 @@
             });
 
             $(document).on("click", "#pinpointCurrentLocationBtn", function() {
-                if (!locating) {
-                    $('#loader').addClass('show');
+                if (!locating && (userMarker == null || !userMarker.getMap())) {
+                    if (!geolocationBlocked) {
+                        $('#loader').addClass('show');
+                        $("#loading-text").text("Getting your location...");
+                    }
                     getUserLocation().then((position) => {
                         $('#loader').removeClass('show');
                         setMarker(newLatLng(position.coords.latitude, position.coords.longitude));
@@ -645,9 +687,12 @@
 
             $(document).on("click", "#locateNearestBtn, .locateEvacuationCenter", function() {
                 if (!locating) {
-                    scrollToMap();
-                    $('#reportHazardBtn').attr('hidden', true);
-                    $('#loader').addClass('show');
+                    if (!geolocationBlocked) {
+                        scrollToMap();
+                        $("#loading-text").text("Locating evacuation center...");
+                        $('#loader').addClass('show');
+                        $('#reportAreaBtn').attr('hidden', true);
+                    }
                     findNearestActive = !$(this).hasClass('locateEvacuationCenter');
                     rowData = findNearestActive ? null : getRowData(this, evacuationCenterTable);
                     locating = true;
@@ -656,7 +701,7 @@
             });
 
             $(document).on("click", "#stopLocatingBtn", function() {
-                locating = false;
+                locating = false
                 watchId && (navigator.geolocation.clearWatch(watchId), watchId = null);
                 directionDisplay?.setMap(null);
                 userMarker?.setMap(null);
@@ -668,15 +713,16 @@
                 $('#user-marker').prop('hidden', true);
             });
 
-            $(document).on("click", "#reportHazardBtn", function() {
-                if (this.textContent == 'Report Hazard Area' || !reportButtonClicked) {
+            $(document).on("click", "#reportAreaBtn", function() {
+                if (this.textContent == 'Report Area' || !reportButtonClicked) {
                     map.setOptions({
-                        draggableCursor: 'pointer'
+                        draggableCursor: 'pointer',
+                        clickableIcons: false,
                     });
                     showInfoMessage(
-                        'Click on the map to pinpoint the location of the hazard. Click the button again to cancel.'
+                        'Click on the map to pinpoint the area. You can drag the marker to adjust location. Click the button again to cancel.'
                     );
-                    $('#reportHazardBtn').html(
+                    $('#reportAreaBtn').html(
                         '<i class="bi bi-stop-circle"></i>Cancel Reporting'
                     ).addClass('btn-remove');
                     google.maps.event.addListener(map, 'click', function(event) {
@@ -690,33 +736,63 @@
                         } else {
                             generateInfoWindow(
                                 generateMarker(
-                                    coordinates, "{{ asset('assets/img/reportMarker.png') }}"
+                                    coordinates,
+                                    "{{ asset('assets/img/Reporting.png') }}", true
                                 ),
-                                `<form id="reportHazardForm">
+                                `<form id="reportAreaForm">
                                     @csrf
                                     <input type="text" name="latitude" value="${coordinates.lat()}" hidden>
                                     <input type="text" name="longitude" value="${coordinates.lng()}" hidden>
-                                    <div class="mx-1">
+                                    <div id="reportAreaFormContainer">
                                         <label>Report Type</label>
                                         <select name="type" class="form-select">
                                             <option value="" hidden selected disabled>Select Report Type</option>
                                             <option value="Flooded">Flooded</option>
                                             <option value="Roadblocked">Roadblocked</option>
                                         </select>
+                                        <div class="mt-2">
+                                            <label>Details</label>
+                                            <textarea type="text" name="details" class="form-control" cols="50" rows="10"></textarea>
+                                        </div>
+                                        <div class="mt-2">
+                                            <label>Image</label>
+                                            <input type="file" name="image" class="form-control" id="areaInputImage" accept=".jpeg, .jpg, .png" hidden>
+                                            <div class="info-window-action-container report-area">
+                                                <button class="btn btn-sm btn-primary" id="imageBtn">
+                                                    <i class="bi bi-image-fill"></i>
+                                                    Select
+                                                </button>
+                                            </div>
+                                            <img id="selectedAreaImage" src="" class="form-control" hidden>
+                                            <span id="image-error" class="error" hidden>Please select an image file.</span>
+                                        </div>
                                         <center>
-                                            <button id="reportBtn">Submit</button>
+                                            <button id="submitAreaBtn"><i class="bi bi-send-fill"></i> Submit</button>
                                         <center>
                                     </div>
                                 </form>`
                             );
+
+                            reportMarker.addListener('drag', () => {
+                                reportWindow.close();
+                            });
+
+                            reportMarker.addListener('dragend', () => {
+                                openInfoWindow(reportWindow, reportMarker);
+                                $('[name="latitude"]').val(reportMarker.getPosition()
+                                    .lat());
+                                $('[name="longitude"]').val(reportMarker.getPosition()
+                                    .lng());
+                            });
                         }
                     });
                 } else {
                     map.setOptions({
-                        draggableCursor: 'default'
+                        draggableCursor: 'default',
+                        clickableIcons: true
                     });
-                    $('#reportHazardBtn').html(
-                        '<i class="bi bi-exclamation-circle-fill"></i>Report Hazard Area'
+                    $('#reportAreaBtn').html(
+                        '<i class="bi bi-megaphone"></i>Report Area'
                     ).removeClass('btn-remove');
                     reportMarker?.setMap(null);
                     reportMarker = null;
@@ -726,38 +802,98 @@
                 if (!reportButtonClicked) reportButtonClicked = true;
             });
 
-            $(document).on('click', '#reportBtn', function() {
-                $('#reportHazardForm').validate({
+            $(document).on('click', '#submitAreaBtn', function() {
+                $('#reportAreaForm').validate({
                     rules: {
-                        type: 'required'
+                        type: 'required',
+                        details: 'required'
                     },
                     messages: {
-                        type: 'Please select report type.'
+                        type: 'Please select report type.',
+                        details: 'Please enter details.'
                     },
                     errorElement: 'span',
+                    showErrors: function() {
+                        this.defaultShowErrors();
+
+                        $('#image-error').text('Please select an image.')
+                            .prop('style', `display: ${$('#areaInputImage').val() == '' ?
+                                'block' : 'none'} !important`);
+                    },
                     submitHandler: function(form) {
+                        if ($('#areaInputImage').val() == '') return;
+
                         confirmModal('Are you sure you want to report this area?').then((
                             result) => {
                             if (!result.isConfirmed) return;
 
-                            $.post("{{ route('resident.hazard.report') }}", $(form)
-                                .serialize(),
-                                function(response) {
-                                    if (response.status == "warning")
-                                        showErrorMessage(response.message);
-                                    else {
+                            var formData = new FormData(form);
+
+                            $.ajax({
+                                type: 'POST',
+                                url: "{{ route('resident.area.report') }}",
+                                data: formData,
+                                contentType: false,
+                                processData: false,
+                                success: response => {
+                                    const status = response.status
+
+                                    status == "warning" || status ==
+                                        "blocked" ?
+                                        showWarningMessage(response
+                                            .message) :
                                         showSuccessMessage(
-                                            'Report submitted successfully.');
-                                        $('#reportHazardBtn').click();
-                                    }
-                                }).fail(showErrorMessage);
+                                            'Report submitted successfully'
+                                        );
+
+                                    status != "warning" &&
+                                        $('#reportAreaBtn').click();
+                                },
+                                error: showErrorMessage
+                            });
                         });
                     }
                 });
             });
 
-            // Echo.channel('hazard-report').listen('HazardReport', (e) => {
-            //     ajaxRequest('reportHazard');
+            $(document).on('click', '#imageBtn', function() {
+                event.preventDefault();
+                $('#areaInputImage').click();
+            });
+
+            $(document).on('change', '#areaInputImage', function() {
+                if (this.files[0]) {
+                    if (!['image/jpeg', 'image/jpg', 'image/png'].includes(this.files[0].type)) {
+                        $('#areaInputImage').val('');
+                        $('#selectedAreaImage').attr('src', '').attr('hidden', true);
+                        $('#imageBtn').html('<i class="bi bi-image-fill"></i> Select');
+                        setInfoWindowButtonStyles($('#imageBtn'), 'var(--color-primary');
+                        $('#image-error')
+                            .prop('style', 'display: block !important');
+                        return;
+                    } else
+                        $('#image-error').prop('style', 'display: none !important');
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        $('#selectedAreaImage').attr('src', e.target.result);
+                    };
+                    reader.readAsDataURL(this.files[0]);
+                    $('#imageBtn').html('<i class="bi bi-arrow-repeat"></i> Change');
+                    setInfoWindowButtonStyles($('#imageBtn'), 'var(--color-yellow');
+                    $('#selectedAreaImage').attr('hidden', false);
+                    const container = $(this).closest('.gm-style-iw-d');
+                    container.animate({
+                        scrollTop: container.prop('scrollHeight')
+                    }, 500);
+                }
+            });
+
+            $(document).on('click', '.toggleImageBtn', function() {
+                toggleShowImageBtn($(this), $(this).next(), areaMarkers);
+            });
+
+            // Echo.channel('area-report').listen('AreaReport', (e) => {
+            //     ajaxRequest('reportArea');
             // });
 
             // Echo.channel('evacuation-center-locator').listen('EvacuationCenterLocator', (e) => {

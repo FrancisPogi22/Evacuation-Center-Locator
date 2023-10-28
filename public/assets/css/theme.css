@@ -5,8 +5,8 @@
     --color-gray: #334155;
     --color-light-gray: #b3b3b3;
     --color-green: #28a745;
-    --color-primary: #3575ff;
-    --color-yellow: #ffc107;
+    --color-primary: #2682fa;
+    --color-yellow: #ffcb2f;
     --color-black: #212529;
     --color-red: #ef4444;
 
@@ -62,7 +62,8 @@ button {
 }
 
 select::placeholder,
-input::placeholder {
+input::placeholder,
+textarea::placeholder {
     color: var(--color-gray) !important;
 }
 
@@ -174,7 +175,7 @@ input::placeholder {
 }
 
 .sendUpdateBtn,
-#reportBtn {
+#submitAreaBtn {
     font-size: 14px;
     font-weight: 400;
     background: var(--color-green);
@@ -221,7 +222,7 @@ input::placeholder {
 .generate-button-container button i,
 .locateEvacuationCenter i,
 #stopLocatingBtn i,
-#reportHazardBtn i,
+#reportAreaBtn i,
 .guideline-header button i,
 .selectImage i,
 .guideImgBtn i,
@@ -250,7 +251,7 @@ input::placeholder {
     padding: 0 15px;
 }
 
-#changeTheme {
+.changeTheme {
     cursor: pointer;
 }
 
@@ -274,6 +275,13 @@ input::placeholder {
     border-radius: 6px !important;
 }
 
+button.changeTheme {
+    border: none;
+    border-radius: 9999px;
+    padding: 5px 10px;
+    margin-right: 10px;
+}
+
 #badge {
     position: relative;
     top: 0;
@@ -290,7 +298,7 @@ input::placeholder {
 }
 
 .notification ul {
-    width: 250px;
+    width: fit-content;
 }
 
 .notification p {
@@ -333,7 +341,7 @@ input::placeholder {
     background: var(--color-primary) !important;
 }
 
-.dropdown-menu #changeTheme:active {
+.dropdown-menu .dropdown-item.changeTheme:active {
     background: var(--color-yellow) !important;
 }
 
@@ -390,7 +398,8 @@ input::placeholder {
     z-index: 100;
     left: 0;
     top: 0;
-    filter: drop-shadow(0 10px 8px rgb(0 0 0 / 0.04)) drop-shadow(0 4px 3px rgb(0 0 0 / 0.1));
+    filter: drop-shadow(0 10px 8px rgb(0 0 0 / 0.04))
+        drop-shadow(0 4px 3px rgb(0 0 0 / 0.1));
     overflow: hidden;
 }
 
@@ -1389,6 +1398,7 @@ text {
     height: 100%;
     display: flex;
     visibility: hidden;
+    border-radius: 4px;
     align-items: center;
     justify-content: center;
     transition: visibility 0.3s ease;
@@ -1400,12 +1410,25 @@ text {
 }
 
 #loader-inner {
+    position: absolute;
     border: 4px solid #f3f3f3;
     border-top: 4px solid var(--color-black);
     border-radius: 50%;
     width: 30px;
     height: 30px;
     animation: spin 2s linear infinite;
+}
+
+#loading-text {
+    font-size: 16px;
+    font-weight: bolder;
+    position: relative;
+    top: 8%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: var(--color-black);
+    text-align: center;
+    width: 100%;
 }
 
 @keyframes spin {
@@ -1418,6 +1441,13 @@ text {
     }
 }
 
+.reportContainer,
+.areaReportContainer,
+#reportAreaFormContainer {
+    width: 100%;
+    max-width: 400px;
+}
+
 .info-description {
     padding: 6px;
 }
@@ -1426,7 +1456,8 @@ text {
     white-space: nowrap;
 }
 
-.info-description span {
+.info-description span,
+.info-description div {
     font-weight: 600;
 }
 
@@ -1443,6 +1474,16 @@ text {
     margin-top: 10px;
 }
 
+.info-description.photo button,
+.info-window-action-container button {
+    font-size: 13px;
+}
+
+.info-window-action-container.report-area {
+    margin-top: 0;
+    justify-content: start;
+}
+
 .stop-btn-container,
 .report-btn-container {
     margin: 10px;
@@ -1452,7 +1493,7 @@ text {
     display: none;
 }
 
-#reportHazardBtn,
+#reportAreaBtn,
 #stopLocatingBtn {
     padding: 10px 16px;
 }
@@ -1473,6 +1514,10 @@ text {
     appearance: none;
 }
 
+div.gm-style-iw.gm-style-iw-c {
+    padding: 12px !important;
+}
+
 .ssQIHO-checkbox-menu-item label {
     margin-bottom: 0;
     margin-left: 5px;
@@ -1484,7 +1529,7 @@ text {
     gap: 15px;
 }
 
-.hazard-markers,
+.report-markers,
 .evacuation-markers {
     background: var(--color-text);
     display: flex;
@@ -1495,16 +1540,18 @@ text {
     white-space: nowrap;
 }
 
-.hazard-markers {
+.report-markers {
     height: 50px;
 }
 
-.hazard-markers::-webkit-scrollbar,
+.info-window-details-container::-webkit-scrollbar,
+.info-window-update-container::-webkit-scrollbar,
+.report-markers::-webkit-scrollbar,
 .marker-container::-webkit-scrollbar,
 .evacuation-markers::-webkit-scrollbar {
-    width: 0;
-    display: none;
-    appearance: none;
+    width: 0 !important;
+    display: none !important;
+    appearance: none !important;
 }
 
 .markers-header {
@@ -1535,12 +1582,6 @@ text {
     align-items: center;
 }
 
-.marker-count-container.active,
-.marker-count-container.inactive,
-.marker-count-container.full {
-    margin-right: -4px;
-}
-
 .marker-count-container.active {
     background-color: var(--color-green);
 }
@@ -1554,11 +1595,11 @@ text {
 }
 
 .marker-count-container.flooded {
-    background-color: orange;
+    background-color: var(--color-primary);
 }
 
 .marker-count-container.roadblocked {
-    background-color: var(--color-black);
+    background-color: var(--color-d-sub-text);
     margin-right: 1px;
 }
 
@@ -1578,14 +1619,14 @@ text {
     overflow: scroll;
 }
 
-.marker-container.hazard {
+.marker-container.reports {
     gap: 5px;
     padding: 0 5px 0 5px;
     width: 100%;
     justify-content: center;
 }
 
-hazard-markers .markers,
+report-markers .markers,
 .evacuation-markers .markers {
     display: flex;
     justify-content: center;
@@ -1692,10 +1733,6 @@ hazard-markers .markers,
 
 .overlay.show {
     display: flex;
-}
-
-.overlay.show .overlay-image {
-    animation: scaleIn 0.3s ease-in-out;
 }
 
 .overlay-image {
@@ -2120,6 +2157,11 @@ input::-webkit-inner-spin-button {
     font-size: larger;
 }
 
+.reportUpdateForm label,
+#reportAreaForm label {
+    font-weight: 700;
+}
+
 .toggle-password {
     position: absolute;
     cursor: pointer;
@@ -2214,12 +2256,13 @@ input::-ms-clear {
 #guidelineForm input,
 #reportForm input,
 #guideForm input,
+#reportAreaForm input,
 #evacuationCenterForm select,
 #evacueeInfoForm select,
 #accountForm select,
 #dangerousAreaReportForm select,
 #generateReportModal select,
-#reportHazardForm select {
+#reportAreaForm select {
     border-radius: 5px;
     font-weight: 400;
     font-size: 0.875rem;
@@ -2227,27 +2270,30 @@ input::-ms-clear {
     height: 40px;
 }
 
+#areaInputImage {
+    height: fit-content !important;
+}
+
 #changeYearSelect option,
+#changeArchivedReportType option,
 #changeEvacueeDataSelect option,
 #changeArchiveEvacueeDataSelect option {
     font-size: 14px;
 }
 
-#reportHazardForm select {
-    height: fit-content;
-    font-size: 12px;
-}
-
 #changeYearSelect,
+#changeArchivedReportType,
 #changeEvacueeDataSelect,
 #changeArchiveEvacueeDataSelect {
     width: 262px;
+    height: 38px;
     border: solid var(--color-d-sub-text) 2px;
 }
 
 #guideForm textarea,
 #guidelineForm textarea,
 #reportForm textarea,
+#reportAreaForm textarea,
 .reportUpdateForm textarea {
     border-radius: 5px;
     font-weight: 400;
@@ -2255,7 +2301,63 @@ input::-ms-clear {
     border: 2px solid var(--color-d-sub-text);
 }
 
-.hazard-map {
+#reportAreaForm input,
+#reportAreaForm select,
+#reportAreaForm textarea,
+.reportUpdateForm textarea {
+    height: fit-content;
+    font-size: 12px !important;
+}
+
+.info-description.photo img,
+#selectedAreaImage {
+    padding: 0;
+    max-width: 100%;
+    margin-top: 10px;
+    background: transparent;
+}
+
+.info-description.photo img,
+#selectedAreaImage {
+    height: auto;
+    border: 2px solid var(--color-black);
+}
+
+.info-window-details-container,
+.info-window-update-container {
+    max-height: 250px;
+    overflow: scroll;
+    border: 2px solid var(--color-black);
+    border-radius: 4px;
+    padding: 0 10px 10px 10px;
+    margin-top: 5px;
+}
+
+.info-window-details-container {
+    padding-top: 10px;
+}
+
+.info-description div.update-date {
+    margin-top: 10px;
+}
+
+.info-description span.update-details {
+    overflow-wrap: break-word;
+    font-weight: 400;
+    font-size: 11px;
+}
+
+.info-description p.update-details-container {
+    margin: 5px 0 0 0;
+}
+
+.update-details-container small {
+    font-size: 12px;
+    color: var(--color-red-hover);
+}
+
+.area-map,
+.reporting-map {
     height: 600px;
     border: 2px solid var(--color-light-gray);
     border-radius: 6px;
@@ -2263,7 +2365,7 @@ input::-ms-clear {
 }
 
 .count-container {
-    background: var(--color-yellow);
+    background: var(--color-light-gray);
     color: var(--color-black);
     padding: 4px;
     border-radius: 5px;
@@ -2282,17 +2384,16 @@ input::-ms-clear {
     margin-right: 5px;
 }
 
-.count-container.pending img {
-    margin-left: -4px;
-    margin-right: 3px;
-}
-
 .count-container.flooded {
-    background: rgb(255, 157, 0);
+    background: var(--color-primary);
 }
 
 .count-container.roadblocked {
-    background: var(--color-red);
+    background: var(--color-d-sub-text);
+}
+
+.count-container.incident {
+    background: var(--color-yellow);
 }
 
 .form-map {
@@ -2359,7 +2460,7 @@ span.error {
     margin-top: 5px;
 }
 
-#reportHazardForm span.error,
+#reportAreaForm span.error,
 .reportUpdateForm span.error {
     font-size: 11px;
 }
@@ -2456,11 +2557,10 @@ select.form-select option {
     font-weight: 700;
 }
 
-#reportHazardForm select.form-select option {
+#reportAreaForm select.form-select option {
     font-size: 12px !important;
 }
 
-.message-text,
 .dataTables_empty {
     font-size: 12px;
     color: var(--color-red);
@@ -2474,7 +2574,7 @@ select.form-select option {
 
 .dark-mode * {
     font-weight: 500 !important;
-    color: var(--color-d-text);
+    color: var(--color-text);
 }
 
 .dark-mode .header-section {
@@ -2521,8 +2621,9 @@ select.form-select option {
 }
 
 .dark-mode .map-section,
-.dark-mode .hazard-map,
-.dark-mode .hazard-markers,
+.dark-mode .area-map,
+.dark-mode .report-markers,
+.dark-mode .reporting-map,
 .dark-mode .evacuation-markers {
     border-color: var(--color-red);
 }
@@ -2545,11 +2646,19 @@ select.form-select option {
     color: var(--color-d-text);
 }
 
+.dark-mode .info-description.photo img,
+.dark-mode #selectedAreaImage,
 .dark-mode select,
 .dark-mode input,
-.dark-mode textare,
-.dark-mode .form-map {
+.dark-mode textarea,
+.dark-mode .form-map,
+.dark-mode .info-window-details-container,
+.dark-mode .info-window-update-container {
     border-color: var(--color-d-sub-text) !important;
+}
+
+.dark-mode .update-details-container small {
+    color: var(--color-yellow-hover);
 }
 
 .dark-mode select::placeholder,
@@ -2580,8 +2689,8 @@ select.form-select option {
 }
 
 .dark-mode .flatpickr-day:hover,
-.dark-mode #changeTheme:active #themeText,
-.dark-mode #changeTheme:active #themeIcon {
+.dark-mode .dropdown-menu .dropdown-item.changeTheme:active #themeText,
+.dark-mode .dropdown-menu .dropdown-item.changeTheme:active #themeIcon {
     color: var(--color-black);
 }
 
@@ -2608,7 +2717,8 @@ select.form-select option {
     background: var(--color-d-background) !important;
 }
 
-.dark-mode .dropdown-item:focus {
+.dark-mode .dropdown-item:focus,
+.dark-mode .renderable-component-text-box {
     background: var(--color-d-bg-container) !important;
 }
 
@@ -2640,6 +2750,7 @@ select.form-select option {
 
 .dark-mode button,
 .dark-mode button i,
+.dark-mode #loading-text,
 .dark-mode .status-content {
     color: var(--color-text);
 }
@@ -2755,18 +2866,23 @@ select.form-select option {
     background: var(--color-d-bg-container);
 }
 
-.dark-mode span.error {
+.dark-mode span.error,
+.dark-mode .dataTables_empty,
+.dark-mode div.view-link span {
     color: var(--color-yellow);
 }
 
 .dark-mode .reportUpdateForm textarea,
+.dark-mode #reportAreaForm textarea,
 .dark-mode .form-content textarea,
+.dark-mode #reportAreaForm input,
 .dark-mode .field-container input,
 .dark-mode #changeYearSelect,
+.dark-mode #changeArchivedReportType,
 .dark-mode #changeEvacueeDataSelect,
 .dark-mode #changeArchiveEvacueeDataSelect,
 .dark-mode .field-container select,
-.dark-mode #reportHazardForm select,
+.dark-mode #reportAreaForm select,
 .dark-mode #search_guideline,
 .dark-mode .guideline-header .search-container .search-icon {
     background: var(--color-d-bg-container);
@@ -2800,12 +2916,14 @@ select.form-select option {
 
 
 .dark-mode .form-content textarea::placeholder,
+.dark-mode #reportAreaForm input::placeholder,
 .dark-mode .field-container input::placeholder,
 .dark-mode .field-container .form-select,
 .dark-mode #changeYearSelect,
+.dark-mode #changeArchivedReportType,
 .dark-mode #changeEvacueeDataSelect,
 .dark-mode #changeArchiveEvacueeDataSelect,
-.dark-mode #reportHazardForm select {
+.dark-mode #reportAreaForm select {
     color: var(--color-d-text);
 }
 
@@ -2838,7 +2956,7 @@ select.form-select option {
     color: var(--color-d-text);
 }
 
-.dark-mode .hazard-markers,
+.dark-mode .report-markers,
 .dark-mode .evacuation-markers {
     background: var(--color-d-bg-container);
 }
@@ -2871,7 +2989,15 @@ select.form-select option {
     background: var(--color-d-bg-container);
 }
 
-@media only screen and (max-width: 1565px) {
+.dark-mode button.gm-ui-hover-effect span {
+    background-color: var(--color-yellow-hover) !important;
+}
+
+.dark-mode button.changeTheme {
+    background: var(--color-gray);
+}
+
+@media only screen and (max-width: 1750px) {
     .evacuation-button-container {
         display: block;
     }
@@ -2949,7 +3075,7 @@ select.form-select option {
         margin-left: 0;
     }
 
-    .hazard-markers,
+    .report-markers,
     .evacuation-markers {
         overflow: auto;
     }
@@ -3046,7 +3172,7 @@ select.form-select option {
         font-size: 12px;
     }
 
-    .marker-container.hazard {
+    .marker-container.reports {
         overflow: visible !important;
         width: fit-content !important;
     }
@@ -3055,7 +3181,7 @@ select.form-select option {
         margin-left: 0;
     }
 
-    .hazard-markers,
+    .report-markers,
     .evacuation-markers {
         -ms-overflow-style: none;
         scrollbar-width: none;
@@ -3077,9 +3203,13 @@ select.form-select option {
     #changeEvacueeDataBtn {
         margin: 0;
     }
+
+    button.changeTheme {
+        margin-right: 0 !important;
+    }
 }
 
-@media only screen and (max-width: 380px) {
+@media only screen and (max-width: 400px) {
     .main-content {
         margin: 81px 0 20px;
     }
@@ -3167,7 +3297,7 @@ select.form-select option {
     .details-content span,
     .sidebar .navigation-item i,
     .toast,
-    .hazard-markers,
+    .report-markers,
     .evacuation-markers {
         font-size: 14px;
     }
@@ -3311,7 +3441,6 @@ select.form-select option {
     }
 
     .guide-btn-container button,
-    .message-text,
     .dataTables_empty {
         font-size: 10px;
     }
@@ -3344,7 +3473,7 @@ select.form-select option {
     .btn-table-update,
     .btn-table-remove,
     #editProfileBtn,
-    #reportHazardBtn,
+    #reportAreaBtn,
     #stopLocatingBtn,
     #locateNearestBtn,
     #changeEvacueeDataBtn,
@@ -3478,15 +3607,19 @@ select.form-select option {
     div.title.full-width,
     div.address-line.full-width,
     .sendUpdateBtn,
-    #reportBtn {
+    .info-description.photo button,
+    .info-window-action-container button,
+    #submitAreaBtn {
         font-size: 11px !important;
     }
 
-    #reportHazardForm label {
+    .reportUpdateForm label,
+    #reportAreaForm label {
         font-size: 12px !important;
     }
 
-    #reportHazardForm select {
+    #reportAreaForm input,
+    #reportAreaForm select {
         font-size: 10px !important;
         padding: 4px !important;
         height: fit-content;
@@ -3494,18 +3627,22 @@ select.form-select option {
     }
 
     #changeYearSelect option,
+    #reportAreaForm textarea,
+    .reportUpdateForm textarea,
+    #changeArchivedReportType option,
     #changeEvacueeDataSelect option,
     #changeArchiveEvacueeDataSelect option,
-    #reportHazardForm select.form-select option {
+    #reportAreaForm select.form-select option {
         font-size: 10px !important;
     }
 
-    #reportHazardForm span.error,
+    #reportAreaForm span.error,
     .reportUpdateForm span.error {
         font-size: 10px;
     }
 
     #changeYearSelect,
+    #changeArchivedReportType,
     #changeEvacueeDataSelect,
     #changeArchiveEvacueeDataSelect {
         width: 100%;
@@ -3520,6 +3657,7 @@ select.form-select option {
     }
 
     #changeYearSelect,
+    #changeArchivedReportType,
     #changeEvacueeDataSelect,
     #changeArchiveEvacueeDataSelect,
     .modal-content button {
@@ -3571,6 +3709,7 @@ select.form-select option {
         font-size: 14px !important;
     }
 
+    #loading-text,
     .swal2-actions {
         font-size: 12px !important;
     }
@@ -3595,6 +3734,7 @@ select.form-select option {
     }
 
     #changeYearSelect,
+    #changeArchivedReportType,
     #changeEvacueeDataSelect,
     #changeArchiveEvacueeDataSelect {
         height: fit-content;
@@ -3615,6 +3755,19 @@ select.form-select option {
 
     .count-container span {
         font-size: 10px !important;
+    }
+
+    .info-window-action-container {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .info-window-action-container.report-area {
+        flex-direction: row;
+    }
+
+    div.gm-style-iw.gm-style-iw-c {
+        padding: 6px !important;
     }
 }
 

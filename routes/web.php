@@ -1,18 +1,21 @@
 <?php
 
-use App\Events\NotificationEvent;
+use App\Events\Notification;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\MainController;
 use App\Http\Controllers\EvacueeController;
 use App\Http\Controllers\DisasterController;
 use App\Http\Controllers\GuidelineController;
+use App\Http\Controllers\AreaReportController;
 use App\Http\Controllers\UserAccountsController;
 use App\Http\Controllers\FamilyRecordController;
-use App\Http\Controllers\HazardReportController;
 use App\Http\Controllers\HotlineNumberController;
 use App\Http\Controllers\AuthenticationController;
 use App\Http\Controllers\IncidentReportController;
+use App\Http\Controllers\ResidentReportController;
+use App\Http\Controllers\EmergencyReportController;
 use App\Http\Controllers\EvacuationCenterController;
+
 
 Route::controller(AuthenticationController::class)->group(function () {
     Route::middleware('check.login')->group(function () {
@@ -32,13 +35,8 @@ Route::controller(AuthenticationController::class)->group(function () {
 
 Route::prefix('resident')->middleware('guest')->group(function () {
     Route::name('resident.')->group(function () {
-        Route::name('report.')->prefix('reportIncident')->controller(IncidentReportController::class)->group(function () {
-            Route::get('/displayPendingIncidentReport/{operation}', 'displayPendingIncidentReport')->name('pending');
-            Route::get('/displayIncidentReport', 'displayIncidentReport')->name('display');
-            Route::delete('/revertIncidentReport/{reportId}', 'revertIncidentReport')->name('revert');
-            Route::patch('/updateAttempt', 'updateUserAttempt')->name('update');
-            Route::post('/createIncidentReport', 'createIncidentReport')->name('accident');
-            Route::post('/updateIncidentReport/{reportId}', 'updateIncidentReport')->name('incident.update');
+        Route::name('incident.')->prefix('reportIncident')->controller(IncidentReportController::class)->group(function () {
+            Route::post('/createIncidentReport', 'createIncidentReport')->name('report');
         });
 
         Route::controller(MainController::class)->group(function () {
@@ -46,14 +44,14 @@ Route::prefix('resident')->middleware('guest')->group(function () {
             Route::get('/searchGuideline', 'searchGuideline')->name('guideline.search');
             Route::get('/guide/{guidelineId}', 'guide')->name('eligtas.guide');
             Route::get('/evacuationCenterLocator', 'evacuationCenterLocator')->name('evacuation.center.locator');
-            Route::get('/incidentReport/{operation}', 'incidentReport')->name('display.incident.report');
+            Route::get('/incidentReporting', 'incidentReporting')->name('reporting');
             Route::get('/hotlineNumber', 'hotlineNumbers')->name('hotline.number');
             Route::get('/about', 'about')->name('about');
         });
 
-        Route::name('hazard.')->controller(HazardReportController::class)->group(function () {
-            Route::post('/hazardReport', 'createHazardReport')->name('report');
-            Route::get('/getHazardReport', 'getHazardReport')->name('get');
+        Route::name('area.')->controller(AreaReportController::class)->group(function () {
+            Route::post('/areaReport', 'createAreaReport')->name('report');
+            Route::get('/getAreaReport', 'getAreaReport')->name('get');
         });
 
         Route::get('/viewEvacuationCenter/{operation}/{type}', EvacuationCenterController::class . '@getEvacuationData')->name('evacuation.center.get');
@@ -103,37 +101,38 @@ Route::middleware('auth')->group(function () {
             Route::patch('/changeEvacuationStatus/{evacuationId}', 'changeEvacuationStatus')->name('change.status');
         });
 
-        Route::prefix('incidentReport')->name('report.dangerous.areas.')->controller(IncidentReportController::class)->group(function () {
-            Route::get('/displayDangerousAreasReport/{operation}', 'displayDangerousAreasReport')->name('cswd');
-            Route::post('/confirmDangerAreaReport/{dangerAreaId}', 'confirmDangerAreaReport')->name('confirm');
-            Route::delete('/rejectDangerAreaReport/{dangerAreaId}', 'rejectDangerAreaReport')->name('reject');
-            Route::patch('/archiveDangerAreaReport/{dangerAreaId}/{operation}', 'archiveDangerAreaReport')->name('archive');
-        });
-
-        Route::get('/getHazardReport', HazardReportController::class . '@getHazardReport')->name('cswd.hazard.get');
+        Route::get('/getAreaReport/{operation}', AreaReportController::class . '@getAreaReport')->name('cswd.area.get');
     });
 
     Route::prefix('cdrrmo')->middleware('check.cdrrmo')->group(function () {
         Route::controller(MainController::class)->group(function () {
             Route::get('/dashboard', 'dashboard')->name('dashboard.cdrrmo');
-            Route::get('/incidentReport/{operation}', 'incidentReport')->name('incident.report');
-            Route::get('/manageHazardReport', 'manageHazardReport')->name('manage.hazard.report');
+            Route::get('/manageReport/{operation}', 'manageReport')->name('manage.report');
         });
 
-        Route::prefix('incidentReport')->name('report.')->controller(IncidentReportController::class)->group(function () {
-            Route::get('/displayPendingIndcidentReport/{operation}', 'displayPendingIncidentReport')->name('pending');
-            Route::get('/displayIncidentReport/{operation}', 'displayIncidentReport')->name('accident');
-            Route::post('/approveIncidentReport/{reportId}', 'approveIncidentReport')->name('approve');
-            Route::delete('/declineIncidentReport/{reportId}', 'declineIncidentReport')->name('decline');
-            Route::patch('/archiveIncidentReport/{reportId}/{operation}', 'archiveIncidentReport')->name('archive');
+        Route::prefix('incidentReport')->name('incident.')->controller(IncidentReportController::class)->group(function () {
+            Route::get('/getIncidentReport/{operation}/{year}/{type}', 'getIncidentReport')->name('get');
+            Route::patch('/changeIncidentReportStatus/{reportId}', 'changeIncidentReportStatus')->name('change.status');
+            Route::delete('/removeIncidentReport/{reportId}', 'removeIncidentReport')->name('remove');
+            Route::patch('/archiveIncidentReport/{reportId}', 'archiveIncidentReport')->name('archive');
         });
 
-        Route::name('hazard.')->controller(HazardReportController::class)->group(function () {
-            Route::get('/getHazardReport', 'getHazardReport')->name('get');
-            Route::patch('/verifyHazardReport/{reportId}', 'verifyHazardReport')->name('verify');
-            Route::patch('/updateHazardReport/{reportId}', 'updateHazardReport')->name('update');
-            Route::delete('/removeHazardReport/{reportId}', 'removeHazardReport')->name('remove');
+        Route::prefix('emergencyReport')->name('emergency.')->controller(EmergencyReportController::class)->group(function () {
+            Route::get('/getEmergencyReport/{operation}/{year}/{type}', 'getEmergencyReport')->name('get');
+            Route::patch('/changeEmergencyReportStatus/{reportId}', 'changeEmergencyReportStatus')->name('change.status');
+            Route::delete('/removeEmergencyReport/{reportId}', 'removeEmergencyReport')->name('remove');
+            Route::patch('/archiveEmergencyReport/{reportId}', 'archiveEmergencyReport')->name('archive');
         });
+
+        Route::name('area.')->controller(AreaReportController::class)->group(function () {
+            Route::get('/getAreaReport/{operation}/{year}/{type}', 'getAreaReport')->name('get');
+            Route::patch('/approveAreaReport/{reportId}', 'approveAreaReport')->name('approve');
+            Route::patch('/updateAreaReport/{reportId}', 'updateAreaReport')->name('update');
+            Route::delete('/removeAreaReport/{reportId}', 'removeAreaReport')->name('remove');
+            Route::patch('/archiveAreaReport/{reportId}', 'archiveAreaReport')->name('archive');
+        });
+
+        Route::get('/getResidentReport/{year}', ResidentReportController::class . '@getResidentReport')->name('resident.report.get');
     });
 
     Route::prefix('eligtasGuideline')->controller(GuidelineController::class)->group(function () {

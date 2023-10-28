@@ -5,20 +5,25 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class HazardReport extends Model
+class ResidentReport extends Model
 {
     use HasFactory;
 
-    protected $table = 'hazard_report';
+    protected $table = 'resident_report';
 
     protected $primaryKey = 'id';
 
     protected $fillable = [
+        'type',
+        'photo',
+        'status',
+        'user_ip',
+        'details',
         'latitude',
         'longitude',
-        'type',
-        'update',
-        'status'
+        'is_archive',
+        'report_time',
+        'notification'
     ];
 
     public $timestamps = false;

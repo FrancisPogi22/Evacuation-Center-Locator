@@ -17,10 +17,18 @@
             <div class="label-container">
                 <div class="icon-container">
                     <div class="icon-content">
-                        <i class="bi bi-person-gear"></i>
+                        @if ($operation == 'active')
+                            <i class="bi bi-person-gear"></i>
+                        @else
+                            <i class="bi bi-person-slash"></i>
+                        @endif
                     </div>
                 </div>
-                <span>MANAGE {{ auth()->user()->organization == 'CDRRMO' ? 'CDRRMO' : 'USERS' }} ACCOUNT</span>
+                @if ($operation == 'active')
+                    <span>MANAGE ACCOUNT</span>
+                @else
+                    <span>ARCHIVED ACCOUNT</span>
+                @endif
             </div>
             <hr>
             @if (auth()->user()->is_disable == 0 && $operation == 'active')

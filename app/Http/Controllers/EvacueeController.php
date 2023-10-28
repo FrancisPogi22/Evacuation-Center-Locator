@@ -81,15 +81,9 @@ class EvacueeController extends Controller
             return response(['status' => 'warning', 'message' => 'Evacuee is already recorded']);
         }
 
-        $latestRecord = null;
-
-        if ($request->form_type == "new") {
-            $this->familyController->recordFamilyRecord($request);
-            $latestRecord = $this->familyRecord->latest()->first();
-        } else {
+        $latestRecordId = $request->form_type == "new" ?
+            $this->familyController->recordFamilyRecord($request) :
             $this->familyController->updateFamilyRecord($request);
-            $latestRecord = $this->familyRecord->latest('updated_at')->first();
-        }
 
         $evacueeInfo = $request->only([
             'infants', 'minors', 'senior_citizen', 'pwd', 'pregnant', 'lactating', 'male',
@@ -98,7 +92,7 @@ class EvacueeController extends Controller
 
         $evacueeInfo['individuals'] = $evacueeInfo['male'] + $evacueeInfo['female'];
         $evacueeInfo['updated_at']  = date('Y-m-d H:i:s');
-        $evacueeInfo['family_id']   = $latestRecord->id;
+        $evacueeInfo['family_id']   = $latestRecordId;
         $evacueeInfo['user_id']     = auth()->user()->id;
         $evacueeInfo                = $this->evacuee->create($evacueeInfo);
         $this->logActivity->generateLog($evacueeInfo->id, $evacueeInfo->barangay, 'recorded a new evacuee information');
