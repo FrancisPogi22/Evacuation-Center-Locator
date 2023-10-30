@@ -16,18 +16,10 @@
             <div class="label-container">
                 <div class="icon-container">
                     <div class="icon-content">
-                        @if ($operation == 'active')
-                            <i class="bi bi-house-gear"></i>
-                        @else
-                            <i class="bi bi-house-slash"></i>
-                        @endif
+                        <i class="bi bi-house-{{ $operation == 'active' ? 'gear' : 'slash' }}"></i>
                     </div>
                 </div>
-                @if ($operation == 'active')
-                    <span>MANAGE EVACUATION CENTER</span>
-                @else
-                    <span>ARCHIVED EVACUATION CENTER</span>
-                @endif
+                <span>{{ $operation == 'active' ? 'MANAGE' : 'ARCHIVED' }} EVACUATION CENTER</span>
             </div>
             <hr>
             @if (auth()->user()->is_disable == 0 && $operation == 'active')
@@ -311,7 +303,7 @@
                                         `Successfully ${operation == 'add' ? 'added' : 'updated'} evacuation center.`
                                     ), evacuationCenterTable.draw(), modal.modal('hide'));
                                 },
-                                error: () => showErrorMessage()
+                                error: showErrorMessage
                             });
                     });
                 }
@@ -342,7 +334,7 @@
                                     );
                                     evacuationCenterTable.draw();
                                 },
-                                error: () => showErrorMessage()
+                                error: showErrorMessage
                             });
                     });
                 }

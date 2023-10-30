@@ -163,7 +163,7 @@
                 );
             }
 
-            $(document).on('click', '#submitAreaBtn', function() {
+            $(document).on('click', '#submitAreaBtn', () => {
                 $('#reportAreaForm').validate({
                     rules: {
                         details: 'required',
@@ -184,30 +184,26 @@
                             result) => {
                             if (!result.isConfirmed) return;
 
-                            var formData = new FormData(form);
+                            let formData = new FormData(form);
 
                             $.ajax({
                                 type: 'POST',
                                 url: "{{ route('resident.incident.report') }}",
                                 data: formData,
+                                cache: false,
                                 contentType: false,
                                 processData: false,
-                                success: response => {
-                                    const status = response.status
+                                success(response) {
+                                    const status = response.status;
 
-                                    status == "warning" || status ==
-                                        "blocked" ?
-                                        showWarningMessage(response
-                                            .message) :
+                                    status == "warning" || status == "blocked" ?
+                                        showWarningMessage(response.message) :
                                         showSuccessMessage(
-                                            'Report submitted successfully'
-                                        );
+                                            'Report submitted successfully.');
 
-                                    status != "warning" && (
-                                        reportMarker.setMap(null),
-                                        reportMarker = null,
-                                        reportWindow = null
-                                    )
+                                    status != "warning" && (reportMarker.setMap(
+                                            null), reportMarker = null,
+                                        reportWindow = null);
                                 },
                                 error: showErrorMessage
                             });
@@ -216,32 +212,36 @@
                 });
             });
 
-            $(document).on('click', '#imageBtn', function() {
+            $(document).on('click', '#imageBtn', () => {
                 event.preventDefault();
                 $('#areaInputImage').click();
             });
 
             $(document).on('change', '#areaInputImage', function() {
                 if (this.files && this.files[0]) {
+                    let reader = new FileReader(),
+                        container = $(this).closest('.gm-style-iw-d'),
+                        imageBtn = $('#imageBtn'),
+                        imageErr = $('#image-error'),
+                        selectedAreaImg = $('#selectedAreaImage');
+
                     if (!['image/jpeg', 'image/jpg', 'image/png'].includes(this.files[0].type)) {
                         $('#areaInputImage').val('');
-                        $('#selectedAreaImage').attr('src', '').attr('hidden', true);
-                        $('#imageBtn').html('<i class="bi bi-image-fill"></i> Select');
-                        setInfoWindowButtonStyles($('#imageBtn'), 'var(--color-primary');
-                        $('#image-error')
-                            .prop('style', 'display: block !important');
+                        selectedAreaImg.attr('src', '').attr('hidden', true);
+                        imageBtn.html('<i class="bi bi-image-fill"></i> Select');
+                        setInfoWindowButtonStyles(imageBtn, 'var(--color-primary');
+                        imageErr.prop('style', 'display: block !important');
                         return;
                     } else
-                        $('#image-error').prop('style', 'display: none !important');
-                    const reader = new FileReader();
+                        imageErr.prop('style', 'display: none !important');
+
                     reader.onload = function(e) {
-                        $('#selectedAreaImage').attr('src', e.target.result);
+                        selectedAreaImg.attr('src', e.target.result);
                     };
                     reader.readAsDataURL(this.files[0]);
-                    $('#imageBtn').html('<i class="bi bi-arrow-repeat"></i> Change');
-                    setInfoWindowButtonStyles($('#imageBtn'), 'var(--color-yellow');
-                    $('#selectedAreaImage').attr('hidden', false);
-                    const container = $(this).closest('.gm-style-iw-d');
+                    imageBtn.html('<i class="bi bi-arrow-repeat"></i> Change');
+                    setInfoWindowButtonStyles(imageBtn, 'var(--color-yellow');
+                    selectedAreaImg.attr('hidden', false);
                     container.animate({
                         scrollTop: container.prop('scrollHeight')
                     }, 500);

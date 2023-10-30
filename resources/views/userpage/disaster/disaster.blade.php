@@ -16,18 +16,10 @@
             <div class="label-container">
                 <div class="icon-container">
                     <div class="icon-content">
-                        @if ($operation == 'manage')
-                            <i class="bi bi-cloud-upload"></i>
-                        @else
-                            <i class="bi bi-cloud-slash"></i>
-                        @endif
+                        <i class="bi bi-cloud-{{ $operation == 'manage' ? 'upload' : 'slash' }}"></i>
                     </div>
                 </div>
-                @if ($operation == 'manage')
-                    <span>MANAGE DISASTER</span>
-                @else
-                    <span>ARCHIVED DISASTER</span>
-                @endif
+                <span>{{ strtoupper($operation) }} DISASTER</span>
             </div>
             <hr>
             @if (auth()->user()->is_disable == 0 && $operation == 'manage')
@@ -198,9 +190,9 @@
                                             showWarningMessage(response.message) :
                                             (disasterTable.draw(), showSuccessMessage(
                                                 `Disaster successfully ${operation == "change" ? "changed status" : operation}.`
-                                            ))
+                                            ));
                                     },
-                                    error: () => showErrorMessage()
+                                    error: showErrorMessage
                                 });
                         });
                 }
@@ -226,7 +218,7 @@
                                             `Disaster successfully ${operation == "add" ? "added" : "updated"}.`
                                         ), modal.modal('hide'), disasterTable.draw());
                                 },
-                                error: () => showErrorMessage()
+                                error: showErrorMessage
                             });
                     });
                 }
