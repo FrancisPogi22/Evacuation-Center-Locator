@@ -29,22 +29,23 @@ class ResidentReportController extends Controller
                 ->whereYear('report_time', $year)
                 ->get()
         )
-        ->addColumn('location', '<button class="btn-table-primary viewLocationBtn"><i class="bi bi-pin-map"></i> View</button>')
-        ->addColumn('photo', function ($report) {
-            return '<div class="photo-container">
-                <div class="image-wrapper">
-                    <img class="report-img" src="' . asset('reports_image/' . $report->photo) . '">
-                    <div class="image-overlay">
-                        <div class="overlay-text">View Photo</div>
-                    </div>
-                </div>
-            </div>';
-        })
-        ->rawColumns(['location', 'photo'])
-        ->make(true);
+            ->addColumn('location', '<button class="btn-table-primary viewLocationBtn"><i class="bi bi-pin-map"></i> View</button>')
+            ->addColumn('photo', function ($report) {
+                return '<div class="photo-container">
+                            <div class="image-wrapper">
+                                <img class="report-img" src="' . ($report->photo ? asset('reports_image/' . $report->photo) : asset('assets/img/empty-data.svg')) . '">
+                                <div class="image-overlay">
+                                    <div class="overlay-text">View Photo</div>
+                                </div>
+                            </div>
+                        </div>';
+            })
+            ->rawColumns(['location', 'photo'])
+            ->make(true);
     }
 
-    public function changeNotificationStatus($reportId) {
+    public function changeNotificationStatus($reportId)
+    {
         $report = $this->residentReport->find($reportId);
         $report->update([
             'notification' => 0

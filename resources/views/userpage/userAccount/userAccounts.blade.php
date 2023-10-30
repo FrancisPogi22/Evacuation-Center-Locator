@@ -17,18 +17,10 @@
             <div class="label-container">
                 <div class="icon-container">
                     <div class="icon-content">
-                        @if ($operation == 'active')
-                            <i class="bi bi-person-gear"></i>
-                        @else
-                            <i class="bi bi-person-slash"></i>
-                        @endif
+                        <i class="bi bi-person-{{ $operation == 'active' ? 'gear' : 'slash' }}"></i>
                     </div>
                 </div>
-                @if ($operation == 'active')
-                    <span>MANAGE ACCOUNT</span>
-                @else
-                    <span>ARCHIVED ACCOUNT</span>
-                @endif
+                <span>{{ $operation == 'active' ? 'MANAGE' : 'ARCHIVED' }} ACCOUNT</span>
             </div>
             <hr>
             @if (auth()->user()->is_disable == 0 && $operation == 'active')
@@ -179,7 +171,7 @@
                                                 'Successfully disabled account.');
                                             accountTable.draw();
                                         },
-                                        error: () => showErrorMessage()
+                                        error: showErrorMessage
                                     })
                             });
                             break;
@@ -196,7 +188,7 @@
                                                 'Successfully enabled account.');
                                             accountTable.draw();
                                         },
-                                        error: () => showErrorMessage()
+                                        error: showErrorMessage
                                     });
                             });
                             break;
@@ -227,7 +219,7 @@
                                                 'Successfully archive account.');
                                             accountTable.draw();
                                         },
-                                        error: () => showErrorMessage()
+                                        error: showErrorMessage
                                     });
                             });
                             break;
@@ -244,7 +236,7 @@
                                                 'Successfully unarchived account.');
                                             accountTable.draw();
                                         },
-                                        error: () => showErrorMessage()
+                                        error: showErrorMessage
                                     })
                             });
                             break;
@@ -274,7 +266,7 @@
                                                 'Successfully opened account.');
                                             accountTable.draw();
                                         },
-                                        error: () => showErrorMessage()
+                                        error: showErrorMessage
                                     });
                             });
                             break;
@@ -323,7 +315,7 @@
                                         `Successfully ${operation}${operation == 'suspend' ? 'ed' : 'd'} user account.`
                                     ), modal.modal('hide'), accountTable.draw())
                                 },
-                                error: () => showErrorMessage()
+                                error: showErrorMessage
                             });
                     });
                 }

@@ -163,7 +163,7 @@ class UserAccountsController extends Controller
 
         $userAccount = $this->user->find($userId);
         $userAccount->update([
-            'status'   => "Suspended",
+            'status'       => "Suspended",
             'is_suspend'   => 1,
             'suspend_time' => Carbon::parse($request->suspend_time)->format('Y-m-d H:i:s')
         ]);

@@ -157,7 +157,7 @@
                                             `Hotline Number successfully removed.`),
                                         modal.modal('hide'));
                                 },
-                                error: () => showErrorMessage()
+                                error: showErrorMessage
                             });
                         });
                     });
@@ -252,7 +252,7 @@
                                             hotlineItem = "";
                                         }
                                     },
-                                    error: () => showErrorMessage()
+                                    error: showErrorMessage
                                 });
                         });
                     }
