@@ -169,7 +169,7 @@ Route::middleware('auth')->group(function () {
         Route::delete('/removeHotlineNumber/{hotlineId}', 'removeHotlineNumber')->name('hotline.remove');
     });
 
-    Route::get('/notifications', NotificationEvent::class . '@notifications')->name('notifications');
+    Route::get('/notifications', Notification::class . '@notifications')->name('notifications');
 
     Route::name('account.')->controller(UserAccountsController::class)->group(function () {
         Route::post('/createAccount', 'createAccount')->name('create');
