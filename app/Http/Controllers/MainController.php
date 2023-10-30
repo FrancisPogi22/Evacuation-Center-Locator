@@ -6,18 +6,17 @@ use App\Models\Guide;
 use App\Models\Evacuee;
 use App\Models\Disaster;
 use App\Models\Guideline;
-use Illuminate\Http\Request;
-use App\Models\ActivityUserLog;
-use App\Models\EvacuationCenter;
 use App\Events\Notification;
-use App\Exports\EvacueeDataExport;
+use Illuminate\Http\Request;
 use App\Models\HotlineNumbers;
 use App\Models\ResidentReport;
-use Illuminate\Support\Carbon;
+use App\Models\ActivityUserLog;
+use App\Models\EvacuationCenter;
+use App\Exports\EvacueeDataExport;
 use Maatwebsite\Excel\Facades\Excel;
-use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Validator;
 use Maatwebsite\Excel\Excel as FileFormat;
+use Yajra\DataTables\Facades\DataTables;
 
 class MainController extends Controller
 {
@@ -42,7 +41,7 @@ class MainController extends Controller
         $activeEvacuation      = $this->evacuationCenter->where('status', "Active")->count();
         $totalEvacuee          = strval($this->evacuee->where('status', "Evacuated")->sum('individuals'));
         $notifications         = $this->notification->notifications();
-        $residentReport        = $this->residentReport->where('report_time', '>=', now()->format('Y-m-d H:i:s'))->count();
+        $residentReport        = $this->residentReport->whereRaw('DATE(report_time) <= CURDATE()')->count();
 
         return view('userpage.dashboard', compact('activeEvacuation', 'disasterData', 'totalEvacuee', 'onGoingDisasters', 'disaster', 'notifications', 'residentReport'));
     }
@@ -76,7 +75,6 @@ class MainController extends Controller
     public function eligtasGuideline()
     {
         $notifications = $this->notification->notifications();
-        $guidelineData = "";
 
         if (!auth()->check()) {
             $guidelineData = $this->guideline->all();
@@ -152,11 +150,46 @@ class MainController extends Controller
 
     public function userActivityLog()
     {
+        if (!request()->ajax()) return view('userpage.activityLog');
+
         $userActivityLogs = ActivityUserLog::join('user', 'activity_log.user_id', '=', 'user.id')
-            ->select('activity_log.data_name', 'activity_log.activity', 'activity_log.date_time', 'user.name')
+            ->select('activity_log.*', 'user.*')
+            ->orderBy('activity_log.id', 'desc')
             ->get();
 
-        return view('userpage.activityLog', compact('userActivityLogs'));
+        return DataTables::of($userActivityLogs)
+            ->addIndexColumn()
+            ->addColumn('activity', function ($userLog) {
+                return $userLog->name . ' ' . $userLog->activity . ' ' . $userLog->data_name;
+            })
+            ->addColumn('action', function ($userLog) {
+                if (auth()->user()->is_disable == 1) return;
+
+                $actionBtn = '<div class="action-container">';
+
+                if (auth()->user()->id != $userLog->user_id) {
+                    if ($userLog->is_suspend == 0) {
+                        if ($userLog->is_disable == 0)
+                            $actionBtn .= '<button class="btn-table-remove" id="disableBtn" title="Disable"><i class="bi bi-x-lg"></i></button>';
+
+                        $actionBtn .= '<button class="btn-table-update" id="suspendBtn" title="Suspend"><i class="bi bi-clock-history"></i></button>';
+                    }
+                }
+
+                return '<button class="btn-table-primary" title="View" role="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="bi bi-eye"></i></button>
+                        <ul class="dropdown-menu log-dropdown">
+                            <div class="log-container">
+                                <p>Name: ' . $userLog->name . ' </p>
+                                <p>Activity: ' . $userLog->activity . ' ' . $userLog->data_name . '</p>
+                                <p>Time Issued: <span class="fw-bold text-danger">' . $userLog->date_time . '</span></p>
+                                <p>Status: <span class="log-status fw-bold text-' . ($userLog->status == "Disabled" ? 'danger' : ($userLog->status == "Suspended" ? 'warning' : 'success')) . '">' . $userLog->status . '</span> </p>
+                            </div>
+                            <hr>
+                            ' . $actionBtn . '</div>
+                        </ul>';
+            })
+            ->rawColumns(['activity', 'action'])
+            ->make(true);
     }
 
     public function userAccounts($operation)

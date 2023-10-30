@@ -10,7 +10,6 @@ use Yajra\DataTables\DataTables;
 use App\Events\Notification;
 use App\Events\EmergencyReport;
 use Illuminate\Support\Facades\Date;
-use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Controllers\ResidentReportController;
 
@@ -20,10 +19,10 @@ class EmergencyReportController extends Controller
 
     function __construct()
     {
-        $this->reportLog      = new ReportLog;
+        $this->reportLog       = new ReportLog;
         $this->emergencyReport = new ResidentReport;
-        $this->logActivity    = new ActivityUserLog;
-        $this->residentReport = new ResidentReportController;
+        $this->logActivity     = new ActivityUserLog;
+        $this->residentReport  = new ResidentReportController;
     }
 
     public function getEmergencyReport($operation, $year, $type)
@@ -34,20 +33,18 @@ class EmergencyReportController extends Controller
             return response($emergencyReport->where('type', 'Emergency')->get());
         else
             return DataTables::of(
-                $emergencyReport->where('type', $type)
-                    ->whereYear('report_time', $year)
-                    ->get()
+                $emergencyReport->where('type', $type)->whereYear('report_time', $year)->get()
             )
-                ->addColumn('location', '<button class="btn-table-primary viewLocationBtn"><i class="bi bi-pin-map"></i> View</button>')
+                ->addColumn('location', '<button class="btn-table-primary viewLocationBtn"><i class="bi bi-pin-map"></i>View</button>')
                 ->addColumn('photo', function ($report) {
                     return '<div class="photo-container">
-                    <div class="image-wrapper">
-                        <img class="report-img" src="' . asset('reports_image/' . $report->photo) . '">
-                        <div class="image-overlay">
-                            <div class="overlay-text">View Photo</div>
-                        </div>
-                    </div>
-                </div>';
+                                <div class="image-wrapper">
+                                    <img class="report-img" src="' . asset('reports_image/' . $report->photo) . '">
+                                    <div class="image-overlay">
+                                        <div class="overlay-text">View Photo</div>
+                                    </div>
+                                </div>
+                            </div>';
                 })
                 ->rawColumns(['location', 'photo'])
                 ->make(true);
@@ -65,15 +62,11 @@ class EmergencyReportController extends Controller
         if ($emergencyReportValidation->fails())
             return response(['status' => 'warning', 'message' => implode('<br>', $emergencyReportValidation->errors()->all())]);
 
-        $resident = $this->reportLog
-            ->where('user_ip', $request->ip())
-            ->where('report_type', 'Emergency')
-            ->first();
-
+        $userIp          = $request->ip();
+        $resident        = $this->reportLog->where('user_ip', $userIp)->where('report_type', 'Emergency')->first();
         $reportPhotoPath = $request->file('image');
-        $reportPhotoPath = $request->file('image')->store();
+        $reportPhotoPath = $reportPhotoPath->store();
         $request->image->move(public_path('reports_image'), $reportPhotoPath);
-
         $emergencyReport = [
             'latitude'    => $request->latitude,
             'longitude'   => $request->longitude,
@@ -81,7 +74,7 @@ class EmergencyReportController extends Controller
             'photo'       => $reportPhotoPath,
             'details'     => trim($request->details),
             'status'      => 'Pending',
-            'user_ip'     => $request->ip(),
+            'user_ip'     => $userIp,
             'report_time' => Date::now()
         ];
 
@@ -103,7 +96,7 @@ class EmergencyReportController extends Controller
             if ($resident->attempt == 3) $resident->update(['report_time' => Date::now()->addHour(1)]);
         } else {
             $this->reportLog->create([
-                'user_ip'     => $request->ip(),
+                'user_ip'     => $userIp,
                 'report_type' => 'Emergency',
                 'attempt'     => 1,
             ]);
@@ -136,7 +129,8 @@ class EmergencyReportController extends Controller
 
         if ($report->photo) {
             $image_path = public_path('reports_image/' . $report->photo);
-            File::delete($image_path);
+
+            if (file_exists($image_path)) unlink($image_path);
         }
         $this->logActivity->generateLog($reportId, ' Emergency', 'removed emergency report');
         // event(new IncidentReport());
