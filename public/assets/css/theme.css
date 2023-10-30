@@ -205,7 +205,7 @@ textarea::placeholder {
 .page-button-container {
     display: flex;
     justify-content: end;
-    margin-bottom: 22px;
+    margin-bottom: 20px;
     align-items: flex-end;
     gap: 15px;
 }
@@ -280,6 +280,25 @@ button.changeTheme {
     border-radius: 9999px;
     padding: 5px 10px;
     margin-right: 10px;
+}
+
+.log-dropdown {
+    padding: 10px !important;
+    font-size: 13px !important;
+    width: 300px;
+}
+
+.log-dropdown p {
+    margin-bottom: 8px;
+}
+
+.log-dropdown hr {
+    margin: 10px !important;
+}
+
+.log-dropdown .action-container {
+    display: flex;
+    justify-content: center;
 }
 
 #badge {
@@ -360,7 +379,7 @@ button.changeTheme {
 }
 
 .main-content hr {
-    margin: 20px 0;
+    margin: 24px 0 20px;
 }
 
 .label-container {
@@ -370,7 +389,6 @@ button.changeTheme {
 }
 
 .icon-container {
-    display: grid;
     margin-right: 14px;
     grid-column-end: 1;
 }
@@ -398,8 +416,7 @@ button.changeTheme {
     z-index: 100;
     left: 0;
     top: 0;
-    filter: drop-shadow(0 10px 8px rgb(0 0 0 / 0.04))
-        drop-shadow(0 4px 3px rgb(0 0 0 / 0.1));
+    filter: drop-shadow(0 10px 8px rgb(0 0 0 / 0.04)) drop-shadow(0 4px 3px rgb(0 0 0 / 0.1));
     overflow: hidden;
 }
 
@@ -1025,7 +1042,6 @@ text {
 
 .content-item {
     text-align: center;
-    margin-top: 16px;
 }
 
 .guideline-widget,
@@ -1185,7 +1201,7 @@ text {
 }
 
 .empty-guidelines p,
-.empty-guide p{
+.empty-guide p {
     font-size: 20px;
     font-weight: 700;
 }
@@ -1538,6 +1554,14 @@ div.gm-style-iw.gm-style-iw-c {
     border: 2px solid var(--color-light-gray);
     filter: drop-shadow(0 4px 3px rgb(0 0 0 / 0.07)) drop-shadow(0 2px 2px rgb(0 0 0 / 0.06));
     white-space: nowrap;
+}
+
+.dark-mode .gmnoprint button {
+    background: var(--color-d-bg-container) !important;
+}
+
+.dark-mode .gmnoprint button span {
+    color: var(--color-d-text);
 }
 
 .report-markers {
