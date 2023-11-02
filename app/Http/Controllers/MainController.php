@@ -255,7 +255,7 @@ class MainController extends Controller
         $notifications  = $this->notification->notifications();
         $hotlineNumbers = HotlineNumbers::all();
 
-        return view('userpage.hotlineNumber.hotlineNumbers', compact('notifications', 'hotlineNumbers'));
+        return view('userpage.hotlineNumbers', compact('notifications', 'hotlineNumbers'));
     }
 
     public function about()
