@@ -1946,9 +1946,21 @@ report-markers .markers,
 }
 
 .hotline-header {
-    font-weight: 800;
     display: flex;
     justify-content: space-between;
+}
+
+.hotline-header .hotline-label {
+    flex: 1;
+}
+
+.add-hotline-btn .btn-remove {
+    padding: 8px 16px;
+}
+
+.add-hotline-btn {
+    float: right;
+    margin: 10px 0;
 }
 
 .hotline-content {
@@ -1961,27 +1973,18 @@ report-markers .markers,
     padding: 0 10px;
 }
 
+.header-btn-container {
+    margin: auto;
+}
+
+.header-btn-container button {
+    padding: 4px;
+}
+
 .header-btn-container button i {
     padding: 10px;
     font-size: 15px;
     margin: auto;
-}
-
-.input-container {
-    flex: 3;
-}
-
-.logo-container {
-    margin: 0 10px;
-    display: flex;
-    flex-direction: column;
-}
-
-#hotlineForm .logo-container img {
-    width: 200px;
-    object-fit: contain;
-    height: 87px;
-    padding: 5px 20px;
 }
 
 .input-field-section {
@@ -1992,23 +1995,13 @@ report-markers .markers,
 
 .hotline-logo img {
     width: 100px;
+    margin: 15px 20px;
 }
 
-#hotlineForm .logo-container a {
-    text-align: center;
-    width: 100%;
-}
-
-#hotlineForm .logo-container a i {
-    padding-right: 8px;
-}
-
-.input-field-section .field-container {
-    flex: 1;
-}
-
-#hotlineForm .form-content {
+.hotline-logo {
+    margin: 0 10px;
     display: flex;
+    flex-direction: column;
 }
 
 .hotline-container {
