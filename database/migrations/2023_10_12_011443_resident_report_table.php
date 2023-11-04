@@ -11,8 +11,8 @@ return new class extends Migration
         Schema::create('resident_report', function (Blueprint $table) {
             $table->id();
             $table->string('type');
-            $table->string('details');
-            $table->string('photo');
+            $table->string('details')->nullable();
+            $table->string('photo')->nullable();
             $table->string('status')->default('Pending');
             $table->string('user_ip');
             $table->boolean('is_archive')->default(false);
