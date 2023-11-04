@@ -1960,7 +1960,7 @@ report-markers .markers,
 
 .add-hotline-btn {
     float: right;
-    margin: 10px 0;
+    margin-top: 10px;
 }
 
 .hotline-content {
@@ -2008,7 +2008,7 @@ report-markers .markers,
     display: flex;
     flex-direction: row;
     margin: 10px 0;
-    padding: 24px;
+    padding: 24px 10px;
     background: var(--color-text);
     border-radius: 4px;
     filter: drop-shadow(0 20px 13px rgb(0 0 0 / 0.03)) drop-shadow(0 8px 5px rgb(0 0 0 / 0.08));
@@ -2270,7 +2270,6 @@ input::-ms-clear {
 #accountForm input,
 #disasterForm input,
 #changePasswordForm input,
-#guidelineForm input,
 #reportForm input,
 #guideForm input,
 #reportAreaForm input,
@@ -2895,6 +2894,7 @@ select.form-select option {
 .dark-mode #reportAreaForm input,
 .dark-mode .field-container input,
 .dark-mode #changeYearSelect,
+.dark-mode #hotlineForm input,
 .dark-mode #changeArchivedReportType,
 .dark-mode #changeEvacueeDataSelect,
 .dark-mode #changeArchiveEvacueeDataSelect,
