@@ -4,7 +4,6 @@
 <head>
     @include('partials.headPackage')
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.min.css" />
-    {{-- @vite(['resources/js/app.js']) --}}
 </head>
 
 <body>
@@ -33,7 +32,6 @@
     </div>
 
     @include('partials.script')
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous">
     </script>
@@ -58,7 +56,7 @@
                 mapTypeControlOptions: {
                     style: google.maps.MapTypeControlStyle.DROPDOWN_MENU
                 },
-                styles: sessionStorage.getItem('theme') == 'dark' ? mapDarkModeStyle : mapLightModeStyle
+                styles: localStorage.getItem('theme') == 'dark' ? mapDarkModeStyle : mapLightModeStyle
             });
 
             map.addListener("click", (event) => {
@@ -87,7 +85,7 @@
                                     <input type="file" name="image" class="form-control" id="areaInputImage" accept=".jpeg, .jpg, .png" hidden>
                                     <div class="info-window-action-container report-area">
                                         <button class="btn btn-sm btn-primary" id="imageBtn">
-                                            <i class="bi bi-image-fill"></i>
+                                            <i class="bi bi-image"></i>
                                             Select
                                         </button>
                                     </div>
@@ -95,7 +93,7 @@
                                     <span id="image-error" class="error" hidden>Please select an image file.</span>
                                 </div>
                                 <center>
-                                    <button id="submitAreaBtn"><i class="bi bi-send-fill"></i> Submit</button>
+                                    <button id="submitAreaBtn"><i class="bi bi-send"></i> Submit</button>
                                 <center>
                             </div>
                         </form>`
@@ -180,6 +178,8 @@
                                 'block' : 'none'} !important`);
                     },
                     submitHandler: function(form) {
+                        if ($('#areaInputImage').val() == '') return;
+
                         confirmModal('Are you sure you want to report this incident?').then((
                             result) => {
                             if (!result.isConfirmed) return;
@@ -214,38 +214,6 @@
                         });
                     }
                 });
-            });
-
-            $(document).on('click', '#imageBtn', function() {
-                event.preventDefault();
-                $('#areaInputImage').click();
-            });
-
-            $(document).on('change', '#areaInputImage', function() {
-                if (this.files && this.files[0]) {
-                    if (!['image/jpeg', 'image/jpg', 'image/png'].includes(this.files[0].type)) {
-                        $('#areaInputImage').val('');
-                        $('#selectedAreaImage').attr('src', '').attr('hidden', true);
-                        $('#imageBtn').html('<i class="bi bi-image-fill"></i> Select');
-                        setInfoWindowButtonStyles($('#imageBtn'), 'var(--color-primary');
-                        $('#image-error')
-                            .prop('style', 'display: block !important');
-                        return;
-                    } else
-                        $('#image-error').prop('style', 'display: none !important');
-                    const reader = new FileReader();
-                    reader.onload = function(e) {
-                        $('#selectedAreaImage').attr('src', e.target.result);
-                    };
-                    reader.readAsDataURL(this.files[0]);
-                    $('#imageBtn').html('<i class="bi bi-arrow-repeat"></i> Change');
-                    setInfoWindowButtonStyles($('#imageBtn'), 'var(--color-yellow');
-                    $('#selectedAreaImage').attr('hidden', false);
-                    const container = $(this).closest('.gm-style-iw-d');
-                    container.animate({
-                        scrollTop: container.prop('scrollHeight')
-                    }, 500);
-                }
             });
         });
     </script>

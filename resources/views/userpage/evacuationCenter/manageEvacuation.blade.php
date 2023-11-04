@@ -16,18 +16,10 @@
             <div class="label-container">
                 <div class="icon-container">
                     <div class="icon-content">
-                        @if ($operation == 'active')
-                            <i class="bi bi-house-gear"></i>
-                        @else
-                            <i class="bi bi-house-slash"></i>
-                        @endif
+                        <i class="bi bi-house-{{ $operation == 'active' ? 'gear' : 'slash' }}"></i>
                     </div>
                 </div>
-                @if ($operation == 'active')
-                    <span>MANAGE EVACUATION CENTER</span>
-                @else
-                    <span>ARCHIVED EVACUATION CENTER</span>
-                @endif
+                <span>{{ $operation == 'active' ? 'MANAGE' : 'ARCHIVED' }} EVACUATION CENTER</span>
             </div>
             <hr>
             @if (auth()->user()->is_disable == 0 && $operation == 'active')
@@ -61,7 +53,6 @@
     </div>
 
     @include('partials.script')
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/responsive/2.4.1/js/dataTables.responsive.min.js"></script>
     <script defer

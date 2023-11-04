@@ -3,7 +3,6 @@
 
 <head>
     @include('partials.headPackage')
-    {{-- @vite(['resources/js/app.js']) --}}
 </head>
 
 <body>
@@ -126,7 +125,6 @@
     </div>
 
     @include('partials.script')
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://code.highcharts.com/highcharts.js"></script>
     <script src="https://code.highcharts.com/modules/exporting.js"></script>
     <script src="https://code.highcharts.com/modules/export-data.js"></script>
@@ -182,14 +180,14 @@
 
             evacueeData();
 
-            // Echo.channel('active-evacuees').listen('ActiveEvacuees', (e) => {
-            //     $("#totalEvacuee").text(e.activeEvacuees);
-            //     evacueeData();
-            // });
+            Echo.channel('active-evacuees').listen('ActiveEvacuees', (e) => {
+                $("#totalEvacuee").text(e.activeEvacuees);
+                evacueeData();
+            });
 
-            // Echo.channel('incident-report').listen('IncidentReport', (e) => {
-            //     $("#totalReport").text(e.totalReport);
-            // });
+            Echo.channel('incident-report').listen('IncidentReport', (e) => {
+                $("#totalReport").text(e.totalReport);
+            });
         });
 
         function evacueeData() {

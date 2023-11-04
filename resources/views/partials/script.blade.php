@@ -1,13 +1,15 @@
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 <script>
     const body = $('body'),
+        logo = $('#logo'),
         themeIcon = $('#themeIcon'),
         themeText = $('#themeText'),
         themeIconResident = $('#themeIconResident'),
-        theme = sessionStorage.getItem('theme');
+        theme = localStorage.getItem('theme');
 
     @auth
-    let badge = $('#badge'),
-        currentPassword = $('#currentPassword'),
+    let currentPassword = $('#currentPassword'),
         password = $('#password'),
         confirmPassword = $('#confirmPassword'),
         resetPasswordBtn = $('#resetPasswordBtn'),
@@ -18,8 +20,61 @@
         eyeIcon = $('.toggle-password'),
         checkPasswordIcon = $('.checkPassword'),
         current_password = "";
+
+    @if (auth()->user()->organization == 'CDRRMO')
+        function getNotifications() {
+            $.get('{{ route('notifications.get') }}', function(notifications) {
+                const dropdownMenu = $('.dropdown-menu.notification');
+                const count = notifications.length;
+                $('#notification-count').text(count);
+
+                dropdownMenu.html(count > 0 ? notifications.map(notification => `
+                <li class="dropdown-notification" aria-id="${notification.id}"
+                    aria-type="${notification.type}" aria-lat="${notification.latitude}"
+                    aria-long="${notification.longitude}">
+                    <b class="report-time">${formatDateTime(notification.report_time)}</b><br>
+                    <center>New ${notification.type.toLowerCase()} report</center>
+                </li>
+            `).join('') : '<div class="empty-notification">No new report notification</div>');
+            });
+        }
+    @endif
     @endauth
     $(document).ready(() => {
+        theme == 'dark' ? enableDarkMode() : disableDarkMode();
+
+        $(document).on('click', '#imageBtn', function() {
+            event.preventDefault();
+            $('#areaInputImage').click();
+        });
+
+        $(document).on('change', '#areaInputImage', function() {
+            if (this.files[0]) {
+                if (!['image/jpeg', 'image/jpg', 'image/png'].includes(this.files[0].type)) {
+                    $('#areaInputImage').val('');
+                    $('#selectedAreaImage').attr('src', '').attr('hidden', true);
+                    $('#imageBtn').html('<i class="bi bi-image"></i> Select');
+                    setInfoWindowButtonStyles($('#imageBtn'), 'var(--color-primary');
+                    $('#image-error').text('Please select an image file.')
+                        .prop('style', 'display: block !important');
+                    return;
+                } else
+                    $('#image-error').prop('style', 'display: none !important');
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    $('#selectedAreaImage').attr('src', e.target.result);
+                };
+                reader.readAsDataURL(this.files[0]);
+                $('#imageBtn').html('<i class="bi bi-arrow-repeat"></i> Change');
+                setInfoWindowButtonStyles($('#imageBtn'), 'var(--color-yellow');
+                $('#selectedAreaImage').attr('hidden', false);
+                const container = $(this).closest('.gm-style-iw-d');
+                container.animate({
+                    scrollTop: container.prop('scrollHeight')
+                }, 500);
+            }
+        });
+
         @auth
         let changePasswordValidation = changePasswordForm.validate({
             rules: {
@@ -107,56 +162,90 @@
             $(this).find('.dropdown').toggleClass('rotate');
         });
 
-        $(document).on('click', '#notification-container button', function() {
-            badge.prop('hidden', true).text(0);
-        });
+        @if (auth()->user()->organization == 'CDRRMO')
+            getNotifications();
 
-        // Echo.channel('notification').listen('Notification', (e) => {
-        //     let {
-        //         area,
-        //         incident
-        //     } = e.notifications;
-        //     const dropdownMenu = $('#notification-container .dropdown-menu');
+            $(document).on('click', '.dropdown-notification', function() {
+                const list = $(this);
 
-        //     if (area.length > 0 || incident.length > 0) {
-        //         const badge = document.createElement('span');
-        //         const container = document.querySelector('#notification-container');
-        //         dropdownMenu.empty();
-        //         badge.innerHTML =
-        //             `<span class="badge" id="badge">${area.length + incident.length}</span>`;
-        //         container.insertBefore(badge, container.firstChild);
+                sessionStorage.setItem('report_type', list.attr('aria-type'));
+                sessionStorage.setItem('report_latitude', list.attr('aria-lat'));
+                sessionStorage.setItem('report_longitude', list.attr('aria-long'));
 
-        //         area.forEach((areaNotification) => {
-        //             dropdownMenu.append(`
-        //                 <li>
-        //                     <a href="{{ route('manage.report', 'manage') }}" class="dropdown-item">
-        //                         <p>Resident reported a area: ${areaNotification.type}</p>
-        //                     </a>
-        //                 </li>
-        //             `);
-        //         });
+                $.ajax({
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    method: 'PATCH',
+                    url: "{{ route('notification.remove', 'reportId') }}".replace('reportId',
+                        list
+                        .attr('aria-id')),
+                    success: () => window.location.href =
+                        "http://127.0.0.1:8000/cdrrmo/manageReport/manage"
+                });
+            });
 
-        //         incident.forEach((incidentNotification) => {
-        //             dropdownMenu.append(`
-        //                 <li>
-        //                     <a href="{{ route('manage.report', 'manage') }}" class="dropdown-item">
-        //                         <p>Resident report a incident: ${incidentNotification.details}</p>
-        //                         <span class="report_time">${incidentNotification.report_time}</span>
-        //                     </a>
-        //                 </li>
-        //             `);
-        //         });
-        //     } else {
-        //         dropdownMenu.html('<div class="empty-notification">No notification.</div>');
-        //     }
-        // });
+            Echo.channel('notification').listen('Notification', (e) => {
+                getNotifications();
+            });
+        @endif
     @endauth
-    theme == 'dark' ? enableDarkMode() : disableDarkMode();
-
     $(document).on('click', '.changeTheme', () => {
         body.hasClass('dark-mode') ? disableDarkMode() : enableDarkMode();
     });
+
+    $(() => {
+        const header = $('.header-section');
+        $(window).on('scroll', () => {
+            const scrollTop = $(window).scrollTop();
+            const isScrolledPast = scrollTop >= header.height();
+            header.css({
+                opacity: isScrolledPast ? 0 : 1 - (scrollTop / 100),
+                display: isScrolledPast ? 'none' : 'block'
+            });
+        });
     });
+
+    @guest $('#emergencyBtn').on('click', function() {
+        confirmModal('Are you in need of help or rescue?').then((result) => {
+            if (!result.isConfirmed) return;
+
+            navigator.geolocation.getCurrentPosition(
+                ({
+                    coords
+                }) => $.post("{{ route('resident.emergency.report') }}", {
+                    _token: "{{ csrf_token() }}",
+                    latitude: coords.latitude,
+                    longitude: coords.longitude
+                }, function(response) {
+                    if (response.status == "blocked")
+                        showWarningMessage(response.message);
+                    else
+                        Swal.fire({
+                            title: 'Message',
+                            text: response.status == "duplicate" ?
+                                response.message :
+                                "A rescue request has been sent. If it's safe, please remain where you are and try to stay calm. Your safety is our priority.",
+                            icon: 'info',
+                            iconColor: '#1d4ed8',
+                            showDenyButton: false,
+                            confirmButtonText: 'Close',
+                            confirmButtonColor: '#2682fa',
+                            allowOutsideClick: false
+                        });
+                }),
+                (error) => {
+
+                }, {
+                    enableHighAccuracy: true,
+                    maximumAge: 0
+                }
+            );
+        });
+    });
+    @endguest
+    });
+
     @auth
 
     function datePicker(id, enableTime = true) {
@@ -282,13 +371,13 @@
     }
 
     function enableDarkMode() {
+        logo.attr('src', '{{ asset('assets/img/E-LIGTAS-Logo-White.png') }}');
         body.addClass('dark-mode');
         themeIcon.removeClass('bi-moon').addClass('bi-sun');
         themeIconResident.removeClass('bi-sun-fill').addClass('bi-moon-fill');
         themeText.text('Light Mode');
-        sessionStorage.setItem('theme', 'dark');
+        localStorage.setItem('theme', 'dark');
         $('hr').addClass('bg-white');
-        $('#logo').attr('src', '{{ asset('assets/img/E-LIGTAS-Logo-White.png') }}');
         if (typeof map != 'undefined') {
             map.setOptions({
                 styles: mapDarkModeStyle
@@ -307,7 +396,6 @@
                     directionDisplay.setDirections(directionDisplay.getDirections());
             }
 
-
             if (typeof userBounds != 'undefined')
                 userBounds.setOptions({
                     fillColor: "#ffffff",
@@ -320,13 +408,13 @@
     }
 
     function disableDarkMode() {
+        logo.attr('src', '{{ asset('assets/img/E-LIGTAS-Logo-Black.png') }}');
         body.removeClass('dark-mode');
         themeIcon.removeClass('bi-sun').addClass('bi-moon');
         themeIconResident.removeClass('bi-moon-fill').addClass('bi-sun-fill');
         themeText.text('Dark Mode');
-        sessionStorage.setItem('theme', 'light');
+        localStorage.setItem('theme', 'light');
         $('hr').removeClass('bg-white').addClass('bg-dark');
-        $('#logo').attr('src', '{{ asset('assets/img/E-LIGTAS-Logo-Black.png') }}');
         if (typeof map != 'undefined') {
             map.setOptions({
                 styles: mapLightModeStyle

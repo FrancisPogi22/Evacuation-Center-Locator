@@ -17,18 +17,10 @@
             <div class="label-container">
                 <div class="icon-container">
                     <div class="icon-content">
-                        @if ($operation == 'active')
-                            <i class="bi bi-person-gear"></i>
-                        @else
-                            <i class="bi bi-person-slash"></i>
-                        @endif
+                        <i class="bi bi-person-{{ $operation == 'active' ? 'gear' : 'slash' }}"></i>
                     </div>
                 </div>
-                @if ($operation == 'active')
-                    <span>MANAGE ACCOUNT</span>
-                @else
-                    <span>ARCHIVED ACCOUNT</span>
-                @endif
+                <span>{{ $operation == 'active' ? 'MANAGE' : 'ARCHIVED' }} ACCOUNT</span>
             </div>
             <hr>
             @if (auth()->user()->is_disable == 0 && $operation == 'active')
@@ -65,7 +57,6 @@
     </div>
 
     @include('partials.script')
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/responsive/2.4.1/js/dataTables.responsive.min.js"></script>

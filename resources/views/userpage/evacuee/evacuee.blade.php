@@ -103,7 +103,6 @@
     </div>
 
     @include('partials.script')
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/responsive/2.4.1/js/dataTables.responsive.min.js"></script>
@@ -432,18 +431,20 @@
                     'going back to their homes' : 'evacuated again'}?`).then((result) => {
                     if (!result.isConfirmed) return;
 
+                    const status = sessionStorage.getItem('status') == 'Evacuated' ?
+                                'Return Home' : 'Evacuated';
+
                     $.ajax({
                         data: {
                             evacueeIds: id,
-                            status: sessionStorage.getItem('status') == 'Evacuated' ?
-                                'Return Home' : 'Evacuated'
+                            status: status
                         },
                         url: "{{ route('evacuee.info.update.status') }}",
                         method: "PATCH",
                         success(response) {
                             evacueeTable.draw();
                             showSuccessMessage(
-                                `Successfully updated the evacuee status to ${sessionStorage.getItem('status').toLowerCase()}.`
+                                `Successfully updated the evacuee status to ${status.toLowerCase()}.`
                             );
                             selectAllCheckBox.prop('checked', false);
                             initializeDataTable(url);
@@ -584,6 +585,8 @@
 
             function formSubmitHandler(form) {
                 let formData = $(form).serialize();
+
+                if (!$('#recordEvacueeInfoBtn').is(':visible')) return;
 
                 confirmModal(`Do you want to ${operation} this evacuee info?`).then((result) => {
                     if (!result.isConfirmed) return;
