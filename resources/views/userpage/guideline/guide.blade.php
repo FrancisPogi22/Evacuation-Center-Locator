@@ -136,7 +136,51 @@
                             content: 'Please Enter Guide Content.'
                         },
                         errorElement: 'span',
-                        submitHandler: guideFormHandler
+                        submitHandler(form) {
+                            let formData = new FormData(form);
+
+                            confirmModal(`Do you want to update this guide?`).then((result) => {
+                                if (!result.isConfirmed) return;
+
+                                return guideLabel == $('#label').val() && guideContent == $('#content')
+                                    .val() &&
+                                    !guideImageChanged ? showWarningMessage() :
+                                    $.ajax({
+                                        data: formData,
+                                        url: "{{ route('guide.update', 'guideId') }}".replace(
+                                            'guideId',
+                                            guideId),
+                                        method: "POST",
+                                        cache: false,
+                                        contentType: false,
+                                        processData: false,
+                                        success({
+                                            status,
+                                            message,
+                                            label,
+                                            content,
+                                            guide_photo
+                                        }) {
+                                            if (status == 'warning') return showWarningMessage(message);
+
+                                            if (guideImageChanged) $(currentGuide).find(
+                                                '.guide-img img').attr(
+                                                'src',
+                                                `{{ asset('guideline_image/${guide_photo}') }}`);
+
+                                            let guideDetails = currentGuide.querySelector(
+                                                '.guide-details');
+                                            guideDetails.querySelector('h1').textContent = label;
+                                            guideDetails.querySelector('p').textContent = content;
+                                            currentGuide.querySelector('.guide-label').textContent =
+                                                label;
+                                            showSuccessMessage(`Guide successfully updated.`);
+                                            modal.modal('hide');
+                                        },
+                                        error: showErrorMessage
+                                    });
+                            });
+                        }
                     });
 
                     $(document).on('click', '.updateGuideBtn', function() {
@@ -196,46 +240,6 @@
                             });
                         });
                     });
-
-                    function guideFormHandler(form) {
-                        let formData = new FormData(form);
-
-                        confirmModal(`Do you want to update this guide?`).then((result) => {
-                            if (!result.isConfirmed) return;
-
-                            return guideLabel == $('#label').val() && guideContent == $('#content').val() &&
-                                !guideImageChanged ? showWarningMessage() :
-                                $.ajax({
-                                    data: formData,
-                                    url: "{{ route('guide.update', 'guideId') }}".replace('guideId',
-                                        guideId),
-                                    method: "POST",
-                                    cache: false,
-                                    contentType: false,
-                                    processData: false,
-                                    success({
-                                        status,
-                                        message,
-                                        label,
-                                        content,
-                                        guide_photo
-                                    }) {
-                                        if (status == 'warning') return showWarningMessage(message);
-
-                                        if (guideImageChanged) $(currentGuide).find('.guide-img img').attr(
-                                            'src', `{{ asset('guideline_image/${guide_photo}') }}`);
-
-                                        let guideDetails = currentGuide.querySelector('.guide-details');
-                                        guideDetails.querySelector('h1').textContent = label;
-                                        guideDetails.querySelector('p').textContent = content;
-                                        currentGuide.querySelector('.guide-label').textContent = label;
-                                        showSuccessMessage(`Guide successfully updated.`);
-                                        modal.modal('hide');
-                                    },
-                                    error: showErrorMessage
-                                });
-                        });
-                    }
 
                     function changeImageBtn(action) {
                         if (action == 'remove')

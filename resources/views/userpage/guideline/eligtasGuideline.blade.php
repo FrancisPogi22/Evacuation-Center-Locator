@@ -119,7 +119,64 @@
                             type: 'Please Enter Guideline Type.'
                         },
                         errorElement: 'span',
-                        submitHandler: guidelineFormSubmit
+                        submitHandler(form) {
+                            let formData = new FormData(form);
+
+                            confirmModal(`Do you want to ${operation} this guideline?`).then((result) => {
+                                if (!result.isConfirmed) return;
+
+                                return operation == "update" && guidelineType == $('#guidelineType')
+                                    .val() && checkGuideFields() && !guidelineImgChanged ?
+                                    showWarningMessage() :
+                                    $.ajax({
+                                        data: formData,
+                                        url: operation == 'create' ? "{{ route('guideline.create') }}" :
+                                            "{{ route('guideline.update', 'guidelineId') }}".replace(
+                                                'guidelineId', guidelineId),
+                                        method: "POST",
+                                        cache: false,
+                                        contentType: false,
+                                        processData: false,
+                                        success(response) {
+                                            if (response.status == 'warning') {
+                                                showWarningMessage(response.message)
+                                            } else {
+                                                let emptyGuideline = $('.empty-guidelines'),
+                                                    {
+                                                        guideline_id,
+                                                        type,
+                                                        guideline_img
+                                                    } = response;
+
+                                                if (operation == 'create') {
+                                                    if (guidelineContainer.find(emptyGuideline).length >
+                                                        0) emptyGuideline.remove();
+
+                                                    guideline_img = guideline_img ?
+                                                        `guideline_image/${guideline_img}` :
+                                                        'assets/img/empty-data.svg';
+                                                    guidelineContainer.append(initGuidelineItem(
+                                                        guideline_id, guideline_img, type));
+                                                } else {
+                                                    if (guidelineImgChanged)
+                                                        $(guidelineWidget).find(
+                                                            '.guideline-content img').attr(
+                                                            'src',
+                                                            `{{ asset('guideline_image/${guideline_img}') }}`
+                                                        );
+
+                                                    guidelineWidget.querySelector('.guideline-type p')
+                                                        .textContent = type;
+                                                }
+                                                modal.modal('hide');
+                                                showSuccessMessage(
+                                                    `Guideline successfully ${operation}d.`);
+                                            }
+                                        },
+                                        error: showErrorMessage
+                                    });
+                            });
+                        }
                     });
 
                     $('#searchGuidelineForm').on('submit', (e) => {
@@ -307,62 +364,6 @@
                         guideContentFields.html("");
                         guidelineForm[0].reset();
                     });
-
-                    function guidelineFormSubmit(form) {
-                        let formData = new FormData(form);
-
-                        confirmModal(`Do you want to ${operation} this guideline?`).then((result) => {
-                            if (!result.isConfirmed) return;
-
-                            return operation == "update" && guidelineType == $('#guidelineType').val() &&
-                                checkGuideFields() && !guidelineImgChanged ?
-                                showWarningMessage() :
-                                $.ajax({
-                                    data: formData,
-                                    url: operation == 'create' ? "{{ route('guideline.create') }}" :
-                                        "{{ route('guideline.update', 'guidelineId') }}".replace('guidelineId',
-                                            guidelineId),
-                                    method: "POST",
-                                    cache: false,
-                                    contentType: false,
-                                    processData: false,
-                                    success(response) {
-                                        if (response.status == 'warning') {
-                                            showWarningMessage(response.message)
-                                        } else {
-                                            let emptyGuideline = $('.empty-guidelines'),
-                                                {
-                                                    guideline_id,
-                                                    type,
-                                                    guideline_img
-                                                } = response;
-
-                                            if (operation == 'create') {
-                                                if (guidelineContainer.find(emptyGuideline).length > 0)
-                                                    emptyGuideline.remove();
-
-                                                guideline_img = guideline_img ?
-                                                    `guideline_image/${guideline_img}` :
-                                                    'assets/img/empty-data.svg';
-                                                guidelineContainer.append(initGuidelineItem(guideline_id,
-                                                    guideline_img, type));
-                                            } else {
-                                                if (guidelineImgChanged)
-                                                    $(guidelineWidget).find('.guideline-content img').attr(
-                                                        'src',
-                                                        `{{ asset('guideline_image/${guideline_img}') }}`);
-
-                                                guidelineWidget.querySelector('.guideline-type p').textContent =
-                                                    type;
-                                            }
-                                            modal.modal('hide');
-                                            showSuccessMessage(`Guideline successfully ${operation}d.`);
-                                        }
-                                    },
-                                    error: showErrorMessage
-                                });
-                        });
-                    }
 
                     function initGuidelineItem(id, img, type) {
                         return `<div class="guideline-widget">
