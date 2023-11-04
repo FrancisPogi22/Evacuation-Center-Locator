@@ -508,7 +508,7 @@
                             .replace('disaster', sessionStorage.getItem("archiveDisaster"));
                         initializeDataTable(url);
                     },
-                    error: () => showErrorMessage()
+                    error: showErrorMessage
                 });
             });
 
@@ -552,7 +552,7 @@
 
                         dropdownOptions.prop('hidden', false);
                     },
-                    error: () => showErrorMessage()
+                    error: showErrorMessage
                 });
             });
 
@@ -579,7 +579,7 @@
                             targetElement.val(data[key]);
                         }
                     },
-                    error: () => showErrorMessage()
+                    error: showErrorMessage
                 });
             });
 
@@ -607,7 +607,7 @@
                                     ));
                                 initializeDataTable(url);
                             },
-                            error: () => showErrorMessage()
+                            error: showErrorMessage
                         });
                 });
             }

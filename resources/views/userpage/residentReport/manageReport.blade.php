@@ -26,8 +26,7 @@
             <hr>
             @if ($operation == 'manage')
                 <div class="map-border">
-                    <div class="reporting-map" id="map">
-                    </div>
+                    <div class="reporting-map" id="map"></div>
                 </div>
                 <div class="report-markers" hidden>
                     <div class="markers-header">
@@ -457,8 +456,8 @@
 
                         const updateForm = $(this).parent().parent().prev(),
                             updateDiv = updateForm.prev(),
-                            isPrimary = this.textContent.includes('Update');
-                        const text = updateDiv ? updateDiv.text().split(':')[1]?.trim() : "";
+                            isPrimary = this.textContent.includes('Update'),
+                            text = updateDiv ? updateDiv.text().split(':')[1]?.trim() : "";
 
                         updateDiv.prop('hidden', isPrimary || (!isPrimary && text == ""));
                         updateForm.prop('hidden', !isPrimary);
@@ -499,7 +498,7 @@
                                 update: 'Please enter update details.'
                             },
                             errorElement: 'span',
-                            submitHandler: function() {
+                            submitHandler() {
                                 confirmModal(
                                         "Are you sure you want to add update to this report?")
                                     .then((result) => {
@@ -603,9 +602,7 @@
                                         `Successfully ${(operation == "approve" && reportType != "Area") ? "change the status of" : `${operation}d`} the report.`
                                     );
                             },
-                            error() {
-                                showErrorMessage();
-                            }
+                            error: showErrorMessage
                         });
                     }
 
@@ -711,24 +708,23 @@
                     reportTable.clear();
                     reportTable.ajax.url(url
                         .replace('year', sessionStorage.getItem("archiveReportYear"))
-                        .replace('type', type)
-                    ).load();
+                        .replace('type', type)).load();
                 });
 
                 $(document).on('click', '.overlay-text', function() {
-                    let reportPhotoUrl = $(this).closest('.image-wrapper').find('.report-img').attr('src');
-                    let overlay = $(
-                        `<div class="overlay show"><img src="${reportPhotoUrl}" class="overlay-image"></div>`
-                    );
+                    let reportPhotoUrl = $(this).closest('.image-wrapper').find('.report-img').attr('src'),
+                        overlay = $(
+                            `<div class="overlay show"><img src="${reportPhotoUrl}" class="overlay-image"></div>`
+                        );
                     $('body').append(overlay).on('click', () => overlay.remove());
                 });
 
                 $(document).on('click', '.viewLocationBtn', function() {
-                    let data = getRowData(this, reportTable);
-                    let position = {
-                        lat: parseFloat(data.latitude),
-                        lng: parseFloat(data.longitude)
-                    };
+                    let data = getRowData(this, reportTable),
+                        position = {
+                            lat: parseFloat(data.latitude),
+                            lng: parseFloat(data.longitude)
+                        };
 
                     map.setCenter(position);
                     map.setZoom(15);

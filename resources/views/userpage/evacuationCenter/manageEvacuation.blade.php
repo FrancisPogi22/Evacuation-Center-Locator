@@ -302,7 +302,7 @@
                                         `Successfully ${operation == 'add' ? 'added' : 'updated'} evacuation center.`
                                     ), evacuationCenterTable.draw(), modal.modal('hide'));
                                 },
-                                error: () => showErrorMessage()
+                                error: showErrorMessage
                             });
                     });
                 }
@@ -333,7 +333,7 @@
                                     );
                                     evacuationCenterTable.draw();
                                 },
-                                error: () => showErrorMessage()
+                                error: showErrorMessage
                             });
                     });
                 }

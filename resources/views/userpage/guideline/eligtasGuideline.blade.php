@@ -145,7 +145,7 @@
                                 });
                                 $('#search_guideline').val("");
                             },
-                            error: () => showErrorMessage()
+                            error: showErrorMessage
                         });
                     });
 
@@ -211,7 +211,7 @@
                                         </div>`);
                                     }
                                 },
-                                error: () => showErrorMessage()
+                                error: showErrorMessage
                             });
                         });
                     });
@@ -358,7 +358,7 @@
                                             showSuccessMessage(`Guideline successfully ${operation}d.`);
                                         }
                                     },
-                                    error: () => showErrorMessage()
+                                    error: showErrorMessage
                                 });
                         });
                     }

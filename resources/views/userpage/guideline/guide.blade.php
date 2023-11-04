@@ -190,7 +190,7 @@
                                             'Guide removed successfully.'),
                                         currentGuide.remove());
                                 },
-                                error: () => showErrorMessage()
+                                error: showErrorMessage
                             });
                         });
                     });
@@ -230,7 +230,7 @@
                                         showSuccessMessage(`Guide successfully updated.`);
                                         modal.modal('hide');
                                     },
-                                    error: () => showErrorMessage()
+                                    error: showErrorMessage
                                 });
                         });
                     }

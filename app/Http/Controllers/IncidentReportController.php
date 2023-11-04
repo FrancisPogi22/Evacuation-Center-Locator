@@ -10,7 +10,6 @@ use Yajra\DataTables\DataTables;
 use App\Events\Notification;
 use App\Events\IncidentReport;
 use Illuminate\Support\Facades\Date;
-use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Controllers\ResidentReportController;
 
@@ -65,13 +64,10 @@ class IncidentReportController extends Controller
         if ($incidentReportValidation->fails())
             return response(['status' => 'warning', 'message' => implode('<br>', $incidentReportValidation->errors()->all())]);
 
-        $resident = $this->reportLog
-            ->where('user_ip', $request->ip())
-            ->where('report_type', 'Incident')
-            ->first();
-
+        $userIp          = $request->ip();
+        $resident        = $this->reportLog->where('user_ip', $userIp)->where('report_type', 'Incident')->first();
         $reportPhotoPath = $request->file('image');
-        $reportPhotoPath = $request->file('image')->store();
+        $reportPhotoPath = $reportPhotoPath->store();
         $request->image->move(public_path('reports_image'), $reportPhotoPath);
 
         if ($resident) {
@@ -89,10 +85,11 @@ class IncidentReportController extends Controller
             }
 
             $resident->update(['attempt' => $residentAttempt + 1]);
+
             if ($resident->attempt == 3) $resident->update(['report_time' => Date::now()->addHour(1)]);
         } else {
             $this->reportLog->create([
-                'user_ip'     => $request->ip(),
+                'user_ip'     => $userIp,
                 'report_type' => 'Incident',
                 'attempt'     => 1,
             ]);
@@ -104,7 +101,7 @@ class IncidentReportController extends Controller
             'type'        => 'Incident',
             'photo'       => $reportPhotoPath,
             'details'     => trim($request->details),
-            'user_ip'     => $request->ip(),
+            'user_ip'     => $userIp,
             'report_time' => Date::now()
         ]);
         event(new IncidentReport());
@@ -134,7 +131,8 @@ class IncidentReportController extends Controller
 
         if ($report->photo) {
             $image_path = public_path('reports_image/' . $report->photo);
-            File::delete($image_path);
+
+            if (file_exists($image_path)) unlink($image_path);
         }
         $this->logActivity->generateLog($reportId, ' Incident', 'removed incident report');
         event(new IncidentReport());

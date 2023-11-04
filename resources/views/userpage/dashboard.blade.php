@@ -157,7 +157,7 @@
 
                         disasterList.prop('hidden', false);
                     },
-                    error: () => showErrorMessage()
+                    error: showErrorMessage
                 });
             });
 

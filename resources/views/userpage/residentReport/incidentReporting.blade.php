@@ -161,7 +161,7 @@
                 );
             }
 
-            $(document).on('click', '#submitAreaBtn', function() {
+            $(document).on('click', '#submitAreaBtn', () => {
                 $('#reportAreaForm').validate({
                     rules: {
                         details: 'required',
@@ -184,30 +184,26 @@
                             result) => {
                             if (!result.isConfirmed) return;
 
-                            var formData = new FormData(form);
+                            let formData = new FormData(form);
 
                             $.ajax({
                                 type: 'POST',
                                 url: "{{ route('resident.incident.report') }}",
                                 data: formData,
+                                cache: false,
                                 contentType: false,
                                 processData: false,
-                                success: response => {
-                                    const status = response.status
+                                success(response) {
+                                    const status = response.status;
 
-                                    status == "warning" || status ==
-                                        "blocked" ?
-                                        showWarningMessage(response
-                                            .message) :
+                                    status == "warning" || status == "blocked" ?
+                                        showWarningMessage(response.message) :
                                         showSuccessMessage(
-                                            'Report submitted successfully'
-                                        );
+                                            'Report submitted successfully.');
 
-                                    status != "warning" && (
-                                        reportMarker.setMap(null),
-                                        reportMarker = null,
-                                        reportWindow = null
-                                    )
+                                    status != "warning" && (reportMarker.setMap(
+                                            null), reportMarker = null,
+                                        reportWindow = null);
                                 },
                                 error: showErrorMessage
                             });

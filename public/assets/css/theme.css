@@ -208,7 +208,7 @@ textarea::placeholder {
 .page-button-container {
     display: flex;
     justify-content: end;
-    margin-bottom: 22px;
+    margin-bottom: 20px;
     align-items: flex-end;
     gap: 15px;
 }
@@ -292,6 +292,7 @@ button.changeTheme {
     margin-right: 10px;
 }
 
+<<<<<<< HEAD
 #emergencyBtn:hover,
 button.changeTheme:hover {
     transform: scale(1.05);
@@ -332,6 +333,35 @@ button.changeTheme:hover {
     width: 20.5px;
     height: 20px;
     background-color: var(--color-red);
+}
+
+.log-dropdown {
+    padding: 10px !important;
+    font-size: 13px !important;
+    width: 300px;
+}
+
+.log-dropdown p {
+    margin-bottom: 8px;
+}
+
+.log-dropdown hr {
+    margin: 10px !important;
+}
+
+.log-dropdown .action-container {
+    display: flex;
+    justify-content: center;
+}
+
+#badge {
+    position: relative;
+    top: 0;
+    left: 100%;
+    transform: translateX(-50%);
+    padding: 0.25rem 0.5rem;
+    border-radius: 50rem;
+    background-color: var(--color-green);
     color: var(--color-text);
     border-radius: 50%;
     display: flex;
@@ -393,7 +423,7 @@ button.changeTheme:hover {
 }
 
 .main-content hr {
-    margin: 20px 0;
+    margin: 24px 0 20px;
 }
 
 .label-container {
@@ -403,7 +433,6 @@ button.changeTheme:hover {
 }
 
 .icon-container {
-    display: grid;
     margin-right: 14px;
     grid-column-end: 1;
 }
@@ -431,8 +460,7 @@ button.changeTheme:hover {
     z-index: 100;
     left: 0;
     top: 0;
-    filter: drop-shadow(0 10px 8px rgb(0 0 0 / 0.04))
-        drop-shadow(0 4px 3px rgb(0 0 0 / 0.1));
+    filter: drop-shadow(0 10px 8px rgb(0 0 0 / 0.04)) drop-shadow(0 4px 3px rgb(0 0 0 / 0.1));
     overflow: hidden;
 }
 
@@ -1068,7 +1096,6 @@ text {
 
 .content-item {
     text-align: center;
-    margin-top: 16px;
 }
 
 .guideline-widget,
@@ -1584,6 +1611,22 @@ div.gm-style-iw.gm-style-iw-c {
     overflow: auto;
 }
 
+.dark-mode .gmnoprint button {
+    background: var(--color-d-bg-container) !important;
+}
+
+.dark-mode .gmnoprint button span {
+    color: var(--color-d-text);
+}
+
+.dark-mode .gmnoprint button {
+    background: var(--color-d-bg-container) !important;
+}
+
+.dark-mode .gmnoprint button span {
+    color: var(--color-d-text);
+}
+
 .report-markers {
     height: 60px;
 }
@@ -1969,9 +2012,21 @@ div.gm-style-iw.gm-style-iw-c {
 }
 
 .hotline-header {
-    font-weight: 800;
     display: flex;
     justify-content: space-between;
+}
+
+.hotline-header .hotline-label {
+    flex: 1;
+}
+
+.add-hotline-btn .btn-remove {
+    padding: 8px 16px;
+}
+
+.add-hotline-btn {
+    float: right;
+    margin: 10px 0;
 }
 
 .hotline-content {
@@ -1984,27 +2039,18 @@ div.gm-style-iw.gm-style-iw-c {
     padding: 0 10px;
 }
 
+.header-btn-container {
+    margin: auto;
+}
+
+.header-btn-container button {
+    padding: 4px;
+}
+
 .header-btn-container button i {
     padding: 10px;
     font-size: 15px;
     margin: auto;
-}
-
-.input-container {
-    flex: 3;
-}
-
-.logo-container {
-    margin: 0 10px;
-    display: flex;
-    flex-direction: column;
-}
-
-#hotlineForm .logo-container img {
-    width: 200px;
-    object-fit: contain;
-    height: 87px;
-    padding: 5px 20px;
 }
 
 .input-field-section {
@@ -2015,23 +2061,13 @@ div.gm-style-iw.gm-style-iw-c {
 
 .hotline-logo img {
     width: 100px;
+    margin: 15px 20px;
 }
 
-#hotlineForm .logo-container a {
-    text-align: center;
-    width: 100%;
-}
-
-#hotlineForm .logo-container a i {
-    padding-right: 8px;
-}
-
-.input-field-section .field-container {
-    flex: 1;
-}
-
-#hotlineForm .form-content {
+.hotline-logo {
+    margin: 0 10px;
     display: flex;
+    flex-direction: column;
 }
 
 .hotline-container {

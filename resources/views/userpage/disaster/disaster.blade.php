@@ -187,9 +187,9 @@
                                             showWarningMessage(response.message) :
                                             (disasterTable.draw(), showSuccessMessage(
                                                 `Disaster successfully ${operation == "change" ? "changed status" : operation}.`
-                                            ))
+                                            ));
                                     },
-                                    error: () => showErrorMessage()
+                                    error: showErrorMessage
                                 });
                         });
                 }
@@ -215,7 +215,7 @@
                                             `Disaster successfully ${operation == "add" ? "added" : "updated"}.`
                                         ), modal.modal('hide'), disasterTable.draw());
                                 },
-                                error: () => showErrorMessage()
+                                error: showErrorMessage
                             });
                     });
                 }
