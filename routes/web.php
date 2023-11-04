@@ -1,6 +1,5 @@
 <?php
 
-use App\Events\Notification;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\MainController;
 use App\Http\Controllers\EvacueeController;
@@ -35,10 +34,6 @@ Route::controller(AuthenticationController::class)->group(function () {
 
 Route::prefix('resident')->middleware('guest')->group(function () {
     Route::name('resident.')->group(function () {
-        Route::name('incident.')->prefix('reportIncident')->controller(IncidentReportController::class)->group(function () {
-            Route::post('/createIncidentReport', 'createIncidentReport')->name('report');
-        });
-
         Route::controller(MainController::class)->group(function () {
             Route::get('/eligtasGuideline', 'eligtasGuideline')->name('eligtas.guideline');
             Route::get('/searchGuideline', 'searchGuideline')->name('guideline.search');
@@ -54,6 +49,8 @@ Route::prefix('resident')->middleware('guest')->group(function () {
             Route::get('/getAreaReport/{operation}/{year}/{type}', 'getAreaReport')->name('get');
         });
 
+        Route::post('/createIncidentReport', IncidentReportController::class . '@createIncidentReport')->name('incident.report');
+        Route::post('/createEmergencyReport', EmergencyReportController::class . '@createEmergencyReport')->name('emergency.report');
         Route::get('/viewEvacuationCenter/{operation}/{type}', EvacuationCenterController::class . '@getEvacuationData')->name('evacuation.center.get');
     });
 });
@@ -110,6 +107,12 @@ Route::middleware('auth')->group(function () {
             Route::get('/manageReport/{operation}', 'manageReport')->name('manage.report');
         });
 
+        Route::controller(ResidentReportController::class)->group(function () {
+            Route::get('/getResidentReport/{year}', 'getResidentReport')->name('resident.report.get');
+            Route::get('/getNotifications', 'getNotifications')->name('notifications.get');
+            Route::patch('/changeNotificationStatus/{id}', 'changeNotificationStatus')->name('notification.remove');
+        });
+
         Route::prefix('incidentReport')->name('incident.')->controller(IncidentReportController::class)->group(function () {
             Route::get('/getIncidentReport/{operation}/{year}/{type}', 'getIncidentReport')->name('get');
             Route::patch('/changeIncidentReportStatus/{reportId}', 'changeIncidentReportStatus')->name('change.status');
@@ -121,10 +124,10 @@ Route::middleware('auth')->group(function () {
             Route::get('/getEmergencyReport/{operation}/{year}/{type}', 'getEmergencyReport')->name('get');
             Route::patch('/changeEmergencyReportStatus/{reportId}', 'changeEmergencyReportStatus')->name('change.status');
             Route::delete('/removeEmergencyReport/{reportId}', 'removeEmergencyReport')->name('remove');
-            Route::patch('/archiveEmergencyReport/{reportId}', 'archiveEmergencyReport')->name('archive');
+            Route::post('/archiveEmergencyReport/{reportId}', 'archiveEmergencyReport')->name('archive');
         });
 
-        Route::name('area.')->controller(AreaReportController::class)->group(function () {
+        Route::prefix('areaReport')->name('area.')->controller(AreaReportController::class)->group(function () {
             Route::get('/getAreaReport/{operation}/{year}/{type}', 'getAreaReport')->name('get');
             Route::patch('/approveAreaReport/{reportId}', 'approveAreaReport')->name('approve');
             Route::patch('/updateAreaReport/{reportId}', 'updateAreaReport')->name('update');
@@ -168,8 +171,6 @@ Route::middleware('auth')->group(function () {
         Route::post('/updateHotlineNumber/{hotlineId}', 'updateHotlineNumber')->name('hotline.update');
         Route::delete('/removeHotlineNumber/{hotlineId}', 'removeHotlineNumber')->name('hotline.remove');
     });
-
-    Route::get('/notifications', NotificationEvent::class . '@notifications')->name('notifications');
 
     Route::name('account.')->controller(UserAccountsController::class)->group(function () {
         Route::post('/createAccount', 'createAccount')->name('create');
