@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Events\Notification;
 use App\Models\ResidentReport;
 use Yajra\DataTables\DataTables;
 use Illuminate\Support\Facades\Date;
@@ -44,12 +43,15 @@ class ResidentReportController extends Controller
         ->make(true);
     }
 
+    public function getNotifications() {
+        return $this->residentReport->where('notification', 1)->where('status', 'Pending')->get();
+    }
+
     public function changeNotificationStatus($reportId) {
         $report = $this->residentReport->find($reportId);
         $report->update([
             'notification' => 0
         ]);
-        //event(new Notification());
 
         return response()->json();
     }

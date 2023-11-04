@@ -77,9 +77,7 @@ class EvacueeController extends Controller
                 'disaster_id' => $request->disaster_id,
             ])
             ->exists()
-        ) {
-            return response(['status' => 'warning', 'message' => 'Evacuee is already recorded']);
-        }
+        ) return response(['status' => 'warning', 'message' => 'Evacuee is already recorded']);
 
         $latestRecordId = $request->form_type == "new" ?
             $this->familyController->recordFamilyRecord($request) :
@@ -96,7 +94,7 @@ class EvacueeController extends Controller
         $evacueeInfo['user_id']     = auth()->user()->id;
         $evacueeInfo                = $this->evacuee->create($evacueeInfo);
         $this->logActivity->generateLog($evacueeInfo->id, $evacueeInfo->barangay, 'recorded a new evacuee information');
-        // event(new ActiveEvacuees());
+        event(new ActiveEvacuees());
 
         return response()->json();
     }
@@ -135,7 +133,7 @@ class EvacueeController extends Controller
         $evacueeInfo['user_id']     = auth()->user()->id;
         $evacueeInfo                = $this->evacuee->find($evacueeId)->update($evacueeInfo);
         $this->logActivity->generateLog($evacueeId, '', 'updated a evacuee information');
-        // event(new ActiveEvacuees());
+        event(new ActiveEvacuees());
 
         return response()->json();
     }

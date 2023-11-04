@@ -9,19 +9,16 @@ use App\Models\Guideline;
 use Illuminate\Http\Request;
 use App\Models\ActivityUserLog;
 use App\Models\EvacuationCenter;
-use App\Events\Notification;
 use App\Exports\EvacueeDataExport;
 use App\Models\HotlineNumbers;
 use App\Models\ResidentReport;
-use Illuminate\Support\Carbon;
 use Maatwebsite\Excel\Facades\Excel;
-use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Validator;
 use Maatwebsite\Excel\Excel as FileFormat;
 
 class MainController extends Controller
 {
-    private $evacuationCenter, $disaster, $evacuee, $notification, $guide, $guideline, $residentReport;
+    private $evacuationCenter, $disaster, $evacuee, $guide, $guideline, $residentReport;
 
     public function __construct()
     {
@@ -29,7 +26,6 @@ class MainController extends Controller
         $this->evacuee          = new Evacuee;
         $this->disaster         = new Disaster;
         $this->guideline        = new Guideline;
-        $this->notification     = new Notification;
         $this->evacuationCenter = new EvacuationCenter;
         $this->residentReport   = new ResidentReport;
     }
@@ -41,10 +37,9 @@ class MainController extends Controller
         $onGoingDisasters      = $disaster->where('status', "On Going");
         $activeEvacuation      = $this->evacuationCenter->where('status', "Active")->count();
         $totalEvacuee          = strval($this->evacuee->where('status', "Evacuated")->sum('individuals'));
-        $notifications         = $this->notification->notifications();
         $residentReport        = $this->residentReport->where('report_time', '>=', now()->format('Y-m-d H:i:s'))->count();
 
-        return view('userpage.dashboard', compact('activeEvacuation', 'disasterData', 'totalEvacuee', 'onGoingDisasters', 'disaster', 'notifications', 'residentReport'));
+        return view('userpage.dashboard', compact('activeEvacuation', 'disasterData', 'totalEvacuee', 'onGoingDisasters', 'disaster', 'residentReport'));
     }
 
     public function fetchDisasters($year)
@@ -75,7 +70,6 @@ class MainController extends Controller
 
     public function eligtasGuideline()
     {
-        $notifications = $this->notification->notifications();
         $guidelineData = "";
 
         if (!auth()->check()) {
@@ -86,7 +80,7 @@ class MainController extends Controller
 
         $guidelineData = $this->guideline->where('organization', auth()->user()->organization)->get();
 
-        return view('userpage.guideline.eligtasGuideline', compact('guidelineData', 'notifications'));
+        return view('userpage.guideline.eligtasGuideline', compact('guidelineData'));
     }
 
     public function searchGuideline(Request $request)
@@ -110,18 +104,17 @@ class MainController extends Controller
 
     public function guide($guidelineId)
     {
-        $notifications  = $this->notification->notifications();
         $guide          = $this->guide->where('guideline_id', $guidelineId)->get();
         $guidelineLabel = $this->guideline->where('id', $guidelineId)->value('type');
 
-        return view('userpage.guideline.guide', compact('guide', 'guidelineId', 'guidelineLabel', 'notifications'));
+        return view('userpage.guideline.guide', compact('guide', 'guidelineId', 'guidelineLabel'));
     }
 
     public function manageEvacueeInformation($operation)
     {
         $disasterList        = $this->disaster->where('is_archive', 0)->get();
         $archiveDisasterList = $this->disaster->where('is_archive', 1)->get();
-        $yearList            = $archiveDisasterList->pluck('year')->unique()->orderBy('year', 'desc');
+        $yearList            = collect($archiveDisasterList->pluck('year')->unique()->toArray())->sort();
         $archiveDisasterList = $archiveDisasterList->where('year', $yearList->first());
         $evacuationList      = $this->evacuationCenter->whereNotIn('status', ['Inactive', 'Archived'])->get();
 
@@ -161,21 +154,17 @@ class MainController extends Controller
 
     public function userAccounts($operation)
     {
-        $notifications = $this->notification->notifications();
 
-        return view('userpage.userAccount.userAccounts', compact('operation', 'notifications'));
+        return view('userpage.userAccount.userAccounts', compact('operation'));
     }
 
     public function userProfile()
     {
-        $notifications = $this->notification->notifications();
-
-        return view('userpage.userAccount.userProfile', compact('notifications'));
+        return view('userpage.userAccount.userProfile');
     }
 
     public function manageReport($operation)
     {
-        $notifications = $this->notification->notifications();
         $prefix = request()->route()->getPrefix();
         $reportType = ['All', 'Emergency', 'Incident', 'Flooded', 'Roadblocked'];
         $yearList = [];
@@ -188,7 +177,7 @@ class MainController extends Controller
                 ->orderBy('year', 'desc')
                 ->get();
 
-        return view('userpage.residentReport.manageReport', compact('notifications', 'operation', 'prefix', 'yearList', 'reportType'));
+        return view('userpage.residentReport.manageReport', compact('operation', 'prefix', 'yearList', 'reportType'));
     }
 
     public function fetchDisasterData()
@@ -219,16 +208,14 @@ class MainController extends Controller
 
     public function hotlineNumbers()
     {
-        $notifications  = $this->notification->notifications();
         $hotlineNumbers = HotlineNumbers::all();
 
-        return view('userpage.hotlineNumber.hotlineNumbers', compact('notifications', 'hotlineNumbers'));
+        return view('userpage.hotlineNumber.hotlineNumbers', compact('hotlineNumbers'));
     }
 
     public function about()
     {
-        $notifications = $this->notification->notifications();
 
-        return view('userpage.about', compact('notifications'));
+        return view('userpage.about');
     }
 }

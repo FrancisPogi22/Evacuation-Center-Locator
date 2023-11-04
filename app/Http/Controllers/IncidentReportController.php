@@ -74,17 +74,6 @@ class IncidentReportController extends Controller
         $reportPhotoPath = $request->file('image')->store();
         $request->image->move(public_path('reports_image'), $reportPhotoPath);
 
-        $incidentReport = [
-            'latitude'    => $request->latitude,
-            'longitude'   => $request->longitude,
-            'type'        => 'Incident',
-            'photo'       => $reportPhotoPath,
-            'details'     => trim($request->details),
-            'status'      => 'Pending',
-            'user_ip'     => $request->ip(),
-            'report_time' => Date::now()
-        ];
-
         if ($resident) {
             $residentAttempt = $resident->attempt;
             $reportTime      = $resident->report_time;
@@ -109,9 +98,17 @@ class IncidentReportController extends Controller
             ]);
         }
 
-        $this->incidentReport->create($incidentReport);
-        // event(new IncidentReport());
-        // event(new Notification());
+        $this->incidentReport->create([
+            'latitude'    => $request->latitude,
+            'longitude'   => $request->longitude,
+            'type'        => 'Incident',
+            'photo'       => $reportPhotoPath,
+            'details'     => trim($request->details),
+            'user_ip'     => $request->ip(),
+            'report_time' => Date::now()
+        ]);
+        event(new IncidentReport());
+        event(new Notification());
 
         return response()->json();
     }
@@ -124,7 +121,8 @@ class IncidentReportController extends Controller
             'status' => $status
         ]);
         $this->logActivity->generateLog($reportId, 'Incident', 'set the incident report status to resolving');
-        // event(new IncidentReport());
+        event(new IncidentReport());
+        event(new Notification());
 
         return response()->json();
     }
@@ -139,7 +137,8 @@ class IncidentReportController extends Controller
             File::delete($image_path);
         }
         $this->logActivity->generateLog($reportId, ' Incident', 'removed incident report');
-        // event(new IncidentReport());
+        event(new IncidentReport());
+        event(new Notification());
 
         return response()->json();
     }
@@ -151,7 +150,7 @@ class IncidentReportController extends Controller
             'is_archive' => 1
         ]);
         $this->logActivity->generateLog($reportId, 'Incident', "archived incident report");
-        //event(new IncidentReport());
+        event(new IncidentReport());
 
         return response()->json();
     }

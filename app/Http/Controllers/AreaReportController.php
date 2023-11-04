@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\Validator;
 use App\Events\Notification;
-use App\Events\AreaReport as AreaReportEvent;
+use App\Events\AreaReport;
 use App\Http\Controllers\ResidentReportController;
 
 class AreaReportController extends Controller
@@ -30,7 +30,7 @@ class AreaReportController extends Controller
 
     public function getAreaReport($operation, $year, $type)
     {
-        $areaReport = $this->areaReport->where('is_archive', $operation == "manage" ? 0 : 1);
+        $areaReport = $this->areaReport->where('is_archive', $operation == "archived" ? 1 : 0);
 
         if ($operation != "archived") {
             $prefix = request()->route()->getPrefix();
@@ -93,16 +93,6 @@ class AreaReportController extends Controller
         $reportPhotoPath = $request->file('image')->store();
         $request->image->move(public_path('reports_image'), $reportPhotoPath);
 
-        $areaReport = [
-            'latitude'    => $request->latitude,
-            'longitude'   => $request->longitude,
-            'type'        => $request->type,
-            'details'     => trim($request->details),
-            'photo'       => $reportPhotoPath,
-            'user_ip'     => $request->ip(),
-            'report_time' => Date::now()
-        ];
-
         if ($resident) {
             $residentAttempt = $resident->attempt;
             $reportTime      = $resident->report_time;
@@ -127,9 +117,17 @@ class AreaReportController extends Controller
             ]);
         }
 
-        $this->areaReport->create($areaReport);
-        // event(new AreaReport());
-        // event(new Notification());
+        $this->areaReport->create([
+            'latitude'    => $request->latitude,
+            'longitude'   => $request->longitude,
+            'type'        => $request->type,
+            'details'     => trim($request->details),
+            'photo'       => $reportPhotoPath,
+            'user_ip'     => $request->ip(),
+            'report_time' => Date::now()
+        ]);
+        event(new AreaReport());
+        event(new Notification());
 
         return response()->json();
     }
@@ -141,7 +139,8 @@ class AreaReportController extends Controller
             'status' => 'Approved'
         ]);
         $this->logActivity->generateLog($reportId, $report->type, 'approved area report');
-        // event(new AreaReport());
+        event(new AreaReport());
+        event(new Notification());
 
         return response()->json();
     }
@@ -158,7 +157,8 @@ class AreaReportController extends Controller
         $this->reportUpdate->addUpdate($reportId, $request->update);
         $report = $this->areaReport->find($reportId);
         $this->logActivity->generateLog($reportId, $report->type, 'add update to area report');
-        // event(new AreaReport());
+        event(new AreaReport());
+        event(new Notification());
 
         return response()->json();
     }
@@ -174,7 +174,7 @@ class AreaReportController extends Controller
         }
 
         $this->logActivity->generateLog($reportId, $report->type, 'removed area report');
-        // event(new AreaReport());
+        event(new AreaReport());
 
         return response()->json();
     }
@@ -186,7 +186,7 @@ class AreaReportController extends Controller
             'is_archive' => 1
         ]);
         $this->logActivity->generateLog($reportId, $report->type, 'archived area report');
-        // event(new AreaReport());
+        event(new AreaReport());
 
         return response()->json();
     }

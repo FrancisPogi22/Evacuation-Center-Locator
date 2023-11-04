@@ -84,7 +84,7 @@ class EvacuationCenterController extends Controller
             'is_archive'    => 0
         ]);
         $this->logActivity->generateLog($evacuationCenterData->id, $evacuationCenterData->name, 'added a new evacuation center');
-        // event(new EvacuationCenterLocator());
+        event(new EvacuationCenterLocator());
 
         return response()->json();
     }
@@ -110,7 +110,7 @@ class EvacuationCenterController extends Controller
             'longitude'     => $request->longitude
         ]);
         $this->logActivity->generateLog($evacuationId, $evacuationCenterData->name, 'updated a evacuation center');
-        // event(new EvacuationCenterLocator());
+        event(new EvacuationCenterLocator());
 
         return response()->json();
     }
@@ -124,7 +124,7 @@ class EvacuationCenterController extends Controller
             'is_archive' => $operation == "archive" ? 1 : 0
         ]);
         $this->logActivity->generateLog($evacuationId, $evacuationCenterData->name, $operation == "archive" ? "archived evacuation center" : "unarchived evacuation center");
-        // event(new EvacuationCenterLocator());
+        event(new EvacuationCenterLocator());
 
         return response()->json();
     }
@@ -137,7 +137,7 @@ class EvacuationCenterController extends Controller
             'status'  => $request->status
         ]);
         $this->logActivity->generateLog($evacuationId, $evacuationCenterData->name, 'changed a evacuation center status');
-        // event(new EvacuationCenterLocator());
+        event(new EvacuationCenterLocator());
 
         return response()->json();
     }
