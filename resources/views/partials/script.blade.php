@@ -20,25 +20,6 @@
         eyeIcon = $('.toggle-password'),
         checkPasswordIcon = $('.checkPassword'),
         current_password = "";
-
-    @if (auth()->user()->organization == 'CDRRMO')
-        function getNotifications() {
-            $.get('{{ route('notifications.get') }}', function(notifications) {
-                const dropdownMenu = $('.dropdown-menu.notification');
-                const count = notifications.length;
-                $('#notification-count').text(count);
-
-                dropdownMenu.html(count > 0 ? notifications.map(notification => `
-                <li class="dropdown-notification" aria-id="${notification.id}"
-                    aria-type="${notification.type}" aria-lat="${notification.latitude}"
-                    aria-long="${notification.longitude}">
-                    <b class="report-time">${formatDateTime(notification.report_time)}</b><br>
-                    <center>New ${notification.type.toLowerCase()} report</center>
-                </li>
-            `).join('') : '<div class="empty-notification">No new report notification</div>');
-            });
-        }
-    @endif
     @endauth
     $(document).ready(() => {
         theme == 'dark' ? enableDarkMode() : disableDarkMode();
@@ -166,11 +147,14 @@
             getNotifications();
 
             $(document).on('click', '.dropdown-notification', function() {
-                const list = $(this);
+                const list = $(this),
+                    long = list.attr('aria-long'),
+                    lat = list.attr('aria-lat'),
+                    reportAriaType = list.attr('aria-type');
 
-                sessionStorage.setItem('report_type', list.attr('aria-type'));
-                sessionStorage.setItem('report_latitude', list.attr('aria-lat'));
-                sessionStorage.setItem('report_longitude', list.attr('aria-long'));
+                sessionStorage.setItem('report_type', reportAriaType);
+                sessionStorage.setItem('report_latitude', long);
+                sessionStorage.setItem('report_longitude', lat);
 
                 $.ajax({
                     headers: {
@@ -180,8 +164,14 @@
                     url: "{{ route('notification.remove', 'reportId') }}".replace('reportId',
                         list
                         .attr('aria-id')),
-                    success: () => window.location.href =
-                        "http://127.0.0.1:8000/cdrrmo/manageReport/manage"
+                    success: () => {
+                        const currentLocation =
+                            "http://127.0.0.1:8000/cdrrmo/manageReport/manage";
+                        if (window.location.href == currentLocation) {
+                            openReportDetails(reportAriaType, long, lat)
+                        } else
+                            window.location.href = currentLocation;
+                    }
                 });
             });
 
@@ -247,6 +237,41 @@
     });
 
     @auth
+    @if (auth()->user()->organization == 'CDRRMO')
+        function getNotifications() {
+            $.get('{{ route('notifications.get') }}', function(notifications) {
+                const dropdownMenu = $('.dropdown-menu.notification');
+                const count = notifications.length;
+                $('#notification-count').text(count);
+
+                dropdownMenu.html(count > 0 ? notifications.map(notification => `
+                    <li class="dropdown-notification" aria-id="${notification.id}"
+                        aria-type="${notification.type}" aria-lat="${notification.latitude}"
+                        aria-long="${notification.longitude}">
+                        <b class="report-time">${formatDateTime(notification.report_time)}</b><br>
+                        <center>New ${notification.type.toLowerCase()} report</center>
+                    </li>
+                `).join('') : '<div class="empty-notification">No new report notification</div>');
+            });
+        }
+
+        function openReportDetails(type, long, lat) {
+            const markerIndex = {
+                'Incident': 0,
+                'Emergency': 1,
+                'Flooded': 2,
+                'Roadblocked': 2
+            };
+            reportMarkers[markerIndex[type]].forEach(marker => {
+                if (marker.getPosition().lat() == lat && marker
+                    .getPosition().lng() == long) {
+                    google.maps.event.trigger(marker, 'click');
+                    sessionStorage.setItem('report_type', 'null');
+                    return false;
+                }
+            });
+        }
+    @endif
 
     function datePicker(id, enableTime = true) {
         const dateFormat = enableTime ? "F j, Y h:i K" : "F j, Y";

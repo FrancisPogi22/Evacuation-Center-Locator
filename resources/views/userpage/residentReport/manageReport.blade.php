@@ -409,7 +409,7 @@
                     ajaxRequest("Emergency"),
                     ajaxRequest("Incident"),
                     ajaxRequest("Area")
-                ];
+                ], modal = $('#archivedReportModal');
 
                 Promise.all(requestPromises)
                     .then(() => {
@@ -420,22 +420,7 @@
                             long = sessionStorage.getItem('report_longitude');
 
                         if (type != undefined && type != 'null') {
-                            const markerIndex = {
-                                'Incident': 0,
-                                'Emergency': 1,
-                                'Flooded': 2,
-                                'Roadblocked': 2
-                            };
-
-                            reportMarkers[markerIndex[type]].forEach(marker => {
-                                let reportMarker = marker.getPosition();
-
-                                if (reportMarker.lat() == lat && reportMarker.lng() == long) {
-                                    google.maps.event.trigger(marker, 'click');
-                                    sessionStorage.setItem('report_type', 'null');
-                                    return false;
-                                }
-                            });
+                            openReportDetails(type, long, lat);
                         }
                     });
 
@@ -537,7 +522,7 @@
 
                     $(document).on('click', '.archiveEmergencyBtn', function() {
                         emergencyArchiveBtn = $(this);
-                        $('#archivedReportModal').modal('show');
+                        modal.modal('show');
                     });
 
                     $(document).on('click', '#archiveReportBtn', function() {
@@ -598,26 +583,31 @@
                             processData: processData,
                             success(response) {
                                 response.status == "warning" ?
-                                    showWarningMessage(response.message) : showSuccessMessage(
+                                    showWarningMessage(response.message) : (showSuccessMessage(
                                         `Successfully ${(operation == "approve" && reportType != "Area") ? "change the status of" : `${operation}d`} the report.`
-                                    );
+                                    ), modal.modal('hide'));
                             },
                             error: showErrorMessage
                         });
                     }
 
-                    Echo.channel('incident-report').listen('IncidentReport', (e) => {
-                        ajaxRequest("Incident").then(() => checkNoReports("Incident"));
-                    });
-
-                    Echo.channel('emergency-report').listen('EmergencyReport', (e) => {
-                        ajaxRequest("Emergency").then(() => checkNoReports("Emergency"));
-                    });
-
-                    Echo.channel('area-report').listen('AreaReport', (e) => {
-                        ajaxRequest("Area").then(() => checkNoReports("Area"));
+                    modal.on('hidden.bs.modal', () => {
+                        validator.resetForm();
+                        $('#archivedReportForm')[0].reset();
                     });
                 @endif
+
+                Echo.channel('incident-report').listen('IncidentReport', (e) => {
+                    ajaxRequest("Incident").then(() => checkNoReports("Incident"));
+                });
+
+                Echo.channel('emergency-report').listen('EmergencyReport', (e) => {
+                    ajaxRequest("Emergency").then(() => checkNoReports("Emergency"));
+                });
+
+                Echo.channel('area-report').listen('AreaReport', (e) => {
+                    ajaxRequest("Area").then(() => checkNoReports("Area"));
+                });
             @else
                 if ('{{ $yearList->isEmpty() }}')
                     showInfoMessage('There is no archived report.');
