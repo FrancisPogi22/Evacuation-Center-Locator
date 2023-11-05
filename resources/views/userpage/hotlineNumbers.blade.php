@@ -40,9 +40,8 @@
                                     <img src="{{ asset('assets/img/e-ligtas-logo-black.png') }}" alt="logo"
                                         id="hotlinePreviewLogo">
                                     <input type="file" name="logo" class="form-control" id="hotlineLogo" hidden>
-                                    <a href="javascript:void(0)" class="btn-table-primary" id="selectLogo"><i
-                                            class="bi bi-image"></i>Select
-                                        Logo</a>
+                                    <a href="javascript:void(0)" class="btn-table-primary" id="selectLogo">
+                                        <i class="bi bi-image"></i>Select Logo</a>
                                 </div>
                                 <div class="hotline-details">
                                     <div class="hotline-header">
@@ -137,7 +136,82 @@
                             number: 'Please enter hotline number.'
                         },
                         errorElement: 'span',
-                        submitHandler: hotlineNumberHandler
+                        submitHandler(form) {
+                            let formData = new FormData(form);
+
+                            confirmModal(`Do you want to ${operation} this hotline number?`).then((result) => {
+                                if (!result.isConfirmed) return;
+
+                                return operation == "update" && hotlineLabel == $('#hotlineLabel').val() &&
+                                    hotlineNumber == $('#hotlineNumber').val() && !hotlineLogoChanged ?
+                                    showWarningMessage() :
+                                    $.ajax({
+                                        data: formData,
+                                        url: operation == 'add' ? "{{ route('hotline.add') }}" :
+                                            "{{ route('hotline.update', 'hotlineId') }}".replace(
+                                                'hotlineId',
+                                                hotlineId),
+                                        method: "POST",
+                                        cache: false,
+                                        contentType: false,
+                                        processData: false,
+                                        success(response) {
+                                            if (response.status == 'warning') {
+                                                showWarningMessage(response.message);
+                                            } else {
+                                                let {
+                                                    label,
+                                                    number,
+                                                    hotlineLogo,
+                                                    hotlineId
+                                                } = response;
+
+                                                if (operation == "update") {
+                                                    if (hotlineLogoChanged)
+                                                        hotlineItem.find('.hotlineLogo').attr('src',
+                                                            previewLogo
+                                                            .attr('src'));
+
+                                                    hotlineItem.find('.hotline-label span').text(label);
+                                                    hotlineItem.find('.hotline-number p').text(number);
+                                                    replaceHotlineItem();
+                                                    resetHotlineForm();
+                                                } else {
+                                                    $('.number-section').append(`
+                                                        <div class="hotline-container">
+                                                            <div class="hotline-logo">
+                                                                <img src="${hotlineLogo ? `/assets/img/${hotlineLogo}` : '/assets/img/empty-data.svg'}" class="hotlineLogo" alt="logo">
+                                                            </div>
+                                                            <div class="hotline-details">
+                                                                <div class="hotline-header">
+                                                                    <div class="hotline-label">
+                                                                        <i class="bi bi-hospital"></i>
+                                                                        <span>${label}</span>
+                                                                    </div>
+                                                                    <div class="header-btn-container">
+                                                                        <button class="btn-update updateNumber" data-id="${hotlineId}"><i class="bi bi-pencil"></i></button>
+                                                                        <button class="btn-remove removeNumber" data-id="${hotlineId}"><i class="bi bi-trash3"></i></button>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="hotline-number">
+                                                                    <hr>
+                                                                    <p>${number}</p>
+                                                                </div>
+                                                            </div>
+                                                        </div>`);
+                                                    resetHotlineForm();
+                                                    hotlineForm.prop('hidden', 1);
+                                                }
+                                                showSuccessMessage(
+                                                    `Hotline number successfully ${operation == "add" ? "added" : "updated"}.`
+                                                );
+                                                hotlineItem = "";
+                                            }
+                                        },
+                                        error: showErrorMessage
+                                    });
+                            });
+                        }
                     });
 
                     $('#addNumberBtnModal').click(() => {
@@ -150,7 +224,7 @@
                         operation = "add";
                         changeLogoColor();
                         validator.resetForm();
-                        hotlineForm.prop('hidden', false);
+                        hotlineForm.prop('hidden', 0);
                         formBtn.removeClass('bg-warning').text('Add');
                     });
 
@@ -216,82 +290,6 @@
                         resetHotlineForm();
                         hotlineItem = "";
                     });
-
-                    function hotlineNumberHandler(form) {
-                        let formData = new FormData(form);
-
-                        confirmModal(`Do you want to ${operation} this hotline number?`).then((result) => {
-                            if (!result.isConfirmed) return;
-
-                            return operation == "update" && hotlineLabel == $('#hotlineLabel').val() &&
-                                hotlineNumber == $('#hotlineNumber').val() && !hotlineLogoChanged ?
-                                showWarningMessage() :
-                                $.ajax({
-                                    data: formData,
-                                    url: operation == 'add' ? "{{ route('hotline.add') }}" :
-                                        "{{ route('hotline.update', 'hotlineId') }}".replace('hotlineId',
-                                            hotlineId),
-                                    method: "POST",
-                                    cache: false,
-                                    contentType: false,
-                                    processData: false,
-                                    success(response) {
-                                        if (response.status == 'warning') {
-                                            showWarningMessage(response.message);
-                                        } else {
-                                            let {
-                                                label,
-                                                number,
-                                                hotlineLogo,
-                                                hotlineId
-                                            } = response;
-
-                                            if (operation == "update") {
-                                                if (hotlineLogoChanged)
-                                                    hotlineItem.find('.hotlineLogo').attr('src', previewLogo
-                                                        .attr('src'));
-
-                                                hotlineItem.find('.hotline-label span').text(label);
-                                                hotlineItem.find('.hotline-number p').text(number);
-                                                replaceHotlineItem();
-                                                resetHotlineForm();
-                                            } else {
-                                                $('.number-section').append(`
-                                                    <div class="hotline-container">
-                                                        <div class="hotline-logo">
-                                                            <img src="${hotlineLogo ? `/assets/img/${hotlineLogo}` : '/assets/img/empty-data.svg'}" class="hotlineLogo" alt="logo">
-                                                        </div>
-                                                        <div class="hotline-content">
-                                                            <div class="hotline-header">
-                                                                <div class="hotline-label">
-                                                                    <i class="bi bi-hospital"></i>
-                                                                    <span>${label}</span>
-                                                                </div>
-                                                                <div class="header-btn-container">
-                                                                    <button class="btn-update updateNumber" data-id="${hotlineId}"><i class="bi bi-pencil"></i></button>
-                                                                    <button class="btn-remove removeNumber" data-id="${hotlineId}"><i class="bi bi-trash3"></i></button>
-                                                                </div>
-                                                            </div>
-                                                            <div class="hotline-number">
-                                                                <hr>
-                                                                <p>${number}</p>
-                                                            </div>
-                                                        </div>
-                                                    </div>`);
-                                                resetHotlineForm();
-                                                hotlineForm.prop('hidden', 1);
-                                            }
-
-                                            showSuccessMessage(
-                                                `Hotline number successfully ${operation == "add" ? "added" : "updated"}.`
-                                            );
-                                            hotlineItem = "";
-                                        }
-                                    },
-                                    error: showErrorMessage
-                                });
-                        });
-                    }
 
                     function resetHotlineForm() {
                         hotlineForm[0].reset();

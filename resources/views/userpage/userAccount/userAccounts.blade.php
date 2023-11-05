@@ -118,11 +118,19 @@
             @if (auth()->user()->is_disable == 0)
                 let userId, validator, defaultFormData, dateSuspendTime = datePicker("#suspend"),
                     operation, modal = $('#userAccountModal'),
+                    form = $('#accountForm'),
+                    organizationContainer = $('#organization-container'),
+                    positionContainer = $('#position-container'),
+                    nameContainer = $('#name-container'),
+                    emailContainer = $('#email-container'),
+                    positionInput = $('#position'),
+                    suspendContainer = $('#suspend-container'),
+                    suspend = $('#suspend'),
                     modalLabelContainer = $('.modal-label-container'),
                     modalLabel = $('.modal-label'),
                     formButton = $('#saveProfileDetails');
 
-                validator = $("#accountForm").validate({
+                validator = form.validate({
                     rules: {
                         organization: 'required',
                         position: 'required',
@@ -138,7 +146,35 @@
                         suspend_time: 'Please enter a suspension time.'
                     },
                     errorElement: 'span',
-                    submitHandler: formSubmitHandler
+                    submitHandler(form) {
+                        let formData = $(form).serialize(),
+                            url = {
+                                create: "{{ route('account.create') }}",
+                                update: "{{ route('account.update', 'userId') }}".replace('userId', userId),
+                                suspend: "{{ route('account.suspend', 'userId') }}".replace('userId',
+                                    userId)
+                            } [operation];
+
+                        confirmModal(`Do you want to ${operation} this user details?`).then((result) => {
+                            if (!result.isConfirmed) return;
+
+                            return operation == 'update' && defaultFormData == formData ?
+                                showWarningMessage() :
+                                $.ajax({
+                                    data: formData,
+                                    url: url,
+                                    method: operation == 'create' ? "POST" : "PUT",
+                                    success(response) {
+                                        response.status == "warning" ? showWarningMessage(
+                                            response
+                                            .message) : (showSuccessMessage(
+                                            `Successfully ${operation}${operation == 'suspend' ? 'ed' : 'd'} user account.`
+                                        ), modal.modal('hide'), accountTable.draw())
+                                    },
+                                    error: showErrorMessage
+                                });
+                        });
+                    }
                 });
 
                 $.ajaxSetup({
@@ -160,163 +196,113 @@
 
                     switch (selectedAction) {
                         case 'disableAccount':
-                            confirmModal('Do you want to disable this account?').then((result) => {
-                                return !result.isConfirmed ? $(this).val('') :
-                                    $.ajax({
-                                        method: "PATCH",
-                                        url: "{{ route('account.disable', 'userId') }}"
-                                            .replace('userId', userId),
-                                        success() {
-                                            showSuccessMessage(
-                                                'Successfully disabled account.');
-                                            accountTable.draw();
-                                        },
-                                        error: showErrorMessage
-                                    })
-                            });
+                            ajaxRequest('disable', "{{ route('account.disable', 'userId') }}".replace(
+                                'userId', userId));
                             break;
 
                         case 'enableAccount':
-                            confirmModal('Do you want to enable this account?').then((result) => {
-                                return !result.isConfirmed ? $(this).val('') :
-                                    $.ajax({
-                                        method: "PATCH",
-                                        url: "{{ route('account.enable', 'userId') }}"
-                                            .replace('userId', userId),
-                                        success() {
-                                            showSuccessMessage(
-                                                'Successfully enabled account.');
-                                            accountTable.draw();
-                                        },
-                                        error: showErrorMessage
-                                    });
-                            });
+                            ajaxRequest('enable', "{{ route('account.enable', 'userId') }}".replace(
+                                'userId', userId));
                             break;
 
                         case 'updateAccount':
-                            modalLabelContainer.removeClass('bg-success').addClass('bg-warning');
-                            modalLabel.text('Update User Account');
-                            formButton.removeClass('btn-submit').addClass('btn-update').text('Update');
-                            $('#suspend-container').prop('hidden', true);
-                            $('#organization').val(organization);
-                            $('#position').val(position);
-                            $('#name').val(name);
-                            $('#email').val(email);
+                            changeModalProperties('Update User Account', 'Update');
+                            positionContainer.add(nameContainer).add(emailContainer).prop('hidden', 0);
+                            suspendContainer.prop('hidden', 1);
+                            initPositionOption(organization);
+                            fillData(organization, position, name, email);
                             operation = "update";
-                            defaultFormData = $('#accountForm').serialize();
+                            defaultFormData = form.serialize();
                             modal.modal('show');
                             break;
 
                         case 'archiveAccount':
-                            confirmModal('Do you want to archive this user account?').then((result) => {
-                                return !result.isConfirmed ? $(this).val('') :
-                                    $.ajax({
-                                        method: "PATCH",
-                                        url: "{{ route('account.archive', ['userId', 'archive']) }}"
-                                            .replace('userId', userId),
-                                        success() {
-                                            showSuccessMessage(
-                                                'Successfully archive account.');
-                                            accountTable.draw();
-                                        },
-                                        error: showErrorMessage
-                                    });
-                            });
+                            ajaxRequest('archive', "{{ route('account.archive', ['userId', 'archive']) }}"
+                                .replace('userId', userId));
                             break;
 
                         case 'unArchiveAccount':
-                            confirmModal('Do you want to unarchive this account?').then((result) => {
-                                return !result.isConfirmed ? $(this).val('') :
-                                    $.ajax({
-                                        method: "PATCH",
-                                        url: "{{ route('account.archive', ['userId', 'unarchive']) }}"
-                                            .replace('userId', userId),
-                                        success() {
-                                            showSuccessMessage(
-                                                'Successfully unarchived account.');
-                                            accountTable.draw();
-                                        },
-                                        error: showErrorMessage
-                                    })
-                            });
+                            ajaxRequest('unarchive',
+                                "{{ route('account.archive', ['userId', 'unarchive']) }}".replace(
+                                    'userId', userId));
                             break;
 
                         case 'suspendAccount':
-                            modalLabelContainer.removeClass('bg-success').addClass('bg-warning');
-                            modalLabel.text('Suspend User Account');
-                            formButton.removeClass('btn-submit').addClass('btn-update').text('Suspend');
-                            $('#organization').val(organization);
-                            $('#position').val(position);
-                            $('#name').val(name);
-                            $('#email').val(email);
+                            changeModalProperties('Suspend User Account', 'Suspend');
+                            fillData(organization, position, name, email);
+                            organizationContainer.prop('hidden', 1);
                             operation = "suspend";
-                            defaultFormData = $('#accountForm').serialize();
+                            defaultFormData = form.serialize();
                             modal.modal('show');
                             break;
 
                         case 'openAccount':
-                            confirmModal('Do you want to open this user account?').then((result) => {
-                                return !result.isConfirmed ? $(this).val('') :
-                                    $.ajax({
-                                        method: "PATCH",
-                                        url: "{{ route('account.open', 'userId') }}"
-                                            .replace('userId', userId),
-                                        success() {
-                                            showSuccessMessage(
-                                                'Successfully opened account.');
-                                            accountTable.draw();
-                                        },
-                                        error: showErrorMessage
-                                    });
-                            });
-                            break;
-
-                        default:
+                            ajaxRequest('open', "{{ route('account.open', 'userId') }}".replace('userId',
+                                userId));
                             break;
                     }
+                });
+
+                $(document).on('change', '#organization', function() {
+                    initPositionOption($(this).val());
+                    positionContainer.add(nameContainer).add(emailContainer).prop('hidden', 0);
                 });
 
                 $(document).on('click', '#createUserAccount', () => {
                     modalLabelContainer.removeClass('bg-warning');
                     modalLabel.text('Create User Account');
                     formButton.addClass('btn-submit').removeClass('btn-update').text('Create');
-                    $('#suspend-container, #suspend').prop('hidden', true).prop('disabled', true);
+                    suspendContainer.add(suspend).prop('hidden', 1).prop('disabled', 1);
                     operation = "create";
                     modal.modal('show');
                 });
 
                 modal.on('hidden.bs.modal', () => {
                     validator.resetForm();
-                    $('#suspend-container, #suspend').prop('hidden', false).prop('disabled', false);
+                    suspendContainer.add(suspend).prop('hidden', 0).prop('disabled', 0);
+                    positionContainer.add(nameContainer).add(emailContainer).prop('hidden', 1);
+                    organizationContainer.prop('hidden', 0);
                     $('.actionSelect').val('');
-                    $('#accountForm')[0].reset();
+                    form[0].reset();
                 });
 
-                function formSubmitHandler(form) {
-                    let formData = $(form).serialize();
-                    let url = {
-                        create: "{{ route('account.create') }}",
-                        update: "{{ route('account.update', 'userId') }}".replace('userId', userId),
-                        suspend: "{{ route('account.suspend', 'userId') }}".replace('userId', userId)
-                    } [operation];
+                function checkPosition(position) {
+                    return position == "CSWD" ? '<option value="Focal">Focal</option>' :
+                        '<option value="President">President</option><option value="Vice President">Vice President</option>';
+                }
 
-                    confirmModal(`Do you want to ${operation} this user details?`).then((result) => {
-                        if (!result.isConfirmed) return;
+                function changeModalProperties(headerText, buttonText) {
+                    modalLabelContainer.removeClass('bg-success').addClass('bg-warning');
+                    modalLabel.text(headerText);
+                    formButton.removeClass('btn-submit').addClass('btn-update').text(buttonText);
+                }
 
-                        return operation == 'update' && defaultFormData == formData ?
-                            showWarningMessage() :
+                function fillData(organization, position, name, email) {
+                    $('#organization').val(organization);
+                    $('#position').val(position);
+                    $('#name').val(name);
+                    $('#email').val(email);
+                }
+
+                function initPositionOption(organization) {
+                    positionInput.empty();
+                    positionInput.append(checkPosition(organization));
+                }
+
+                function ajaxRequest(operation, url) {
+                    confirmModal(`Do you want to ${operation} this account?`).then((result) => {
+                        return !result.isConfirmed ? $('.actionSelect').val('') :
                             $.ajax({
-                                data: formData,
+                                method: "PATCH",
                                 url: url,
-                                method: operation == 'create' ? "POST" : "PUT",
-                                success(response) {
-                                    response.status == "warning" ? showWarningMessage(response
-                                        .message) : (showSuccessMessage(
-                                        `Successfully ${operation}${operation == 'suspend' ? 'ed' : 'd'} user account.`
-                                    ), modal.modal('hide'), accountTable.draw())
+                                success() {
+                                    showSuccessMessage(
+                                        `Successfully ${operation}${operation == "open" ? 'ed' : 'd'} account.`
+                                    );
+                                    accountTable.draw();
                                 },
                                 error: showErrorMessage
-                            });
+                            })
                     });
                 }
             @endif

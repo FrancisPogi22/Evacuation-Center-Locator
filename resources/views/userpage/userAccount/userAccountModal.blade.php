@@ -22,15 +22,9 @@
                                     @endif
                                 </select>
                             </div>
-                            <div class="field-container" id="position-container">
+                            <div class="field-container" id="position-container" hidden>
                                 <label for="position">Position</label>
                                 <select name="position" class="form-select" id="position" placeholder="Enter Position">
-                                    <option value="" hidden selected disabled>Select Position</option>
-                                    <option value="President">President</option>
-                                    @if (auth()->user()->organization == 'CSWD')
-                                        <option value="Focal">Focal</option>
-                                    @endif
-                                    <option value="Vice President">Vice President</option>
                                 </select>
                             </div>
                             <div class="field-container" id="suspend-container">
@@ -38,12 +32,12 @@
                                 <input name="suspend_time" class="form-control" id="suspend"
                                     placeholder="Select Suspend Time" autocomplete="off">
                             </div>
-                            <div class="field-container" id="name-container">
+                            <div class="field-container" id="name-container" hidden>
                                 <label for="name">Full Name</label>
                                 <input type="text" name="name" class="form-control" id="name"
                                     placeholder="Enter Full Name">
                             </div>
-                            <div class="field-container" id="email-container">
+                            <div class="field-container" id="email-container" hidden>
                                 <label for="email">Email Address</label>
                                 <input type="email" name="email" class="form-control" id="email"
                                     placeholder="Enter Email Address">
