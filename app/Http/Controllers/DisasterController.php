@@ -25,7 +25,7 @@ class DisasterController extends Controller
     {
         $disasterInformation = $this->disaster
             ->where('is_archive', $operation == "manage" ? 0 : 1)
-            ->when($year != "none", fn ($query) => $query->where('year', $year))->sortByDesc('id')
+            ->when($year != "none", fn ($query) => $query->where('year', $year))->orderBy('id', 'desc')
             ->get();
 
         if ($year != "none") return $disasterInformation;
