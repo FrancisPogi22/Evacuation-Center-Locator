@@ -34,28 +34,16 @@ class AreaReportController extends Controller
 
         if ($operation != "archived") {
             $prefix = request()->route()->getPrefix();
-
-            $areaReport = $areaReport
-                ->whereIn('type', ['Flooded', 'Roadblocked'])
-                ->when($prefix == "resident", fn ($query) => $query->where('status', 'Approved'))
-                ->get();
-
-
+            $areaReport = $areaReport->whereIn('type', ['Flooded', 'Roadblocked'])->when($prefix == "resident", fn ($query) => $query->where('status', 'Approved'))->get();
             foreach ($areaReport as $report) {
-                $report->update = $this->reportUpdate
-                    ->where('report_id', $report->id)
+                $report->update = $this->reportUpdate->where('report_id', $report->id)
                     ->when($prefix != "cdrrmo", fn ($query) => $query->where('update_time', '>=', Date::now()->subHours(24)))
-                    ->OrderBy('update_time', 'desc')
-                    ->get();
+                    ->OrderBy('update_time', 'desc')->get();
             }
 
             return response($areaReport);
         } else
-            return DataTables::of(
-                $areaReport->where('type', $type)
-                    ->whereYear('report_time', $year)
-                    ->get()
-            )
+            return DataTables::of($areaReport->where('type', $type)->whereYear('report_time', $year)->get())
                 ->addColumn('location', '<button class="btn-table-primary viewLocationBtn"><i class="bi bi-pin-map"></i> View</button>')
                 ->addColumn('photo', function ($report) {
                     return '<div class="photo-container">
@@ -66,36 +54,29 @@ class AreaReportController extends Controller
                             </div>
                         </div>
                     </div>';
-                })
-                ->rawColumns(['location', 'photo'])
-                ->make(true);
+                })->rawColumns(['location', 'photo'])->make(true);
     }
 
     public function createAreaReport(Request $request)
     {
         $areaReportValidation = Validator::make($request->all(), [
-            'latitude'  => 'required',
-            'longitude' => 'required',
             'type'      => 'required',
+            'image'     => 'required|image|mimes:jpeg,png,jpg',
             'details'   => 'required',
-            'image'     => 'required|image|mimes:jpeg,png,jpg'
+            'latitude'  => 'required',
+            'longitude' => 'required'
         ]);
 
-        if ($areaReportValidation->fails())
-            return response(['status' => 'warning', 'message' =>  implode('<br>', $areaReportValidation->errors()->all())]);
+        if ($areaReportValidation->fails()) return response(['status' => 'warning', 'message' =>  implode('<br>', $areaReportValidation->errors()->all())]);
 
-        $resident = $this->reportLog
-            ->where('user_ip', $request->ip())
-            ->where('report_type', 'Area')
-            ->first();
-
-        $reportPhotoPath = $request->file('image');
-        $reportPhotoPath = $request->file('image')->store();
+        $userIp = $request->ip();
+        $resident = $this->reportLog->where('user_ip', $userIp)->where('report_type', 'Area')->first();
+        $reportPhotoPath = $request->file('image')->store([]);
         $request->image->move(public_path('reports_image'), $reportPhotoPath);
 
         if ($resident) {
-            $residentAttempt = $resident->attempt;
             $reportTime      = $resident->report_time;
+            $residentAttempt = $resident->attempt;
 
             if ($residentAttempt == 3) {
                 $isBlock = $this->residentReport->isBlocked($reportTime);
@@ -111,48 +92,41 @@ class AreaReportController extends Controller
             if ($resident->attempt == 3) $resident->update(['report_time' => Date::now()->addHour(1)]);
         } else {
             $this->reportLog->create([
-                'user_ip'     => $request->ip(),
-                'report_type' => 'Area',
                 'attempt'     => 1,
+                'user_ip'     => $userIp,
+                'report_type' => 'Area'
             ]);
         }
 
         $this->areaReport->create([
+            'type'        => $request->type,
+            'photo'       => $reportPhotoPath,
+            'user_ip'     => $userIp,
+            'details'     => trim($request->details),
             'latitude'    => $request->latitude,
             'longitude'   => $request->longitude,
-            'type'        => $request->type,
-            'details'     => trim($request->details),
-            'photo'       => $reportPhotoPath,
-            'user_ip'     => $request->ip(),
             'report_time' => Date::now()
         ]);
         event(new AreaReport());
         event(new Notification());
 
-        return response()->json();
+        return response([]);
     }
 
     public function approveAreaReport($reportId)
     {
-        $report = $this->areaReport->find($reportId);
-        $report->update([
-            'status' => 'Approved'
-        ]);
+        $report = $this->areaReport->find($reportId)->update(['status' => 'Approved']);
         $this->logActivity->generateLog($reportId, $report->type, 'approved area report');
         event(new AreaReport());
         event(new Notification());
 
-        return response()->json();
+        return response([]);
     }
 
     public function updateAreaReport(Request $request, $reportId)
     {
-        $areaReportValidation = Validator::make($request->all(), [
-            'update' => 'required'
-        ]);
-
-        if ($areaReportValidation->fails())
-            return response(['status' => 'warning', 'message' =>  $areaReportValidation->errors()->first()]);
+        $areaReportValidation = Validator::make($request->all(), ['update' => 'required']);
+        if ($areaReportValidation->fails()) return response(['status' => 'warning', 'message' =>  $areaReportValidation->errors()->first()]);
 
         $this->reportUpdate->addUpdate($reportId, $request->update);
         $report = $this->areaReport->find($reportId);
@@ -160,34 +134,27 @@ class AreaReportController extends Controller
         event(new AreaReport());
         event(new Notification());
 
-        return response()->json();
+        return response([]);
     }
 
     public function removeAreaReport($reportId)
     {
         $report = $this->areaReport->find($reportId);
-        $report->delete();
-
-        if ($report->photo) {
-            $image_path = public_path('reports_image/' . $report->photo);
-            File::delete($image_path);
-        }
-
+        $report->delete([]);
+        unlink(public_path('reports_image/' . $report->photo));
         $this->logActivity->generateLog($reportId, $report->type, 'removed area report');
         event(new AreaReport());
 
-        return response()->json();
+        return response([]);
     }
 
     public function archiveAreaReport($reportId)
     {
         $report = $this->areaReport->find($reportId);
-        $report->update([
-            'is_archive' => 1
-        ]);
+        $report->update(['is_archive' => 1]);
         $this->logActivity->generateLog($reportId, $report->type, 'archived area report');
         event(new AreaReport());
 
-        return response()->json();
+        return response([]);
     }
 }

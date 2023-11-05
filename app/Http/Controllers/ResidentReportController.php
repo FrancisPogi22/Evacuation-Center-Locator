@@ -44,6 +44,6 @@ class ResidentReportController extends Controller
     public function changeNotificationStatus($reportId)
     {
         $this->residentReport->find($reportId)->update(['notification' => 0]);
-        return response();
+        return response([]);
     }
 }

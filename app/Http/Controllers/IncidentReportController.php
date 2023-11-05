@@ -32,11 +32,7 @@ class IncidentReportController extends Controller
         if ($operation == "manage")
             return response($incidentReports->where('type', 'Incident')->get());
         else
-            return DataTables::of(
-                $incidentReports->where('type', $type)
-                    ->whereYear('report_time', $year)
-                    ->get()
-            )
+            return DataTables::of($incidentReports->where('type', $type)->whereYear('report_time', $year)->get())
                 ->addColumn('location', '<button class="btn-table-primary viewLocationBtn"><i class="bi bi-pin-map"></i> View</button>')
                 ->addColumn('photo', function ($report) {
                     return '<div class="photo-container">
@@ -47,22 +43,19 @@ class IncidentReportController extends Controller
                         </div>
                     </div>
                 </div>';
-                })
-                ->rawColumns(['location', 'photo'])
-                ->make(true);
+                })->rawColumns(['location', 'photo'])->make(true);
     }
 
     public function createIncidentReport(Request $request)
     {
         $incidentReportValidation = Validator::make($request->all(), [
-            'latitude'  => 'required',
-            'longitude' => 'required',
+            'image'     => 'required|image|mimes:jpeg,png,jpg',
             'details'   => 'required',
-            'image'     => 'required|image|mimes:jpeg,png,jpg'
+            'latitude'  => 'required',
+            'longitude' => 'required'
         ]);
 
-        if ($incidentReportValidation->fails())
-            return response(['status' => 'warning', 'message' => implode('<br>', $incidentReportValidation->errors()->all())]);
+        if ($incidentReportValidation->fails()) return response(['status' => 'warning', 'message' => implode('<br>', $incidentReportValidation->errors()->all())]);
 
         $userIp          = $request->ip();
         $resident        = $this->reportLog->where('user_ip', $userIp)->where('report_type', 'Incident')->first();
@@ -71,8 +64,8 @@ class IncidentReportController extends Controller
         $request->image->move(public_path('reports_image'), $reportPhotoPath);
 
         if ($resident) {
-            $residentAttempt = $resident->attempt;
             $reportTime      = $resident->report_time;
+            $residentAttempt = $resident->attempt;
 
             if ($residentAttempt == 3) {
                 $isBlock = $this->residentReport->isBlocked($reportTime);
@@ -89,67 +82,56 @@ class IncidentReportController extends Controller
             if ($resident->attempt == 3) $resident->update(['report_time' => Date::now()->addHour(1)]);
         } else {
             $this->reportLog->create([
-                'user_ip'     => $userIp,
-                'report_type' => 'Incident',
                 'attempt'     => 1,
+                'user_ip'     => $userIp,
+                'report_type' => 'Incident'
             ]);
         }
 
         $this->incidentReport->create([
-            'latitude'    => $request->latitude,
-            'longitude'   => $request->longitude,
             'type'        => 'Incident',
             'photo'       => $reportPhotoPath,
             'details'     => trim($request->details),
             'user_ip'     => $userIp,
+            'latitude'    => $request->latitude,
+            'longitude'   => $request->longitude,
             'report_time' => Date::now()
         ]);
         event(new IncidentReport());
         event(new Notification());
 
-        return response()->json();
+        return response([]);
     }
 
     public function changeIncidentReportStatus($reportId)
     {
         $report = $this->incidentReport->find($reportId);
-        $status = $report->status == "Pending" ? "Resolving" : "Resolved";
-        $report->update([
-            'status' => $status
-        ]);
+        $report->update(['status' => $report->status == "Pending" ? "Resolving" : "Resolved"]);
         $this->logActivity->generateLog($reportId, 'Incident', 'set the incident report status to resolving');
         event(new IncidentReport());
         event(new Notification());
 
-        return response()->json();
+        return response([]);
     }
 
     public function removeIncidentReport($reportId)
     {
         $report = $this->incidentReport->find($reportId);
         $report->delete();
-
-        if ($report->photo) {
-            $image_path = public_path('reports_image/' . $report->photo);
-
-            if (file_exists($image_path)) unlink($image_path);
-        }
+        unlink(public_path('reports_image/' . $report->photo));
         $this->logActivity->generateLog($reportId, ' Incident', 'removed incident report');
         event(new IncidentReport());
         event(new Notification());
 
-        return response()->json();
+        return response([]);
     }
 
     public function archiveIncidentReport($reportId)
     {
-        $report = $this->incidentReport->find($reportId);
-        $report->update([
-            'is_archive' => 1
-        ]);
+        $this->incidentReport->find($reportId)->update(['is_archive' => 1]);
         $this->logActivity->generateLog($reportId, 'Incident', "archived incident report");
         event(new IncidentReport());
 
-        return response()->json();
+        return response([]);
     }
 }

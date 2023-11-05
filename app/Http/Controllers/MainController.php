@@ -6,16 +6,16 @@ use App\Models\Guide;
 use App\Models\Evacuee;
 use App\Models\Disaster;
 use App\Models\Guideline;
-use Illuminate\Http\Request;
-use App\Models\ActivityUserLog;
-use App\Models\EvacuationCenter;
-use App\Exports\EvacueeDataExport;
 use App\Models\HotlineNumbers;
 use App\Models\ResidentReport;
+use App\Models\ActivityUserLog;
+use App\Models\EvacuationCenter;
+use Illuminate\Http\Request;
+use App\Exports\EvacueeDataExport;
 use Maatwebsite\Excel\Facades\Excel;
+use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Support\Facades\Validator;
 use Maatwebsite\Excel\Excel as FileFormat;
-use Yajra\DataTables\Facades\DataTables;
 
 class MainController extends Controller
 {
@@ -27,18 +27,18 @@ class MainController extends Controller
         $this->evacuee          = new Evacuee;
         $this->disaster         = new Disaster;
         $this->guideline        = new Guideline;
-        $this->evacuationCenter = new EvacuationCenter;
         $this->residentReport   = new ResidentReport;
+        $this->evacuationCenter = new EvacuationCenter;
     }
 
     public function dashboard()
     {
-        $disaster              = $this->disaster->all();
-        $disasterData          = $this->fetchDisasterData();
-        $onGoingDisasters      = $disaster->where('status', "On Going");
-        $activeEvacuation      = $this->evacuationCenter->where('status', "Active")->count();
-        $totalEvacuee          = strval($this->evacuee->where('status', "Evacuated")->sum('individuals'));
-        $residentReport        = $this->residentReport->whereRaw('DATE(report_time) <= CURDATE()')->count();
+        $disaster         = $this->disaster->all();
+        $disasterData     = $this->fetchDisasterData();
+        $totalEvacuee     = strval($this->evacuee->where('status', "Evacuated")->sum('individuals'));
+        $residentReport   = $this->residentReport->whereRaw('DATE(report_time) <= CURDATE()')->count();
+        $onGoingDisasters = $disaster->where('status', "On Going");
+        $activeEvacuation = $this->evacuationCenter->where('status', "Active")->count();
 
         return view('userpage.dashboard', compact('activeEvacuation', 'disasterData', 'totalEvacuee', 'onGoingDisasters', 'disaster', 'residentReport'));
     }
@@ -50,56 +50,36 @@ class MainController extends Controller
 
     public function initDisasterData($disasterName)
     {
-        $disaterData = $this->disaster->select('id', 'name', 'year')
-            ->where('name', 'LIKE', "%{$disasterName}%")
-            ->get();
-
-        return response()->json($disaterData);
+        $disaterData = $this->disaster->select('id', 'name', 'year')->where('name', 'LIKE', "%{$disasterName}%")->get();
+        return response($disaterData);
     }
 
     public function generateExcelEvacueeData(Request $request)
     {
-        $generateReportValidation = Validator::make($request->all(), [
-            'disaster_id' => 'required'
-        ]);
-
-        if ($generateReportValidation->fails())
-            return back()->with('warning', "Disaster is not exist.");
+        $generateReportValidation = Validator::make($request->all(), ['disaster_id' => 'required']);
+        if ($generateReportValidation->fails()) return back()->with('warning', "Disaster is not exist.");
 
         return Excel::download(new EvacueeDataExport($request->disaster_id), 'evacuee-data.xlsx', FileFormat::XLSX);
     }
 
     public function eligtasGuideline()
     {
-        $guidelineData = "";
-
-        if (!auth()->check()) {
-            $guidelineData = $this->guideline->all();
-
-            return view('userpage.guideline.eligtasGuideline', compact('guidelineData'));
-        }
-
-        $guidelineData = $this->guideline->where('organization', auth()->user()->organization)->get();
+        $guidelineData = !auth()->check() ? $this->guideline->all() : $this->guideline->where('organization', auth()->user()->organization)->get();
 
         return view('userpage.guideline.eligtasGuideline', compact('guidelineData'));
     }
 
     public function searchGuideline(Request $request)
     {
-        $searchGuidelineValdation = Validator::make($request->all(), [
-            'guideline_name' => 'required'
-        ]);
-
-        if ($searchGuidelineValdation->fails())
-            return response(['warning' => $searchGuidelineValdation->errors()->first()]);
+        $searchGuidelineValdation = Validator::make($request->all(), ['guideline_name' => 'required']);
+        if ($searchGuidelineValdation->fails()) return response(['warning' => $searchGuidelineValdation->errors()->first()]);
 
         $guideline = $this->guideline->select('id', 'type', 'guideline_img');
-
         if (auth()->check()) $guideline->where('organization', auth()->user()->organization);
 
         $guidelineData = $guideline->where('type', 'LIKE', "%{$request->guideline_name}%")->get();
-
         if ($guidelineData->isEmpty()) return back()->with('warning', "Sorry, we couldn't find any result.");
+
         return response(['guidelineData' => $guidelineData]);
     }
 
@@ -148,12 +128,8 @@ class MainController extends Controller
     {
         if (!request()->ajax()) return view('userpage.activityLog');
 
-        $userActivityLogs = ActivityUserLog::join('user', 'activity_log.user_id', '=', 'user.id')
-            ->select('activity_log.*', 'user.*')
-            ->orderBy('activity_log.id', 'desc')
-            ->get();
-
-        return DataTables::of($userActivityLogs)
+        return DataTables::of(ActivityUserLog::join('user', 'activity_log.user_id', '=', 'user.id')
+            ->select('activity_log.*', 'user.*')->orderBy('activity_log.id', 'desc')->get())
             ->addIndexColumn()
             ->addColumn('activity', function ($userLog) {
                 return $userLog->name . ' ' . $userLog->activity . ' ' . $userLog->data_name;
@@ -183,14 +159,11 @@ class MainController extends Controller
                             <hr>
                             ' . $actionBtn . '</div>
                         </ul>';
-            })
-            ->rawColumns(['activity', 'action'])
-            ->make(true);
+            })->rawColumns(['activity', 'action'])->make(true);
     }
 
     public function userAccounts($operation)
     {
-
         return view('userpage.userAccount.userAccounts', compact('operation'));
     }
 
@@ -204,14 +177,8 @@ class MainController extends Controller
         $prefix = request()->route()->getPrefix();
         $reportType = ['All', 'Emergency', 'Incident', 'Flooded', 'Roadblocked'];
         $yearList = [];
-
         if ($operation == "archived")
-            $yearList = $this->residentReport
-                ->where('is_archive', 1)
-                ->selectRaw('YEAR(report_time) as year')
-                ->distinct()
-                ->orderBy('year', 'desc')
-                ->get();
+            $yearList = $this->residentReport->where('is_archive', 1)->selectRaw('YEAR(report_time) as year')->distinct()->orderBy('year', 'desc')->get();
 
         return view('userpage.residentReport.manageReport', compact('operation', 'prefix', 'yearList', 'reportType'));
     }
