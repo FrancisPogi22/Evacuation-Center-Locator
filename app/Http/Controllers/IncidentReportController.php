@@ -96,12 +96,13 @@ class IncidentReportController extends Controller
 
             $resident->update(['attempt' => $residentAttempt + 1]);
 
-            if ($resident->attempt == 3) $resident->update(['report_time' => Date::now()->addHour(1)]);
+            if ($resident->attempt == 3) $resident->update(['report_time' => Date::now()->addHour()]);
+
         } else {
             $this->reportLog->create([
                 'user_ip'     => $userIp,
                 'report_type' => 'Incident',
-                'attempt'     => 1,
+                'attempt'     => 1
             ]);
         }
 
@@ -116,9 +117,7 @@ class IncidentReportController extends Controller
     {
         $report = $this->incidentReport->find($reportId);
         $status = $report->status == "Pending" ? "Resolving" : "Resolved";
-        $report->update([
-            'status' => $status
-        ]);
+        $report->update(['status' => $status]);
         $this->logActivity->generateLog($reportId, 'Incident', 'set the incident report status to resolving');
         // event(new IncidentReport());
 
@@ -144,9 +143,7 @@ class IncidentReportController extends Controller
     public function archiveIncidentReport($reportId)
     {
         $report = $this->incidentReport->find($reportId);
-        $report->update([
-            'is_archive' => 1
-        ]);
+        $report->update(['is_archive' => 1]);
         $this->logActivity->generateLog($reportId, 'Incident', "archived incident report");
         //event(new IncidentReport());
 

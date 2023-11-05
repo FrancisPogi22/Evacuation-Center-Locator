@@ -204,9 +204,7 @@ class UserAccountsController extends Controller
                 return response(['status' => 'warning', 'message' => $changePasswordValidation->errors()->first()]);
 
             $userAccount = $this->user->find($userId);
-            $userAccount->update([
-                'password' => Hash::make(trim($request->password))
-            ]);
+            $userAccount->update(['password' => Hash::make(trim($request->password))]);
             $this->logActivity->generateLog($userId, $userAccount->name, 'changed a password');
             return response()->json();
         }
@@ -217,9 +215,7 @@ class UserAccountsController extends Controller
     public function archiveAccount($userId, $operation)
     {
         $userAccount = $this->user->find($userId);
-        $userAccount->update([
-            'is_archive' => $operation == "archive" ? 1 : 0
-        ]);
+        $userAccount->update(['is_archive' => $operation == "archive" ? 1 : 0]);
         $this->logActivity->generateLog($userId, $userAccount->name, $operation . "d a account");
 
         return response()->json();

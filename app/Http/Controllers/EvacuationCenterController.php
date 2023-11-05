@@ -123,7 +123,7 @@ class EvacuationCenterController extends Controller
             'status'     => $operation == "archive" ? "Inactive" : "Active",
             'is_archive' => $operation == "archive" ? 1 : 0
         ]);
-        $this->logActivity->generateLog($evacuationId, $evacuationCenterData->name, $operation == "archive" ? "archived evacuation center" : "unarchived evacuation center");
+        $this->logActivity->generateLog($evacuationId, $evacuationCenterData->name, $operation == "archive" ? "archived" : "unarchived" . " evacuation center");
         // event(new EvacuationCenterLocator());
 
         return response()->json();
