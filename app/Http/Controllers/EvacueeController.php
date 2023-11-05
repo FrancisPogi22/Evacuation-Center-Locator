@@ -81,15 +81,11 @@ class EvacueeController extends Controller
             return response(['status' => 'warning', 'message' => 'Evacuee is already recorded']);
         }
 
-        $latestRecordId = $request->form_type == "new" ?
-            $this->familyController->recordFamilyRecord($request) :
-            $this->familyController->updateFamilyRecord($request);
-
-        $evacueeInfo = $request->only([
+        $latestRecordId             = $request->form_type == "new" ? $this->familyController->recordFamilyRecord($request) : $this->familyController->updateFamilyRecord($request);
+        $evacueeInfo                = $request->only([
             'infants', 'minors', 'senior_citizen', 'pwd', 'pregnant', 'lactating', 'male',
             'female', 'barangay', 'family_head', 'birth_date', 'disaster_id', 'evacuation_id'
         ]);
-
         $evacueeInfo['individuals'] = $evacueeInfo['male'] + $evacueeInfo['female'];
         $evacueeInfo['updated_at']  = date('Y-m-d H:i:s');
         $evacueeInfo['family_id']   = $latestRecordId;
@@ -123,18 +119,16 @@ class EvacueeController extends Controller
             return response(['status' => 'warning', 'message' => implode('<br>', $evacueeInfoValidation->errors()->all())]);
 
         $this->familyController->updateFamilyRecord($request);
-
-        $evacueeInfo = $request->only([
+        $evacueeInfo                = $request->only([
             'infants', 'minors', 'senior_citizen', 'pwd', 'pregnant', 'lactating', 'male',
             'female', 'barangay', 'family_head', 'birth_date', 'disaster_id', 'evacuation_id'
         ]);
-
         $evacueeInfo['individuals'] = $evacueeInfo['male'] + $evacueeInfo['female'];
         $evacueeInfo['updated_at']  = date('Y-m-d H:i:s');
         $evacueeInfo['family_id']   = $this->familyRecord->latest('updated_at')->first()->id;
         $evacueeInfo['user_id']     = auth()->user()->id;
         $evacueeInfo                = $this->evacuee->find($evacueeId)->update($evacueeInfo);
-        $this->logActivity->generateLog($evacueeId, '', 'updated a evacuee information');
+        $this->logActivity->generateLog($evacueeId, null, 'updated a evacuee information');
         // event(new ActiveEvacuees());
 
         return response()->json();

@@ -66,8 +66,7 @@ class MainController extends Controller
             'disaster_id' => 'required'
         ]);
 
-        if ($generateReportValidation->fails())
-            return back()->with('warning', "Disaster is not exist.");
+        if ($generateReportValidation->fails()) return back()->with('warning', "Disaster is not exist.");
 
         return Excel::download(new EvacueeDataExport($request->disaster_id), 'evacuee-data.xlsx', FileFormat::XLSX);
     }
@@ -110,7 +109,7 @@ class MainController extends Controller
     {
         $notifications  = $this->notification->notifications();
         $guide          = $this->guide->where('guideline_id', $guidelineId)->get();
-        $guidelineLabel = $this->guideline->where('id', $guidelineId)->value('type');
+        $guidelineLabel = $this->guideline->find($guidelineId)->value('type');
 
         return view('userpage.guideline.guide', compact('guide', 'guidelineId', 'guidelineLabel', 'notifications'));
     }
@@ -119,7 +118,7 @@ class MainController extends Controller
     {
         $disasterList        = $this->disaster->where('is_archive', 0)->get();
         $archiveDisasterList = $this->disaster->where('is_archive', 1)->get();
-        $yearList            = $archiveDisasterList->pluck('year')->unique()->orderBy('year', 'desc');
+        $yearList            = $archiveDisasterList->pluck('year')->unique()->sortByDesc('year');
         $archiveDisasterList = $archiveDisasterList->where('year', $yearList->first());
         $evacuationList      = $this->evacuationCenter->whereNotIn('status', ['Inactive', 'Archived'])->get();
 
@@ -209,9 +208,9 @@ class MainController extends Controller
     public function manageReport($operation)
     {
         $notifications = $this->notification->notifications();
-        $prefix = request()->route()->getPrefix();
-        $reportType = ['All', 'Emergency', 'Incident', 'Flooded', 'Roadblocked'];
-        $yearList = [];
+        $prefix        = request()->route()->getPrefix();
+        $reportType    = ['All', 'Emergency', 'Incident', 'Flooded', 'Roadblocked'];
+        $yearList      = [];
 
         if ($operation == "archived")
             $yearList = $this->residentReport

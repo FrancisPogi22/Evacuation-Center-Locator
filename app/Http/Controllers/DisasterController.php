@@ -25,11 +25,10 @@ class DisasterController extends Controller
     {
         $disasterInformation = $this->disaster
             ->where('is_archive', $operation == "manage" ? 0 : 1)
-            ->when($year != "none", fn ($query) => $query->where('year', $year))->orderBy('id', 'desc')
+            ->when($year != "none", fn ($query) => $query->where('year', $year))->sortByDesc('id')
             ->get();
 
-        if ($year != "none")
-            return $disasterInformation;
+        if ($year != "none") return $disasterInformation;
 
         return DataTables::of($disasterInformation)
             ->addIndexColumn()
@@ -40,8 +39,8 @@ class DisasterController extends Controller
                 . '">' . $disaster->status . '</div></div>')
             ->addColumn('action', function ($disaster) use ($operation) {
                 if (auth()->user()->is_disable == 1) return;
-                $evacuees = $this->evacuee->where('disaster_id', $disaster->id)->where('status', 'Evacuated')->count();
 
+                $evacuees      = $this->evacuee->where('disaster_id', $disaster->id)->where('status', 'Evacuated')->count();
                 $updateButton  = $operation == "manage" ? '<button class="btn-table-update" id="updateDisaster"><i class="bi bi-pencil-square"></i>Update</button>' : '';
                 $statusOptions = $disaster->status == 'On Going' ? '<option value="Inactive">Inactive</option>' : '<option value="On Going">On Going</option>';
                 $selectStatus  = $operation == "manage" ? '<select class="form-select" id="changeDisasterStatus"><option value="" disabled selected hidden>Change Status</option>' . $statusOptions . '</select>' : '';

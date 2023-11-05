@@ -5,23 +5,23 @@
         themeIconResident = $('#themeIconResident'),
         theme = sessionStorage.getItem('theme');
 
-    @auth
-    let badge = $('#badge'),
-        currentPassword = $('#currentPassword'),
-        password = $('#password'),
-        confirmPassword = $('#confirmPassword'),
-        resetPasswordBtn = $('#resetPasswordBtn'),
-        passwordShowIcon = $('#showPassword'),
-        confirmPasswordShowIcon = $('#showConfirmPassword'),
-        changePasswordForm = $('#changePasswordForm'),
-        changePasswordModal = $('#changePasswordModal'),
-        eyeIcon = $('.toggle-password'),
-        checkPasswordIcon = $('.checkPassword'),
-        current_password = "";
-    @endauth
     $(document).ready(() => {
         @auth
-        let changePasswordValidation = changePasswordForm.validate({
+        let changePasswordValidation,
+            badge = $('#badge'),
+            currentPassword = $('#currentPassword'),
+            password = $('#password'),
+            confirmPassword = $('#confirmPassword'),
+            resetPasswordBtn = $('#resetPasswordBtn'),
+            passwordShowIcon = $('#showPassword'),
+            confirmPasswordShowIcon = $('#showConfirmPassword'),
+            changePasswordForm = $('#changePasswordForm'),
+            changePasswordModal = $('#changePasswordModal'),
+            eyeIcon = $('.toggle-password'),
+            checkPasswordIcon = $('.checkPassword'),
+            current_password = "";
+
+        changePasswordValidation = changePasswordForm.validate({
             rules: {
                 password: 'required',
                 confirmPassword: 'required'
