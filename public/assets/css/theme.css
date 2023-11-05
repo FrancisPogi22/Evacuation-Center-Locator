@@ -292,7 +292,6 @@ button.changeTheme {
     margin-right: 10px;
 }
 
-<<<<<<< HEAD
 #emergencyBtn:hover,
 button.changeTheme:hover {
     transform: scale(1.05);
@@ -322,7 +321,7 @@ button.changeTheme:hover {
 }
 
 .report-time {
-    color: var(--color-red) ;
+    color: var(--color-red);
     font-size: 10px;
 }
 
@@ -333,6 +332,17 @@ button.changeTheme:hover {
     width: 20.5px;
     height: 20px;
     background-color: var(--color-red);
+    color: var(--color-text);
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 10px;
+}
+
+#notification-count {
+    margin: 0;
+    font-weight: bolder;
 }
 
 .log-dropdown {
@@ -368,11 +378,6 @@ button.changeTheme:hover {
     justify-content: center;
     align-items: center;
     font-size: 10px;
-}
-
-#notification-count {
-    margin: 0;
-    font-weight: bolder;
 }
 
 .empty-notification {
@@ -460,7 +465,8 @@ button.changeTheme:hover {
     z-index: 100;
     left: 0;
     top: 0;
-    filter: drop-shadow(0 10px 8px rgb(0 0 0 / 0.04)) drop-shadow(0 4px 3px rgb(0 0 0 / 0.1));
+    filter: drop-shadow(0 10px 8px rgb(0 0 0 / 0.04))
+        drop-shadow(0 4px 3px rgb(0 0 0 / 0.1));
     overflow: hidden;
 }
 
@@ -1836,7 +1842,7 @@ div.gm-style-iw.gm-style-iw-c {
 .image-wrapper {
     position: relative;
     border: 2px solid var(--color-light-gray);
-    border-radius: 5px;
+    border-radius: 2px;
     overflow: hidden;
 }
 
@@ -2376,7 +2382,6 @@ input::-ms-clear {
     border: solid var(--color-d-sub-text) 2px;
 }
 
-
 #guideForm textarea,
 #guidelineForm textarea,
 #reportForm textarea,
@@ -2754,7 +2759,6 @@ select.form-select option {
     background: var(--color-d-bg-container) !important;
     color: var(--color-d-text) !important;
 }
-
 
 .dark-mode::-webkit-scrollbar-thumb,
 .dark-mode .info-window-details-container::-webkit-scrollbar-thumb,
