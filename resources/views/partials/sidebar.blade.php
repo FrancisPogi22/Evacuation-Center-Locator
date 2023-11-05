@@ -31,6 +31,12 @@
                                 <span class="links_name">Dashboard</span>
                             </a>
                         </div>
+                        <div class="navigation-item">
+                            <a href="{{ route('eligtas.guideline') }}" class="menu-link">
+                                <i class="bi bi-book"></i>
+                                <span class="links_name">E-LIGTAS Guideline</span>
+                            </a>
+                        </div>
                         @if (auth()->user()->position == 'President')
                             <div class="navigation-item">
                                 <a class="sub-btn">
@@ -51,28 +57,20 @@
                             </div>
                         @endif
                         <div class="navigation-item">
-                            <a href="{{ route('eligtas.guideline') }}" class="menu-link">
-                                <i class="bi bi-book"></i>
-                                <span class="links_name">E-LIGTAS Guideline</span>
+                            <a class="sub-btn">
+                                <i class="bi bi-megaphone"></i>
+                                <span class="links_name">Resident Report</span>
+                                <i class="bi bi-caret-right-fill dropdown"></i>
                             </a>
-                        </div>
-                        <div class="navigation-item">
-                            <div class="navigation-item">
-                                <a class="sub-btn">
-                                    <i class="bi bi-megaphone"></i>
-                                    <span class="links_name">Resident Report</span>
-                                    <i class="bi bi-caret-right-fill dropdown"></i>
+                            <div class="sub-menu">
+                                <a href="{{ route('manage.report', 'manage') }}" class="menu-link">
+                                    <i class="bi bi-flag"></i>
+                                    <span class="links_name">Manage Report</span>
                                 </a>
-                                <div class="sub-menu">
-                                    <a href="{{ route('manage.report', 'manage') }}" class="menu-link">
-                                        <i class="bi bi-flag"></i>
-                                        <span class="links_name">Manage Report</span>
-                                    </a>
-                                    <a href="{{ route('manage.report', 'archived') }}" class="menu-link">
-                                        <i class="bi bi-journal-bookmark-fill"></i>
-                                        <span class="links_name">Archived Report</span>
-                                    </a>
-                                </div>
+                                <a href="{{ route('manage.report', 'archived') }}" class="menu-link">
+                                    <i class="bi bi-journal-bookmark-fill"></i>
+                                    <span class="links_name">Archived Report</span>
+                                </a>
                             </div>
                         </div>
                         <div class="navigation-item">
