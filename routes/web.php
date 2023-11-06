@@ -45,7 +45,7 @@ Route::prefix('resident')->middleware('guest')->group(function () {
         });
 
         Route::name('area.')->controller(AreaReportController::class)->group(function () {
-            Route::post('/areaReport', 'createAreaReport')->name('report');
+            Route::post('/createAreaReport', 'createAreaReport')->name('report');
             Route::get('/getAreaReport/{operation}/{year}/{type}', 'getAreaReport')->name('get');
         });
 
