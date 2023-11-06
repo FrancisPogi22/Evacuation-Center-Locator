@@ -80,7 +80,6 @@ class IncidentReportController extends Controller
             $resident->update(['attempt' => $residentAttempt + 1]);
 
             if ($resident->attempt == 3) $resident->update(['report_time' => Date::now()->addHour()]);
-
         } else {
             $this->reportLog->create([
                 'attempt'     => 1,
@@ -98,8 +97,8 @@ class IncidentReportController extends Controller
             'longitude'   => $request->longitude,
             'report_time' => Date::now()
         ]);
-        event(new IncidentReport());
-        event(new Notification());
+        // event(new IncidentReport());
+        // event(new Notification());
 
         return response([]);
     }
@@ -109,8 +108,8 @@ class IncidentReportController extends Controller
         $report = $this->incidentReport->find($reportId);
         $report->update(['status' => $report->status == "Pending" ? "Resolving" : "Resolved"]);
         $this->logActivity->generateLog($reportId, 'Incident', 'set the incident report status to resolving');
-        event(new IncidentReport());
-        event(new Notification());
+        // event(new IncidentReport());
+        // event(new Notification());
 
         return response([]);
     }
@@ -121,8 +120,8 @@ class IncidentReportController extends Controller
         $report->delete();
         unlink(public_path('reports_image/' . $report->photo));
         $this->logActivity->generateLog($reportId, ' Incident', 'removed incident report');
-        event(new IncidentReport());
-        event(new Notification());
+        // event(new IncidentReport());
+        // event(new Notification());
 
         return response([]);
     }
@@ -131,7 +130,7 @@ class IncidentReportController extends Controller
     {
         $this->incidentReport->find($reportId)->update(['is_archive' => 1]);
         $this->logActivity->generateLog($reportId, 'Incident', "archived incident report");
-        event(new IncidentReport());
+        // event(new IncidentReport());
 
         return response([]);
     }

@@ -177,7 +177,7 @@ class MainController extends Controller
         $prefix     = request()->route()->getPrefix();
         $reportType = ['All', 'Emergency', 'Incident', 'Flooded', 'Roadblocked'];
         if ($operation == "archived")
-            $yearList = $this->residentReport->where('is_archive', 1)->selectRaw('YEAR(report_time) as year')->distinct()->orderBy('year', 'desc')->get();
+            $yearList = $this->residentReport->selectRaw('YEAR(report_time) as year')->where('is_archive', 1)->distinct()->orderBy('year', 'desc')->get();
 
         return view('userpage.residentReport.manageReport', compact('operation', 'prefix', 'yearList', 'reportType'));
     }
@@ -185,13 +185,13 @@ class MainController extends Controller
     public function fetchDisasterData()
     {
         $disasterData     = [];
-        $onGoingDisasters = $this->disaster->where('status', "On Going")->get();
+        $onGoingDisasters = $this->disaster->join('evacuee', 'evacuee.disaster_id', '=', 'disaster.id')->where('evacuee.status', 'Evacuated')->select('disaster.*')->distinct()->get();
 
         foreach ($onGoingDisasters as $disaster) {
             $totalEvacuee = 0;
             $totalEvacuee += $this->evacuee->where('disaster_id', $disaster->id)->sum('individuals');
-            $result = $this->evacuee
-                ->where('disaster_id', $disaster->id)
+            $result = $this->evacuee->where('disaster_id', $disaster->id)
+                ->where('status', "Evacuated")
                 ->selectRaw('SUM(male) as totalMale,
                     SUM(female) as totalFemale,
                     SUM(senior_citizen) as totalSeniorCitizen,
@@ -201,7 +201,6 @@ class MainController extends Controller
                     SUM(pregnant) as totalPregnant,
                     SUM(lactating) as totalLactating')
                 ->first();
-
             $disasterData[] = array_merge(['disasterName' => $disaster->name, 'totalEvacuee' => $totalEvacuee], $result->toArray());
         }
 
