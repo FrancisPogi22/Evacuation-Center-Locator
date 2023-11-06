@@ -88,7 +88,6 @@
     @include('partials.script')
     @include('partials.toastr')
     @auth
-        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/jquery.validate.min.js"
             integrity="sha512-rstIgDs0xPgmG6RX1Aba4KV5cWJbAMcvRCVmglpam9SoHZiUCyQVDdH2LPlxoHtrv17XWblE/V/PP+Tr04hbtA=="
             crossorigin="anonymous"></script>
@@ -181,7 +180,7 @@
                                         showSuccessMessage(`Guide successfully updated.`);
                                         modal.modal('hide');
                                     },
-                                    error: showErrorMessage
+                                    error: () => showErrorMessage()
                                 });
                         });
                     }
@@ -251,21 +250,20 @@
                                         </div>`);
                                 }
                             },
-                            error: showErrorMessage
+                            error: () => showErrorMessage()
                         });
                     });
                 });
 
-                function changeImageBtn(action) {
-                    if (action == 'remove')
-                        guideBtn.removeClass('bg-primary').html('<i class="bi bi-image"></i>Select Image');
-                    else
-                        guideBtn.addClass('bg-primary').html('<i class="bi bi-arrow-repeat"></i>Change Image');
-                }
+                    function changeImageBtn(action) {
+                        action == 'remove' ?
+                            guideBtn.removeClass('bg-primary').html('<i class="bi bi-image"></i>Select Image') :
+                            guideBtn.addClass('bg-primary').html('<i class="bi bi-arrow-repeat"></i>Change Image');
+                    }
 
-                modal.on('hidden.bs.modal', () => {
+                $(document).on('click', '#closeModalBtn', function() {
                     guideImageChanged = false;
-                    validator.resetForm();
+                    validator && validator.resetForm();
                     form[0].reset();
                 });
             @endif

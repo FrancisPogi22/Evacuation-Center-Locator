@@ -8,7 +8,6 @@
         <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css">
         <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.4.1/css/responsive.dataTables.min.css">
     @endif
-    {{-- @vite(['resources/js/app.js']) --}}
 </head>
 
 <body>
@@ -34,6 +33,14 @@
                         <p>Markers</p>
                     </div>
                     <div class="marker-container reports">
+                        <div class="count-container emergency" hidden>
+                            <img src="{{ asset('assets/img/Emergency.png') }}">
+                            <span id="emergency-count"></span>
+                        </div>
+                        <div class="count-container incident" hidden>
+                            <img src="{{ asset('assets/img/Incident.png') }}">
+                            <span id="incident-count"></span>
+                        </div>
                         <div class="count-container flooded" hidden>
                             <img src="{{ asset('assets/img/Flooded.png') }}">
                             <span id="flooded-count"></span>
@@ -42,12 +49,9 @@
                             <img src="{{ asset('assets/img/Roadblocked.png') }}">
                             <span id="roadblocked-count"></span>
                         </div>
-                        <div class="count-container incident" hidden>
-                            <img src="{{ asset('assets/img/Incident.png') }}">
-                            <span id="incident-count"></span>
-                        </div>
                     </div>
                 </div>
+                @include('userpage.residentReport.archivedReportModal')
             @else
                 @if (!$yearList->isEmpty())
                     <div class="page-button-container manage-evacuee">
@@ -112,7 +116,6 @@
         <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
         <script src="https://cdn.datatables.net/responsive/2.4.1/js/dataTables.responsive.min.js"></script>
     @endif
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous">
     </script>
@@ -145,7 +148,7 @@
                 }
             });
 
-            let activeInfoWindow, id, url,
+            let activeInfoWindow, id, url, emergencyArchiveBtn,
                 noReport = [
                     false,
                     false,
@@ -169,7 +172,7 @@
                     $.ajax({
                         type: 'GET',
                         url: url,
-                        success: (response) => {
+                        success(response) {
                             let isPending, status, ariaType, button, updateSection,
                                 action = "",
                                 counts = condition == 0 ? {
@@ -194,7 +197,7 @@
 
                                     approveBtn = `<button class="btn btn-sm btn-success approveBtn" aria-report-type="${ariaType}">
                                         <i class="bi bi-${ condition != 2 ? (isPending ? 'bookmark-plus' : 'bookmark-check') : 'check-circle' }"></i>
-                                            ${condition != 2 ? `Set as Resolv${isPending ? 'ing' : 'ed'}` : "Approve"}
+                                            ${condition != 2 ? `Set as ${condition == 1 ? 'Rescu' : 'Resolv'}${isPending ? 'ing' : 'ed'}` : "Approve"}
                                         </button>`;
 
                                     @if (auth()->user()->is_disable == 0)
@@ -205,23 +208,21 @@
                                                     <div class="status" hidden>
                                                         <p>${report.id}</p>
                                                     </div>
-                                                    ${isPending ?
-                                                        `${approveBtn}
-                                                        <button class="btn btn-sm btn-danger removeBtn" aria-report-type="${ariaType}">
-                                                            <i class="bi bi-x-circle"></i> Remove
-                                                        </button>` :
-                                                        `${condition != 2 ?
-                                                        status == "Resolved" ? "" : approveBtn :
-                                                        `<button class="btn btn-sm btn-primary updateBtn">
-                                                            <i class="bi bi-chat-square-text"></i> Update
-                                                        </button>`
-                                                        }
-                                                        ${(status == "Approved" || status == "Resolved") ?
-                                                            `<button class="btn btn-sm btn-danger archiveBtn" aria-report-type="${ariaType}">
-                                                            <i class="bi bi-box-arrow-in-down-right"></i> Archive
-                                                        </button>` : ''
-                                                        }`
-                                                    }
+                                                    ${isPending ? `${approveBtn}
+                                                    <button class="btn btn-sm btn-danger removeBtn" aria-report-type="${ariaType}">
+                                                        <i class="bi bi-x-circle"></i> Remove
+                                                    </button>` :
+                                                    `${condition != 2 ?
+                                                    (status == "Resolved" || status == "Rescued") ? "" : approveBtn :
+                                                    `<button class="btn btn-sm btn-primary updateBtn">
+                                                        <i class="bi bi-chat-square-text"></i> Update
+                                                    </button>`}
+                                                    ${(status == "Approved" || status == "Resolved" || status == "Rescued") ?
+                                                    `<button class="btn btn-sm btn-danger
+                                                        archive${condition == 1 && status == "Rescued" ? "Emergency" : ""}Btn"
+                                                        aria-report-type="${ariaType}">
+                                                        <i class="bi bi-box-arrow-in-down-right"></i> Archive
+                                                    </button>` : ''}`}
                                                 </div>
                                             </div>`;
                                     @endif
@@ -303,18 +304,18 @@
                                                 <span>Status:</span>
                                                 <span class="status-content bg-${
                                                     isPending ?
-                                                        "warning" : status == "Resolving" ? "primary" : "success"
+                                                        "warning" : (status == "Resolving" || status == "Rescuing") ? "primary" : "success"
                                                 }">
                                                     ${report.status}
                                                 </span>
                                             </div>
-                                            <div class="info-description details">
+                                            <div class="info-description details" ${report.details || "hidden"}>
                                                 <span>Details: </span>
                                                 <div class="info-window-details-container">
                                                     ${report.details}
                                                 </div>
                                             </div>
-                                            <div class="info-description photo">
+                                            <div class="info-description photo" ${report.photo || "hidden"}>
                                                 <span>Image: </span>
                                                 <div class="${type}" hidden>
                                                     ${report.latitude}, ${report.longitude}
@@ -371,16 +372,19 @@
                 });
             }
 
-            function checkNoReports() {
+            function checkNoReports(type) {
+                let hide = true;
+
                 if (noReport[0] && noReport[1] && noReport[2])
                     showInfoMessage('No resident reports to manage.');
                 else {
-                    $('.report-markers').prop('hidden', false);
-
-                    if (noReport[0]) showInfoMessage('No incident report.');
-                    if (noReport[1]) showInfoMessage('No emergency report.');
-                    if (noReport[2]) showInfoMessage('No area report.');
+                    hide = false;
+                    if (noReport[0] && (type == "All" || type == "Incident")) showInfoMessage('No incident report.');
+                    if (noReport[1] && (type == "All" || type == "Emergency")) showInfoMessage('No emergency report.');
+                    if (noReport[2] && (type == "All" || type == "Area")) showInfoMessage('No area report.');
                 }
+
+                $('.report-markers').prop('hidden', hide);
             }
         @else
             '{{ !$yearList->isEmpty() }}' ?
@@ -401,15 +405,23 @@
 
         $(document).ready(() => {
             @if ($operation == 'manage')
-                const requestPromises = [
-                    ajaxRequest("Emergency"),
-                    ajaxRequest("Incident"),
-                    ajaxRequest("Area")
-                ];
+                let requestPromises = [
+                        ajaxRequest("Emergency"),
+                        ajaxRequest("Incident"),
+                        ajaxRequest("Area")
+                    ],
+                    modal = $('#archivedReportModal'),
+                    archiveFormValidator;
 
                 Promise.all(requestPromises)
                     .then(() => {
-                        checkNoReports();
+                        checkNoReports('All');
+
+                        let type = sessionStorage.getItem('report_type'),
+                            lat = sessionStorage.getItem('report_latitude'),
+                            lng = sessionStorage.getItem('report_longitude');
+
+                        if (type != undefined && type != 'null') openReportDetails(type, lat, lng);
                     });
 
                 @if (auth()->user()->is_disable == 0)
@@ -497,11 +509,9 @@
                                     isRemove ?
                                     "{{ route('incident.remove', 'reportId') }}" :
                                     "{{ route('incident.archive', 'reportId') }}"
-                                ) : reportType == "Incident" ? (
-                                    isRemove ?
-                                    "{{ route('emergency.remove', 'reportId') }}" :
-                                    "{{ route('emergency.archive', 'reportId') }}"
-                                ) : isRemove ?
+                                ) : reportType == "Emergency" ?
+                                "{{ route('emergency.remove', 'reportId') }}" :
+                                isRemove ?
                                 "{{ route('area.remove', 'reportId') }}" :
                                 "{{ route('area.archive', 'reportId') }}";
 
@@ -510,43 +520,95 @@
                         });
                     });
 
+                    $(document).on('click', '.archiveEmergencyBtn', function() {
+                        emergencyArchiveBtn = $(this);
+                        modal.modal('show');
+                    });
+
+                    $(document).on('click', '#archiveReportBtn', function() {
+                        archiveFormValidator = $('#archivedReportForm').validate({
+                            rules: {
+                                details: 'required'
+                            },
+                            messages: {
+                                details: 'Please enter details.'
+                            },
+                            errorElement: 'span',
+                            showErrors: function() {
+                                this.defaultShowErrors();
+
+                                $('#image-error').text('Please select an image.')
+                                    .prop('style', `display: ${$('#areaInputImage').val() == '' ?
+                                        'block' : 'none'} !important`);
+                            },
+                            submitHandler() {
+                                if ($('#areaInputImage').val() == '') return;
+
+                                confirmModal('Are you sure about the info you added?').then((
+                                    result) => {
+                                    if (!result.isConfirmed) return;
+
+                                    submitHandler(emergencyArchiveBtn, "POST", "archive",
+                                        "{{ route('emergency.archive', 'reportId') }}",
+                                        "Emergency");
+                                });
+                            }
+                        });
+                    });
+
                     function submitHandler(element, type, operation, url, reportType) {
+                        let data = element.serialize(),
+                            processData = true,
+                            contentType = 'application/x-www-form-urlencoded';
+
                         if (reportType != "Area") {
                             element = element.prev();
-                            if (operation == "remove")
-                                element = element.prev();
+                            if (operation == "remove") element = element.prev();
                         } else
-                        if (operation != 'update')
-                            element = element.parent().parent().prev();
+                        if (operation != 'update') element = element.parent().parent().prev();
+
+                        if (reportType == "Emergency" && operation == "archive") {
+                            data = new FormData($('#archivedReportForm')[0]);
+                            contentType = false;
+                            processData = false;
+                        }
 
                         $.ajax({
                             type: type,
                             url: url.replace('reportId', element.find('p:first').text()),
-                            data: element.serialize(),
+                            data: data,
+                            contentType: contentType,
+                            processData: processData,
                             success(response) {
                                 response.status == "warning" ?
-                                    showWarningMessage(response.message) : showSuccessMessage(
+                                    showWarningMessage(response.message) : (showSuccessMessage(
                                         `Successfully ${(operation == "approve" && reportType != "Area") ? "change the status of" : `${operation}d`} the report.`
-                                    );
-
-                                ajaxRequest(reportType).then(() => checkNoReports());
+                                    ), $('#closeModalBtn').click());
                             },
-                            error: showErrorMessage
+                            error: () => showErrorMessage()
                         });
                     }
 
-                    // Echo.channel('incident-report').listen('IncidentReport', (e) => {
-                    //     ajaxRequest("Incident").then(() => checkNoReports());
-                    // });
-
-                    // Echo.channel('emergency-report').listen('EmergencyReport', (e) => {
-                    //     ajaxRequest("Emergency").then(() => checkNoReports());
-                    // });
-
-                    // Echo.channel('area-report').listen('AreaReport', (e) => {
-                    //     ajaxRequest("Area").then(() => checkNoReports());
-                    // });
+                    $(document).on('click', '#closeModalBtn', function() {
+                        $('#archivedReportForm')[0].reset();
+                        $('#selectedReportImage').attr('src', '').attr('hidden', true);
+                        $('#imageBtn').html('<i class="bi bi-image"></i> Select');
+                        setInfoWindowButtonStyles($('#imageBtn'), 'var(--color-primary');
+                        archiveFormValidator && archiveFormValidator.resetForm();
+                    });
                 @endif
+
+                Echo.channel('incident-report').listen('IncidentReport', (e) => {
+                    ajaxRequest("Incident").then(() => checkNoReports("Incident"));
+                });
+
+                Echo.channel('emergency-report').listen('EmergencyReport', (e) => {
+                    ajaxRequest("Emergency").then(() => checkNoReports("Emergency"));
+                });
+
+                Echo.channel('area-report').listen('AreaReport', (e) => {
+                    ajaxRequest("Area").then(() => checkNoReports("Area"));
+                });
             @else
                 if ('{{ $yearList->isEmpty() }}')
                     showInfoMessage('There is no archived report.');

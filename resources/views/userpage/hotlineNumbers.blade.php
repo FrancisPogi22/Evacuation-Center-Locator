@@ -75,14 +75,16 @@
                                         <i class="bi bi-hospital"></i>
                                         <span>{{ $hotlineNumber->label }}</span>
                                     </div>
-                                    <div class="header-btn-container">
-                                        @if (auth()->user()->is_disable == 0)
-                                            <button class="btn-update updateNumber"
-                                                data-id="{{ $hotlineNumber->id }}"><i class="bi bi-pencil"></i></button>
-                                            <button class="btn-remove removeNumber"
-                                                data-id="{{ $hotlineNumber->id }}"><i class="bi bi-trash3"></i></button>
-                                        @endif
-                                    </div>
+                                    @auth
+                                        <div class="header-btn-container">
+                                            @if (auth()->user()->is_disable == 0)
+                                                <button class="btn-update updateNumber"
+                                                    data-id="{{ $hotlineNumber->id }}"><i class="bi bi-pencil"></i></button>
+                                                <button class="btn-remove removeNumber"
+                                                    data-id="{{ $hotlineNumber->id }}"><i class="bi bi-trash3"></i></button>
+                                            @endif
+                                        </div>
+                                    @endauth
                                 </div>
                                 <div class="hotline-number">
                                     <hr>
@@ -189,8 +191,14 @@
                                                                         <span>${label}</span>
                                                                     </div>
                                                                     <div class="header-btn-container">
-                                                                        <button class="btn-update updateNumber" data-id="${hotlineId}"><i class="bi bi-pencil"></i></button>
-                                                                        <button class="btn-remove removeNumber" data-id="${hotlineId}"><i class="bi bi-trash3"></i></button>
+                                                                        @auth
+                                                                            <div class="header-btn-container">
+                                                                                @if (auth()->user()->is_disable == 0)
+                                                                                    <button class="btn-update updateNumber" data-id="${hotlineId}"><i class="bi bi-pencil"></i></button>
+                                                                                    <button class="btn-remove removeNumber" data-id="${hotlineId}"><i class="bi bi-trash3"></i></button>
+                                                                                @endif
+                                                                            </div>
+                                                                        @endauth
                                                                     </div>
                                                                 </div>
                                                                 <div class="hotline-number">
@@ -208,7 +216,7 @@
                                                 hotlineItem = "";
                                             }
                                         },
-                                        error: showErrorMessage
+                                        error: () => showErrorMessage()
                                     });
                             });
                         }
@@ -263,7 +271,7 @@
                                             `Hotline number successfully removed.`),
                                         hotlineItem = "");
                                 },
-                                error: showErrorMessage
+                                error: () => showErrorMessage()
                             });
                         });
                     });

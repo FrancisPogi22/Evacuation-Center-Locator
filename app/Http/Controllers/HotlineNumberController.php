@@ -102,6 +102,6 @@ class HotlineNumberController extends Controller
         $this->logActivity->generateLog($hotlineId, $hotlineNumber->label, 'removed a hotline number');
         $hotlineNumber->delete();
 
-        return response()->json();
+        return response([]);
     }
 }

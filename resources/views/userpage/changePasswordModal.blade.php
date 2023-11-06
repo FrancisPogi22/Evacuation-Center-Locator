@@ -1,9 +1,12 @@
 @auth
-    <div class="modal fade" id="changePasswordModal" tabindex="-1" aria-hidden="true">
+    <div class="modal fade" id="changePasswordModal" data-bs-backdrop="static" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <header class="change-modal-label-container bg-warning">
                     <h1 class="change-modal-label">Change Password</h1>
+                    <button type="button" data-bs-dismiss="modal" aria-label="Close" id="closeModalBtn">
+                        <i class="bi bi-x-lg"></i>
+                    </button>
                 </header>
                 <div class="modal-body">
                     <form id="changePasswordForm">

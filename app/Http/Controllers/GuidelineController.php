@@ -170,7 +170,7 @@ class GuidelineController extends Controller
         $this->logActivity->generateLog($guidelineId, $guideline->type, 'removed a guideline');
         $guideline->delete();
 
-        return response()->json();
+        return response([]);
     }
 
     public function updateGuide(Request $request, $guideId)
@@ -219,7 +219,7 @@ class GuidelineController extends Controller
         $this->logActivity->generateLog($guideId, $guide->label, 'removed a guide');
         $guide->delete();
 
-        return response()->json();
+        return response([]);
     }
 
     private function removeGuideImage($guideImage)

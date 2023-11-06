@@ -57,7 +57,6 @@
     </div>
 
     @include('partials.script')
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/responsive/2.4.1/js/dataTables.responsive.min.js"></script>
@@ -257,8 +256,8 @@
                     modal.modal('show');
                 });
 
-                modal.on('hidden.bs.modal', () => {
-                    validator.resetForm();
+                $(document).on('click', '#closeModalBtn', function() {
+                    validator && validator.resetForm();
                     suspendContainer.add(suspend).prop('hidden', 0).prop('disabled', 0);
                     positionContainer.add(nameContainer).add(emailContainer).prop('hidden', 1);
                     organizationContainer.prop('hidden', 0);
@@ -301,7 +300,7 @@
                                     );
                                     accountTable.draw();
                                 },
-                                error: showErrorMessage
+                                error: () => showErrorMessage()
                             })
                     });
                 }

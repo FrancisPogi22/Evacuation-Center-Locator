@@ -32,9 +32,7 @@ class EmergencyReportController extends Controller
         if ($operation == "manage")
             return response($emergencyReport->where('type', 'Emergency')->get());
         else
-            return DataTables::of(
-                $emergencyReport->where('type', $type)->whereYear('report_time', $year)->get()
-            )
+            return DataTables::of($emergencyReport->where('type', $type)->whereYear('report_time', $year)->get())
                 ->addColumn('location', '<button class="btn-table-primary viewLocationBtn"><i class="bi bi-pin-map"></i>View</button>')
                 ->addColumn('photo', function ($report) {
                     return '<div class="photo-container">
@@ -45,42 +43,17 @@ class EmergencyReportController extends Controller
                                     </div>
                                 </div>
                             </div>';
-                })
-                ->rawColumns(['location', 'photo'])
-                ->make(true);
+                })->rawColumns(['location', 'photo'])->make(true);
     }
 
     public function createEmergencyReport(Request $request)
     {
-        $emergencyReportValidation = Validator::make($request->all(), [
-            'latitude'  => 'required',
-            'longitude' => 'required',
-            'details'   => 'required',
-            'image'     => 'required|image|mimes:jpeg,png,jpg'
-        ]);
-
-        if ($emergencyReportValidation->fails())
-            return response(['status' => 'warning', 'message' => implode('<br>', $emergencyReportValidation->errors()->all())]);
-
-        $userIp          = $request->ip();
-        $resident        = $this->reportLog->where('user_ip', $userIp)->where('report_type', 'Emergency')->first();
-        $reportPhotoPath = $request->file('image');
-        $reportPhotoPath = $reportPhotoPath->store();
-        $request->image->move(public_path('reports_image'), $reportPhotoPath);
-        $emergencyReport = [
-            'latitude'    => $request->latitude,
-            'longitude'   => $request->longitude,
-            'type'        => 'Emergency',
-            'photo'       => $reportPhotoPath,
-            'details'     => trim($request->details),
-            'status'      => 'Pending',
-            'user_ip'     => $userIp,
-            'report_time' => Date::now()
-        ];
+        $userIp   = $request->ip();
+        $resident = $this->reportLog->where('user_ip', $userIp)->where('report_type', 'Emergency')->first();
 
         if ($resident) {
-            $residentAttempt = $resident->attempt;
             $reportTime      = $resident->report_time;
+            $residentAttempt = $resident->attempt;
 
             if ($residentAttempt == 3) {
                 $isBlock = $this->residentReport->isBlocked($reportTime);
@@ -89,60 +62,83 @@ class EmergencyReportController extends Controller
                     $resident->update(['attempt' => 0, 'report_time' => null]);
                     $residentAttempt = 0;
                 } else
-                    return response(['status' => 'blocked', 'message' => "You can report again after " . $isBlock . "."]);
+                    return response(['status' => 'blocked', 'message' => "You can click the SOS button again after " . $isBlock . "."]);
             }
 
             $resident->update(['attempt' => $residentAttempt + 1]);
             if ($resident->attempt == 3) $resident->update(['report_time' => Date::now()->addHour()]);
         } else {
             $this->reportLog->create([
-                'user_ip'     => $userIp,
-                'report_type' => 'Emergency',
                 'attempt'     => 1,
+                'user_ip'     => $userIp,
+                'report_type' => 'Emergency'
             ]);
         }
 
-        $this->emergencyReport->create($emergencyReport);
-        // event(new IncidentReport());
-        // event(new Notification());
+        if ($this->emergencyReport
+            ->where([
+                'status'    => 'Pending',
+                'user_ip'   => $userIp,
+                'latitude'  => $request->latitude,
+                'longitude' => $request->longitude
+            ])
+            ->exists()
+        ) return response(['status' => 'duplicate', 'message' => 'You\'ve already requested help.']);
 
-        return response()->json();
+        $this->emergencyReport->create([
+            'type'        => 'Emergency',
+            'user_ip'     => $userIp,
+            'latitude'    => $request->latitude,
+            'longitude'   => $request->longitude,
+            'report_time' => Date::now(),
+        ]);
+        event(new EmergencyReport());
+        event(new Notification());
+
+        return response([]);
     }
 
     public function changeEmergencyReportStatus($reportId)
     {
         $report = $this->emergencyReport->find($reportId);
-        $status = $report->status == "Pending" ? "Resolving" : "Resolved";
-        $report->update(['status' => $status]);
+        $report->update(['status' => $report->status == "Pending" ? "Rescuing" : "Rescued"]);
         $this->logActivity->generateLog($reportId, 'Emergency', 'set the emergency report status to resolving');
-        // event(new IncidentReport());
+        event(new EmergencyReport());
+        event(new Notification());
 
-        return response()->json();
+        return response([]);
     }
 
     public function removeEmergencyReport($reportId)
     {
-        $report = $this->emergencyReport->find($reportId);
-        $report->delete();
-
-        if ($report->photo) {
-            $image_path = public_path('reports_image/' . $report->photo);
-
-            if (file_exists($image_path)) unlink($image_path);
-        }
+        $this->emergencyReport->find($reportId)->delete();
         $this->logActivity->generateLog($reportId, ' Emergency', 'removed emergency report');
-        // event(new IncidentReport());
+        event(new EmergencyReport());
+        event(new Notification());
 
-        return response()->json();
+        return response([]);
     }
 
-    public function archiveEmergencyReport($reportId)
+    public function archiveEmergencyReport(Request $request, $reportId)
     {
-        $report = $this->emergencyReport->find($reportId);
-        $report->update(['is_archive' => 1]);
-        $this->logActivity->generateLog($reportId, 'Emergency', "archived emergency report");
-        //event(new IncidentReport());
+        $emergencyReportValidation = Validator::make($request->all(), [
+            'image'   => 'required|image|mimes:jpeg,png,jpg',
+            'details' => 'required'
+        ]);
 
-        return response()->json();
+        if ($emergencyReportValidation->fails())
+            return response(['status' => 'warning', 'message' =>  implode('<br>', $emergencyReportValidation->errors()->all())]);
+
+        $reportPhotoPath = $request->file('image')->store();
+        $request->image->move(public_path('reports_image'), $reportPhotoPath);
+        $this->emergencyReport->find($reportId)->update([
+            'photo'      => $reportPhotoPath,
+            'details'    => trim($request->details),
+            'is_archive' => 1
+        ]);
+        $this->logActivity->generateLog($reportId, 'Emergency', "archived emergency report");
+        event(new EmergencyReport());
+
+        return response([]);
     }
 }

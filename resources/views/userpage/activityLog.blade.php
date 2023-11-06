@@ -44,7 +44,6 @@
     </div>
 
     @include('partials.script')
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/responsive/2.4.1/js/dataTables.responsive.min.js"></script>
@@ -121,7 +120,7 @@
                                     (activityLogTable.draw(), showSuccessMessage(
                                         'User successfully disabled.'));
                             },
-                            error: showErrorMessage
+                            error: () => showErrorMessage()
                         });
                     });
 
@@ -156,9 +155,9 @@
                             response.status == 'warning' ?
                                 showWarningMessage(response.message) :
                                 (showSuccessMessage(`User successfully suspended.`),
-                                    $('#userAccountModal').modal('hide'), activityLogTable.draw());
+                                    $('#closeModalBtn').click(), activityLogTable.draw());
                         },
-                        error: showErrorMessage
+                        error: () => showErrorMessage()
                     });
                 });
             }

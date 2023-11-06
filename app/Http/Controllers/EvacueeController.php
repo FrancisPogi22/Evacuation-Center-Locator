@@ -34,7 +34,6 @@ class EvacueeController extends Controller
             ->get();
 
         return DataTables::of($evacueeInfo)
-            ->addIndexColumn()
             ->addColumn('select', function ($row) {
                 return '<input type="checkbox" class="rowCheckBox" value="' . $row->id . '">';
             })
@@ -77,9 +76,7 @@ class EvacueeController extends Controller
                 'disaster_id' => $request->disaster_id,
             ])
             ->exists()
-        ) {
-            return response(['status' => 'warning', 'message' => 'Evacuee is already recorded']);
-        }
+        ) return response(['status' => 'warning', 'message' => 'Evacuee is already recorded']);
 
         $latestRecordId             = $request->form_type == "new" ? $this->familyController->recordFamilyRecord($request) : $this->familyController->updateFamilyRecord($request);
         $evacueeInfo                = $request->only([
@@ -92,9 +89,9 @@ class EvacueeController extends Controller
         $evacueeInfo['user_id']     = auth()->user()->id;
         $evacueeInfo                = $this->evacuee->create($evacueeInfo);
         $this->logActivity->generateLog($evacueeInfo->id, $evacueeInfo->barangay, 'recorded a new evacuee information');
-        // event(new ActiveEvacuees());
+        event(new ActiveEvacuees());
 
-        return response()->json();
+        return response([]);
     }
 
     public function updateEvacueeInfo(Request $request, $evacueeId)
@@ -128,10 +125,10 @@ class EvacueeController extends Controller
         $evacueeInfo['family_id']   = $this->familyRecord->latest('updated_at')->first()->id;
         $evacueeInfo['user_id']     = auth()->user()->id;
         $evacueeInfo                = $this->evacuee->find($evacueeId)->update($evacueeInfo);
-        $this->logActivity->generateLog($evacueeId, null, 'updated a evacuee information');
-        // event(new ActiveEvacuees());
+        $this->logActivity->generateLog($evacueeId, '', 'updated a evacuee information');
+        event(new ActiveEvacuees());
 
-        return response()->json();
+        return response([]);
     }
 
     public function updateEvacueeStatus(Request $request)
@@ -145,6 +142,6 @@ class EvacueeController extends Controller
 
         $this->logActivity->generateLog(implode(', ', $familyIds), '', 'updated evacuee status to return home');
 
-        return response()->json();
+        return response([]);
     }
 }

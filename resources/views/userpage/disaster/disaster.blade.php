@@ -28,6 +28,7 @@
                         <i class="bi bi-cloud-plus"></i>Add Disaster
                     </button>
                 </div>
+                @include('userpage.disaster.disasterModal')
             @endif
             <section class="table-container">
                 <div class="table-content">
@@ -46,13 +47,11 @@
                     </table>
                 </div>
             </section>
-            @include('userpage.disaster.disasterModal')
             @include('userpage.changePasswordModal')
         </main>
     </div>
 
     @include('partials.script')
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/responsive/2.4.1/js/dataTables.responsive.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"
@@ -104,7 +103,7 @@
             });
 
             @if (auth()->user()->is_disable == 0)
-                let disasterId, defaultFormData, status, operation, validator,
+                let disasterId, defaultFormData, operation, validator,
                     modalLabelContainer = $('.modal-label-container'),
                     modalLabel = $('.modal-label'),
                     formButton = $('#submitDisasterBtn'),
@@ -177,28 +176,25 @@
 
                 $(document).on('click', '#archiveDisaster', function() {
                     alterDisasterData('archive',
-                        "{{ route('disaster.archive', ['disasterId', 'archive']) }}"
-                        .replace('disasterId', getRowData(this, disasterTable).id));
+                        "{{ route('disaster.archive', ['disasterId', 'archive']) }}", this);
                 });
 
                 $(document).on('click', '#unArchiveDisaster', function() {
                     alterDisasterData('unarchive',
-                        "{{ route('disaster.archive', ['disasterId', 'unarchive']) }}".replace(
-                            'disasterId', getRowData(this, disasterTable).id));
+                        "{{ route('disaster.archive', ['disasterId', 'unarchive']) }}", this);
                 });
 
                 $(document).on('change', '#changeDisasterStatus', function() {
-                    status = $(this).val();
-                    alterDisasterData('change', "{{ route('disaster.change.status', 'disasterId') }}"
-                        .replace('disasterId', getRowData(this, disasterTable).id));
+                    alterDisasterData('change',
+                        "{{ route('disaster.change.status', 'disasterId') }}", this, $(this).val());
                 });
 
-                modal.on('hidden.bs.modal', () => {
-                    validator.resetForm();
+                $(document).on('click', '#closeModalBtn', function() {
+                    validator && validator.resetForm();
                     $('#disasterForm')[0].reset();
                 });
 
-                function alterDisasterData(operation, url) {
+                function alterDisasterData(operation, url, btn, status = null) {
                     confirmModal(
                             `Do you want to ${operation == 'change' ? 'change the status of' : operation} this disaster?`
                         )
@@ -209,7 +205,8 @@
                                     data: {
                                         status: status
                                     },
-                                    url: url,
+                                    url: url.replace('disasterId',
+                                        getRowData(btn, disasterTable).id),
                                     success(response) {
                                         response.status == 'warning' ?
                                             showWarningMessage(response.message) :
@@ -217,9 +214,35 @@
                                                 `Disaster successfully ${operation == "change" ? "changed status" : operation}.`
                                             ));
                                     },
-                                    error: showErrorMessage
+                                    error: () => showErrorMessage()
                                 });
                         });
+                }
+
+                function disasterFormHandler(form) {
+                    let formData = $(form).serialize();
+
+                    confirmModal(`Do you want to ${operation} this disaster?`).then((result) => {
+                        if (!result.isConfirmed) return;
+
+                        return operation == 'update' && defaultFormData == formData ?
+                            showWarningMessage() :
+                            $.ajax({
+                                data: formData,
+                                url: operation == 'add' ? "{{ route('disaster.create') }}" :
+                                    "{{ route('disaster.update', 'disasterId') }}".replace('disasterId',
+                                        disasterId),
+                                method: operation == 'add' ? "POST" : "PATCH",
+                                success(response) {
+                                    response.status == 'warning' ? showWarningMessage(response
+                                        .message) : (
+                                        showSuccessMessage(
+                                            `Disaster successfully ${operation == "add" ? "added" : "updated"}.`
+                                        ), $('#closeModalBtn').click(), disasterTable.draw());
+                                },
+                                error: () => showErrorMessage()
+                            });
+                    });
                 }
             @endif
         });

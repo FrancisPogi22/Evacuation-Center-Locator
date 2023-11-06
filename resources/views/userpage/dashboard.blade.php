@@ -3,7 +3,6 @@
 
 <head>
     @include('partials.headPackage')
-    {{-- @vite(['resources/js/app.js']) --}}
 </head>
 
 <body>
@@ -31,11 +30,15 @@
                             <i class="bi bi-printer"></i>
                             Generate Report Data
                         </button>
-                        <div class="modal fade" id="generateReportModal" tabindex="-1" aria-hidden="true">
+                        <div class="modal fade" id="generateReportModal" data-bs-backdrop="static"aria-hidden="true">
                             <div class="modal-dialog">
                                 <div class="modal-content">
                                     <div class="modal-label-container">
                                         <h1 class="modal-label">Generate Excel Report</h1>
+                                        <button type="button" data-bs-dismiss="modal" aria-label="Close"
+                                            id="closeModalBtn">
+                                            <i class="bi bi-x-lg"></i>
+                                        </button>
                                     </div>
                                     <div class="modal-body">
                                         <form action="{{ route('generate.evacuee.data') }}" method="POST"
@@ -126,7 +129,6 @@
     </div>
 
     @include('partials.script')
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://code.highcharts.com/highcharts.js"></script>
     <script src="https://code.highcharts.com/modules/exporting.js"></script>
     <script src="https://code.highcharts.com/modules/export-data.js"></script>
@@ -159,7 +161,7 @@
 
                         disasterList.prop('hidden', false);
                     },
-                    error: showErrorMessage
+                    error: () => showErrorMessage()
                 });
             });
 
@@ -173,8 +175,8 @@
                 errorElement: 'span'
             });
 
-            $('#generateReportModal').on('hidden.bs.modal', () => {
-                validator.resetForm();
+            $(document).on('click', '#closeModalBtn', function() {
+                validator && validator.resetForm();
                 searchResults.empty();
                 disasterList.prop('hidden', true);
                 $('#generateReportForm')[0].reset();
@@ -182,14 +184,14 @@
 
             evacueeData();
 
-            // Echo.channel('active-evacuees').listen('ActiveEvacuees', (e) => {
-            //     $("#totalEvacuee").text(e.activeEvacuees);
-            //     evacueeData();
-            // });
+            Echo.channel('active-evacuees').listen('ActiveEvacuees', (e) => {
+                $("#totalEvacuee").text(e.activeEvacuees);
+                evacueeData();
+            });
 
-            // Echo.channel('incident-report').listen('IncidentReport', (e) => {
-            //     $("#totalReport").text(e.totalReport);
-            // });
+            Echo.channel('incident-report').listen('IncidentReport', (e) => {
+                $("#totalReport").text(e.totalReport);
+            });
         });
 
         function evacueeData() {
@@ -205,9 +207,7 @@
                         }
                     });
                 },
-                error() {
-                    showErrorMessage("Unable to fetch data.");
-                }
+                error: () => showErrorMessage("Unable to fetch data.")
             });
         }
 

@@ -28,10 +28,8 @@ class ActiveEvacuees implements ShouldBroadcast
         $this->activeEvacuees = $totalEvacuee;
     }
 
-    public function broadcastOn(): array
+    public function broadcastOn()
     {
-        return [
-            new Channel('active-evacuees'),
-        ];
+        return new Channel('active-evacuees');
     }
 }

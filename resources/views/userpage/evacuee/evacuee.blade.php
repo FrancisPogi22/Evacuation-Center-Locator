@@ -103,7 +103,6 @@
     </div>
 
     @include('partials.script')
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/responsive/2.4.1/js/dataTables.responsive.min.js"></script>
@@ -412,8 +411,8 @@
                 defaultFormData = $('#evacueeInfoForm').serialize();
             });
 
-            modal.on('hidden.bs.modal', () => {
-                validator.resetForm();
+            $(document).on('click', '#closeModalBtn', function() {
+                validator && validator.resetForm();
                 $('#evacueeInfoForm')[0].reset();
                 fieldContainer.add(submitButtonContainer).prop('hidden', true);
                 formButtonContainer.prop('hidden', false);
@@ -460,18 +459,20 @@
                     'going back to their homes' : 'evacuated again'}?`).then((result) => {
                     if (!result.isConfirmed) return;
 
+                    const status = sessionStorage.getItem('status') == 'Evacuated' ?
+                        'Return Home' : 'Evacuated';
+
                     $.ajax({
                         data: {
                             evacueeIds: id,
-                            status: sessionStorage.getItem('status') == 'Evacuated' ?
-                                'Return Home' : 'Evacuated'
+                            status: status
                         },
                         url: "{{ route('evacuee.info.update.status') }}",
                         method: "PATCH",
                         success(response) {
                             evacueeTable.draw();
                             showSuccessMessage(
-                                `Successfully updated the evacuee status to ${sessionStorage.getItem('status').toLowerCase()}.`
+                                `Successfully updated the evacuee status to ${status.toLowerCase()}.`
                             );
                             selectAllCheckBox.prop('checked', false);
                             initializeDataTable(url);
@@ -535,7 +536,7 @@
                             .replace('disaster', sessionStorage.getItem("archiveDisaster"));
                         initializeDataTable(url);
                     },
-                    error: showErrorMessage
+                    error: () => showErrorMessage()
                 });
             });
 
@@ -579,7 +580,7 @@
 
                         dropdownOptions.prop('hidden', false);
                     },
-                    error: showErrorMessage
+                    error: () => showErrorMessage()
                 });
             });
 
@@ -606,9 +607,38 @@
                             targetElement.val(data[key]);
                         }
                     },
-                    error: showErrorMessage
+                    error: () => showErrorMessage()
                 });
             });
+
+            function formSubmitHandler(form) {
+                let formData = $(form).serialize();
+
+                if (!$('#recordEvacueeInfoBtn').is(':visible')) return;
+
+                confirmModal(`Do you want to ${operation} this evacuee info?`).then((result) => {
+                    if (!result.isConfirmed) return;
+
+                    return operation == 'update' && defaultFormData == formData ?
+                        showWarningMessage() :
+                        $.ajax({
+                            data: formData,
+                            url: operation == 'record' ? "{{ route('evacuee.info.record') }}" :
+                                "{{ route('evacuee.info.update', 'evacueeId') }}".replace('evacueeId',
+                                    evacueeId),
+                            type: operation == 'record' ? "POST" : "PUT",
+                            success(response) {
+                                response.status == 'warning' ? showWarningMessage(response
+                                    .message) : ($('#closeModalBtn').click(), evacueeTable.draw(),
+                                    showSuccessMessage(
+                                        `Successfully ${operation == 'record' ? 'recorded new' : 'updated the'} evacuee info.`
+                                    ));
+                                initializeDataTable(url);
+                            },
+                            error: () => showErrorMessage()
+                        });
+                });
+            }
 
             function showForm(formTypeValue, fieldContainerVisible,
                 formButtonVisible, fieldContainerSearchVisible) {

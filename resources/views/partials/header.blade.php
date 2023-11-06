@@ -6,33 +6,13 @@
         @auth
             <div class="dropdown">
                 @if (auth()->user()->organization == 'CDRRMO')
-                    <div class="notification" id="notification-container">
+                    <div id="notification-container">
                         <button class="bi bi-bell-fill" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <div id="notification-count-container">
+                                <span id="notification-count">0</span>
+                            </div>
                         </button>
-                        <ul class="dropdown-menu">
-                            @forelse (array_merge($notifications['incident']->toArray(), $notifications['area']->toArray()) as $notification)
-                                <li>
-                                    @if (isset($notification['details']) && $notification['details'])
-                                        <a href="{{ route('manage.report', 'manage', '','') }}" class="dropdown-item">
-                                            <p>Resident report a incident:
-                                                {{ $notification['details'] }}
-                                            </p>
-                                            <span class="report_time">
-                                                {{ $notification['report_time'] }}
-                                            </span>
-                                        </a>
-                                    @else
-                                        <a href="{{ route('manage.report', 'manage') }}" class="dropdown-item">
-                                            <span>Resident report an area:
-                                                {{ $notification['type'] }}
-                                            </span>
-                                        </a>
-                                    @endif
-                                </li>
-                            @empty
-                                <div class="empty-notification">No notification</div>
-                            @endforelse
-                        </ul>
+                        <ul class="dropdown-menu notification"></ul>
                     </div>
                 @endif
                 <div class="header-menu">
@@ -53,9 +33,12 @@
             </div>
         @endauth
         @guest
-            <button class="changeTheme">
-                <i class="bi bi-sun-fill" id="themeIconResident"></i>
-            </button>
+            <div id="resident-header-button-container">
+                <button id="emergencyBtn">.</button>
+                <button class="changeTheme">
+                    <i class="bi bi-sun-fill" id="themeIconResident"></i>
+                </button>
+            </div>
         @endguest
     </div>
 </header>
