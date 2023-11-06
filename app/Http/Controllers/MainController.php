@@ -130,7 +130,6 @@ class MainController extends Controller
 
         return DataTables::of(ActivityUserLog::join('user', 'activity_log.user_id', '=', 'user.id')
             ->select('activity_log.*', 'user.*')->orderBy('activity_log.id', 'desc')->get())
-            ->addIndexColumn()
             ->addColumn('activity', function ($userLog) {
                 return $userLog->name . ' ' . $userLog->activity . ' ' . $userLog->data_name;
             })

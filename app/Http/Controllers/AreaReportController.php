@@ -71,7 +71,7 @@ class AreaReportController extends Controller
 
         $userIp = $request->ip();
         $resident = $this->reportLog->where('user_ip', $userIp)->where('report_type', 'Area')->first();
-        $reportPhotoPath = $request->file('image')->store([]);
+        $reportPhotoPath = $request->file('image')->store();
         $request->image->move(public_path('reports_image'), $reportPhotoPath);
 
         if ($resident) {
@@ -115,7 +115,8 @@ class AreaReportController extends Controller
 
     public function approveAreaReport($reportId)
     {
-        $report = $this->areaReport->find($reportId)->update(['status' => 'Approved']);
+        $report = $this->areaReport->find($reportId);
+        $report->update(['status' => 'Approved']);
         $this->logActivity->generateLog($reportId, $report->type, 'approved area report');
         event(new AreaReport());
         event(new Notification());

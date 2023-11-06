@@ -34,7 +34,6 @@ class EvacueeController extends Controller
             ->get();
 
         return DataTables::of($evacueeInfo)
-            ->addIndexColumn()
             ->addColumn('select', function ($row) {
                 return '<input type="checkbox" class="rowCheckBox" value="' . $row->id . '">';
             })
@@ -96,7 +95,7 @@ class EvacueeController extends Controller
         $this->logActivity->generateLog($evacueeInfo->id, $evacueeInfo->barangay, 'recorded a new evacuee information');
         event(new ActiveEvacuees());
 
-        return response()->json();
+        return response([]);
     }
 
     public function updateEvacueeInfo(Request $request, $evacueeId)
@@ -135,7 +134,7 @@ class EvacueeController extends Controller
         $this->logActivity->generateLog($evacueeId, '', 'updated a evacuee information');
         event(new ActiveEvacuees());
 
-        return response()->json();
+        return response([]);
     }
 
     public function updateEvacueeStatus(Request $request)
@@ -149,6 +148,6 @@ class EvacueeController extends Controller
 
         $this->logActivity->generateLog(implode(', ', $familyIds), '', 'updated evacuee status to return home');
 
-        return response()->json();
+        return response([]);
     }
 }

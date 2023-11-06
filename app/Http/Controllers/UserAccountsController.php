@@ -31,7 +31,6 @@ class UserAccountsController extends Controller
             $userAccounts->where('organization', 'CDRRMO')->whereNotIn('id', [$userId]);
 
         return DataTables::of($userAccounts)
-            ->addIndexColumn()
             ->addColumn('status', fn ($account) => '<div class="status-container"><div class="status-content bg-' . match ($account->status) {
                 'Active'    => 'success',
                 'Disabled'  => 'danger',
@@ -101,7 +100,7 @@ class UserAccountsController extends Controller
         ]));
         $this->logActivity->generateLog($userAccountData->id, $userAccountData->name, 'created a new account');
 
-        return response()->json();
+        return response([]);
     }
 
     public function updateAccount(Request $request, $userId)
@@ -125,7 +124,7 @@ class UserAccountsController extends Controller
         ]);
         $this->logActivity->generateLog($userId, $userAccount->name, 'updated a account');
 
-        return response()->json();
+        return response([]);
     }
 
     public function disableAccount($userId)
@@ -137,7 +136,7 @@ class UserAccountsController extends Controller
         ]);
         $this->logActivity->generateLog($userId, $userAccount->name, 'disabled a account');
 
-        return response()->json();
+        return response([]);
     }
 
     public function enableAccount($userId)
@@ -149,7 +148,7 @@ class UserAccountsController extends Controller
         ]);
         $this->logActivity->generateLog($userId, $userAccount->name, 'enabled a account');
 
-        return response()->json();
+        return response([]);
     }
 
     public function suspendAccount(Request $request, $userId)
@@ -169,7 +168,7 @@ class UserAccountsController extends Controller
         ]);
         $this->logActivity->generateLog($userId, $userAccount->name, 'suspended a account');
 
-        return response()->json();
+        return response([]);
     }
 
     public function openAccount($userId)
@@ -183,12 +182,12 @@ class UserAccountsController extends Controller
         ]);
         $this->logActivity->generateLog($userId, $userAccount->name, 'opened an account');
 
-        return response()->json();
+        return response([]);
     }
 
     public function checkPassword(Request $request)
     {
-        return Hash::check($request->current_password, auth()->user()->password) ? response()->json() : response(['status' => 'warning']);
+        return Hash::check($request->current_password, auth()->user()->password) ? response([]) : response(['status' => 'warning']);
     }
 
     public function resetPassword(Request $request, $userId)
@@ -208,7 +207,7 @@ class UserAccountsController extends Controller
                 'password' => Hash::make(trim($request->password))
             ]);
             $this->logActivity->generateLog($userId, $userAccount->name, 'changed a password');
-            return response()->json();
+            return response([]);
         }
 
         return response(['status' => 'warning', 'message' => "Current password doesn't match."]);
@@ -222,6 +221,6 @@ class UserAccountsController extends Controller
         ]);
         $this->logActivity->generateLog($userId, $userAccount->name, $operation . "d a account");
 
-        return response()->json();
+        return response([]);
     }
 }

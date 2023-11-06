@@ -32,7 +32,6 @@ class DisasterController extends Controller
             return $disasterInformation;
 
         return DataTables::of($disasterInformation)
-            ->addIndexColumn()
             ->addColumn('status', fn ($disaster) => '<div class="status-container"><div class="status-content bg-' . match ($disaster->status) {
                 'On Going' => 'success',
                 'Inactive' => 'danger'
@@ -73,7 +72,7 @@ class DisasterController extends Controller
         ]);
         $this->logActivity->generateLog($disasterData->id, $disasterData->name, 'added a new disaster data');
 
-        return response()->json();
+        return response([]);
     }
 
     public function updateDisasterData(Request $request, $disasterId)
@@ -92,7 +91,7 @@ class DisasterController extends Controller
         ]);
         $this->logActivity->generateLog($disasterId, $disasterData->name, 'updated a disaster data');
 
-        return response()->json();
+        return response([]);
     }
 
     public function archiveDisasterData($disasterId, $operation)
@@ -107,7 +106,7 @@ class DisasterController extends Controller
         $this->evacuee->where('disaster_id', $disasterId)->update(['is_archive' => $archiveValue]);
         $this->logActivity->generateLog($disasterId, $disasterData->name, $operation . "d a disaster data");
 
-        return response()->json();
+        return response([]);
     }
 
     public function changeDisasterStatus(Request $request, $disasterId)
@@ -119,6 +118,6 @@ class DisasterController extends Controller
         ]);
         $this->logActivity->generateLog($disasterId, $disasterData->name, 'changed a disaster status');
 
-        return response()->json();
+        return response([]);
     }
 }
