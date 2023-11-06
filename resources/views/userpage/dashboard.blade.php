@@ -28,7 +28,7 @@
                         <button type="button" data-bs-toggle="modal" data-bs-target="#generateReportModal"
                             class="btn-submit generateBtn">
                             <i class="bi bi-printer"></i>
-                            Generate Report Data
+                            Generate Disaster Data
                         </button>
                         <div class="modal fade" id="generateReportModal" data-bs-backdrop="static"aria-hidden="true">
                             <div class="modal-dialog">
@@ -46,6 +46,7 @@
                                             @csrf
                                             <div class="form-content">
                                                 <div class="field-container">
+                                                    <label for="disaster_year">Disaster Year</label>
                                                     <select class="form-control form-select" name="disaster_year"
                                                         id="disaster_year">
                                                         <option value="" selected hidden disabled>Select year
@@ -159,9 +160,9 @@
                             );
                         });
 
-                        disasterList.prop('hidden', false);
+                        disasterList.prop('hidden', 0);
                     },
-                    error: () => showErrorMessage()
+                    error: showErrorMessage
                 });
             });
 
@@ -178,20 +179,20 @@
             $(document).on('click', '#closeModalBtn', function() {
                 validator && validator.resetForm();
                 searchResults.empty();
-                disasterList.prop('hidden', true);
+                disasterList.prop('hidden', 1);
                 $('#generateReportForm')[0].reset();
             });
 
             evacueeData();
 
-            Echo.channel('active-evacuees').listen('ActiveEvacuees', (e) => {
-                $("#totalEvacuee").text(e.activeEvacuees);
-                evacueeData();
-            });
+            // Echo.channel('active-evacuees').listen('ActiveEvacuees', (e) => {
+            //     $("#totalEvacuee").text(e.activeEvacuees);
+            //     evacueeData();
+            // });
 
-            Echo.channel('incident-report').listen('IncidentReport', (e) => {
-                $("#totalReport").text(e.totalReport);
-            });
+            // Echo.channel('incident-report').listen('IncidentReport', (e) => {
+            //     $("#totalReport").text(e.totalReport);
+            // });
         });
 
         function evacueeData() {

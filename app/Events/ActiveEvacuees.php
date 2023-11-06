@@ -3,7 +3,6 @@
 namespace App\Events;
 
 use App\Models\Disaster;
-use App\Models\Evacuee;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
@@ -17,15 +16,7 @@ class ActiveEvacuees implements ShouldBroadcast
 
     public function __construct()
     {
-        $onGoingDisaster = Disaster::where('status', "On Going")->get();
-        $totalEvacuee    = 0;
-
-        foreach ($onGoingDisaster as $disaster) {
-            $totalEvacueeCount = Evacuee::where('disaster_id', $disaster->id)->sum('individuals');
-            $totalEvacuee      += $totalEvacueeCount;
-        }
-
-        $this->activeEvacuees = $totalEvacuee;
+        $this->activeEvacuees = Disaster::join('evacuee', 'evacuee.disaster_id', '=', 'disaster.id')->where('evacuee.status', 'Evacuated')->sum('evacuee.individuals');
     }
 
     public function broadcastOn()

@@ -4,7 +4,7 @@
             <div class="modal-content">
                 <header class="modal-label-container">
                     <h1 class="modal-label"></h1>
-                    <button type="button" data-bs-dismiss="modal" aria-label="Close" id="closeModalBtn">
+                    <button type="button" data-bs-dismiss="modal" id="closeModalBtn">
                         <i class="bi bi-x-lg"></i>
                     </button>
                 </header>

@@ -106,8 +106,8 @@ class AreaReportController extends Controller
             'longitude'   => $request->longitude,
             'report_time' => Date::now()
         ]);
-        event(new AreaReport());
-        event(new Notification());
+        // event(new AreaReport());
+        // event(new Notification());
 
         return response([]);
     }
@@ -117,8 +117,8 @@ class AreaReportController extends Controller
         $report = $this->areaReport->find($reportId);
         $report->update(['status' => 'Approved']);
         $this->logActivity->generateLog($reportId, $report->type, 'approved area report');
-        event(new AreaReport());
-        event(new Notification());
+        // event(new AreaReport());
+        // event(new Notification());
 
         return response([]);
     }
@@ -126,13 +126,14 @@ class AreaReportController extends Controller
     public function updateAreaReport(Request $request, $reportId)
     {
         $areaReportValidation = Validator::make($request->all(), ['update' => 'required']);
+
         if ($areaReportValidation->fails()) return response(['status' => 'warning', 'message' =>  $areaReportValidation->errors()->first()]);
         
         $this->reportUpdate->addUpdate($reportId, $request->update);
         $report = $this->areaReport->find($reportId);
         $this->logActivity->generateLog($reportId, $report->type, 'add update to area report');
-        event(new AreaReport());
-        event(new Notification());
+        // event(new AreaReport());
+        // event(new Notification());
 
         return response([]);
     }
@@ -143,7 +144,7 @@ class AreaReportController extends Controller
         $report->delete();
         unlink(public_path('reports_image/' . $report->photo));
         $this->logActivity->generateLog($reportId, $report->type, 'removed area report');
-        event(new AreaReport());
+        // event(new AreaReport());
 
         return response([]);
     }
@@ -153,7 +154,7 @@ class AreaReportController extends Controller
         $report = $this->areaReport->find($reportId);
         $report->update(['is_archive' => 1]);
         $this->logActivity->generateLog($reportId, $report->type, 'archived area report');
-        event(new AreaReport());
+        // event(new AreaReport());
 
         return response([]);
     }

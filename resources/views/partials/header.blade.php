@@ -8,9 +8,6 @@
                 @if (auth()->user()->organization == 'CDRRMO')
                     <div id="notification-container">
                         <button class="bi bi-bell-fill" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            <div id="notification-count-container">
-                                <span id="notification-count">0</span>
-                            </div>
                         </button>
                         <ul class="dropdown-menu notification"></ul>
                     </div>
@@ -34,8 +31,8 @@
         @endauth
         @guest
             <div id="resident-header-button-container">
-                <button id="emergencyBtn">.</button>
-                <button class="changeTheme">
+                <button id="emergencyBtn" title="Emergency Button"></button>
+                <button class="changeTheme" title="Change Theme">
                     <i class="bi bi-sun-fill" id="themeIconResident"></i>
                 </button>
             </div>

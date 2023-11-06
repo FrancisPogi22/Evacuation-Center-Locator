@@ -4,7 +4,7 @@
             <div class="modal-content">
                 <header class="change-modal-label-container bg-warning">
                     <h1 class="change-modal-label">Change Password</h1>
-                    <button type="button" data-bs-dismiss="modal" aria-label="Close" id="closeModalBtn">
+                    <button type="button" data-bs-dismiss="modal" aria-label="Close" id="closeChangePasswordBtn">
                         <i class="bi bi-x-lg"></i>
                     </button>
                 </header>
