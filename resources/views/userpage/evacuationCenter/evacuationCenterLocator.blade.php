@@ -364,7 +364,7 @@
         }
 
         function scrollMarkers() {
-            $('#user-marker').prop('hidden', false);
+            $('#user-marker').prop('hidden', 0);
             $('.marker-container').animate({
                 scrollLeft: $('#user-marker').position().left + $('.marker-container').scrollLeft()
             }, 500);
@@ -412,7 +412,7 @@
         }
 
         async function getEvacuationCentersDistance() {
-            $('#locateNearestBtn').attr('disabled', true);
+            $('#locateNearestBtn').attr('disabled', 1);
             evacuationCenterJson.length = 0;
             activeEvacuationCenters.length = 0;
 
@@ -514,7 +514,7 @@
                             );
 
                             if ($('.stop-btn-container').is(':hidden')) {
-                                $('#reportAreaBtn').attr('hidden', false);
+                                $('#reportAreaBtn').attr('hidden', 0);
                                 $('#loader').removeClass('show');
                                 directionDisplay.setMap(map);
                                 var bounds = new google.maps.LatLngBounds();
@@ -651,7 +651,7 @@
                     ],
                     columnDefs: [{
                         targets: 6,
-                        render: function(data) {
+                        render(data) {
                             return `<div class="status-container">
                                     <div class="status-content bg-${getStatusColor(data)}">
                                         ${data}
@@ -690,7 +690,7 @@
                         scrollToMap();
                         $("#loading-text").text("Locating evacuation center...");
                         $('#loader').addClass('show');
-                        $('#reportAreaBtn').attr('hidden', true);
+                        $('#reportAreaBtn').attr('hidden', 1);
                     }
                     findNearestActive = !$(this).hasClass('locateEvacuationCenter');
                     rowData = findNearestActive ? null : getRowData(this, evacuationCenterTable);
@@ -709,7 +709,7 @@
                 $('.stop-btn-container').hide();
                 map.setCenter(newLatLng(14.246261, 121.12772));
                 map.setZoom(13);
-                $('#user-marker').prop('hidden', true);
+                $('#user-marker').prop('hidden', 1);
             });
 
             $(document).on("click", "#reportAreaBtn", function() {
@@ -812,14 +812,14 @@
                         details: 'Please enter details.'
                     },
                     errorElement: 'span',
-                    showErrors: function() {
+                    showErrors() {
                         this.defaultShowErrors();
 
                         $('#image-error').text('Please select an image.')
                             .prop('style', `display: ${$('#areaInputImage').val() == '' ?
                                 'block' : 'none'} !important`);
                     },
-                    submitHandler: function(form) {
+                    submitHandler(form) {
                         if ($('#areaInputImage').val() == '') return;
 
                         confirmModal('Are you sure you want to report this area?').then((
@@ -840,13 +840,12 @@
                                         showWarningMessage(response
                                             .message) :
                                         showSuccessMessage(
-                                            'Report submitted successfully'
-                                        );
+                                            'Report submitted successfully');
 
                                     status != "warning" &&
                                         $('#reportAreaBtn').click();
                                 },
-                                error: () => showErrorMessage()
+                                error: showErrorMessage
                             });
                         });
                     }
@@ -857,47 +856,47 @@
                 toggleShowImageBtn($(this), $(this).next(), areaMarkers);
             });
 
-            Echo.channel('area-report').listen('AreaReport', (e) => {
-                ajaxRequest('reportArea');
-            });
+            // Echo.channel('area-report').listen('AreaReport', (e) => {
+            //     ajaxRequest('reportArea');
+            // });
 
-            Echo.channel('evacuation-center-locator').listen('EvacuationCenterLocator', (e) => {
-                ajaxRequest().then(() => {
-                    if (locating && (rowData != null || prevNearestEvacuationCenter != null)) {
-                        const {
-                            id,
-                            status,
-                            latitude,
-                            longitude
-                        } = findNearestActive ? prevNearestEvacuationCenter : rowData;
+            // Echo.channel('evacuation-center-locator').listen('EvacuationCenterLocator', (e) => {
+            //     ajaxRequest().then(() => {
+            //         if (locating && (rowData != null || prevNearestEvacuationCenter != null)) {
+            //             const {
+            //                 id,
+            //                 status,
+            //                 latitude,
+            //                 longitude
+            //             } = findNearestActive ? prevNearestEvacuationCenter : rowData;
 
-                        const isCenterUnavailable = findNearestActive ?
-                            !evacuationCentersData.some(evacuationCenter =>
-                                evacuationCenter.id == id && ['Active', 'Full'].includes(
-                                    evacuationCenter.status)) :
-                            !evacuationCentersData.some(evacuationCenter =>
-                                evacuationCenter.id == id),
+            //             const isCenterUnavailable = findNearestActive ?
+            //                 !evacuationCentersData.some(evacuationCenter =>
+            //                     evacuationCenter.id == id && ['Active', 'Full'].includes(
+            //                         evacuationCenter.status)) :
+            //                 !evacuationCentersData.some(evacuationCenter =>
+            //                     evacuationCenter.id == id),
 
-                            isLocationUpdated = !evacuationCentersData.some(
-                                evacuationCenter =>
-                                evacuationCenter.latitude == latitude &&
-                                evacuationCenter.longitude == longitude);
+            //                 isLocationUpdated = !evacuationCentersData.some(
+            //                     evacuationCenter =>
+            //                     evacuationCenter.latitude == latitude &&
+            //                     evacuationCenter.longitude == longitude);
 
-                        if (isCenterUnavailable || isLocationUpdated) {
-                            $('#stopLocatingBtn').click();
-                            showWarningMessage(
-                                isCenterUnavailable ?
-                                'The evacuation center you are locating is no longer available.' :
-                                'The location of the evacuation center you are locating is updated.'
-                            );
+            //             if (isCenterUnavailable || isLocationUpdated) {
+            //                 $('#stopLocatingBtn').click();
+            //                 showWarningMessage(
+            //                     isCenterUnavailable ?
+            //                     'The evacuation center you are locating is no longer available.' :
+            //                     'The location of the evacuation center you are locating is updated.'
+            //                 );
 
-                            if (findNearestActive) prevNearestEvacuationCenter = null;
-                        }
-                    }
+            //                 if (findNearestActive) prevNearestEvacuationCenter = null;
+            //             }
+            //         }
 
-                    evacuationCenterTable.clear().rows.add(evacuationCentersData).draw();
-                });
-            });
+            //         evacuationCenterTable.clear().rows.add(evacuationCentersData).draw();
+            //     });
+            // });
         });
     </script>
 </body>

@@ -64,16 +64,40 @@
                     @endforelse
                 </div>
                 <div class="weather-section">
-                    <div class="current-temp-container">
-                        <p class="current-temp"></p>
-                        <p class="feels-like"></p>
+                    <h4>Weather Forecast</h4>
+                    <p class="current-time"></p>
+                    <div class="weather-header">
+                        <div class="current-temp-container">
+                            <p class="current-temp"></p>
+                            <p class="feels-like"></p>
+                        </div>
+                        <div class="location-description">
+                            <p class="weather-desc"></p>
+                            <p>Cabuyao, Laguna</p>
+                        </div>
+                        <div class="weather-img">
+                            <img class="weather-icon" alt="icon">
+                        </div>
                     </div>
-                    <div class="location-description">
-                        <p class="weather-desc"></p>
-                        <p>Cabuyao, Laguna</p>
-                    </div>
-                    <div class="weather-img">
-                        <img class="weather-icon" alt="icon">
+                    <div class="weather-day">
+                        <div class="sunrise-container">
+                            <div class="sunrise-header">
+                                <i class="bi bi-sunrise"></i>
+                                <span>Sunrise</span>
+                            </div>
+                            <div class="sunset-details">
+                                <p id="sunrise"></p>
+                            </div>
+                        </div>
+                        <div class="sunset-container">
+                            <div class="sunset-header">
+                                <i class="bi bi-sunset"></i>
+                                <span>Sunset</span>
+                            </div>
+                            <div class="sunset-details">
+                                <p id="sunset"></p>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </section>
@@ -94,16 +118,20 @@
     @endauth
     <script>
         $(document).ready(() => {
-            let guides = $('.guide-content');
-
+            updateTime();
+            setInterval(updateTime, 1000);
             fetch(
                     "https://api.openweathermap.org/data/2.5/weather?q=Cabuyao&appid={{ config('services.openWeather.key') }}&units=metric"
                 ).then(response => response.json())
                 .then(data => {
                     let {
                         main,
-                        weather
+                        weather,
+                        wind
                     } = data;
+
+                    $('#sunrise').text(formatDateTime(data.sys.sunrise * 1000, "time"));
+                    $('#sunset').text(formatDateTime(data.sys.sunset * 1000, "time"));
                     $('.current-temp').text(`${Math.round(main.temp)}°C`);
                     $('.feels-like').text(`Feels like ${Math.round(main.feels_like)}°C`);
                     $('.weather-desc').text(
@@ -112,7 +140,7 @@
                         `http://openweathermap.org/img/wn/${weather[0].icon}@4x.png`);
                 });
 
-            guides.click(function() {
+            $('.guide-content').click(function() {
                 this.classList.toggle('active');
             });
 
@@ -180,7 +208,7 @@
                                         showSuccessMessage(`Guide successfully updated.`);
                                         modal.modal('hide');
                                     },
-                                    error: () => showErrorMessage()
+                                    error: showErrorMessage
                                 });
                         });
                     }
@@ -250,24 +278,28 @@
                                         </div>`);
                                 }
                             },
-                            error: () => showErrorMessage()
+                            error: showErrorMessage
                         });
                     });
                 });
 
-                    function changeImageBtn(action) {
-                        action == 'remove' ?
-                            guideBtn.removeClass('bg-primary').html('<i class="bi bi-image"></i>Select Image') :
-                            guideBtn.addClass('bg-primary').html('<i class="bi bi-arrow-repeat"></i>Change Image');
-                    }
+                function changeImageBtn(action) {
+                    action == 'remove' ?
+                        guideBtn.removeClass('bg-primary').html('<i class="bi bi-image"></i>Select Image') :
+                        guideBtn.addClass('bg-primary').html('<i class="bi bi-arrow-repeat"></i>Change Image');
+                }
 
-                $(document).on('click', '#closeModalBtn', function() {
+                modal.on('hidden.bs.modal', () => {
                     guideImageChanged = false;
-                    validator && validator.resetForm();
+                    validator.resetForm();
                     form[0].reset();
                 });
             @endif
         @endauth
+
+        function updateTime() {
+            $(".current-time").text(`as of ${formatDateTime(new Date(), "time")}`);
+        }
         });
     </script>
 </body>

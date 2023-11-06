@@ -214,7 +214,7 @@
                                                 `Disaster successfully ${operation == "change" ? "changed status" : operation}.`
                                             ));
                                     },
-                                    error: () => showErrorMessage()
+                                    error: showErrorMessage
                                 });
                         });
                 }
@@ -240,7 +240,7 @@
                                             `Disaster successfully ${operation == "add" ? "added" : "updated"}.`
                                         ), $('#closeModalBtn').click(), disasterTable.draw());
                                 },
-                                error: () => showErrorMessage()
+                                error: showErrorMessage
                             });
                     });
                 }

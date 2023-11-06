@@ -219,7 +219,7 @@
                     $('#name').val(name);
                     $('#latitude').val(latitude);
                     $('#longitude').val(longitude);
-                    $(`#barangayName, option[value="${barangay_name}"`).prop('selected', true);
+                    $(`#barangayName, option[value="${barangay_name}"`).prop('selected', 1);
 
                     marker = new google.maps.Marker({
                         position: {
@@ -299,7 +299,7 @@
                                         ), evacuationCenterTable.draw(), $('#closeModalBtn')
                                     .click());
                                 },
-                                error: () => showErrorMessage()
+                                error: showErrorMessage
                             });
                     });
                 }
@@ -330,7 +330,7 @@
                                     );
                                     evacuationCenterTable.draw();
                                 },
-                                error: () => showErrorMessage()
+                                error: showErrorMessage
                             });
                     });
                 }
