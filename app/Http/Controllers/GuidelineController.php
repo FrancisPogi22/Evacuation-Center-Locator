@@ -34,6 +34,7 @@ class GuidelineController extends Controller
 
         if ($guidelineValidation->fails())
             return response(['status' => 'warning', 'message' => $guidelineValidation->errors()->first()]);
+
         if ($guideValidation->fails())
             return response(['status' => 'warning', 'message' => "All guide fields are required, fill them out."]);
 
@@ -95,6 +96,7 @@ class GuidelineController extends Controller
 
         if ($guidelineValidation->fails())
             return response(['status' => 'warning', 'message' => $guidelineValidation->errors()->first()]);
+
         if ($guideValidation->fails())
             return response(['status' => 'warning', 'message' => "All guide fields are required, fill them out."]);
 
@@ -121,7 +123,6 @@ class GuidelineController extends Controller
 
         $guideline->update($guidelineData);
         $this->logActivity->generateLog($guideline->id, $guideline->type, 'updated a guideline');
-
         $labels   = $request->label;
         $contents = $request->content;
 

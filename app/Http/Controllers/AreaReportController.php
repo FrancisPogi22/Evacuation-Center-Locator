@@ -8,7 +8,6 @@ use App\Models\ResidentReport;
 use App\Models\ActivityUserLog;
 use Yajra\DataTables\DataTables;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\Validator;
 use App\Events\Notification;
@@ -69,8 +68,8 @@ class AreaReportController extends Controller
 
         if ($areaReportValidation->fails()) return response(['status' => 'warning', 'message' =>  implode('<br>', $areaReportValidation->errors()->all())]);
 
-        $userIp = $request->ip();
-        $resident = $this->reportLog->where('user_ip', $userIp)->where('report_type', 'Area')->first();
+        $userIp          = $request->ip();
+        $resident        = $this->reportLog->where('user_ip', $userIp)->where('report_type', 'Area')->first();
         $reportPhotoPath = $request->file('image')->store();
         $request->image->move(public_path('reports_image'), $reportPhotoPath);
 
@@ -89,7 +88,7 @@ class AreaReportController extends Controller
             }
 
             $resident->update(['attempt' => $residentAttempt + 1]);
-            if ($resident->attempt == 3) $resident->update(['report_time' => Date::now()->addHour(1)]);
+            if ($resident->attempt == 3) $resident->update(['report_time' => Date::now()->addHour()]);
         } else {
             $this->reportLog->create([
                 'attempt'     => 1,
@@ -128,7 +127,7 @@ class AreaReportController extends Controller
     {
         $areaReportValidation = Validator::make($request->all(), ['update' => 'required']);
         if ($areaReportValidation->fails()) return response(['status' => 'warning', 'message' =>  $areaReportValidation->errors()->first()]);
-
+        
         $this->reportUpdate->addUpdate($reportId, $request->update);
         $report = $this->areaReport->find($reportId);
         $this->logActivity->generateLog($reportId, $report->type, 'add update to area report');
@@ -141,7 +140,7 @@ class AreaReportController extends Controller
     public function removeAreaReport($reportId)
     {
         $report = $this->areaReport->find($reportId);
-        $report->delete([]);
+        $report->delete();
         unlink(public_path('reports_image/' . $report->photo));
         $this->logActivity->generateLog($reportId, $report->type, 'removed area report');
         event(new AreaReport());

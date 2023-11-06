@@ -86,7 +86,7 @@ class MainController extends Controller
     public function guide($guidelineId)
     {
         $guide          = $this->guide->where('guideline_id', $guidelineId)->get();
-        $guidelineLabel = $this->guideline->where('id', $guidelineId)->value('type');
+        $guidelineLabel = $this->guideline->find($guidelineId)->value('type');
 
         return view('userpage.guideline.guide', compact('guide', 'guidelineId', 'guidelineLabel'));
     }
@@ -95,7 +95,7 @@ class MainController extends Controller
     {
         $disasterList        = $this->disaster->where('is_archive', 0)->get();
         $archiveDisasterList = $this->disaster->where('is_archive', 1)->get();
-        $yearList            = collect($archiveDisasterList->pluck('year')->unique()->toArray())->sort();
+        $yearList            = $archiveDisasterList->pluck('year')->unique()->sortByDesc('year');
         $archiveDisasterList = $archiveDisasterList->where('year', $yearList->first());
         $evacuationList      = $this->evacuationCenter->whereNotIn('status', ['Inactive', 'Archived'])->get();
 
@@ -173,9 +173,9 @@ class MainController extends Controller
 
     public function manageReport($operation)
     {
-        $prefix = request()->route()->getPrefix();
+        $yearList   = [];
+        $prefix     = request()->route()->getPrefix();
         $reportType = ['All', 'Emergency', 'Incident', 'Flooded', 'Roadblocked'];
-        $yearList = [];
         if ($operation == "archived")
             $yearList = $this->residentReport->where('is_archive', 1)->selectRaw('YEAR(report_time) as year')->distinct()->orderBy('year', 'desc')->get();
 

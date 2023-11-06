@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\FamilyRecord;
 use App\Models\ActivityUserLog;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 
 class FamilyRecordController extends Controller
@@ -78,8 +77,9 @@ class FamilyRecordController extends Controller
 
         $familyRecord['individuals'] = $familyRecord['male'] + $familyRecord['female'];
         $familyRecord['user_id']     = auth()->user()->id;
-        $familyRecord                = $this->familyRecord->find($request->family_id)->update($familyRecord);
+        $familyId                    = $request->family_id;
+        $this->familyRecord->find($familyId)->update($familyRecord);
 
-        return $request->family_id;
+        return $familyId;
     }
 }

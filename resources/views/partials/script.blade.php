@@ -495,12 +495,8 @@
         return toastr.warning(message, 'Warning');
     }
 
-    function showSuccessMessage(message, shouldReload) {
-        return toastr.success(message, 'Success', {
-            onHidden() {
-                if (shouldReload) location.reload();
-            }
-        });
+    function showSuccessMessage(message) {
+        return toastr.success(message, 'Success');
     }
 
     function showInfoMessage(message) {

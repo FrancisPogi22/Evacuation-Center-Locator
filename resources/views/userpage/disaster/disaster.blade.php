@@ -123,7 +123,32 @@
                         name: 'Please Enter Disaster Name.'
                     },
                     errorElement: 'span',
-                    submitHandler: disasterFormHandler
+                    submitHandler(form) {
+                        let formData = $(form).serialize();
+
+                        confirmModal(`Do you want to ${operation} this disaster?`).then((result) => {
+                            if (!result.isConfirmed) return;
+
+                            return operation == 'update' && defaultFormData == formData ?
+                                showWarningMessage() :
+                                $.ajax({
+                                    data: formData,
+                                    url: operation == 'add' ? "{{ route('disaster.create') }}" :
+                                        "{{ route('disaster.update', 'disasterId') }}".replace(
+                                            'disasterId', disasterId),
+                                    method: operation == 'add' ? "POST" : "PATCH",
+                                    success(response) {
+                                        response.status == 'warning' ? showWarningMessage(
+                                            response
+                                            .message) : (
+                                            showSuccessMessage(
+                                                `Disaster successfully ${operation == "add" ? "added" : "updated"}.`
+                                            ), modal.modal('hide'), disasterTable.draw());
+                                    },
+                                    error: showErrorMessage
+                                });
+                        });
+                    }
                 });
 
                 $(document).on('click', '#addDisasterData', () => {

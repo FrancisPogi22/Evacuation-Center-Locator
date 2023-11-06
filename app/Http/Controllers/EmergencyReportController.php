@@ -66,7 +66,7 @@ class EmergencyReportController extends Controller
             }
 
             $resident->update(['attempt' => $residentAttempt + 1]);
-            if ($resident->attempt == 3) $resident->update(['report_time' => Date::now()->addHour(1)]);
+            if ($resident->attempt == 3) $resident->update(['report_time' => Date::now()->addHour()]);
         } else {
             $this->reportLog->create([
                 'attempt'     => 1,

@@ -346,7 +346,35 @@
                 rules,
                 messages,
                 errorElement: 'span',
-                submitHandler: formSubmitHandler
+                submitHandler(form) {
+                    let formData = $(form).serialize();
+
+                    confirmModal(`Do you want to ${operation} this evacuee info?`).then((result) => {
+                        if (!result.isConfirmed) return;
+
+                        return operation == 'update' && defaultFormData == formData ?
+                            showWarningMessage() :
+                            $.ajax({
+                                data: formData,
+                                url: operation == 'record' ?
+                                    "{{ route('evacuee.info.record') }}" :
+                                    "{{ route('evacuee.info.update', 'evacueeId') }}".replace(
+                                        'evacueeId',
+                                        evacueeId),
+                                type: operation == 'record' ? "POST" : "PUT",
+                                success(response) {
+                                    response.status == 'warning' ? showWarningMessage(response
+                                        .message) : (modal.modal('hide'), evacueeTable
+                                        .draw(),
+                                        showSuccessMessage(
+                                            `Successfully ${operation == 'record' ? 'recorded new' : 'updated the'} evacuee info.`
+                                        ));
+                                    initializeDataTable(url);
+                                },
+                                error: showErrorMessage
+                            });
+                    });
+                }
             });
 
             $(document).on('click', '#recordEvacueeBtn', () => {
