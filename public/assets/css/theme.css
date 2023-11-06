@@ -1284,15 +1284,6 @@ text {
     width: 288px;
 }
 
-#guidelineModal .modal-label-container {
-    display: flex;
-    justify-content: space-between;
-}
-
-#guidelineModal .modal-label-container button {
-    margin: auto 0;
-}
-
 .guideline-btn .btn-container button {
     margin: 112px 0;
     border: none;
@@ -2228,7 +2219,9 @@ input::-webkit-inner-spin-button {
 
 .modal-label-container,
 .change-modal-label-container {
-    text-align: center;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     background-color: var(--color-green);
     padding: 12px;
     border-top-left-radius: 4px;
@@ -2244,9 +2237,17 @@ input::-webkit-inner-spin-button {
 .change-modal-label {
     color: var(--color-text);
     padding: 4px;
-    text-align: center;
     font-weight: 800;
     font-size: larger;
+}
+
+#closeModalBtn {
+    font-weight: 900;
+    font-size: 22px !important;
+    text-align: center;
+    color: var(--color-text);
+    background: transparent;
+    border: none;
 }
 
 .reportUpdateForm label,
@@ -2403,7 +2404,7 @@ input::-ms-clear {
 }
 
 .info-description.photo img,
-#selectedAreaImage {
+#selectedReportImage {
     padding: 0;
     max-width: 100%;
     margin-top: 10px;
@@ -2411,7 +2412,7 @@ input::-ms-clear {
 }
 
 .info-description.photo img,
-#selectedAreaImage {
+#selectedReportImage {
     height: auto;
     border: 2px solid var(--color-black);
 }
@@ -2739,7 +2740,7 @@ select.form-select option {
 }
 
 .dark-mode .info-description.photo img,
-.dark-mode #selectedAreaImage,
+.dark-mode #selectedReportImage,
 .dark-mode select,
 .dark-mode input,
 .dark-mode textarea,
@@ -2783,6 +2784,7 @@ select.form-select option {
 
 .dark-mode .dropdown-menu {
     background: var(--color-d-bg-container);
+    border-color: var(--color-d-text);
 }
 
 .dark-mode .dropdown-menu .dropdown-item.changeTheme:active {
@@ -3902,6 +3904,10 @@ select.form-select option {
 
     .dropdown-notification {
         margin: 0 5px;
+    }
+
+    #closeModalBtn {
+        font-size: 16px !important;
     }
 }
 
