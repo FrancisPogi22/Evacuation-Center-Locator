@@ -164,8 +164,8 @@
                         "{{ route('disaster.change.status', 'disasterId') }}", this, $(this).val());
                 });
 
-                modal.on('hidden.bs.modal', () => {
-                    validator.resetForm();
+                $(document).on('click', '#closeModalBtn', function() {
+                    validator && validator.resetForm();
                     $('#disasterForm')[0].reset();
                 });
 
@@ -189,7 +189,7 @@
                                                 `Disaster successfully ${operation == "change" ? "changed status" : operation}.`
                                             ));
                                     },
-                                    error: showErrorMessage
+                                    error: () => showErrorMessage()
                                 });
                         });
                 }
@@ -213,9 +213,9 @@
                                         .message) : (
                                         showSuccessMessage(
                                             `Disaster successfully ${operation == "add" ? "added" : "updated"}.`
-                                        ), modal.modal('hide'), disasterTable.draw());
+                                        ), $('#closeModalBtn').click(), disasterTable.draw());
                                 },
-                                error: showErrorMessage
+                                error: () => showErrorMessage()
                             });
                     });
                 }

@@ -145,7 +145,7 @@
                                 });
                                 $('#search_guideline').val("");
                             },
-                            error: showErrorMessage
+                            error: () => showErrorMessage()
                         });
                     });
 
@@ -211,7 +211,7 @@
                                         </div>`);
                                     }
                                 },
-                                error: showErrorMessage
+                                error: () => showErrorMessage()
                             });
                         });
                     });
@@ -294,9 +294,8 @@
                         if (checkGuideFields()) changeModalSize('remove');
                     });
 
-                    modal.on('hidden.bs.modal', () => {
+                    $(document).on('click', '#closeModalBtn', function() {
                         if (guidelineImgChanged) changeImageColor();
-
                         guidelineImgChanged = false;
                         removeGuidelinebtn.prop('hidden', true);
                         changeImageBtn('remove');
@@ -354,11 +353,11 @@
                                                 guidelineWidget.querySelector('.guideline-type p').textContent =
                                                     type;
                                             }
-                                            modal.modal('hide');
+                                            $('#closeModalBtn').click();
                                             showSuccessMessage(`Guideline successfully ${operation}d.`);
                                         }
                                     },
-                                    error: showErrorMessage
+                                    error: () => showErrorMessage()
                                 });
                         });
                     }

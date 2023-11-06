@@ -16,7 +16,6 @@
         passwordShowIcon = $('#showPassword'),
         confirmPasswordShowIcon = $('#showConfirmPassword'),
         changePasswordForm = $('#changePasswordForm'),
-        changePasswordModal = $('#changePasswordModal'),
         eyeIcon = $('.toggle-password'),
         checkPasswordIcon = $('.checkPassword'),
         current_password = "";
@@ -33,7 +32,7 @@
             if (this.files[0]) {
                 if (!['image/jpeg', 'image/jpg', 'image/png'].includes(this.files[0].type)) {
                     $('#areaInputImage').val('');
-                    $('#selectedAreaImage').attr('src', '').attr('hidden', true);
+                    $('#selectedReportImage').attr('src', '').attr('hidden', true);
                     $('#imageBtn').html('<i class="bi bi-image"></i> Select');
                     setInfoWindowButtonStyles($('#imageBtn'), 'var(--color-primary');
                     $('#image-error').text('Please select an image file.')
@@ -43,12 +42,12 @@
                     $('#image-error').prop('style', 'display: none !important');
                 const reader = new FileReader();
                 reader.onload = function(e) {
-                    $('#selectedAreaImage').attr('src', e.target.result);
+                    $('#selectedReportImage').attr('src', e.target.result);
                 };
                 reader.readAsDataURL(this.files[0]);
                 $('#imageBtn').html('<i class="bi bi-arrow-repeat"></i> Change');
                 setInfoWindowButtonStyles($('#imageBtn'), 'var(--color-yellow');
-                $('#selectedAreaImage').attr('hidden', false);
+                $('#selectedReportImage').attr('hidden', false);
                 const container = $(this).closest('.gm-style-iw-d');
                 container.animate({
                     scrollTop: container.prop('scrollHeight')
@@ -90,7 +89,7 @@
                     headers: {
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                     },
-                    method: 'POST',
+                    type: 'POST',
                     url: checkPasswordRoute,
                     data: {
                         current_password: current_password
@@ -116,7 +115,7 @@
             }, 500));
         });
 
-        changePasswordModal.on('hidden.bs.modal', () => {
+        $(document).on('click', '#closeModalBtn', function() {
             resetChangePasswordForm();
             checkPasswordIcon.removeClass('success').removeClass('error').prop('hidden', true);
             changePasswordValidation.resetForm();
@@ -148,29 +147,29 @@
 
             $(document).on('click', '.dropdown-notification', function() {
                 const list = $(this),
-                    long = list.attr('aria-long'),
                     lat = list.attr('aria-lat'),
-                    reportAriaType = list.attr('aria-type');
+                    lng = list.attr('aria-long'),
+                    type = list.attr('aria-type');
 
-                sessionStorage.setItem('report_type', reportAriaType);
-                sessionStorage.setItem('report_latitude', long);
-                sessionStorage.setItem('report_longitude', lat);
+                sessionStorage.setItem('report_type', type);
+                sessionStorage.setItem('report_latitude', lat);
+                sessionStorage.setItem('report_longitude', lng);
 
                 $.ajax({
                     headers: {
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                     },
-                    method: 'PATCH',
-                    url: "{{ route('notification.remove', 'reportId') }}".replace('reportId',
-                        list
-                        .attr('aria-id')),
-                    success: () => {
+                    type: 'PATCH',
+                    url: "{{ route('notification.remove', 'reportId') }}"
+                        .replace('reportId', list.attr('aria-id')),
+                    success() {
                         const currentLocation =
                             "http://127.0.0.1:8000/cdrrmo/manageReport/manage";
-                        if (window.location.href == currentLocation) {
-                            openReportDetails(reportAriaType, long, lat)
-                        } else
-                            window.location.href = currentLocation;
+
+                        window.location.href == currentLocation ?
+                            (openReportDetails(type, lat, lng),
+                                getNotifications()) : window.location.href =
+                            currentLocation;
                     }
                 });
             });
@@ -255,16 +254,18 @@
             });
         }
 
-        function openReportDetails(type, long, lat) {
+        function openReportDetails(type, lat, lng) {
             const markerIndex = {
                 'Incident': 0,
                 'Emergency': 1,
                 'Flooded': 2,
                 'Roadblocked': 2
             };
+
             reportMarkers[markerIndex[type]].forEach(marker => {
-                if (marker.getPosition().lat() == lat && marker
-                    .getPosition().lng() == long) {
+                let reportMarker = marker.getPosition();
+
+                if (reportMarker.lat() == lat && reportMarker.lng() == lng) {
                     google.maps.event.trigger(marker, 'click');
                     sessionStorage.setItem('report_type', 'null');
                     return false;
@@ -302,17 +303,15 @@
             if (!result.isConfirmed) return;
 
             $.ajax({
-                method: "PUT",
+                type: "PUT",
                 url: $('#changePasswordRoute').data('route'),
                 data: $(form).serialize(),
                 success(response) {
                     return response.status == "warning" ? showWarningMessage(response.message) :
                         (showSuccessMessage('Password successfully changed.'), $(form)[0].reset(),
-                            currentPassword.text(""), changePasswordModal.modal('hide'));
+                            currentPassword.text(""), $('#closeModalBtn').click());
                 },
-                error() {
-                    showErrorMessage();
-                }
+                error: () => showErrorMessage()
             });
         });
     }

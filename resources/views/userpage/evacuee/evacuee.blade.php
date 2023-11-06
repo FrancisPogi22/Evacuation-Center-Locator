@@ -383,8 +383,8 @@
                 defaultFormData = $('#evacueeInfoForm').serialize();
             });
 
-            modal.on('hidden.bs.modal', () => {
-                validator.resetForm();
+            $(document).on('click', '#closeModalBtn', function() {
+                validator && validator.resetForm();
                 $('#evacueeInfoForm')[0].reset();
                 fieldContainer.add(submitButtonContainer).prop('hidden', true);
                 formButtonContainer.prop('hidden', false);
@@ -432,7 +432,7 @@
                     if (!result.isConfirmed) return;
 
                     const status = sessionStorage.getItem('status') == 'Evacuated' ?
-                                'Return Home' : 'Evacuated';
+                        'Return Home' : 'Evacuated';
 
                     $.ajax({
                         data: {
@@ -508,7 +508,7 @@
                             .replace('disaster', sessionStorage.getItem("archiveDisaster"));
                         initializeDataTable(url);
                     },
-                    error: showErrorMessage
+                    error: () => showErrorMessage()
                 });
             });
 
@@ -552,7 +552,7 @@
 
                         dropdownOptions.prop('hidden', false);
                     },
-                    error: showErrorMessage
+                    error: () => showErrorMessage()
                 });
             });
 
@@ -579,7 +579,7 @@
                             targetElement.val(data[key]);
                         }
                     },
-                    error: showErrorMessage
+                    error: () => showErrorMessage()
                 });
             });
 
@@ -601,13 +601,13 @@
                             type: operation == 'record' ? "POST" : "PUT",
                             success(response) {
                                 response.status == 'warning' ? showWarningMessage(response
-                                    .message) : (modal.modal('hide'), evacueeTable.draw(),
+                                    .message) : ($('#closeModalBtn').click(), evacueeTable.draw(),
                                     showSuccessMessage(
                                         `Successfully ${operation == 'record' ? 'recorded new' : 'updated the'} evacuee info.`
                                     ));
                                 initializeDataTable(url);
                             },
-                            error: showErrorMessage
+                            error: () => showErrorMessage()
                         });
                 });
             }

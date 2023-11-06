@@ -51,7 +51,7 @@
                         </div>
                     </div>
                 </div>
-            @include('userpage.residentReport.archivedReportModal')
+                @include('userpage.residentReport.archivedReportModal')
             @else
                 @if (!$yearList->isEmpty())
                     <div class="page-button-container manage-evacuee">
@@ -172,7 +172,7 @@
                     $.ajax({
                         type: 'GET',
                         url: url,
-                        success: (response) => {
+                        success(response) {
                             let isPending, status, ariaType, button, updateSection,
                                 action = "",
                                 counts = condition == 0 ? {
@@ -405,11 +405,13 @@
 
         $(document).ready(() => {
             @if ($operation == 'manage')
-                const requestPromises = [
-                    ajaxRequest("Emergency"),
-                    ajaxRequest("Incident"),
-                    ajaxRequest("Area")
-                ], modal = $('#archivedReportModal');
+                let requestPromises = [
+                        ajaxRequest("Emergency"),
+                        ajaxRequest("Incident"),
+                        ajaxRequest("Area")
+                    ],
+                    modal = $('#archivedReportModal'),
+                    archiveFormValidator;
 
                 Promise.all(requestPromises)
                     .then(() => {
@@ -417,11 +419,9 @@
 
                         let type = sessionStorage.getItem('report_type'),
                             lat = sessionStorage.getItem('report_latitude'),
-                            long = sessionStorage.getItem('report_longitude');
+                            lng = sessionStorage.getItem('report_longitude');
 
-                        if (type != undefined && type != 'null') {
-                            openReportDetails(type, long, lat);
-                        }
+                        if (type != undefined && type != 'null') openReportDetails(type, lat, lng);
                     });
 
                 @if (auth()->user()->is_disable == 0)
@@ -526,7 +526,7 @@
                     });
 
                     $(document).on('click', '#archiveReportBtn', function() {
-                        $('#archivedReportForm').validate({
+                        archiveFormValidator = $('#archivedReportForm').validate({
                             rules: {
                                 details: 'required'
                             },
@@ -541,7 +541,7 @@
                                     .prop('style', `display: ${$('#areaInputImage').val() == '' ?
                                         'block' : 'none'} !important`);
                             },
-                            submitHandler: function() {
+                            submitHandler() {
                                 if ($('#areaInputImage').val() == '') return;
 
                                 confirmModal('Are you sure about the info you added?').then((
@@ -549,8 +549,8 @@
                                     if (!result.isConfirmed) return;
 
                                     submitHandler(emergencyArchiveBtn, "POST", "archive",
-                                    "{{ route('emergency.archive', 'reportId') }}",
-                                    "Emergency");
+                                        "{{ route('emergency.archive', 'reportId') }}",
+                                        "Emergency");
                                 });
                             }
                         });
@@ -563,11 +563,9 @@
 
                         if (reportType != "Area") {
                             element = element.prev();
-                            if (operation == "remove")
-                                element = element.prev();
+                            if (operation == "remove") element = element.prev();
                         } else
-                            if (operation != 'update')
-                                element = element.parent().parent().prev();
+                        if (operation != 'update') element = element.parent().parent().prev();
 
                         if (reportType == "Emergency" && operation == "archive") {
                             data = new FormData($('#archivedReportForm')[0]);
@@ -585,15 +583,18 @@
                                 response.status == "warning" ?
                                     showWarningMessage(response.message) : (showSuccessMessage(
                                         `Successfully ${(operation == "approve" && reportType != "Area") ? "change the status of" : `${operation}d`} the report.`
-                                    ), modal.modal('hide'));
+                                    ), $('#closeModalBtn').click());
                             },
-                            error: showErrorMessage
+                            error: () => showErrorMessage()
                         });
                     }
 
-                    modal.on('hidden.bs.modal', () => {
-                        validator.resetForm();
+                    $(document).on('click', '#closeModalBtn', function() {
                         $('#archivedReportForm')[0].reset();
+                        $('#selectedReportImage').attr('src', '').attr('hidden', true);
+                        $('#imageBtn').html('<i class="bi bi-image"></i> Select');
+                        setInfoWindowButtonStyles($('#imageBtn'), 'var(--color-primary');
+                        archiveFormValidator && archiveFormValidator.resetForm();
                     });
                 @endif
 

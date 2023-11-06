@@ -216,7 +216,7 @@
                                                 hotlineItem = "";
                                             }
                                         },
-                                        error: showErrorMessage
+                                        error: () => showErrorMessage()
                                     });
                             });
                         }
@@ -271,7 +271,7 @@
                                             `Hotline number successfully removed.`),
                                         hotlineItem = "");
                                 },
-                                error: showErrorMessage
+                                error: () => showErrorMessage()
                             });
                         });
                     });

@@ -259,15 +259,13 @@
                     alterEvacuationCenter(url, 'PATCH', 'change');
                 })
 
-                modal.on('hidden.bs.modal', () => {
-                    validator.resetForm();
+                $(document).on('click', '#closeModalBtn', function() {
+                    validator && validator.resetForm();
                     $('#evacuationCenterForm')[0].reset();
-
                     if (marker) {
                         marker.setMap(null);
                         marker = undefined;
                     }
-
                     map.setCenter({
                         lat: 14.2471423,
                         lng: 121.1366715
@@ -276,9 +274,7 @@
                     saveBtnClicked = false;
                 });
 
-                $(document).on('click', '#createEvacuationCenterBtn', () => {
-                    saveBtnClicked = true;
-                });
+                $(document).on('click', '#createEvacuationCenterBtn', () => saveBtnClicked = true);
 
                 function formSubmitHandler(form) {
                     if (!marker) return;
@@ -299,10 +295,11 @@
                                 success(response) {
                                     response.status == "warning" ? showWarningMessage(response
                                         .message) : (showSuccessMessage(
-                                        `Successfully ${operation == 'add' ? 'added' : 'updated'} evacuation center.`
-                                    ), evacuationCenterTable.draw(), modal.modal('hide'));
+                                            `Successfully ${operation == 'add' ? 'added' : 'updated'} evacuation center.`
+                                        ), evacuationCenterTable.draw(), $('#closeModalBtn')
+                                    .click());
                                 },
-                                error: showErrorMessage
+                                error: () => showErrorMessage()
                             });
                     });
                 }
@@ -333,7 +330,7 @@
                                     );
                                     evacuationCenterTable.draw();
                                 },
-                                error: showErrorMessage
+                                error: () => showErrorMessage()
                             });
                     });
                 }

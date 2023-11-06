@@ -89,7 +89,7 @@
                                             Select
                                         </button>
                                     </div>
-                                    <img id="selectedAreaImage" src="" class="form-control" hidden>
+                                    <img id="selectedReportImage" src="" class="form-control" hidden>
                                     <span id="image-error" class="error" hidden>Please select an image file.</span>
                                 </div>
                                 <center>
@@ -205,7 +205,7 @@
                                             null), reportMarker = null,
                                         reportWindow = null);
                                 },
-                                error: showErrorMessage
+                                error: () => showErrorMessage()
                             });
                         });
                     }

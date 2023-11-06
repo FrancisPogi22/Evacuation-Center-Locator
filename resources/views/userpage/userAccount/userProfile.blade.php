@@ -107,8 +107,8 @@
                 defaultFormData = $('#accountForm').serialize();
             });
 
-            modal.on('hidden.bs.modal', () => {
-                validator.resetForm();
+            $(document).on('click', '#closeModalBtn', function() {
+                validator && validator.resetForm();
                 $('#accountForm')[0].reset();
             });
 
@@ -131,7 +131,7 @@
                                     'Successfully updated the account details, Please wait...', true
                                 );
                             },
-                            error: showErrorMessage
+                            error: () => showErrorMessage()
                         });
                 });
             }

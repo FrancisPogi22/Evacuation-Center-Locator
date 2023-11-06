@@ -268,14 +268,14 @@
                                     data.update.length > 0 ?
                                         data.update.map((update) => {
                                             return `
-                                                <p class="update-details-container">
-                                                    <small>
-                                                        as of ${formatDateTime(update.update_time, 'time')}
-                                                    </small><br>
-                                                    <span class="update-details">
-                                                        ${update.update_details}
-                                                    </span>
-                                                </p>`
+                                <p class="update-details-container">
+                                    <small>
+                                        as of ${formatDateTime(update.update_time, 'time')}
+                                    </small><br>
+                                    <span class="update-details">
+                                        ${update.update_details}
+                                    </span>
+                                </p>`
                                         }).join('') : ''
                                 }
                             </div>
@@ -556,7 +556,7 @@
                 $.ajax({
                     method: 'GET',
                     url: url,
-                    success: (response) => {
+                    success(response) {
                         let data = response;
 
                         if (type == "evacuationCenter") {
@@ -762,7 +762,7 @@
                                                     Select
                                                 </button>
                                             </div>
-                                            <img id="selectedAreaImage" src="" class="form-control" hidden>
+                                            <img id="selectedReportImage" src="" class="form-control" hidden>
                                             <span id="image-error" class="error" hidden>Please select an image file.</span>
                                         </div>
                                         <center>
@@ -832,7 +832,7 @@
                                 data: new FormData(form),
                                 contentType: false,
                                 processData: false,
-                                success: response => {
+                                success(response) {
                                     const status = response.status
 
                                     status == "warning" || status ==
@@ -846,7 +846,7 @@
                                     status != "warning" &&
                                         $('#reportAreaBtn').click();
                                 },
-                                error: showErrorMessage
+                                error: () => showErrorMessage()
                             });
                         });
                     }

@@ -1,9 +1,12 @@
 @if (auth()->user()->is_disable == 0)
-    <div class="modal fade" id="archivedReportModal" aria-hidden="true">
+    <div class="modal fade" id="archivedReportModal" data-bs-backdrop="static" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <header class="modal-label-container">
                     <h1 class="modal-label">Add Emergency Info</h1>
+                    <button type="button" data-bs-dismiss="modal" aria-label="Close" id="closeModalBtn">
+                        <i class="bi bi-x-lg"></i>
+                    </button>
                 </header>
                 <div class="modal-body">
                     <form id="archivedReportForm">
@@ -21,7 +24,7 @@
                                     <i class="bi bi-image"></i>
                                     Select
                                 </button>
-                                <img id="selectedAreaImage" src="" class="form-control" hidden>
+                                <img id="selectedReportImage" src="" class="form-control" hidden>
                                 <span id="image-error" class="error" hidden>Please select an image file.</span>
                             </div>
                             <div class="form-button-container">

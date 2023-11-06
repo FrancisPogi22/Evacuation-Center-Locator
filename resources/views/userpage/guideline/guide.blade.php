@@ -190,7 +190,7 @@
                                             'Guide removed successfully.'),
                                         currentGuide.remove());
                                 },
-                                error: showErrorMessage
+                                error: () => showErrorMessage()
                             });
                         });
                     });
@@ -228,23 +228,22 @@
                                         guideDetails.querySelector('p').textContent = content;
                                         currentGuide.querySelector('.guide-label').textContent = label;
                                         showSuccessMessage(`Guide successfully updated.`);
-                                        modal.modal('hide');
+                                        $('#closeModalBtn').click();
                                     },
-                                    error: showErrorMessage
+                                    error: () => showErrorMessage()
                                 });
                         });
                     }
 
                     function changeImageBtn(action) {
-                        if (action == 'remove')
-                            guideBtn.removeClass('bg-primary').html('<i class="bi bi-image"></i>Select Image');
-                        else
+                        action == 'remove' ?
+                            guideBtn.removeClass('bg-primary').html('<i class="bi bi-image"></i>Select Image') :
                             guideBtn.addClass('bg-primary').html('<i class="bi bi-arrow-repeat"></i>Change Image');
                     }
 
-                    modal.on('hidden.bs.modal', () => {
+                    $(document).on('click', '#closeModalBtn', function() {
                         guideImageChanged = false;
-                        validator.resetForm();
+                        validator && validator.resetForm();
                         $('#guideForm')[0].reset();
                     });
                 });

@@ -120,7 +120,7 @@
                                     (activityLogTable.draw(), showSuccessMessage(
                                         'User successfully disabled.'));
                             },
-                            error: showErrorMessage
+                            error: () => showErrorMessage()
                         });
                     });
 
@@ -155,9 +155,9 @@
                             response.status == 'warning' ?
                                 showWarningMessage(response.message) :
                                 (showSuccessMessage(`User successfully suspended.`),
-                                    $('#userAccountModal').modal('hide'), activityLogTable.draw());
+                                    $('#closeModalBtn').click(), activityLogTable.draw());
                         },
-                        error: showErrorMessage
+                        error: () => showErrorMessage()
                     });
                 });
             }

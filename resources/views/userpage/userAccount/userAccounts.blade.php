@@ -170,7 +170,7 @@
                                                 'Successfully disabled account.');
                                             accountTable.draw();
                                         },
-                                        error: showErrorMessage
+                                        error: () => showErrorMessage()
                                     })
                             });
                             break;
@@ -187,7 +187,7 @@
                                                 'Successfully enabled account.');
                                             accountTable.draw();
                                         },
-                                        error: showErrorMessage
+                                        error: () => showErrorMessage()
                                     });
                             });
                             break;
@@ -218,7 +218,7 @@
                                                 'Successfully archive account.');
                                             accountTable.draw();
                                         },
-                                        error: showErrorMessage
+                                        error: () => showErrorMessage()
                                     });
                             });
                             break;
@@ -235,7 +235,7 @@
                                                 'Successfully unarchived account.');
                                             accountTable.draw();
                                         },
-                                        error: showErrorMessage
+                                        error: () => showErrorMessage()
                                     })
                             });
                             break;
@@ -265,7 +265,7 @@
                                                 'Successfully opened account.');
                                             accountTable.draw();
                                         },
-                                        error: showErrorMessage
+                                        error: () => showErrorMessage()
                                     });
                             });
                             break;
@@ -284,8 +284,8 @@
                     modal.modal('show');
                 });
 
-                modal.on('hidden.bs.modal', () => {
-                    validator.resetForm();
+                $(document).on('click', '#closeModalBtn', function() {
+                    validator && validator.resetForm();
                     $('#suspend-container, #suspend').prop('hidden', false).prop('disabled', false);
                     $('.actionSelect').val('');
                     $('#accountForm')[0].reset();
@@ -312,9 +312,9 @@
                                     response.status == "warning" ? showWarningMessage(response
                                         .message) : (showSuccessMessage(
                                         `Successfully ${operation}${operation == 'suspend' ? 'ed' : 'd'} user account.`
-                                    ), modal.modal('hide'), accountTable.draw())
+                                    ), $('#closeModalBtn').click(), accountTable.draw())
                                 },
-                                error: showErrorMessage
+                                error: () => showErrorMessage()
                             });
                     });
                 }
