@@ -63,7 +63,7 @@
                             </div>
                         </form>
                     @endauth
-                    @foreach ($hotlineNumbers as $hotlineNumber)
+                    @forelse ($hotlineNumbers as $hotlineNumber)
                         <div class="hotline-container">
                             <div class="hotline-logo">
                                 <img src="{{ $hotlineNumber->logo ? asset('assets/img/' . $hotlineNumber->logo) : asset('assets/img/empty-data.svg') }}"
@@ -92,7 +92,12 @@
                                 </div>
                             </div>
                         </div>
-                    @endforeach
+                    @empty
+                        <div class="empty-data-container">
+                            <img src="{{ asset('assets/img/Empty-Hotline.svg') }}" alt="Picture">
+                            <p>No hotline numbers added yet.</p>
+                        </div>
+                    @endforelse
                 </div>
             </section>
         </main>
@@ -102,7 +107,6 @@
     </div>
 
     @include('partials.script')
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous">
     </script>

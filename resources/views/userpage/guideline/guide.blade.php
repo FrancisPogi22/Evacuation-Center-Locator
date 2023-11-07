@@ -57,7 +57,7 @@
                             </div>
                         </div>
                     @empty
-                        <div class="empty-guide">
+                        <div class="empty-data-container">
                             <img src="{{ asset('assets/img/empty-data.svg') }}" alt="Picture">
                             <p>No guide uploaded.</p>
                         </div>
@@ -244,7 +244,7 @@
                                 currentGuide.remove();
 
                                 if (guidesContainer.text().trim() == "") {
-                                    guidesContainer.append(`<div class="empty-guide">
+                                    guidesContainer.append(`<div class="empty-data-container">
                                             <img src="{{ asset('assets/img/empty-data.svg') }}" alt="Picture">
                                             <p>No guide uploaded.</p>
                                         </div>`);
