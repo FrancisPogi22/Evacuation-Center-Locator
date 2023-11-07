@@ -71,8 +71,8 @@
                             @endguest
                         </div>
                     @empty
-                        <div class="empty-guidelines">
-                            <img src="{{ asset('assets/img/empty-data.svg') }}" alt="Picture">
+                        <div class="empty-data-container">
+                            <img src="{{ asset('assets/img/Empty-Guideline.svg') }}" alt="Picture">
                             <p>No guidelines uploaded.</p>
                         </div>
                     @endforelse
@@ -145,7 +145,7 @@
                                         if (response.status == 'warning')
                                             return showWarningMessage(response.message)
 
-                                        let emptyGuideline = $('.empty-guidelines'),
+                                        let emptyGuideline = $('.empty-data-container'),
                                             {
                                                 guideline_id,
                                                 type,
@@ -238,7 +238,7 @@
                                 guidelineWidget.remove();
 
                                 if (guidelineContainer.text().trim() == "") {
-                                    guidelineContainer.append(`<div class="empty-guidelines">
+                                    guidelineContainer.append(`<div class="empty-data-container">
                                             <img src="{{ asset('assets/img/empty-data.svg') }}" alt="Picture">
                                             <p>No guidelines uploaded.</p>
                                         </div>`);

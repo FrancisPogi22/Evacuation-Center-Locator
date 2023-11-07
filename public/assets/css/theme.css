@@ -1237,18 +1237,23 @@ text {
     object-fit: cover;
 }
 
-.empty-guide {
+.empty-data-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin: 100px 50px;
+    height: 100vh;
     text-align: center;
 }
 
-.empty-guidelines img,
-.empty-guide img {
-    width: 250px;
-    margin: 40px 0;
+.empty-data-container img {
+    width: 300px;
+    height: 300px;
 }
 
-.empty-guidelines p,
-.empty-guide p {
+.empty-data-container p {
+    margin-top: 25px;
     font-size: 20px;
     font-weight: 700;
 }
@@ -1616,8 +1621,22 @@ div.gm-style-iw.gm-style-iw-c {
     overflow: auto;
 }
 
-.dark-mode .gmnoprint button {
+.dark-mode .gmnoprint button,
+.dark-mode .gmnoprint ul,
+.dark-mode .gmnoprint li {
     background: var(--color-d-bg-container) !important;
+    color: var(--color-d-text) !important;
+}
+
+.dark-mode .ssQIHO-checkbox-menu-item span,
+.dark-mode .ssQIHO-checkbox-menu-item label {
+    color: var(--color-d-text);
+    fill: var(--color-d-text);
+}
+
+.dark-mode .gmnoprint div,
+.dark-mode .ssQIHO-checkbox-menu-item span span {
+    background: var(--color-d-text) !important;
 }
 
 .dark-mode .gmnoprint button span {
@@ -3908,6 +3927,15 @@ select.form-select option {
 
     #closeModalBtn {
         font-size: 16px !important;
+    }
+
+    .empty-data-container {
+        margin: 50px 25px !important;
+    }
+
+    .empty-data-container img {
+        width: 100%;
+        height: fit-content;
     }
 }
 
