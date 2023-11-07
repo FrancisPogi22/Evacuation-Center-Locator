@@ -205,7 +205,7 @@
                                             null), reportMarker = null,
                                         reportWindow = null);
                                 },
-                                error: () => showErrorMessage()
+                                error: showErrorMessage
                             });
                         });
                     }

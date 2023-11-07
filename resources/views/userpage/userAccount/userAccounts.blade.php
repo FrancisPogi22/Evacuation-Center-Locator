@@ -165,8 +165,7 @@
                                     method: operation == 'create' ? "POST" : "PUT",
                                     success(response) {
                                         response.status == "warning" ? showWarningMessage(
-                                            response
-                                            .message) : (showSuccessMessage(
+                                            response.message) : (showSuccessMessage(
                                             `Successfully ${operation}${operation == 'suspend' ? 'ed' : 'd'} user account.`
                                         ), modal.modal('hide'), accountTable.draw())
                                     },
@@ -256,8 +255,8 @@
                     modal.modal('show');
                 });
 
-                $(document).on('click', '#closeModalBtn', function() {
-                    validator && validator.resetForm();
+                modal.on('hidden.bs.modal', () => {
+                    
                     suspendContainer.add(suspend).prop('hidden', 0).prop('disabled', 0);
                     positionContainer.add(nameContainer).add(emailContainer).prop('hidden', 1);
                     organizationContainer.prop('hidden', 0);
@@ -300,7 +299,7 @@
                                     );
                                     accountTable.draw();
                                 },
-                                error: () => showErrorMessage()
+                                error: showErrorMessage
                             })
                     });
                 }

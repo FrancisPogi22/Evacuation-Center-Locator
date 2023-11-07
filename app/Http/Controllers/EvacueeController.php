@@ -78,6 +78,9 @@ class EvacueeController extends Controller
             ->exists()
         ) return response(['status' => 'warning', 'message' => 'Evacuee is already recorded']);
 
+        if (($request->male + $request->female) < collect($request->only(['infants', 'minors', 'senior_citizen', 'pwd', 'pregnant', 'lactating']))->sum())
+            return response(['status' => 'warning', 'message' => "Number of members isn't correct."]);
+
         $latestRecordId             = $request->form_type == "new" ? $this->familyController->recordFamilyRecord($request) : $this->familyController->updateFamilyRecord($request);
         $evacueeInfo                = $request->only([
             'infants', 'minors', 'senior_citizen', 'pwd', 'pregnant', 'lactating', 'male',
@@ -89,7 +92,7 @@ class EvacueeController extends Controller
         $evacueeInfo['user_id']     = auth()->user()->id;
         $evacueeInfo                = $this->evacuee->create($evacueeInfo);
         $this->logActivity->generateLog($evacueeInfo->id, $evacueeInfo->barangay, 'recorded a new evacuee information');
-        event(new ActiveEvacuees());
+        // event(new ActiveEvacuees());
 
         return response([]);
     }
@@ -126,7 +129,7 @@ class EvacueeController extends Controller
         $evacueeInfo['user_id']     = auth()->user()->id;
         $evacueeInfo                = $this->evacuee->find($evacueeId)->update($evacueeInfo);
         $this->logActivity->generateLog($evacueeId, '', 'updated a evacuee information');
-        event(new ActiveEvacuees());
+        // event(new ActiveEvacuees());
 
         return response([]);
     }

@@ -101,9 +101,7 @@
                 </div>
             </section>
         </main>
-        @auth
-            @include('userpage.changePasswordModal')
-        @endauth
+        @include('userpage.changePasswordModal')
     </div>
 
     @include('partials.script')
@@ -162,28 +160,26 @@
                                         contentType: false,
                                         processData: false,
                                         success(response) {
-                                            if (response.status == 'warning') {
-                                                showWarningMessage(response.message);
+                                            if (response.status == 'warning') return showWarningMessage(
+                                                response.message);
+
+                                            let {
+                                                label,
+                                                number,
+                                                hotlineLogo,
+                                                hotlineId
+                                            } = response;
+
+                                            if (operation == "update") {
+                                                if (hotlineLogoChanged) hotlineItem.find('.hotlineLogo')
+                                                    .attr('src', previewLogo.attr('src'));
+
+                                                hotlineItem.find('.hotline-label span').text(label);
+                                                hotlineItem.find('.hotline-number p').text(number);
+                                                replaceHotlineItem();
+                                                resetHotlineForm();
                                             } else {
-                                                let {
-                                                    label,
-                                                    number,
-                                                    hotlineLogo,
-                                                    hotlineId
-                                                } = response;
-
-                                                if (operation == "update") {
-                                                    if (hotlineLogoChanged)
-                                                        hotlineItem.find('.hotlineLogo').attr('src',
-                                                            previewLogo
-                                                            .attr('src'));
-
-                                                    hotlineItem.find('.hotline-label span').text(label);
-                                                    hotlineItem.find('.hotline-number p').text(number);
-                                                    replaceHotlineItem();
-                                                    resetHotlineForm();
-                                                } else {
-                                                    $('.number-section').append(`
+                                                $('.number-section').append(`
                                                         <div class="hotline-container">
                                                             <div class="hotline-logo">
                                                                 <img src="${hotlineLogo ? `/assets/img/${hotlineLogo}` : '/assets/img/empty-data.svg'}" class="hotlineLogo" alt="logo">
@@ -211,16 +207,15 @@
                                                                 </div>
                                                             </div>
                                                         </div>`);
-                                                    resetHotlineForm();
-                                                    hotlineForm.prop('hidden', 1);
-                                                }
-                                                showSuccessMessage(
-                                                    `Hotline number successfully ${operation == "add" ? "added" : "updated"}.`
-                                                );
-                                                hotlineItem = "";
+                                                resetHotlineForm();
+                                                hotlineForm.prop('hidden', 1);
                                             }
+                                            showSuccessMessage(
+                                                `Hotline number successfully ${operation == "add" ? "added" : "updated"}.`
+                                            );
+                                            hotlineItem = "";
                                         },
-                                        error: () => showErrorMessage()
+                                        error: showErrorMessage
                                     });
                             });
                         }
@@ -275,7 +270,7 @@
                                             `Hotline number successfully removed.`),
                                         hotlineItem = "");
                                 },
-                                error: () => showErrorMessage()
+                                error: showErrorMessage
                             });
                         });
                     });
@@ -303,6 +298,10 @@
                         hotlineItem = "";
                     });
 
+                    $(document).on('click', '.changeTheme', () => {
+                        changeLogoColor();
+                    });
+
                     function resetHotlineForm() {
                         hotlineForm[0].reset();
                         changeLogoBtn('remove');
@@ -315,7 +314,7 @@
                     }
 
                     function checkThemeColor() {
-                        return sessionStorage.getItem('theme') == 'dark' ? 'white' : 'black';
+                        return localStorage.getItem('theme') == 'dark' ? 'white' : 'black';
                     }
 
                     function changeLogoColor() {

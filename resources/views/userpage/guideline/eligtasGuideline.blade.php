@@ -142,42 +142,39 @@
                                     contentType: false,
                                     processData: false,
                                     success(response) {
-                                        if (response.status == 'warning') {
-                                            showWarningMessage(response.message)
+                                        if (response.status == 'warning')
+                                            return showWarningMessage(response.message)
+
+                                        let emptyGuideline = $('.empty-data-container'),
+                                            {
+                                                guideline_id,
+                                                type,
+                                                guideline_img
+                                            } = response;
+
+                                        if (operation == 'create') {
+                                            if (guidelineContainer.find(emptyGuideline)
+                                                .length > 0) emptyGuideline.remove();
+
+                                            guideline_img = guideline_img ?
+                                                `guideline_image/${guideline_img}` :
+                                                'assets/img/empty-data.svg';
+                                            guidelineContainer.append(initGuidelineItem(
+                                                guideline_id, guideline_img, type));
                                         } else {
-                                            let emptyGuideline = $('.empty-data-container'),
-                                                {
-                                                    guideline_id,
-                                                    type,
-                                                    guideline_img
-                                                } = response;
+                                            if (guidelineImgChanged)
+                                                $(guidelineWidget).find(
+                                                    '.guideline-content img').attr(
+                                                    'src',
+                                                    `{{ asset('guideline_image/${guideline_img}') }}`
+                                                );
 
-                                            if (operation == 'create') {
-                                                if (guidelineContainer.find(emptyGuideline)
-                                                    .length >
-                                                    0) emptyGuideline.remove();
-
-                                                guideline_img = guideline_img ?
-                                                    `guideline_image/${guideline_img}` :
-                                                    'assets/img/empty-data.svg';
-                                                guidelineContainer.append(initGuidelineItem(
-                                                    guideline_id, guideline_img, type));
-                                            } else {
-                                                if (guidelineImgChanged)
-                                                    $(guidelineWidget).find(
-                                                        '.guideline-content img').attr(
-                                                        'src',
-                                                        `{{ asset('guideline_image/${guideline_img}') }}`
-                                                    );
-
-                                                guidelineWidget.querySelector(
-                                                        '.guideline-type p')
-                                                    .textContent = type;
-                                            }
-                                            modal.modal('hide');
-                                            showSuccessMessage(
-                                                `Guideline successfully ${operation}d.`);
+                                            guidelineWidget.querySelector(
+                                                '.guideline-type p').textContent = type;
                                         }
+                                        $('#closeModalBtn').click();
+                                        showSuccessMessage(
+                                            `Guideline successfully ${operation}d.`);
                                     },
                                     error: showErrorMessage
                                 });
@@ -240,17 +237,17 @@
                                 showSuccessMessage('Guideline removed successfully.');
                                 guidelineWidget.remove();
 
-                                    if (guidelineContainer.text().trim() == "") {
-                                        guidelineContainer.append(`<div class="empty-data-container">
+                                if (guidelineContainer.text().trim() == "") {
+                                    guidelineContainer.append(`<div class="empty-data-container">
                                             <img src="{{ asset('assets/img/empty-data.svg') }}" alt="Picture">
                                             <p>No guidelines uploaded.</p>
                                         </div>`);
-                                    }
-                                },
-                                error: () => showErrorMessage()
-                            });
+                                }
+                            },
+                            error: showErrorMessage
                         });
                     });
+                });
 
                 $(document).on('click', '#addGuideInput', () => {
                     guideContentFields.append(`
@@ -310,7 +307,7 @@
                     $(`#guidePhoto${guideFieldId}`).val('');
                     $(`#image_preview_container${guideFieldId}`).attr('src',
                         `{{ asset('assets/img/e-ligtas-logo-${checkThemeColor()}.png') }}`);
-                    $(this).prop('hidden', true);
+                    $(this).prop('hidden', 1);
                     $(`#selectImage${guideFieldId}`).removeClass('bg-primary').html(
                         '<i class="bi bi-image"></i>Choose Image');
                 });
@@ -333,76 +330,21 @@
                     if (checkGuideFields()) changeModalSize('remove');
                 });
 
-                    $(document).on('click', '#closeModalBtn', function() {
-                        if (guidelineImgChanged) changeImageColor();
-                        guidelineImgChanged = false;
-                        removeGuidelinebtn.prop('hidden', true);
-                        changeImageBtn('remove');
-                        changeModalSize('remove');
-                        validator.resetForm();
-                        guideField = 0;
-                        guideContentFields.html("");
-                        guidelineForm[0].reset();
-                    });
+                $(document).on('click', '#closeModalBtn', function() {
+                    if (guidelineImgChanged) changeImageColor();
 
-                    function guidelineFormSubmit(form) {
-                        let formData = new FormData(form);
+                    guidelineImgChanged = false;
+                    removeGuidelinebtn.prop('hidden', 1);
+                    changeImageBtn('remove');
+                    changeModalSize('remove');
+                    validator.resetForm();
+                    guideField = 0;
+                    guideContentFields.html("");
+                    guidelineForm[0].reset();
+                });
 
-                        confirmModal(`Do you want to ${operation} this guideline?`).then((result) => {
-                            if (!result.isConfirmed) return;
-
-                            return operation == "update" && guidelineType == $('#guidelineType').val() &&
-                                checkGuideFields() && !guidelineImgChanged ?
-                                showWarningMessage() :
-                                $.ajax({
-                                    data: formData,
-                                    url: operation == 'create' ? "{{ route('guideline.create') }}" :
-                                        "{{ route('guideline.update', 'guidelineId') }}".replace('guidelineId',
-                                            guidelineId),
-                                    method: "POST",
-                                    cache: false,
-                                    contentType: false,
-                                    processData: false,
-                                    success(response) {
-                                        if (response.status == 'warning') {
-                                            showWarningMessage(response.message)
-                                        } else {
-                                            let emptyGuideline = $('.empty-data-container'),
-                                                {
-                                                    guideline_id,
-                                                    type,
-                                                    guideline_img
-                                                } = response;
-
-                                            if (operation == 'create') {
-                                                if (guidelineContainer.find(emptyGuideline).length > 0)
-                                                    emptyGuideline.remove();
-
-                                                guideline_img = guideline_img ?
-                                                    `guideline_image/${guideline_img}` :
-                                                    'assets/img/empty-data.svg';
-                                                guidelineContainer.append(initGuidelineItem(guideline_id,
-                                                    guideline_img, type));
-                                            } else {
-                                                if (guidelineImgChanged)
-                                                    $(guidelineWidget).find('.guideline-content img').attr(
-                                                        'src',
-                                                        `{{ asset('guideline_image/${guideline_img}') }}`);
-
-                                                guidelineWidget.querySelector('.guideline-type p').textContent =
-                                                    type;
-                                            }
-                                            $('#closeModalBtn').click();
-                                            showSuccessMessage(`Guideline successfully ${operation}d.`);
-                                        }
-                                    },
-                                    error: () => showErrorMessage()
-                                });
-                        });
-                    }
-
-                    function initGuidelineItem(id, img, type) {
-                        return `<div class="guideline-widget">
+                function initGuidelineItem(id, img, type) {
+                    return `<div class="guideline-widget">
                                     @auth
                                         @if (auth()->user()->is_disable == 0)
                                             <button id="updateGuidelineBtn">
@@ -423,14 +365,14 @@
                                         </a>
                                     @endauth
                                 </div>`;
-                    }
+                }
 
                 function checkGuideFields() {
                     return guideContentFields.text().trim() == '' ? true : false;
                 }
 
                 function checkThemeColor() {
-                    return sessionStorage.getItem('theme') == 'dark' ? 'white' : 'black';
+                    return localStorage.getItem('theme') == 'dark' ? 'white' : 'black';
                 }
 
                 function changeImageColor() {
@@ -439,16 +381,14 @@
                 }
 
                 function changeImageBtn(action) {
-                    if (action == 'remove')
-                        guidelineBtn.removeClass('bg-primary').html('<i class="bi bi-image"></i>Choose Image');
-                    else
+                    action == 'remove' ?
+                        guidelineBtn.removeClass('bg-primary').html('<i class="bi bi-image"></i>Choose Image') :
                         guidelineBtn.addClass('bg-primary').html('<i class="bi bi-arrow-repeat"></i>Change Image');
                 }
 
                 function changeModalSize(action) {
-                    if (action == 'remove')
-                        modalDialog.removeClass('modal-xl').addClass('modal-lg');
-                    else
+                    action == 'remove' ?
+                        modalDialog.removeClass('modal-xl').addClass('modal-lg') :
                         modalDialog.removeClass('modal-lg').addClass('modal-xl');
                 }
             @endif

@@ -29,7 +29,7 @@
                             <div class="field-container searchContainer" hidden>
                                 <div class="custom-dropdown">
                                     <label for="searchInput">Search Family Record</label>
-                                    <input type="text" id="searchInput" class="form-control"
+                                    <input type="text" id="searchInput" class="form-control" autocomplete="off"
                                         placeholder="Search Family Head">
                                     <div class="dropdown-options" hidden id="dropdownOptions">
                                         <ul id="searchResults"></ul>

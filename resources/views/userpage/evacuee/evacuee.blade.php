@@ -92,8 +92,7 @@
                                 <th>Action</th>
                             </tr>
                         </thead>
-                        <tbody>
-                        </tbody>
+                        <tbody></tbody>
                     </table>
                 </div>
             </section>
@@ -133,7 +132,7 @@
             '{{ !$disasterList->isEmpty() }}' ?
             sessionStorage.setItem('ongoingDisaster', $('#changeEvacueeDataSelect option:first').val()):
                 (sessionStorage.setItem('ongoingDisaster', '-1'),
-                    $('.page-button-container.manage-evacuee').prop('hidden', true));
+                    $('.page-button-container.manage-evacuee').prop('hidden', 1));
 
             $('#changeEvacueeDataSelect').val(sessionStorage.getItem('ongoingDisaster'));
         } else {
@@ -144,7 +143,7 @@
             '{{ !$archiveDisasterList->isEmpty() }}' ?
             sessionStorage.setItem('archiveDisaster', $('#changeArchiveEvacueeDataSelect option:first').val()):
                 (sessionStorage.setItem('archiveDisaster', '-1'),
-                    $('.page-button-container.manage-evacuee').prop('hidden', true));
+                    $('.page-button-container.manage-evacuee').prop('hidden', 1));
 
             $('#changeYearSelect').val(sessionStorage.getItem('archiveYear'));
             $('#changeArchiveEvacueeDataSelect').val(sessionStorage.getItem('archiveDisaster'));
@@ -163,9 +162,8 @@
                 }
             });
 
-            let url, evacueeId, operation, defaultFormData, validator, evacueeTable;
-
-            const modal = $('#evacueeInfoFormModal'),
+            let url, evacueeId, operation, defaultFormData, validator, evacueeTable,
+                modal = $('#evacueeInfoFormModal'),
                 birthDateInput = datePicker("#birth_date", false),
                 modalLabelContainer = $('.modal-label-container'),
                 modalLabel = $('.modal-label'),
@@ -352,6 +350,12 @@
                     confirmModal(`Do you want to ${operation} this evacuee info?`).then((result) => {
                         if (!result.isConfirmed) return;
 
+                        let ids = ['infants', 'minors', 'senior_citizen', 'pwd', 'lactating'];
+
+                        if (parseFloat($('#male').val()) + parseFloat($('#female').val()) < ids
+                            .reduce((sum, id) => sum + parseFloat($(`#${id}`).val()), 0))
+                            return showWarningMessage("Number of members isn't correct.");
+
                         return operation == 'update' && defaultFormData == formData ?
                             showWarningMessage() :
                             $.ajax({
@@ -390,32 +394,30 @@
                 modalLabel.text('Update Evacuee Information');
                 formButton.addClass('btn-update').removeClass('btn-submit').text('Update');
                 modalDialog.addClass('modal-lg');
-                fieldContainer.add(submitButtonContainer).prop('hidden', false);
+                fieldContainer.add(submitButtonContainer).prop('hidden', 0);
                 hiddenFieldContainer.add(formButtonContainer).add(fieldContainerSearch).prop('hidden',
-                    true);
+                    1);
 
-                let data = getRowData(this, evacueeTable);
+                let selectTag = ['barangay', 'evacuation_id', 'disaster_id'],
+                    data = getRowData(this, evacueeTable);
                 evacueeId = data.id;
-
-                const selectTag = ['barangay', 'evacuation_id', 'disaster_id'];
 
                 for (const index in data) {
                     if (['action', 'DT_RowIndex', 'id'].includes(index)) continue;
 
-                    const fields = selectTag.includes(index) ? `select[name="${index}"]` : `#${index}`;
-
-                    $(fields).val(data[index]);
+                    $(selectTag.includes(index) ? `select[name="${index}"]` : `#${index}`).val(data[index]);
                 }
+
                 operation = "update";
                 modal.modal('show');
                 defaultFormData = $('#evacueeInfoForm').serialize();
             });
 
-            $(document).on('click', '#closeModalBtn', function() {
+            $(document).on('click', '#closeModalBtn', () => {
                 validator && validator.resetForm();
                 $('#evacueeInfoForm')[0].reset();
-                fieldContainer.add(submitButtonContainer).prop('hidden', true);
-                formButtonContainer.prop('hidden', false);
+                fieldContainer.add(submitButtonContainer).prop('hidden', 1);
+                formButtonContainer.prop('hidden', 0);
                 modalDialog.removeClass('modal-lg');
             });
 
@@ -433,11 +435,11 @@
 
                 $(this).is(':checked') ?
                     checkBox.each(function() {
-                        $(this).prop('checked', true);
+                        $(this).prop('checked', 1);
                         $(this).closest('tr').addClass('selectedRow');
                     }) :
                     checkBox.each(function() {
-                        $(this).prop('checked', false);
+                        $(this).prop('checked', 0);
                         $(this).closest('tr').removeClass('selectedRow');
                     });
             });
@@ -451,7 +453,7 @@
                         id.push($(this).val());
                     })
                 else {
-                    selectAllCheckBox.prop('checked', false);
+                    selectAllCheckBox.prop('checked', 0);
                     return showWarningMessage('Please select at least one evacuee.');
                 }
 
@@ -459,7 +461,7 @@
                     'going back to their homes' : 'evacuated again'}?`).then((result) => {
                     if (!result.isConfirmed) return;
 
-                    const status = sessionStorage.getItem('status') == 'Evacuated' ?
+                    let status = sessionStorage.getItem('status') == 'Evacuated' ?
                         'Return Home' : 'Evacuated';
 
                     $.ajax({
@@ -474,11 +476,11 @@
                             showSuccessMessage(
                                 `Successfully updated the evacuee status to ${status.toLowerCase()}.`
                             );
-                            selectAllCheckBox.prop('checked', false);
+                            selectAllCheckBox.prop('checked', 0);
                             initializeDataTable(url);
                         },
                         error() {
-                            selectAllCheckBox.prop('checked', false);
+                            selectAllCheckBox.prop('checked', 0);
                             showErrorMessage();
                         }
                     });
@@ -499,6 +501,7 @@
                 url = "{{ route('evacuee.info.get', [$operation, 'disaster', 'status']) }}"
                     .replace('disaster', sessionStorage.getItem("ongoingDisaster"))
                     .replace('status', sessionStorage.getItem('status'));
+                $('#selectAllCheckBox').prop('checked', 0);
                 initializeDataTable(url);
             });
 
@@ -536,7 +539,7 @@
                             .replace('disaster', sessionStorage.getItem("archiveDisaster"));
                         initializeDataTable(url);
                     },
-                    error: () => showErrorMessage()
+                    error: showErrorMessage
                 });
             });
 
@@ -557,9 +560,9 @@
             });
 
             searchInput.on('keyup', function() {
-                const value = $(this).val();
+                let value = $(this).val();
 
-                if (!value) return dropdownOptions.prop('hidden', true);
+                if (!value) return dropdownOptions.prop('hidden', 1);
 
                 $.ajax({
                     url: `{{ route('family.record.get', ['data', 'searchData']) }}`
@@ -568,27 +571,26 @@
                     success(data) {
                         searchResults.empty();
 
-                        if (data.length == 0) return dropdownOptions.prop('hidden', true);
+                        if (data.length == 0) return dropdownOptions.prop('hidden', 1);
 
                         data.forEach(familyRecord => {
                             searchResults.append(
                                 `<li class="searchResult" data-id="${familyRecord.id}">
-                                        ${familyRecord.family_head} - ${familyRecord.birth_date}
-                                    </li>`
+                                    ${familyRecord.family_head} - ${familyRecord.birth_date}
+                                </li>`
                             );
                         });
-
-                        dropdownOptions.prop('hidden', false);
+                        dropdownOptions.prop('hidden', 0);
                     },
-                    error: () => showErrorMessage()
+                    error: showErrorMessage
                 });
             });
 
-            searchResults.on('click', function(e) {
-                const target = $(e.target);
-                searchInput.val($.trim(target.text()));
-                dropdownOptions.prop('hidden', true);
+            searchResults.on('click', (e) => {
+                let target = $(e.target);
 
+                searchInput.val($.trim(target.text()));
+                dropdownOptions.prop('hidden', 1);
                 $.ajax({
                     url: `{{ route('family.record.get', ['data', 'all']) }}`
                         .replace('data', target.data('id')),
@@ -601,13 +603,12 @@
                             if (['id', 'individuals', 'disaster_id', 'evacuation_id', 'user_id']
                                 .includes(key)) continue;
 
-                            const targetElement = key == 'barangay' ?
+                            let targetElement = key == 'barangay' ?
                                 $('select[name="barangay"]') : $(`#${key}`);
-
                             targetElement.val(data[key]);
                         }
                     },
-                    error: () => showErrorMessage()
+                    error: showErrorMessage
                 });
             });
 
@@ -635,7 +636,7 @@
                                     ));
                                 initializeDataTable(url);
                             },
-                            error: () => showErrorMessage()
+                            error: showErrorMessage
                         });
                 });
             }
@@ -646,8 +647,8 @@
                 fieldContainer.prop('hidden', !fieldContainerVisible);
                 submitButtonContainer.prop('hidden', !formButtonVisible);
                 fieldContainerSearch.prop('hidden', !fieldContainerSearchVisible);
-                formButtonContainer.prop('hidden', false);
-                hiddenFieldContainer.prop('hidden', true);
+                formButtonContainer.prop('hidden', 0);
+                hiddenFieldContainer.prop('hidden', 1);
             }
 
             function initializeDataTable(url) {

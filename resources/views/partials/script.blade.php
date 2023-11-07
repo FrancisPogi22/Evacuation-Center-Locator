@@ -9,7 +9,7 @@
         theme = localStorage.getItem('theme');
 
     @auth
-    let currentPassword = $('#currentPassword'),
+    let changePasswordValidation, currentPassword = $('#current_password'),
         password = $('#password'),
         confirmPassword = $('#confirmPassword'),
         resetPasswordBtn = $('#resetPasswordBtn'),
@@ -23,7 +23,7 @@
     $(document).ready(() => {
         theme == 'dark' ? enableDarkMode() : disableDarkMode();
 
-        $(document).on('click', '#imageBtn', function() {
+        $(document).on('click', '#imageBtn', () => {
             event.preventDefault();
             $('#areaInputImage').click();
         });
@@ -56,7 +56,7 @@
         });
 
         @auth
-        let changePasswordValidation = changePasswordForm.validate({
+        changePasswordValidation = changePasswordForm.validate({
             rules: {
                 password: 'required',
                 confirmPassword: 'required'
@@ -66,7 +66,26 @@
                 confirmPassword: 'Confirm password field is required.'
             },
             errorElement: 'span',
-            submitHandler: changePasswordHandler
+            submitHandler() {
+                confirmModal('Do you want to change your password?').then((result) => {
+                    if (!result.isConfirmed) return;
+
+                    $.ajax({
+                        type: "PUT",
+                        url: $('#changePasswordRoute').data('route'),
+                        data: $(form).serialize(),
+                        success(response) {
+                            return response.status == "warning" ? showWarningMessage(
+                                    response.message) :
+                                (showSuccessMessage('Password successfully changed.'),
+                                    $(form)[0].reset(),
+                                    currentPassword.text(""),
+                                    $('#closeChangePasswordBtn').click());
+                        },
+                        error: showErrorMessage
+                    });
+                });
+            }
         });
 
         $(document).on('keyup', '#current_password', function() {
@@ -79,7 +98,7 @@
 
                 if (current_password == "") {
                     checkPasswordIcon.removeClass('bi-check2-circle').addClass(
-                        'bi-x-circle').prop('hidden', true);
+                        'bi-x-circle').prop('hidden', 1);
                     changePasswordValidation.resetForm();
                     resetChangePasswordForm();
                     return;
@@ -99,23 +118,23 @@
                             current_password = "";
                             checkPasswordIcon.removeClass(
                                 'bi-check2-circle success').addClass(
-                                'bi-x-circle error').prop('hidden', false);
+                                'bi-x-circle error').prop('hidden', 0);
                             eyeIcon.removeClass('bi-eye').addClass('bi-eye-slash');
                             password.add(confirmPassword).val("").prop('type',
-                                'password').prop('disabled', true);
+                                'password').prop('disabled', 1);
                         } else {
                             checkPasswordIcon.removeClass('bi-x-circle error')
                                 .addClass('bi-check2-circle success').prop('hidden',
-                                    false);
+                                    0);
                             password.add(confirmPassword).add(resetPasswordBtn)
-                                .prop('disabled', false);
+                                .prop('disabled', 0);
                         }
                     }
                 });
             }, 500));
         });
 
-        $(document).on('click', '#closeModalBtn', function() {
+        $(document).on('click', '#closeChangePasswordBtn', function() {
             resetChangePasswordForm();
             checkPasswordIcon.removeClass('success').removeClass('error').prop('hidden', true);
             changePasswordValidation.resetForm();
@@ -123,6 +142,7 @@
 
         $(document).on('click', '.toggle-password', function() {
             const currentPasswordInput = $('#current_password');
+
             if (current_password == "") {
                 currentPasswordInput.css('border-color', 'red');
                 setTimeout(function() {
@@ -174,25 +194,13 @@
                 });
             });
 
-            Echo.channel('notification').listen('Notification', (e) => {
-                getNotifications();
-            });
+            // Echo.channel('notification').listen('Notification', (e) => {
+            //     getNotifications();
+            // });
         @endif
     @endauth
     $(document).on('click', '.changeTheme', () => {
         body.hasClass('dark-mode') ? disableDarkMode() : enableDarkMode();
-    });
-
-    $(() => {
-        const header = $('.header-section');
-        $(window).on('scroll', () => {
-            const scrollTop = $(window).scrollTop();
-            const isScrolledPast = scrollTop >= header.height();
-            header.css({
-                opacity: isScrolledPast ? 0 : 1 - (scrollTop / 100),
-                display: isScrolledPast ? 'none' : 'block'
-            });
-        });
     });
 
     @guest $('#emergencyBtn').on('click', function() {
@@ -223,9 +231,7 @@
                             allowOutsideClick: false
                         });
                 }),
-                (error) => {
-
-                }, {
+                (error) => {}, {
                     enableHighAccuracy: true,
                     maximumAge: 0
                 }
@@ -238,12 +244,17 @@
     @auth
     @if (auth()->user()->organization == 'CDRRMO')
         function getNotifications() {
-            $.get('{{ route('notifications.get') }}', function(notifications) {
-                const dropdownMenu = $('.dropdown-menu.notification');
-                const count = notifications.length;
-                $('#notification-count').text(count);
+            $.get('{{ route('notifications.get') }}', (notifications) => {
+                let count = notifications.length;
 
-                dropdownMenu.html(count > 0 ? notifications.map(notification => `
+                if (count) {
+                    $('.bi-bell-fill').append(
+                        `<div id="notification-count-container">
+                        <span id="notification-count">${count}</span>
+                    </div>`);
+                }
+
+                $('.dropdown-menu.notification').html(count > 0 ? notifications.map(notification => `
                     <li class="dropdown-notification" aria-id="${notification.id}"
                         aria-type="${notification.type}" aria-lat="${notification.latitude}"
                         aria-long="${notification.longitude}">
@@ -286,34 +297,25 @@
             minuteIncrement: 1,
             secondIncrement: 1,
             position: "below center",
-            theme: "light"
+            theme: "light",
+            onClose(selectedDates, dateStr, instance) {
+                const selectedDate = selectedDates[0];
+
+                if (selectedDate instanceof Date)
+                    if (selectedDate < new Date().setHours(0, 0, 0, 0)) {
+                        showWarningMessage("Selected date is in the past.");
+                        instance.input.value = "";
+                    }
+            }
         });
     }
 
     function resetChangePasswordForm() {
         current_password = "";
-        currentPassword.text("").removeAttr('class');
+        currentPassword.text("");
         changePasswordForm[0].reset();
         eyeIcon.removeClass('bi-eye').addClass('bi-eye-slash');
-        password.add(confirmPassword).prop('type', 'password').prop('disabled', true);
-    }
-
-    function changePasswordHandler(form) {
-        confirmModal('Do you want to change your password?').then((result) => {
-            if (!result.isConfirmed) return;
-
-            $.ajax({
-                type: "PUT",
-                url: $('#changePasswordRoute').data('route'),
-                data: $(form).serialize(),
-                success(response) {
-                    return response.status == "warning" ? showWarningMessage(response.message) :
-                        (showSuccessMessage('Password successfully changed.'), $(form)[0].reset(),
-                            currentPassword.text(""), $('#closeModalBtn').click());
-                },
-                error: () => showErrorMessage()
-            });
-        });
+        password.add(confirmPassword).prop('type', 'password').prop('disabled', 1);
     }
     @endauth
 
@@ -339,6 +341,7 @@
 
     function toggleShowImageBtn(button, content, markers) {
         const [latitude, longitude] = button.prev().text().split(',');
+
         markers.find(marker => {
             let position = marker.getPosition();
             if (position.lat() == latitude && position.lng() == longitude)
@@ -353,11 +356,9 @@
         button.html(icon);
         content.attr('hidden', !isView);
         setInfoWindowButtonStyles(button, bgColor);
-
         button.closest('.gm-style-iw-d').animate({
             scrollTop: button.closest('.info-description.photo').position().top - 6
         }, 500);
-
     }
 
     function formatDateTime(dateTimeString, condition) {
