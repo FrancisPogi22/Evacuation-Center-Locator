@@ -189,7 +189,7 @@
                         "{{ route('disaster.change.status', 'disasterId') }}", this, $(this).val());
                 });
 
-                $(document).on('click', '#closeModalBtn', function() {
+                modal.on('hidden.bs.modal', () => {
                     validator && validator.resetForm();
                     $('#disasterForm')[0].reset();
                 });
@@ -230,7 +230,8 @@
                             $.ajax({
                                 data: formData,
                                 url: operation == 'add' ? "{{ route('disaster.create') }}" :
-                                    "{{ route('disaster.update', 'disasterId') }}".replace('disasterId',
+                                    "{{ route('disaster.update', 'disasterId') }}".replace(
+                                        'disasterId',
                                         disasterId),
                                 method: operation == 'add' ? "POST" : "PATCH",
                                 success(response) {

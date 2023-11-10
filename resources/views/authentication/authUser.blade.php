@@ -55,15 +55,14 @@
 
             @if (session('limit'))
                 let timeRemaining = {{ session('seconds') }};
-                let timer = $('#time');
 
                 function updateCountdown() {
                     if (timeRemaining <= 0) {
                         $('#error-attempt, #time').text("");
-                        $('#loginBtn').prop('disabled', false);
+                        $('#loginBtn').prop('disabled', 0);
                     } else {
-                        $('#loginBtn').prop('disabled', true);
-                        timer.text(timeRemaining);
+                        $('#loginBtn').prop('disabled', 1);
+                        $('#time').text(timeRemaining);
                         timeRemaining--;
                         setTimeout(updateCountdown, 1000);
                     }

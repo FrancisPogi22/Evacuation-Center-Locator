@@ -258,7 +258,7 @@
                     alterEvacuationCenter(url, 'PATCH', 'change');
                 })
 
-                $(document).on('click', '#closeModalBtn', function() {
+                modal.on('hidden.bs.modal', () => {
                     validator && validator.resetForm();
                     $('#evacuationCenterForm')[0].reset();
                     if (marker) {
@@ -294,9 +294,8 @@
                                 success(response) {
                                     response.status == "warning" ? showWarningMessage(response
                                         .message) : (showSuccessMessage(
-                                            `Successfully ${operation == 'add' ? 'added' : 'updated'} evacuation center.`
-                                        ), evacuationCenterTable.draw(), $('#closeModalBtn')
-                                    .click());
+                                        `Successfully ${operation == 'add' ? 'added' : 'updated'} evacuation center.`
+                                    ), evacuationCenterTable.draw(), modal.modal('show'));
                                 },
                                 error: showErrorMessage
                             });

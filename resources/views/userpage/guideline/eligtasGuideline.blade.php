@@ -51,7 +51,7 @@
                                 <a class="guidelines-item" href="{{ route('eligtas.guide', $guidelineItem->id) }}">
                                     <div class="guideline-content">
                                         <img
-                                            src="{{ $guidelineItem->guideline_img ? asset('guideline_image/' . $guidelineItem->guideline_img) : asset('assets/img/empty-data.svg') }}">
+                                            src="{{ $guidelineItem->guideline_img ? asset('guideline_image/' . $guidelineItem->guideline_img) : asset('assets/img/Empty-Guideline.svg') }}">
                                         <div class="guideline-type">
                                             <p>{{ $guidelineItem->type }}</p>
                                         </div>
@@ -62,7 +62,7 @@
                                 <a class="guidelines-item" href="{{ route('resident.eligtas.guide', $guidelineItem->id) }}">
                                     <div class="guideline-content">
                                         <img
-                                            src="{{ $guidelineItem->guideline_img ? asset('guideline_image/' . $guidelineItem->guideline_img) : asset('assets/img/empty-data.svg') }}">
+                                            src="{{ $guidelineItem->guideline_img ? asset('guideline_image/' . $guidelineItem->guideline_img) : asset('assets/img/Empty-Guideline.svg') }}">
                                         <div class="guideline-type">
                                             <p>{{ $guidelineItem->type }}</p>
                                         </div>
@@ -172,7 +172,7 @@
                                             guidelineWidget.querySelector(
                                                 '.guideline-type p').textContent = type;
                                         }
-                                        $('#closeModalBtn').click();
+                                        modal.modal('hide');
                                         showSuccessMessage(
                                             `Guideline successfully ${operation}d.`);
                                     },
@@ -239,7 +239,7 @@
 
                                 if (guidelineContainer.text().trim() == "") {
                                     guidelineContainer.append(`<div class="empty-data-container">
-                                            <img src="{{ asset('assets/img/empty-data.svg') }}" alt="Picture">
+                                            <img src="{{ asset('assets/img/Empty-Guideline.svg') }}" alt="Picture">
                                             <p>No guidelines uploaded.</p>
                                         </div>`);
                                 }
@@ -330,7 +330,7 @@
                     if (checkGuideFields()) changeModalSize('remove');
                 });
 
-                $(document).on('click', '#closeModalBtn', function() {
+                modal.on('hidden.bs.modal', () => {
                     if (guidelineImgChanged) changeImageColor();
 
                     guidelineImgChanged = false;
@@ -404,7 +404,6 @@
                 },
                 method: "GET",
                 success(response) {
-                    console.log(response)
                     if (response.guidelineData == null) return showWarningMessage(
                         'No guidelines uploaded.');
 
