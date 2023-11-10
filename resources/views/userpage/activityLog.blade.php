@@ -142,7 +142,6 @@
                             error: showErrorMessage
                         });
                     });
-
             });
 
             $(document).on('click', '#suspendBtn', function() {

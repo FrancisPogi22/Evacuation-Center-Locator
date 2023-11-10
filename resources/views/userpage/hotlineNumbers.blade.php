@@ -122,7 +122,8 @@
                         previewLogo = $('#hotlinePreviewLogo'),
                         hotlineForm = $('#hotlineForm'),
                         hotlineLogo = $('.hotlineLogo'),
-                        hotlineLogoBtn = $('#selectLogo');
+                        hotlineLogoBtn = $('#selectLogo'),
+                        emptyData = $(".empty-data-container");
 
                     $.ajaxSetup({
                         headers: {
@@ -208,6 +209,7 @@
                                                             </div>
                                                         </div>`);
                                                 resetHotlineForm();
+                                                emptyData.remove();
                                                 hotlineForm.prop('hidden', 1);
                                             }
                                             showSuccessMessage(
@@ -228,6 +230,7 @@
                             hotlineItem = "";
                         }
 
+                        emptyData.prop('hidden', emptyData.length > 0);
                         operation = "add";
                         changeLogoColor();
                         validator.resetForm();
@@ -269,15 +272,19 @@
                                         .message) : (hotlineItem.remove(), showSuccessMessage(
                                             `Hotline number successfully removed.`),
                                         hotlineItem = "");
+
+                                    if ($('.hotline-container').length > 0)
+                                        $('.number-section').append(`<div class="empty-data-container">
+                                            <img src="{{ asset('assets/img/Empty-Hotline.svg') }}" alt="Picture">
+                                            <p>No hotline numbers added yet.</p>
+                                        </div>`);
                                 },
                                 error: showErrorMessage
                             });
                         });
                     });
 
-                    $('#selectLogo').click(() => {
-                        $('#hotlineLogo').click();
-                    });
+                    $('#selectLogo').click(() => $('#hotlineLogo').click());
 
                     $('#hotlineLogo').change(function() {
                         let reader = new FileReader();
@@ -293,14 +300,13 @@
 
                         if (operation != 'add') hotlineItem.prop('hidden', 0);
 
+                        emptyData.prop('hidden', emptyData.length > 1);
                         hotlineForm.prop('hidden', 1);
                         resetHotlineForm();
                         hotlineItem = "";
                     });
 
-                    $(document).on('click', '.changeTheme', () => {
-                        changeLogoColor();
-                    });
+                    $(document).on('click', '.changeTheme', () => changeLogoColor());
 
                     function resetHotlineForm() {
                         hotlineForm[0].reset();
