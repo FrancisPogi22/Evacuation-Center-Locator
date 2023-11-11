@@ -36,28 +36,33 @@
                         <form id="hotlineForm" hidden>
                             @csrf
                             <div class="hotline-container">
-                                <div class="hotline-logo">
-                                    <img src="{{ asset('assets/img/e-ligtas-logo-black.png') }}" alt="logo"
-                                        id="hotlinePreviewLogo">
-                                    <input type="file" name="logo" class="form-control" id="hotlineLogo" hidden>
-                                    <a href="javascript:void(0)" class="btn-table-primary" id="selectLogo">
-                                        <i class="bi bi-image"></i>Select Logo</a>
+                                <div class="hotline-logo-container">
+                                    <div class="hotline-image-container">
+                                        <img src="{{ asset('assets/img/Select-Image.svg') }}" alt="logo"
+                                            id="hotline-preview-image">
+                                        <input type="file" name="logo" class="form-control" id="hotlineLogo" hidden>
+                                        <span id="image-error" class="error" hidden>Please select an image file.</span>
+                                    </div>
+                                    <button class="btn btn-sm btn-primary" id="imageBtn">
+                                        <i class="bi bi-image"></i>Select Logo
+                                    </button>
                                 </div>
-                                <div class="hotline-details">
-                                    <div class="hotline-header">
-                                        <div class="hotline-label">
+                                <div class="hotline-details-container">
+                                    <div class="hotline-form-content">
+                                        <div>
+                                            <label for="label">Label</label>
                                             <input type="text" name="label" class="form-control" autocomplete="off"
-                                                placeholder="Enter Hotline Label" id="hotlineLabel">
+                                                placeholder="Enter Label" id="hotlineLabel">
                                         </div>
-                                    </div>
-                                    <div class="hotline-number">
-                                        <hr>
-                                        <input type="number" name="number" id="hotlineNumber" class="form-control"
-                                            placeholder="Enter Hotline Number" autocomplete="off">
-                                    </div>
-                                    <div class="add-hotline-btn">
-                                        <button class="btn-submit" id="addNumberBtn"></button>
-                                        <button class="btn-remove" id="closeFormBtn">Cancel</button>
+                                        <div>
+                                            <label for="label" class="last-label">Number</label>
+                                            <input type="number" name="number" id="hotlineNumber" class="form-control"
+                                                placeholder="Enter Number" autocomplete="off">
+                                        </div>
+                                        <div class="hotline-form-button-container">
+                                            <button class="btn-submit" id="addNumberBtn"></button>
+                                            <button class="btn-remove" id="closeFormBtn">Cancel</button>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -65,30 +70,34 @@
                     @endauth
                     @forelse ($hotlineNumbers as $hotlineNumber)
                         <div class="hotline-container">
-                            <div class="hotline-logo">
-                                <img src="{{ $hotlineNumber->logo ? asset('assets/img/' . $hotlineNumber->logo) : asset('assets/img/empty-data.svg') }}"
-                                    class="hotlineLogo" alt="logo">
-                            </div>
-                            <div class="hotline-details">
-                                <div class="hotline-header">
-                                    <div class="hotline-label">
-                                        <i class="bi bi-hospital"></i>
-                                        <span>{{ $hotlineNumber->label }}</span>
-                                    </div>
-                                    @auth
-                                        <div class="header-btn-container">
-                                            @if (auth()->user()->is_disable == 0)
-                                                <button class="btn-update updateNumber"
-                                                    data-id="{{ $hotlineNumber->id }}"><i class="bi bi-pencil"></i></button>
-                                                <button class="btn-remove removeNumber"
-                                                    data-id="{{ $hotlineNumber->id }}"><i class="bi bi-trash3"></i></button>
-                                            @endif
-                                        </div>
-                                    @endauth
+                            <div class="hotline-logo-container-list">
+                                <div class="hotline-image-container-list">
+                                    <img src="{{ $hotlineNumber->logo ? asset('assets/hotline_logo/' . $hotlineNumber->logo) : asset('assets/img/empty-data.svg') }}"
+                                        class="hotline-preview-image-list" alt="logo">
                                 </div>
-                                <div class="hotline-number">
-                                    <hr>
-                                    <p>{{ $hotlineNumber->number }}</p>
+                            </div>
+                            <div class="hotline-details-container">
+                                <div class="hotline-data-container">
+                                    <b>{{ $hotlineNumber->label }}</b>
+                                </div>
+                                <hr>
+                                <div class="hotline-data-container last-data">
+                                    {{ $hotlineNumber->number }}
+                                </div>
+                                <div class="hotline-form-button-container-list">
+                                    @auth
+                                        @if (auth()->user()->is_disable == 0)
+                                            <button class="btn-update updateNumber" data-id="{{ $hotlineNumber->id }}">
+                                                <i class="bi bi-pencil-square"></i>Update</button>
+                                            <button class="btn-remove removeNumber" data-id="{{ $hotlineNumber->id }}">
+                                                <i class="bi bi-trash3"></i>Remove</button>
+                                        @endif
+                                    @endauth
+                                    @guest
+                                        <a href="tel:+{{ $hotlineNumber->number }}" class="btn-submit">
+                                            <i class="bi bi-telephone-outbound"></i>Call Number
+                                        </a>
+                                    @endguest
                                 </div>
                             </div>
                         </div>
@@ -116,13 +125,15 @@
         @if (auth()->user()->is_disable == 0)
             <script>
                 $(document).ready(() => {
-                    let operation, hotlineLabel, hotlineNumber, hotlineId, validator, hotlineLogoChanged = false,
+                    let operation, hotlineLabel, hotlineNumber, hotlineId, validator,
                         hotlineItem = "",
+                        hotlineLogoChanged = false,
                         formBtn = $('#addNumberBtn'),
-                        previewLogo = $('#hotlinePreviewLogo'),
-                        hotlineForm = $('#hotlineForm'),
+                        logoError = $('#image-error'),
+                        changeLogoBtn = $('#imageBtn'),
                         hotlineLogo = $('.hotlineLogo'),
-                        hotlineLogoBtn = $('#selectLogo');
+                        hotlineForm = $('#hotlineForm'),
+                        previewLogo = $('#hotline-preview-image');
 
                     $.ajaxSetup({
                         headers: {
@@ -140,28 +151,27 @@
                             number: 'Please enter hotline number.'
                         },
                         errorElement: 'span',
-                        submitHandler(form) {
+                        submitHandler(form, e) {
                             let formData = new FormData(form);
 
                             confirmModal(`Do you want to ${operation} this hotline number?`).then((result) => {
                                 if (!result.isConfirmed) return;
 
-                                return operation == "update" && hotlineLabel == $('#hotlineLabel').val() &&
+                                operation == "update" && hotlineLabel == $('#hotlineLabel').val() &&
                                     hotlineNumber == $('#hotlineNumber').val() && !hotlineLogoChanged ?
                                     showWarningMessage() :
                                     $.ajax({
                                         data: formData,
                                         url: operation == 'add' ? "{{ route('hotline.add') }}" :
                                             "{{ route('hotline.update', 'hotlineId') }}".replace(
-                                                'hotlineId',
-                                                hotlineId),
+                                                'hotlineId', hotlineId),
                                         method: "POST",
                                         cache: false,
                                         contentType: false,
                                         processData: false,
                                         success(response) {
-                                            if (response.status == 'warning') return showWarningMessage(
-                                                response.message);
+                                            if (response.status == 'warning')
+                                                return showWarningMessage(response.message);
 
                                             let {
                                                 label,
@@ -171,48 +181,55 @@
                                             } = response;
 
                                             if (operation == "update") {
-                                                if (hotlineLogoChanged) hotlineItem.find('.hotlineLogo')
+                                                if (hotlineLogoChanged)
+                                                    hotlineItem.find('.hotline-preview-image-list')
                                                     .attr('src', previewLogo.attr('src'));
-
-                                                hotlineItem.find('.hotline-label span').text(label);
-                                                hotlineItem.find('.hotline-number p').text(number);
+                                                hotlineItem.find('.hotline-data-container:first b')
+                                                    .text(label);
+                                                hotlineItem.find('.hotline-data-container:last')
+                                                    .text(number);
                                                 replaceHotlineItem();
-                                                resetHotlineForm();
                                             } else {
                                                 $('.number-section').append(`
-                                                        <div class="hotline-container">
-                                                            <div class="hotline-logo">
-                                                                <img src="${hotlineLogo ? `/assets/img/${hotlineLogo}` : '/assets/img/empty-data.svg'}" class="hotlineLogo" alt="logo">
+                                                    <div class="hotline-container">
+                                                        <div class="hotline-logo-container-list">
+                                                            <div class="hotline-image-container-list">
+                                                                <img src="/assets/${hotlineLogo ? `hotline_logo/${hotlineLogo}` : 'img/empty-data.svg'}"
+                                                                    class="hotline-preview-image-list" alt="logo">
                                                             </div>
-                                                            <div class="hotline-details">
-                                                                <div class="hotline-header">
-                                                                    <div class="hotline-label">
-                                                                        <i class="bi bi-hospital"></i>
-                                                                        <span>${label}</span>
-                                                                    </div>
-                                                                    <div class="header-btn-container">
-                                                                        @auth
-                                                                            <div class="header-btn-container">
-                                                                                @if (auth()->user()->is_disable == 0)
-                                                                                    <button class="btn-update updateNumber" data-id="${hotlineId}"><i class="bi bi-pencil"></i></button>
-                                                                                    <button class="btn-remove removeNumber" data-id="${hotlineId}"><i class="bi bi-trash3"></i></button>
-                                                                                @endif
-                                                                            </div>
-                                                                        @endauth
-                                                                    </div>
-                                                                </div>
-                                                                <div class="hotline-number">
-                                                                    <hr>
-                                                                    <p>${number}</p>
-                                                                </div>
+                                                        </div>
+                                                        <div class="hotline-details-container">
+                                                            <div class="hotline-data-container">
+                                                                <b>${label}</b>
                                                             </div>
-                                                        </div>`);
-                                                resetHotlineForm();
+                                                            <hr>
+                                                            <div class="hotline-data-container last-data">
+                                                                ${number}
+                                                            </div>
+                                                            <div class="hotline-form-button-container-list">
+                                                                @auth
+                                                                    @if (auth()->user()->is_disable == 0)
+                                                                        <button class="btn-update updateNumber" data-id="${hotlineId}">
+                                                                            <i class="bi bi-pencil-square"></i>Update</button>
+                                                                        <button class="btn-remove removeNumber" data-id="${hotlineId}">
+                                                                            <i class="bi bi-trash3"></i>Remove</button>
+                                                                    @endif
+                                                                @endauth
+                                                                @guest
+                                                                    <a href="tel:+${number}" class="btn-submit">
+                                                                        <i class="bi bi-telephone-outbound"></i>Call Number
+                                                                    </a>
+                                                                @endguest
+                                                            </div>
+                                                        </div>
+                                                    </div>`);
+                                                $(".empty-data-container").remove();
                                                 hotlineForm.prop('hidden', 1);
                                             }
                                             showSuccessMessage(
                                                 `Hotline number successfully ${operation == "add" ? "added" : "updated"}.`
                                             );
+                                            resetHotlineForm();
                                             hotlineItem = "";
                                         },
                                         error: showErrorMessage
@@ -228,29 +245,29 @@
                             hotlineItem = "";
                         }
 
+                        $(".empty-data-container").prop('hidden', $(".empty-data-container").length > 0);
                         operation = "add";
-                        changeLogoColor();
                         validator.resetForm();
                         hotlineForm.prop('hidden', 0);
                         formBtn.removeClass('bg-warning').text('Add');
+                        scrollTo('#hotlineForm');
                     });
 
                     $(document).on('click', '.updateNumber', function() {
                         validator.resetForm();
                         hotlineItem && replaceHotlineItem();
                         hotlineItem = $(this).closest('.hotline-container');
-                        hotlineForm.prop('hidden', 0);
-                        hotlineItem.prop('hidden', 1);
-                        hotlineLabel = hotlineItem.find('.hotline-label span').text();
-                        hotlineNumber = hotlineItem.find('.hotline-number p').text();
                         hotlineId = $(this).data('id');
-                        previewLogo.attr('src', hotlineItem.find('.hotlineLogo').attr('src'));
-                        changeLogoBtn(previewLogo.attr('src').split('/').pop().split('.')[0] != "empty-data" ?
-                            'change' : 'remove');
+                        replaceHotlineItem(false);
+                        hotlineLabel = hotlineItem.find('.hotline-data-container:first').text().trim();
+                        hotlineNumber = hotlineItem.find('.hotline-data-container.last-data').text().trim();
+                        previewLogo.attr('src', hotlineItem.find('.hotline-preview-image-list').attr('src'));
                         $('#hotlineLabel').val(hotlineLabel);
                         $('#hotlineNumber').val(hotlineNumber);
                         formBtn.addClass('bg-warning').text('Update');
                         operation = "update";
+                        hotlineLogoChanged = false;
+                        scrollTo('#hotlineForm');
                     });
 
                     $(document).on('click', '.removeNumber', function() {
@@ -269,62 +286,70 @@
                                         .message) : (hotlineItem.remove(), showSuccessMessage(
                                             `Hotline number successfully removed.`),
                                         hotlineItem = "");
+
+                                    if ($('.hotline-container').length == 1)
+                                        $('.number-section').append(`<div class="empty-data-container">
+                                            <img src="{{ asset('assets/img/Empty-Hotline.svg') }}" alt="Picture">
+                                            <p>No hotline numbers added yet.</p>
+                                        </div>`);
                                 },
                                 error: showErrorMessage
                             });
                         });
                     });
 
-                    $('#selectLogo').click(() => {
-                        $('#hotlineLogo').click();
-                    });
+                    changeLogoBtn.click(() => $('#hotlineLogo').click());
 
                     $('#hotlineLogo').change(function() {
-                        let reader = new FileReader();
-
-                        hotlineLogoChanged = true;
-                        reader.onload = (e) => $('#hotlinePreviewLogo').attr('src', e.target.result);
-                        reader.readAsDataURL(this.files[0]);
-                        changeLogoBtn('change');
+                        if (this.files[0]) {
+                            if (!['image/jpeg', 'image/jpg', 'image/png'].includes(this.files[0].type)) {
+                                if (operation == "add" || hotlineLogoChanged) {
+                                    $(this).val('');
+                                    previewLogo.attr('src', hotlineLogoChanged && operation == 'update' ?
+                                        hotlineItem.find('.hotline-preview-image-list').attr('src') :
+                                        'assets/img/Select-Image.svg');
+                                    if (hotlineLogoChanged) hotlineLogoChanged = false;
+                                }
+                                logoError.text('Please select an image file.')
+                                    .prop('style', 'display: block !important');
+                                changeButton(true);
+                                return;
+                            }
+                            const reader = new FileReader();
+                            reader.onload = function(e) {
+                                previewLogo.attr('src', e.target.result);
+                            };
+                            reader.readAsDataURL(this.files[0]);
+                            hotlineLogoChanged = true;
+                            logoError.prop('style', 'display: none !important');
+                            changeButton();
+                        }
                     });
 
                     $('#closeFormBtn').click((e) => {
                         e.preventDefault();
-
                         if (operation != 'add') hotlineItem.prop('hidden', 0);
-
+                        $(".empty-data-container").prop('hidden', $(".empty-data-container").length > 1);
                         hotlineForm.prop('hidden', 1);
                         resetHotlineForm();
                         hotlineItem = "";
                     });
 
-                    $(document).on('click', '.changeTheme', () => {
-                        changeLogoColor();
-                    });
-
                     function resetHotlineForm() {
                         hotlineForm[0].reset();
-                        changeLogoBtn('remove');
                         hotlineLogoChanged = false;
+                        previewLogo.attr('src', 'assets/img/Select-Image.svg');
+                        changeButton(true);
                     }
 
-                    function replaceHotlineItem() {
-                        hotlineForm.prop('hidden', 1);
-                        hotlineItem.prop('hidden', 0);
+                    function replaceHotlineItem(bool = true) {
+                        hotlineForm.prop('hidden', bool);
+                        hotlineItem.prop('hidden', !bool);
                     }
 
-                    function checkThemeColor() {
-                        return localStorage.getItem('theme') == 'dark' ? 'white' : 'black';
-                    }
-
-                    function changeLogoColor() {
-                        previewLogo.attr('src',
-                            `{{ asset('assets/img/e-ligtas-logo-${checkThemeColor()}.png') }}`);
-                    }
-
-                    function changeLogoBtn(action) {
-                        $('#selectLogo').toggleClass('bg-warning', action != 'remove').html(action == 'remove' ?
-                            '<i class="bi bi-image"></i>Select Logo' : '<i class="bi bi-arrow-repeat"></i>Change Logo');
+                    function changeButton(primary = false) {
+                        changeLogoBtn.html(`<i class="bi bi-image"></i> ${primary ? 'Select' : 'Change'} Logo`);
+                        setInfoWindowButtonStyles(changeLogoBtn, `var(--color-${primary ? 'primary' : 'yellow'}`);
                     }
                 });
             </script>
