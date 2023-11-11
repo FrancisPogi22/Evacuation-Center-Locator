@@ -492,6 +492,12 @@
         return table.row(currentRow).data();
     }
 
+    function scrollTo(element) {
+        $('html, body').animate({
+            scrollTop: $(element).offset().top - 15
+        }, 500);
+    }
+
     function showWarningMessage(message = "No changes were made.") {
         return toastr.warning(message, 'Warning');
     }
