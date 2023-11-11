@@ -370,12 +370,6 @@
             }, 500);
         }
 
-        function scrollToMap() {
-            $('html, body').animate({
-                scrollTop: $('.locator-content').offset().top - 15
-            }, 500);
-        }
-
         function zoomToUserLocation() {
             map.panTo(userMarker.getPosition());
             map.setZoom(18);
@@ -677,7 +671,7 @@
                                     <center>You are here.</center>
                                 </div>
                             </div>`);
-                        scrollToMap();
+                        scrollTo('.locator-content');
                         zoomToUserLocation();
                         scrollMarkers();
                     });
@@ -687,7 +681,7 @@
             $(document).on("click", "#locateNearestBtn, .locateEvacuationCenter", function() {
                 if (!locating) {
                     if (!geolocationBlocked) {
-                        scrollToMap();
+                        scrollTo('.locator-content');
                         $("#loading-text").text("Locating evacuation center...");
                         $('#loader').addClass('show');
                         $('#reportAreaBtn').attr('hidden', 1);
