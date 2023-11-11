@@ -256,7 +256,6 @@
                 });
 
                 modal.on('hidden.bs.modal', () => {
-                    
                     suspendContainer.add(suspend).prop('hidden', 0).prop('disabled', 0);
                     positionContainer.add(nameContainer).add(emailContainer).prop('hidden', 1);
                     organizationContainer.prop('hidden', 0);

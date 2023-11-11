@@ -152,7 +152,7 @@
                 initPositionOption($(this).val());
             });
 
-            $(document).on('click', '#closeModalBtn', function() {
+            modal.on('hidden.bs.modal', () => {
                 validator && validator.resetForm();
                 form[0].reset();
             });

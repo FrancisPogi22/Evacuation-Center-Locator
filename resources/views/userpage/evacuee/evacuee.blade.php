@@ -413,7 +413,7 @@
                 defaultFormData = $('#evacueeInfoForm').serialize();
             });
 
-            $(document).on('click', '#closeModalBtn', () => {
+            modal.on('hidden.bs.modal', () => {
                 validator && validator.resetForm();
                 $('#evacueeInfoForm')[0].reset();
                 fieldContainer.add(submitButtonContainer).prop('hidden', 1);

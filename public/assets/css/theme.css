@@ -36,8 +36,8 @@
     user-select: none;
 }
 
-body {
-    background: var(--color-background) !important;
+html[data-theme="dark"] body {
+    background: var(--color-d-background) !important;
 }
 
 .toast,
@@ -48,8 +48,8 @@ button {
 
 .toast-title,
 .toast-message,
-.dark-mode .toast-title,
-.dark-mode .toast-message {
+html[data-theme="dark"] .toast-title,
+html[data-theme="dark"] .toast-message {
     color: var(--color-text);
 }
 
@@ -387,7 +387,7 @@ button.changeTheme:hover {
 
 .dropdown-menu li {
     font-size: 13px;
-    padding: 1px 8px;
+    padding: 1.2px 8px;
 }
 
 .dropdown-menu li i {
@@ -424,6 +424,7 @@ button.changeTheme:hover {
     width: 100%;
     margin: 95px auto 30px;
     padding: 0 20px 0 90px;
+    transition: 0.2s all ease-in-out;
 }
 
 .main-content hr {
@@ -467,6 +468,7 @@ button.changeTheme:hover {
     filter: drop-shadow(0 10px 8px rgb(0 0 0 / 0.04))
         drop-shadow(0 4px 3px rgb(0 0 0 / 0.1));
     overflow: hidden;
+    transition: 0.2s all ease;
 }
 
 .sidebar-header {
@@ -533,7 +535,7 @@ button.changeTheme:hover {
 }
 
 .sidebar #logo,
-.dark-mode .sidebar #logo {
+html[data-theme="dark"] .sidebar #logo {
     width: 55px;
 }
 
@@ -1637,33 +1639,33 @@ div.gm-style-iw.gm-style-iw-c {
     overflow: auto;
 }
 
-.dark-mode .gmnoprint button,
-.dark-mode .gmnoprint ul,
-.dark-mode .gmnoprint li {
+html[data-theme="dark"] .gmnoprint button,
+html[data-theme="dark"] .gmnoprint ul,
+html[data-theme="dark"] .gmnoprint li {
     background: var(--color-d-bg-container) !important;
     color: var(--color-d-text) !important;
 }
 
-.dark-mode .ssQIHO-checkbox-menu-item span,
-.dark-mode .ssQIHO-checkbox-menu-item label {
+html[data-theme="dark"] .ssQIHO-checkbox-menu-item span,
+html[data-theme="dark"] .ssQIHO-checkbox-menu-item label {
     color: var(--color-d-text);
     fill: var(--color-d-text);
 }
 
-.dark-mode .gmnoprint div,
-.dark-mode .ssQIHO-checkbox-menu-item span span {
+html[data-theme="dark"] .gmnoprint div,
+html[data-theme="dark"] .ssQIHO-checkbox-menu-item span span {
     background: var(--color-d-text) !important;
 }
 
-.dark-mode .gmnoprint button span {
+html[data-theme="dark"] .gmnoprint button span {
     color: var(--color-d-text);
 }
 
-.dark-mode .gmnoprint button {
+html[data-theme="dark"] .gmnoprint button {
     background: var(--color-d-bg-container) !important;
 }
 
-.dark-mode .gmnoprint button span {
+html[data-theme="dark"] .gmnoprint button span {
     color: var(--color-d-text);
 }
 
@@ -2734,462 +2736,457 @@ select.form-select option {
     font-size: 15px;
 }
 
-.dark-mode {
-    background: var(--color-d-background) !important;
+html[data-theme="dark"] {
+    background: var(--color-d-background);
 }
 
-.dark-mode * {
+html[data-theme="dark"] * {
     font-weight: 500 !important;
     color: var(--color-text);
 }
 
-.dark-mode .header-section {
+html[data-theme="dark"] .header-section {
     background: var(--color-gray);
+    transition: 0.2s all ease;
 }
 
-.dark-mode #btn-sidebar-mobile {
+html[data-theme="dark"] #btn-sidebar-mobile {
     color: var(--color-d-text) !important;
 }
 
-.dark-mode .sidebar {
+html[data-theme="dark"] .sidebar {
     background: var(--color-d-bg-container);
 }
 
-.dark-mode .sub-menu {
+html[data-theme="dark"] .sub-menu {
     background: #55657e;
 }
 
-.dark-mode .links_name,
-.dark-mode .navigation-item i {
+html[data-theme="dark"] .links_name,
+html[data-theme="dark"] .navigation-item i {
     color: var(--color-d-text) !important;
 }
 
-.dark-mode .sidebar ul .navigation-item a:not(.active-link):hover {
+html[data-theme="dark"] .sidebar ul .navigation-item a:not(.active-link):hover {
     background: #3a4555 !important;
 }
 
-.dark-mode .sidebar .active-link {
+html[data-theme="dark"] .sidebar .active-link {
     background: var(--color-gray) !important;
 }
 
-.dark-mode .user-details {
+html[data-theme="dark"] .user-details {
     background: var(--color-gray);
     color: var(--color-d-text);
 }
 
-.dark-mode .guideline-type {
+html[data-theme="dark"] .guideline-type {
     background: var(--color-gray);
 }
 
-.dark-mode .header-title {
+html[data-theme="dark"] .header-title {
     color: var(--color-d-text);
     background: var(--color-gray);
 }
 
-.dark-mode .map-section,
-.dark-mode .area-map,
-.dark-mode .report-markers,
-.dark-mode .reporting-map,
-.dark-mode .evacuation-markers {
+html[data-theme="dark"] .map-section,
+html[data-theme="dark"] .area-map,
+html[data-theme="dark"] .report-markers,
+html[data-theme="dark"] .reporting-map,
+html[data-theme="dark"] .evacuation-markers {
     border-color: var(--color-gray);
 }
 
-.dark-mode .markers-header {
+html[data-theme="dark"] .markers-header {
     background: var(--color-gray);
 }
 
-.dark-mode .location-section,
-.dark-mode .social-section,
-.dark-mode .telephone-section,
-html[data-theme=dark] .hotline-container,
-.dark-mode .about-eligtas,
-.dark-mode .about-header {
+html[data-theme="dark"] .location-section,
+html[data-theme="dark"] .social-section,
+html[data-theme="dark"] .telephone-section,
+html[data-theme="dark"] .hotline-container,
+html[data-theme="dark"] .about-eligtas,
+html[data-theme="dark"] .about-header {
     background: var(--color-d-bg-container) !important;
 }
 
-.dark-mode .social-section p,
-.dark-mode .telephone-section p {
+html[data-theme="dark"] .social-section p,
+html[data-theme="dark"] .telephone-section p {
     color: var(--color-d-text);
 }
 
-.dark-mode .info-description.photo img,
-.dark-mode #selectedReportImage,
-.dark-mode select,
-.dark-mode input,
-.dark-mode textarea,
-.dark-mode .form-map,
-.dark-mode .info-window-details-container,
-.dark-mode .info-window-update-container {
+html[data-theme="dark"] .info-description.photo img,
+html[data-theme="dark"] #selectedReportImage,
+html[data-theme="dark"] select,
+html[data-theme="dark"] input,
+html[data-theme="dark"] textarea,
+html[data-theme="dark"] .form-map,
+html[data-theme="dark"] .info-window-details-container,
+html[data-theme="dark"] .info-window-update-container {
     border-color: var(--color-d-sub-text) !important;
 }
 
-.dark-mode .update-details-container small {
+html[data-theme="dark"] .update-details-container small {
     color: var(--color-yellow-hover);
 }
 
-.dark-mode select::placeholder,
-.dark-mode input::placeholder,
-.dark-mode textarea::placeholder {
+html[data-theme="dark"] select::placeholder,
+html[data-theme="dark"] input::placeholder,
+html[data-theme="dark"] textarea::placeholder {
     background: var(--color-d-bg-container) !important;
     color: var(--color-d-text) !important;
 }
 
-.dark-mode::-webkit-scrollbar-thumb,
-.dark-mode .info-window-details-container::-webkit-scrollbar-thumb,
-.dark-mode .info-window-update-container::-webkit-scrollbar-thumb,
-.dark-mode .report-markers::-webkit-scrollbar-thumb,
-.dark-mode .marker-container::-webkit-scrollbar-thumb,
-.dark-mode .evacuation-markers::-webkit-scrollbar-thumb {
+html[data-theme="dark"]::-webkit-scrollbar-thumb,
+html[data-theme="dark"] .info-window-details-container::-webkit-scrollbar-thumb,
+html[data-theme="dark"] .info-window-update-container::-webkit-scrollbar-thumb,
+html[data-theme="dark"] .report-markers::-webkit-scrollbar-thumb,
+html[data-theme="dark"] .marker-container::-webkit-scrollbar-thumb,
+html[data-theme="dark"] .evacuation-markers::-webkit-scrollbar-thumb {
     background: #55657e !important;
 }
 
-.dark-mode #loader-inner {
+html[data-theme="dark"] #loader-inner {
     border-top-color: var(--color-gray);
 }
 
-.dark-mode #btn-sidebar-close {
+html[data-theme="dark"] #btn-sidebar-close {
     color: var(--color-d-text) !important;
 }
 
-.dark-mode .action-container select {
+html[data-theme="dark"] .action-container select {
     border: none;
 }
 
-.dark-mode .dropdown-menu {
+html[data-theme="dark"] .dropdown-menu {
     background: var(--color-d-bg-container);
     border-color: var(--color-d-text);
 }
 
-.dark-mode .dropdown-menu .dropdown-item.changeTheme:active {
+html[data-theme="dark"] .dropdown-menu .dropdown-item.changeTheme:active {
     background-color: var(--color-text) !important;
 }
 
-.dark-mode .flatpickr-day:hover,
-.dark-mode .dropdown-menu .dropdown-item.changeTheme:active #themeText,
-.dark-mode .dropdown-menu .dropdown-item.changeTheme:active #themeIcon {
+html[data-theme="dark"] .flatpickr-day:hover,
+html[data-theme="dark"]
+    .dropdown-menu
+    .dropdown-item.changeTheme:active
+    #themeText,
+html[data-theme="dark"]
+    .dropdown-menu
+    .dropdown-item.changeTheme:active
+    #themeIcon {
     color: var(--color-black);
 }
 
-.dark-mode .flatpickr-day.selected {
+html[data-theme="dark"] .flatpickr-day.selected {
     background: var(--color-gray);
 }
 
-.dark-mode .flatpickr-weekday,
-.dark-mode .flatpickr-day,
-.dark-mode .dropdown-menu a {
+html[data-theme="dark"] .flatpickr-weekday,
+html[data-theme="dark"] .flatpickr-day,
+html[data-theme="dark"] .dropdown-menu a {
     color: var(--color-d-text);
 }
 
-.dark-mode .flatpickr-day.prevMonthDay,
-.dark-mode .flatpickr-day.nextMonthDay {
+html[data-theme="dark"] .flatpickr-day.prevMonthDay,
+html[data-theme="dark"] .flatpickr-day.nextMonthDay {
     color: var(--color-d-sub-text);
 }
 
-.dark-mode .dropdown-item:hover,
-.dark-mode .flatpickr-day.selected:hover,
-.dark-mode .flatpickr-day.prevMonthDay:hover,
-.dark-mode .flatpickr-day.nextMonthDay:hover,
-.dark-mode .custom-dropdown .dropdown-options ul {
+html[data-theme="dark"] .dropdown-item:hover,
+html[data-theme="dark"] .flatpickr-day.selected:hover,
+html[data-theme="dark"] .flatpickr-day.prevMonthDay:hover,
+html[data-theme="dark"] .flatpickr-day.nextMonthDay:hover,
+html[data-theme="dark"] .custom-dropdown .dropdown-options ul {
     background: var(--color-gray) !important;
 }
 
-.dark-mode .dropdown-item:focus,
-.dark-mode .renderable-component-text-box {
+html[data-theme="dark"] .dropdown-item:focus,
+html[data-theme="dark"] .renderable-component-text-box {
     background: var(--color-d-bg-container) !important;
 }
 
-.dark-mode .dropdown-menu:first:focus {
+html[data-theme="dark"] .dropdown-menu:first:focus {
     color: var(--color-black) !important;
 }
 
-.dark-mode .label-container i {
+html[data-theme="dark"] .label-container i {
     background: var(--color-gray);
 }
 
-.dark-mode .changePasswordBtn:active {
+html[data-theme="dark"] .changePasswordBtn:active {
     background: var(--color-primary) !important;
 }
 
-.dark-mode .myAccount:active {
+html[data-theme="dark"] .myAccount:active {
     background: var(--color-green) !important;
 }
 
-.dark-mode .logout:active {
+html[data-theme="dark"] .logout:active {
     background: var(--color-red) !important;
 }
 
-.dark-mode .label-container span,
-.dark-mode .report-container p,
-.dark-mode .wigdet-header p {
+html[data-theme="dark"] .label-container span,
+html[data-theme="dark"] .report-container p,
+html[data-theme="dark"] .wigdet-header p {
     color: var(--color-d-text);
 }
 
-.dark-mode button,
-.dark-mode button i,
-.dark-mode #loading-text,
-.dark-mode .status-content {
-    color: var(--color-text);
-}
-
-.dark-mode .report-container span {
+html[data-theme="dark"] .report-container span {
     color: #f87171;
 }
 
-.dark-mode .widget {
+html[data-theme="dark"] .widget {
     background: var(--color-d-bg-container);
 }
 
-.dark-mode .content-description span {
+html[data-theme="dark"] .content-description span {
     color: var(--color-d-sub-text);
 }
 
-.dark-mode .highcharts-background {
+html[data-theme="dark"] .highcharts-background {
     fill: var(--color-d-bg-container);
 }
 
-.dark-mode .highcharts-title {
+html[data-theme="dark"] .highcharts-title {
     fill: var(--color-d-text) !important;
 }
 
-.dark-mode text {
+html[data-theme="dark"] text {
     fill: var(--color-text) !important;
 }
 
-.dark-mode .highcharts-label path {
+html[data-theme="dark"] .highcharts-label path {
     color: var(--color-d-sub-text) !important;
     fill: var(--color-d-background) !important;
 }
 
-.dark-mode .highcharts-bar-series path {
+html[data-theme="dark"] .highcharts-bar-series path {
     stroke: none;
 }
 
-.dark-mode .highcharts-color-1,
-.dark-mode .highcharts-bar-series path {
+html[data-theme="dark"] .highcharts-color-1,
+html[data-theme="dark"] .highcharts-bar-series path {
     fill: #f87171;
 }
 
-.dark-mode .highcharts-color-0,
-.dark-mode .highcharts-series-1 path {
+html[data-theme="dark"] .highcharts-color-0,
+html[data-theme="dark"] .highcharts-series-1 path {
     fill: #0369a1;
 }
 
-.dark-mode .highcharts-series-2 path {
+html[data-theme="dark"] .highcharts-series-2 path {
     fill: #16a34a;
 }
 
-.dark-mode .highcharts-series-3 path {
+html[data-theme="dark"] .highcharts-series-3 path {
     fill: #0d9488;
 }
 
-.dark-mode .highcharts-series-4 path {
+html[data-theme="dark"] .highcharts-series-4 path {
     fill: #b45309;
 }
 
-.dark-mode .highcharts-series-5 path {
+html[data-theme="dark"] .highcharts-series-5 path {
     fill: #7c3aed;
 }
 
-.dark-mode .highcharts-data-label-connector {
+html[data-theme="dark"] .highcharts-data-label-connector {
     stroke: var(--color-text);
 }
 
-.dark-mode .guideline-content {
+html[data-theme="dark"] .guideline-content {
     background: var(--color-d-bg-container);
 }
 
-.dark-mode .user-profile-container {
+html[data-theme="dark"] .user-profile-container {
     background: var(--color-d-bg-container);
 }
 
-.dark-mode .profile-details {
+html[data-theme="dark"] .profile-details {
     background: var(--color-d-bg-container);
 }
 
-.dark-mode .table-container {
+html[data-theme="dark"] .table-container {
     background: var(--color-d-bg-container);
 }
 
-.dark-mode th {
+html[data-theme="dark"] th {
     background: var(--color-gray);
 }
 
-.dark-mode table,
-.dark-mode th,
-.dark-mode td {
+html[data-theme="dark"] table,
+html[data-theme="dark"] th,
+html[data-theme="dark"] td {
     border-color: var(--color-d-sub-text) !important;
 }
 
-.dark-mode tr.selectedRow {
+html[data-theme="dark"] tr.selectedRow {
     background: var(--color-gray) !important;
 }
 
-.dark-mode .table-container select option {
+html[data-theme="dark"] .table-container select option {
     color: var(--color-black);
 }
 
-.dark-mode .dataTables_wrapper .dataTables_paginate .paginate_button.disabled,
-.dark-mode
+html[data-theme="dark"]
+    .dataTables_wrapper
+    .dataTables_paginate
+    .paginate_button.disabled,
+html[data-theme="dark"]
     .dataTables_wrapper
     .dataTables_paginate
     .paginate_button.disabled:hover,
-.dark-mode
+html[data-theme="dark"]
     .dataTables_wrapper
     .dataTables_paginate
     .paginate_button.disabled:active {
     color: var(--color-d-sub-text) !important;
 }
 
-.dark-mode .modal-content {
+html[data-theme="dark"] .modal-content {
     background: var(--color-d-background);
     border-color: var(--color-background);
 }
 
-.dark-mode .modal-label,
-.dark-mode .change-modal-label {
-    color: var(--color-text);
-}
-
-.dark-mode .form-content {
+html[data-theme="dark"] .form-content {
     background: var(--color-d-bg-container);
 }
 
-.dark-mode span.error,
-.dark-mode .report-time,
-.dark-mode .dataTables_empty,
-.dark-mode div.view-link span {
+html[data-theme="dark"] span.error,
+html[data-theme="dark"] .report-time,
+html[data-theme="dark"] .dataTables_empty,
+html[data-theme="dark"] div.view-link span {
     color: var(--color-yellow);
 }
 
-.dark-mode .reportUpdateForm textarea,
-.dark-mode #reportAreaForm textarea,
-.dark-mode .form-content textarea,
-.dark-mode #reportAreaForm input,
-.dark-mode .field-container input,
-.dark-mode #changeYearSelect,
-html[data-theme=dark] #hotlineForm input,
-.dark-mode #changeArchivedReportType,
-.dark-mode #changeEvacueeDataSelect,
-.dark-mode #changeArchiveEvacueeDataSelect,
-.dark-mode .field-container select,
-.dark-mode #reportAreaForm select,
-.dark-mode #search_guideline,
-.dark-mode .guideline-header .search-container .search-icon {
+html[data-theme="dark"] .reportUpdateForm textarea,
+html[data-theme="dark"] #reportAreaForm textarea,
+html[data-theme="dark"] .form-content textarea,
+html[data-theme="dark"] #reportAreaForm input,
+html[data-theme="dark"] .field-container input,
+html[data-theme="dark"] #changeYearSelect,
+html[data-theme="dark"] #hotlineForm input,
+html[data-theme="dark"] #changeArchivedReportType,
+html[data-theme="dark"] #changeEvacueeDataSelect,
+html[data-theme="dark"] #changeArchiveEvacueeDataSelect,
+html[data-theme="dark"] .field-container select,
+html[data-theme="dark"] #reportAreaForm select,
+html[data-theme="dark"] #search_guideline,
+html[data-theme="dark"] .guideline-header .search-container .search-icon {
     background: var(--color-d-bg-container);
     color: var(--color-d-text);
 }
 
-.dark-mode #guidelineForm textarea,
-.dark-mode #guideForm textarea {
+html[data-theme="dark"] #guidelineForm textarea,
+html[data-theme="dark"] #guideForm textarea {
     border: 2px solid var(--color-d-sub-text) !important;
 }
 
-.dark-mode .guideline-header .search-container .search-icon {
+html[data-theme="dark"] .guideline-header .search-container .search-icon {
     border: 1px solid var(--color-d-sub-text);
 }
 
-.dark-mode .weather-section {
+html[data-theme="dark"] .weather-section,
+html[data-theme="dark"] .guides-container {
     background: var(--color-d-bg-container);
 }
 
-.dark-mode .guides-container {
-    background: var(--color-d-bg-container);
-}
-
-.dark-mode .guide-label {
+html[data-theme="dark"] .guide-label {
     background: var(--color-d-background);
 }
 
-.dark-mode .guide-item,
-.dark-mode .dropdown-notification:hover {
+html[data-theme="dark"] .guide-item,
+html[data-theme="dark"] .dropdown-notification:hover {
     background: var(--color-gray);
 }
 
-.dark-mode .form-content textarea::placeholder,
-.dark-mode #reportAreaForm input::placeholder,
-.dark-mode .field-container input::placeholder,
-.dark-mode .field-container .form-select,
-.dark-mode #changeYearSelect,
-.dark-mode #changeArchivedReportType,
-.dark-mode #changeEvacueeDataSelect,
-.dark-mode #changeArchiveEvacueeDataSelect,
-.dark-mode #reportAreaForm select {
+html[data-theme="dark"] .form-content textarea::placeholder,
+html[data-theme="dark"] #reportAreaForm input::placeholder,
+html[data-theme="dark"] .field-container input::placeholder,
+html[data-theme="dark"] .field-container .form-select,
+html[data-theme="dark"] #changeYearSelect,
+html[data-theme="dark"] #changeArchivedReportType,
+html[data-theme="dark"] #changeEvacueeDataSelect,
+html[data-theme="dark"] #changeArchiveEvacueeDataSelect,
+html[data-theme="dark"] #reportAreaForm select {
     color: var(--color-d-text);
 }
 
-.dark-mode .flatpickr-monthDropdown-months {
+html[data-theme="dark"] .flatpickr-monthDropdown-months {
     color: var(--color-text) !important;
 }
 
-.dark-mode .flatpickr-monthDropdown-months option,
-.dark-mode #changeEvacueeDataSelect option,
-.dark-mode .dataTables_length select option,
-.dark-mode select.form-select option {
+html[data-theme="dark"] .flatpickr-monthDropdown-months option,
+html[data-theme="dark"] #changeEvacueeDataSelect option,
+html[data-theme="dark"] .dataTables_length select option,
+html[data-theme="dark"] select.form-select option {
     background: var(--color-d-background) !important;
     color: var(--color-d-text) !important;
 }
 
-.dark-mode .swal2-popup {
+html[data-theme="dark"] .swal2-popup {
     background: var(--color-d-background);
     border: 1px solid var(--color-d-sub-text);
 }
 
-.dark-mode .swal2-icon-content {
+html[data-theme="dark"] .swal2-icon-content {
     color: var(--color-primary);
 }
 
-.dark-mode .gm-style-iw,
-.dark-mode .gm-style-iw a,
-.dark-mode .gm-style-iw div,
-.dark-mode .gm-style-iw-tc::after {
+html[data-theme="dark"] .gm-style-iw,
+html[data-theme="dark"] .gm-style-iw a,
+html[data-theme="dark"] .gm-style-iw div,
+html[data-theme="dark"] .gm-style-iw-tc::after {
     background: var(--color-d-bg-container);
     color: var(--color-d-text);
 }
 
-.dark-mode .report-markers,
-.dark-mode .evacuation-markers {
+html[data-theme="dark"] .report-markers,
+html[data-theme="dark"] .evacuation-markers {
     background: var(--color-d-bg-container);
 }
 
-.dark-mode .info-window-hr {
+html[data-theme="dark"] .info-window-hr {
     background: var(--color-text);
 }
 
 .gmnoprint span,
 .ssQIHO-checkbox-menu-item label,
-.dark-mode .count-container span {
+html[data-theme="dark"] .count-container span {
     color: var(--color-black);
 }
 
-.dark-mode .flatpickr-calendar {
+html[data-theme="dark"] .flatpickr-calendar {
     background: var(--color-d-background);
     color: var(--color-text) !important;
 }
 
-.dark-mode .image-wrapper,
-.dark-mode .image-overlay {
+html[data-theme="dark"] .image-wrapper,
+html[data-theme="dark"] .image-overlay {
     border-color: var(--color-gray);
     background: var(--color-gray);
 }
 
-.dark-mode .profile-img {
+html[data-theme="dark"] .profile-img {
     border-color: var(--color-gray);
 }
 
-.dark-mode .profile-details-label {
+html[data-theme="dark"] .profile-details-label {
     background: var(--color-gray);
     color: var(--color-d-text) !important;
 }
 
-.dark-mode .guideline-widget button {
+html[data-theme="dark"] .guideline-widget button {
     background: var(--color-d-bg-container);
 }
 
-.dark-mode button.gm-ui-hover-effect span {
+html[data-theme="dark"] button.gm-ui-hover-effect span {
     background-color: var(--color-yellow-hover) !important;
 }
 
-.dark-mode button.changeTheme {
+html[data-theme="dark"] button.changeTheme {
     background: var(--color-d-bg-container);
 }
 
@@ -3312,16 +3309,9 @@ html[data-theme=dark] #hotlineForm input,
     }
 
     .sidebar,
-    .dark-mode .sidebar,
+    html[data-theme="dark"] .sidebar,
     .sidebar:hover {
         width: 0;
-    }
-
-    .sidebar #logo,
-    .sidebar #btn-sidebar-close,
-    .dark-mode .sidebar #logo,
-    .dark-mode .sidebar #btn-sidebar-close {
-        display: none;
     }
 
     .sidebar.active #logo,
@@ -3332,7 +3322,7 @@ html[data-theme=dark] #hotlineForm input,
     }
 
     .sidebar.active,
-    .dark-mode .sidebar.active {
+    html[data-theme="dark"] .sidebar.active {
         width: 320px;
     }
 
@@ -3375,11 +3365,8 @@ html[data-theme=dark] #hotlineForm input,
         height: 100%;
     }
 
+    #locateNearestBtn,
     .locator-button-container {
-        margin-left: 0;
-    }
-
-    #locateNearestBtn {
         margin-left: 0;
     }
 
@@ -3401,7 +3388,7 @@ html[data-theme=dark] #hotlineForm input,
     }
 
     button.changeTheme {
-        margin-right: 0 !important;
+        margin-right: 0;
     }
 }
 
@@ -3550,7 +3537,7 @@ html[data-theme=dark] #hotlineForm input,
     }
 
     .sidebar.active,
-    .dark-mode .sidebar.active {
+    html[data-theme="dark"] .sidebar.active {
         width: 280px;
     }
 

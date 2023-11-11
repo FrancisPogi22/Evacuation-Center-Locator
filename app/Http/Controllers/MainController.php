@@ -129,7 +129,7 @@ class MainController extends Controller
         if (!request()->ajax()) return view('userpage.activityLog');
 
         return DataTables::of(ActivityUserLog::join('user', 'activity_log.user_id', '=', 'user.id')
-            ->select('activity_log.*', 'user.*')->orderBy('activity_log.id', 'desc')->get())
+            ->select('activity_log.*', 'user.*')->orderBy('activity_log.id', 'desc')->where('user.id', '!=', auth()->user()->id)->get())
             ->addColumn('activity', function ($userLog) {
                 return $userLog->name . ' ' . $userLog->activity . ' ' . $userLog->data_name;
             })
@@ -152,8 +152,8 @@ class MainController extends Controller
                             <div class="log-container">
                                 <p>Name: ' . $userLog->name . ' </p>
                                 <p>Activity: ' . $userLog->activity . ' ' . $userLog->data_name . '</p>
-                                <p>Time Issued: <span class="fw-bold text-danger">' . $userLog->date_time . '</span></p>
-                                <p>Status: <span class="log-status fw-bold text-' . ($userLog->status == "Disabled" ? 'danger' : ($userLog->status == "Suspended" ? 'warning' : 'success')) . '">' . $userLog->status . '</span> </p>
+                                <p>Time Issued: <span>' . $userLog->date_time . '</span></p>
+                                <p>Status: <span class="log-status text-' . ($userLog->status == "Disabled" ? 'danger' : ($userLog->status == "Suspended" ? 'warning' : 'success')) . '">' . $userLog->status . '</span> </p>
                             </div>
                             <hr>
                             ' . $actionBtn . '</div>

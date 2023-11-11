@@ -1,7 +1,7 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <script>
-    const body = $('body'),
+    const html = $('html'),
         logo = $('#logo'),
         themeIcon = $('#themeIcon'),
         themeText = $('#themeText'),
@@ -32,7 +32,7 @@
             if (this.files[0]) {
                 if (!['image/jpeg', 'image/jpg', 'image/png'].includes(this.files[0].type)) {
                     $('#areaInputImage').val('');
-                    $('#selectedReportImage').attr('src', '').attr('hidden', true);
+                    $('#selectedReportImage').attr('src', '').attr('hidden', 1);
                     $('#imageBtn').html('<i class="bi bi-image"></i> Select');
                     setInfoWindowButtonStyles($('#imageBtn'), 'var(--color-primary');
                     $('#image-error').text('Please select an image file.')
@@ -47,7 +47,7 @@
                 reader.readAsDataURL(this.files[0]);
                 $('#imageBtn').html('<i class="bi bi-arrow-repeat"></i> Change');
                 setInfoWindowButtonStyles($('#imageBtn'), 'var(--color-yellow');
-                $('#selectedReportImage').attr('hidden', false);
+                $('#selectedReportImage').attr('hidden', 0);
                 const container = $(this).closest('.gm-style-iw-d');
                 container.animate({
                     scrollTop: container.prop('scrollHeight')
@@ -66,7 +66,7 @@
                 confirmPassword: 'Confirm password field is required.'
             },
             errorElement: 'span',
-            submitHandler() {
+            submitHandler(form) {
                 confirmModal('Do you want to change your password?').then((result) => {
                     if (!result.isConfirmed) return;
 
@@ -79,8 +79,7 @@
                                     response.message) :
                                 (showSuccessMessage('Password successfully changed.'),
                                     $(form)[0].reset(),
-                                    currentPassword.text(""),
-                                    $('#closeChangePasswordBtn').click());
+                                    currentPassword.text(""), modal.modal('hide'));
                         },
                         error: showErrorMessage
                     });
@@ -90,13 +89,13 @@
 
         $(document).on('keyup', '#current_password', function() {
             current_password = $('#current_password').val();
-
             clearTimeout($(this).data('checkingDelay'));
 
-            $(this).data('checkingDelay', setTimeout(function() {
+            $(this).data('checkingDelay', setTimeout(() => {
                 let checkPasswordRoute = $('#checkPasswordRoute').data('route');
 
                 if (current_password == "") {
+                    resetPasswordBtn.prop('hidden', 1);
                     checkPasswordIcon.removeClass('bi-check2-circle').addClass(
                         'bi-x-circle').prop('hidden', 1);
                     changePasswordValidation.resetForm();
@@ -126,31 +125,32 @@
                             checkPasswordIcon.removeClass('bi-x-circle error')
                                 .addClass('bi-check2-circle success').prop('hidden',
                                     0);
-                            password.add(confirmPassword).add(resetPasswordBtn)
-                                .prop('disabled', 0);
+                            password.add(confirmPassword).add(resetPasswordBtn.prop(
+                                'hidden', 0)).prop('disabled', 0);
                         }
                     }
                 });
             }, 500));
         });
 
-        $(document).on('click', '#closeChangePasswordBtn', function() {
+        $('#changePasswordModal').on('hidden.bs.modal', () => {
             resetChangePasswordForm();
-            checkPasswordIcon.removeClass('success').removeClass('error').prop('hidden', true);
+            resetPasswordBtn.prop('hidden', 1);
+            checkPasswordIcon.removeClass('success').removeClass('error').prop('hidden', 1);
             changePasswordValidation.resetForm();
         });
 
         $(document).on('click', '.toggle-password', function() {
-            const currentPasswordInput = $('#current_password');
+            let currentPasswordInput = $('#current_password');
 
             if (current_password == "") {
-                currentPasswordInput.css('border-color', 'red');
-                setTimeout(function() {
+                currentPasswordInput.prop('style', 'border-color:red !important');
+                setTimeout(() => {
                     currentPasswordInput.removeAttr('style');
                 }, 1000);
             } else {
                 currentPasswordInput.removeAttr('style');
-                const inputElement = $($(this).data('target'));
+                let inputElement = $($(this).data('target'));
                 inputElement.prop('type', inputElement.prop('type') == 'password' ? 'text' :
                     'password');
                 $(this).toggleClass('bi-eye-slash bi-eye');
@@ -200,10 +200,10 @@
         @endif
     @endauth
     $(document).on('click', '.changeTheme', () => {
-        body.hasClass('dark-mode') ? disableDarkMode() : enableDarkMode();
+        html.attr('data-theme') == 'dark' ? disableDarkMode() : enableDarkMode();
     });
 
-    @guest $('#emergencyBtn').on('click', function() {
+    @guest $('#emergencyBtn').on('click', () => {
         confirmModal('Are you in need of help or rescue?').then((result) => {
             if (!result.isConfirmed) return;
 
@@ -396,8 +396,8 @@
     }
 
     function enableDarkMode() {
+        html.attr('data-theme', "dark");
         logo.attr('src', '{{ asset('assets/img/E-LIGTAS-Logo-White.png') }}');
-        body.addClass('dark-mode');
         themeIcon.removeClass('bi-moon').addClass('bi-sun');
         themeIconResident.removeClass('bi-sun-fill').addClass('bi-moon-fill');
         themeText.text('Light Mode');
@@ -434,7 +434,7 @@
 
     function disableDarkMode() {
         logo.attr('src', '{{ asset('assets/img/E-LIGTAS-Logo-Black.png') }}');
-        body.removeClass('dark-mode');
+        html.attr('data-theme', "light");
         themeIcon.removeClass('bi-sun').addClass('bi-moon');
         themeIconResident.removeClass('bi-moon-fill').addClass('bi-sun-fill');
         themeText.text('Dark Mode');

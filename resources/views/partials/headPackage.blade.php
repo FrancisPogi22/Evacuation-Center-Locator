@@ -4,6 +4,9 @@
 <meta http-equiv="X-UA-Compatible" content="ie=edge">
 <title>{{ config('app.name') }}</title>
 {{-- @vite(['resources/js/app.js']) --}}
+<script>
+    document.documentElement.setAttribute('data-theme', localStorage.getItem('theme'));
+</script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
 @include('partials.sidebarScript')
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet"
