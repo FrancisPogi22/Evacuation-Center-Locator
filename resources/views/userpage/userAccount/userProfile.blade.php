@@ -148,7 +148,7 @@
                 defaultFormData = form.serialize();
             });
 
-            $(document).on('change', '#organization', function() {
+            $('#organization').change(function() {
                 initPositionOption($(this).val());
             });
 
