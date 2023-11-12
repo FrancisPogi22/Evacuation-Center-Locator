@@ -262,7 +262,6 @@ textarea::placeholder {
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100%;
 }
 
 .dropdown button {
@@ -1252,7 +1251,7 @@ text {
 }
 
 .empty-data-container p {
-    margin-top: 25px;
+    margin: 25px 0 0 30px;
     font-size: 20px;
     font-weight: 700;
 }
@@ -2680,7 +2679,6 @@ html[data-theme=dark] {
 }
 
 html[data-theme=dark] * {
-    font-weight: 500 !important;
     color: var(--color-text);
 }
 
@@ -2717,6 +2715,10 @@ html[data-theme=dark] .sidebar .active-link {
 html[data-theme=dark] .user-details {
     background: var(--color-gray);
     color: var(--color-d-text);
+}
+
+html[data-theme=dark] .content-description p {
+    color: var(--color-green);
 }
 
 html[data-theme=dark] .guideline-type {
@@ -3129,7 +3131,6 @@ html[data-theme=dark] button.changeTheme {
 }
 
 @media only screen and (max-width: 1150px) {
-
     .auth-container,
     .recover-content,
     .res-password-content {
@@ -3326,6 +3327,51 @@ html[data-theme=dark] button.changeTheme {
     .info-window-action-container.report-area {
         flex-direction: row;
     }
+
+    .widget-container {
+        grid-template-columns: repeat(1, minmax(0, 1fr));
+    }
+
+    .pie-chart {
+        height: 250px;
+    }
+
+    .highcharts-title {
+        font-size: 16px !important;
+    }
+
+    .highcharts-axis-labels,
+    .highcharts-legend g {
+        font-size: 12px !important;
+    }
+
+    .highcharts-label {
+        font-size: 14px !important;
+    }
+
+    .bar-graph {
+        height: 350px !important;
+    }
+
+    .report-container {
+        display: block;
+        margin-top: 0;
+    }
+
+    .report-container p {
+        font-size: 14px;
+        margin: 0;
+    }
+
+    .generate-button-container {
+        margin-top: 12px;
+        display: flex;
+        justify-content: end;
+    }
+
+    .generateBtn {
+        font-size: 13px;
+    }
 }
 
 @media only screen and (max-width: 375px) {
@@ -3499,51 +3545,6 @@ html[data-theme=dark] button.changeTheme {
 
     .wigdet-header img {
         width: 25px;
-    }
-
-    .report-container {
-        display: block;
-        margin-top: 0;
-    }
-
-    .report-container p {
-        font-size: 14px;
-        margin: 0;
-    }
-
-    .generate-button-container {
-        margin-top: 12px;
-        display: flex;
-        justify-content: end;
-    }
-
-    .generateBtn {
-        font-size: 13px;
-    }
-
-    .widget-container {
-        grid-template-columns: repeat(1, minmax(0, 1fr));
-    }
-
-    .pie-chart {
-        height: 250px;
-    }
-
-    .highcharts-title {
-        font-size: 16px !important;
-    }
-
-    .highcharts-axis-labels,
-    .highcharts-legend g {
-        font-size: 12px !important;
-    }
-
-    .highcharts-label {
-        font-size: 14px !important;
-    }
-
-    .bar-graph {
-        height: 350px !important;
     }
 
     .guide-header img {
