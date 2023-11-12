@@ -92,8 +92,8 @@ class EmergencyReportController extends Controller
             'longitude'   => $request->longitude,
             'report_time' => Date::now(),
         ]);
-        // event(new EmergencyReport());
-        // event(new Notification());
+        event(new EmergencyReport());
+        event(new Notification());
 
         return response([]);
     }
@@ -103,8 +103,8 @@ class EmergencyReportController extends Controller
         $report = $this->emergencyReport->find($reportId);
         $report->update(['status' => $report->status == "Pending" ? "Rescuing" : "Rescued"]);
         $this->logActivity->generateLog($reportId, 'Emergency', 'set the emergency report status to resolving');
-        // event(new EmergencyReport());
-        // event(new Notification());
+        event(new EmergencyReport());
+        event(new Notification());
 
         return response([]);
     }
@@ -113,8 +113,8 @@ class EmergencyReportController extends Controller
     {
         $this->emergencyReport->find($reportId)->delete();
         $this->logActivity->generateLog($reportId, ' Emergency', 'removed emergency report');
-        // event(new EmergencyReport());
-        // event(new Notification());
+        event(new EmergencyReport());
+        event(new Notification());
 
         return response([]);
     }
@@ -137,7 +137,7 @@ class EmergencyReportController extends Controller
             'is_archive' => 1
         ]);
         $this->logActivity->generateLog($reportId, 'Emergency', "archived emergency report");
-        // event(new EmergencyReport());
+        event(new EmergencyReport());
 
         return response([]);
     }

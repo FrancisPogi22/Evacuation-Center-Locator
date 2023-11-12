@@ -5,6 +5,8 @@
 /public/storage
 /public/reports_image
 /public/guideline_image
+/public/hotline_logo
+/public/guide_photo
 /storage/*.key
 /vendor
 .env.backup

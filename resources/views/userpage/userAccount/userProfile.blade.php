@@ -40,7 +40,7 @@
                     <div class="details-section col-lg-4" id="user-organization">
                         <label class="profile-details-label">Organization</label>
                         @if (auth()->user()->organization == 'CDRRMO')
-                            <p class="profile-details" data-organization="CDRRMO">>Cabuyao City Disaster Risk Reduction
+                            <p class="profile-details" data-organization="CDRRMO">Cabuyao City Disaster Risk Reduction
                                 and Management Office (CDRRMO)</p>
                         @else
                             <p class="profile-details" data-organization="CSWD">City Social Welfare and
