@@ -92,7 +92,7 @@ class EvacueeController extends Controller
         $evacueeInfo['user_id']     = auth()->user()->id;
         $evacueeInfo                = $this->evacuee->create($evacueeInfo);
         $this->logActivity->generateLog($evacueeInfo->id, $evacueeInfo->barangay, 'recorded a new evacuee information');
-        // event(new ActiveEvacuees());
+        event(new ActiveEvacuees());
 
         return response([]);
     }
@@ -129,7 +129,7 @@ class EvacueeController extends Controller
         $evacueeInfo['user_id']     = auth()->user()->id;
         $evacueeInfo                = $this->evacuee->find($evacueeId)->update($evacueeInfo);
         $this->logActivity->generateLog($evacueeId, '', 'updated a evacuee information');
-        // event(new ActiveEvacuees());
+        event(new ActiveEvacuees());
 
         return response([]);
     }
