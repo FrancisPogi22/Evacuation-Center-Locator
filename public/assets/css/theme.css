@@ -534,8 +534,7 @@ button.changeTheme:hover {
     width: 100%;
 }
 
-.sidebar #logo,
-html[data-theme="dark"] .sidebar #logo {
+.sidebar #logo {
     width: 55px;
 }
 
@@ -2837,12 +2836,7 @@ html[data-theme="dark"] textarea::placeholder {
     color: var(--color-d-text) !important;
 }
 
-html[data-theme="dark"]::-webkit-scrollbar-thumb,
-html[data-theme="dark"] .info-window-details-container::-webkit-scrollbar-thumb,
-html[data-theme="dark"] .info-window-update-container::-webkit-scrollbar-thumb,
-html[data-theme="dark"] .report-markers::-webkit-scrollbar-thumb,
-html[data-theme="dark"] .marker-container::-webkit-scrollbar-thumb,
-html[data-theme="dark"] .evacuation-markers::-webkit-scrollbar-thumb {
+html[data-theme="dark"] ::-webkit-scrollbar-thumb {
     background: #55657e !important;
 }
 
@@ -3309,7 +3303,6 @@ html[data-theme="dark"] button.changeTheme {
     }
 
     .sidebar,
-    html[data-theme="dark"] .sidebar,
     .sidebar:hover {
         width: 0;
     }
@@ -3321,8 +3314,7 @@ html[data-theme="dark"] button.changeTheme {
         display: block;
     }
 
-    .sidebar.active,
-    html[data-theme="dark"] .sidebar.active {
+    .sidebar.active {
         width: 320px;
     }
 
@@ -3536,8 +3528,7 @@ html[data-theme="dark"] button.changeTheme {
         padding: 8px 13px 2px 13px;
     }
 
-    .sidebar.active,
-    html[data-theme="dark"] .sidebar.active {
+    .sidebar.active {
         width: 280px;
     }
 
@@ -3780,8 +3771,7 @@ html[data-theme="dark"] button.changeTheme {
         padding: 8px !important;
     }
 
-    .hotline-form-content label,
-    .number-section .fw-bold {
+    .hotline-form-content label {
         font-size: 14px;
         margin-top: 12px;
     }
