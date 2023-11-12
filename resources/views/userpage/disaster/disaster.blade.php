@@ -104,6 +104,7 @@
 
             @if (auth()->user()->is_disable == 0)
                 let disasterId, defaultFormData, operation, validator,
+                    form = $("#disasterForm"),
                     modalLabelContainer = $('.modal-label-container'),
                     modalLabel = $('.modal-label'),
                     formButton = $('#submitDisasterBtn'),
@@ -115,7 +116,7 @@
                     }
                 });
 
-                validator = $("#disasterForm").validate({
+                validator = form.validate({
                     rules: {
                         name: 'required'
                     },
@@ -151,7 +152,7 @@
                     }
                 });
 
-                $(document).on('click', '#addDisasterData', () => {
+                $('#addDisasterData').click(() => {
                     modalLabelContainer.removeClass('bg-warning');
                     modalLabel.text('Add Disaster');
                     formButton.addClass('btn-submit').removeClass('btn-update').text('Add');
@@ -171,7 +172,7 @@
                     formButton.addClass('btn-update').removeClass('btn-submit').text('Update');
                     operation = "update";
                     modal.modal('show');
-                    defaultFormData = $('#disasterForm').serialize();
+                    defaultFormData = form.serialize();
                 });
 
                 $(document).on('click', '#archiveDisaster', function() {
@@ -191,7 +192,7 @@
 
                 modal.on('hidden.bs.modal', () => {
                     validator && validator.resetForm();
-                    $('#disasterForm')[0].reset();
+                    form[0].reset();
                 });
 
                 function alterDisasterData(operation, url, btn, status = null) {

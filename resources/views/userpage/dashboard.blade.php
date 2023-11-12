@@ -30,7 +30,7 @@
                             <i class="bi bi-printer"></i>
                             Generate Disaster Data
                         </button>
-                        <div class="modal fade" id="generateReportModal" data-bs-backdrop="static"aria-hidden="true">
+                        <div class="modal fade" id="generateReportModal" data-bs-backdrop="static" aria-hidden="true">
                             <div class="modal-dialog">
                                 <div class="modal-content">
                                     <div class="modal-label-container">
@@ -41,8 +41,7 @@
                                         </button>
                                     </div>
                                     <div class="modal-body">
-                                        <form action="{{ route('generate.evacuee.data') }}" method="POST"
-                                            id="generateReportForm">
+                                        <form method="POST" id="generateReportForm">
                                             @csrf
                                             <div class="form-content">
                                                 <div class="field-container">
@@ -65,7 +64,7 @@
                                                     </select>
                                                 </div>
                                                 <div class="form-button-container">
-                                                    <button class="btn-submit">Generate</button>
+                                                    <button class="btn-submit" id="btnSubmit">Generate</button>
                                                 </div>
                                             </div>
                                         </form>
@@ -143,30 +142,23 @@
     @include('partials.toastr')
     <script>
         $(document).ready(() => {
-            let disasterList = $('#disaster-list'),
+            let validator, modal = $("#generateReportModal"),
+                form = $('#generateReportForm'),
+                disasterList = $('#disaster-list'),
                 searchResults = $('#disaster_id');
 
-            $(document).on('change', '#disaster_year', function() {
-                $.ajax({
-                    url: `{{ route('fetch.disasters', 'disasterYear') }}`
-                        .replace('disasterYear', $(this).val()),
-                    method: 'GET',
-                    success(response) {
-                        searchResults.empty();
-
-                        response.forEach(disasters => {
-                            searchResults.append(
-                                `<option class="searchResult" value="${disasters.id}">${disasters.name}</option>`
-                            );
-                        });
-
+            $('#disaster_year').change(function() {
+                $.get(`{{ route('fetch.disasters', 'disasterYear') }}`
+                        .replace('disasterYear', $(this).val()))
+                    .done(response => {
+                        searchResults.empty().append(response.map(disaster =>
+                            `<option class="searchResult" value="${disaster.id}">${disaster.name}</option>`
+                        ));
                         disasterList.prop('hidden', 0);
-                    },
-                    error: showErrorMessage
-                });
+                    }).fail(showErrorMessage);
             });
 
-            const validator = $("#generateReportForm").validate({
+            validator = form.validate({
                 rules: {
                     disaster_year: 'required'
                 },
@@ -176,11 +168,18 @@
                 errorElement: 'span'
             });
 
-            $(document).on('click', '#closeModalBtn', function() {
+            $("#btnSubmit").click(() => {
+                if (validator.form()) {
+                    form.attr('action', '{{ route('generate.evacuee.data') }}').off('submit').submit();
+                    modal.modal('hide');
+                }
+            });
+
+            modal.on('hidden.bs.modal', () => {
                 validator && validator.resetForm();
                 searchResults.empty();
                 disasterList.prop('hidden', 1);
-                $('#generateReportForm')[0].reset();
+                form[0].reset();
             });
 
             evacueeData();
@@ -196,20 +195,12 @@
         });
 
         function evacueeData() {
-            $.ajax({
-                url: "{{ route('fetchDisasterData') }}",
-                method: 'GET',
-                dataType: 'json',
-                success(disasterData) {
-                    disasterData.forEach((disaster, count) => {
-                        if (disaster['totalEvacuee'] != 0) {
-                            initializePieChart(disaster, count);
-                            initializeBarGraph(disaster, count);
-                        }
-                    });
-                },
-                error: () => showErrorMessage("Unable to fetch data.")
-            });
+            $.get("{{ route('fetchDisasterData') }}")
+                .done(disasterData => disasterData.forEach((disaster, count) =>
+                    disaster.totalEvacuee != 0 && (initializePieChart(disaster, count), initializeBarGraph(disaster,
+                        count))
+                ))
+                .fail(() => showErrorMessage("Unable to fetch data."));
         }
 
         function initializePieChart(disaster, count) {
@@ -260,9 +251,7 @@
                 chart: {
                     type: 'bar'
                 },
-                title: {
-                    text: "Evacuees Statistics"
-                },
+                title: false,
                 xAxis: {
                     categories: ['SENIOR CITIZEN', 'MINORS', 'INFANTS', 'PWD', 'PREGNANT', 'LACTATING']
                 },
