@@ -16,7 +16,7 @@
     --color-primary-hover: #1d4ed8;
 
     --color-text: #ffffff;
-    --color-background: #f6f7fb;
+    --color-background: #f0f2f5;
 
     --color-d-background: #182130;
     --color-d-text: #e2e8f0;
@@ -36,7 +36,7 @@
     user-select: none;
 }
 
-html[data-theme=dark] body {
+html[data-theme="dark"] body {
     background: var(--color-d-background) !important;
 }
 
@@ -48,8 +48,8 @@ button {
 
 .toast-title,
 .toast-message,
-html[data-theme=dark] .toast-title,
-html[data-theme=dark] .toast-message {
+html[data-theme="dark"] .toast-title,
+html[data-theme="dark"] .toast-message {
     color: var(--color-text);
 }
 
@@ -59,6 +59,7 @@ html[data-theme=dark] .toast-message {
 
 ::-webkit-scrollbar-thumb {
     background: var(--color-d-sub-text);
+    border-radius: 5px;
 }
 
 select::placeholder,
@@ -82,7 +83,8 @@ textarea::placeholder {
     font-weight: 600;
     border-radius: 4px;
     padding: 8px 16px;
-    filter: drop-shadow(0 4px 3px rgb(0 0 0 / 0.07)) drop-shadow(0 2px 2px rgb(0 0 0 / 0.06));
+    filter: drop-shadow(0 4px 3px rgb(0 0 0 / 0.07))
+        drop-shadow(0 2px 2px rgb(0 0 0 / 0.06));
     border: none;
 }
 
@@ -163,7 +165,8 @@ textarea::placeholder {
 .btn-table-primary:hover,
 #existingRecordBtn:hover,
 #changeEvacueeStatusBtn:hover,
-#pinpointCurrentLocationBtn:hover {
+#pinpointCurrentLocationBtn:hover,
+.hotline-logo-container button:hover {
     background: var(--color-primary-hover);
     transform: scale(1.05);
 }
@@ -172,7 +175,8 @@ textarea::placeholder {
 .btn-update,
 .btn-remove,
 #pinpointCurrentLocationBtn {
-    filter: drop-shadow(0 4px 3px rgb(0 0 0 / 0.07)) drop-shadow(0 2px 2px rgb(0 0 0 / 0.06));
+    filter: drop-shadow(0 4px 3px rgb(0 0 0 / 0.07))
+        drop-shadow(0 2px 2px rgb(0 0 0 / 0.06));
 }
 
 .sendUpdateBtn,
@@ -241,7 +245,8 @@ textarea::placeholder {
     height: 60px;
     background: var(--color-light-gray);
     z-index: 1;
-    filter: drop-shadow(0 10px 8px rgb(0 0 0 / 0.04)) drop-shadow(0 4px 3px rgb(0 0 0 / 0.1));
+    filter: drop-shadow(0 10px 8px rgb(0 0 0 / 0.04))
+        drop-shadow(0 4px 3px rgb(0 0 0 / 0.1));
 }
 
 .header-section .container-fluid {
@@ -290,7 +295,7 @@ button.changeTheme {
 
 #emergencyBtn:hover,
 button.changeTheme:hover {
-    transform: scale(1.05);
+    transform: scale(1.1);
 }
 
 #emergencyBtn {
@@ -460,7 +465,8 @@ button.changeTheme:hover {
     z-index: 100;
     left: 0;
     top: 0;
-    filter: drop-shadow(0 10px 8px rgb(0 0 0 / 0.04)) drop-shadow(0 4px 3px rgb(0 0 0 / 0.1));
+    filter: drop-shadow(0 10px 8px rgb(0 0 0 / 0.04))
+        drop-shadow(0 4px 3px rgb(0 0 0 / 0.1));
     overflow: hidden;
     transition: 0.2s all ease;
 }
@@ -528,8 +534,7 @@ button.changeTheme:hover {
     width: 100%;
 }
 
-.sidebar #logo,
-html[data-theme=dark] .sidebar #logo {
+.sidebar #logo {
     width: 55px;
 }
 
@@ -707,7 +712,8 @@ html[data-theme=dark] .sidebar #logo {
     width: 100%;
     max-width: 430px;
     border-radius: 6px;
-    filter: drop-shadow(0 10px 8px rgb(0 0 0 / 0.04)) drop-shadow(0 4px 3px rgb(0 0 0 / 0.1));
+    filter: drop-shadow(0 10px 8px rgb(0 0 0 / 0.04))
+        drop-shadow(0 4px 3px rgb(0 0 0 / 0.1));
 }
 
 .auth-form-section form {
@@ -806,7 +812,8 @@ html[data-theme=dark] .sidebar #logo {
     width: 100%;
     max-width: 500px;
     border-radius: 6px;
-    filter: drop-shadow(0 10px 8px rgb(0 0 0 / 0.04)) drop-shadow(0 4px 3px rgb(0 0 0 / 0.1));
+    filter: drop-shadow(0 10px 8px rgb(0 0 0 / 0.04))
+        drop-shadow(0 4px 3px rgb(0 0 0 / 0.1));
 }
 
 .recover-form form label,
@@ -899,7 +906,8 @@ html[data-theme=dark] .sidebar #logo {
     font-style: italic;
 }
 
-.field-container #imageBtn {
+.field-container #imageBtn,
+.hotline-container #imageBtn {
     font-size: 14px;
 }
 
@@ -931,7 +939,8 @@ html[data-theme=dark] .sidebar #logo {
     position: relative;
     overflow: hidden;
     border-radius: 15px;
-    filter: drop-shadow(0 10px 8px rgb(0 0 0 / 0.04)) drop-shadow(0 4px 3px rgb(0 0 0 / 0.1));
+    filter: drop-shadow(0 10px 8px rgb(0 0 0 / 0.04))
+        drop-shadow(0 4px 3px rgb(0 0 0 / 0.1));
     -webkit-animation: scaleIn 0.5s;
     animation: scaleIn 0.5s;
 }
@@ -978,7 +987,8 @@ html[data-theme=dark] .sidebar #logo {
     width: 500px;
     border-radius: 15px;
     margin-right: 20px;
-    filter: drop-shadow(0 10px 8px rgb(0 0 0 / 0.04)) drop-shadow(0 4px 3px rgb(0 0 0 / 0.1));
+    filter: drop-shadow(0 10px 8px rgb(0 0 0 / 0.04))
+        drop-shadow(0 4px 3px rgb(0 0 0 / 0.1));
 }
 
 .highcharts-background {
@@ -989,7 +999,8 @@ html[data-theme=dark] .sidebar #logo {
     flex: 1;
     height: 400px;
     border-radius: 15px;
-    filter: drop-shadow(0 10px 8px rgb(0 0 0 / 0.04)) drop-shadow(0 4px 3px rgb(0 0 0 / 0.1));
+    filter: drop-shadow(0 10px 8px rgb(0 0 0 / 0.04))
+        drop-shadow(0 4px 3px rgb(0 0 0 / 0.1));
 }
 
 .highcharts-label path {
@@ -1098,7 +1109,8 @@ text {
     position: relative;
     width: 300px;
     transition: 0.1s all ease-in-out;
-    filter: drop-shadow(0 10px 8px rgb(0 0 0 / 0.04)) drop-shadow(0 4px 3px rgb(0 0 0 / 0.1));
+    filter: drop-shadow(0 10px 8px rgb(0 0 0 / 0.04))
+        drop-shadow(0 4px 3px rgb(0 0 0 / 0.1));
 }
 
 .guideline-widget:hover {
@@ -1136,7 +1148,8 @@ text {
     z-index: -50;
     position: relative;
     background: var(--color-text);
-    filter: drop-shadow(0 20px 13px rgb(0 0 0 / 0.03)) drop-shadow(0 8px 5px rgb(0 0 0 / 0.08));
+    filter: drop-shadow(0 20px 13px rgb(0 0 0 / 0.03))
+        drop-shadow(0 8px 5px rgb(0 0 0 / 0.08));
     border-radius: 4px;
 }
 
@@ -1244,6 +1257,8 @@ text {
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    margin: 100px 50px;
+    text-align: center;
 }
 
 .empty-data-container img {
@@ -1281,7 +1296,8 @@ text {
 .guideline-btn .btn-container button i {
     padding: 8px;
     font-size: 18px;
-    filter: drop-shadow(0 20px 13px rgb(0 0 0 / 0.03)) drop-shadow(0 8px 5px rgb(0 0 0 / 0.08));
+    filter: drop-shadow(0 20px 13px rgb(0 0 0 / 0.03))
+        drop-shadow(0 8px 5px rgb(0 0 0 / 0.08));
 }
 
 .guideline-btn div {
@@ -1318,7 +1334,8 @@ text {
     text-align: center;
     background: var(--color-text);
     border-radius: 10px;
-    filter: drop-shadow(0 20px 13px rgb(0 0 0 / 0.03)) drop-shadow(0 8px 5px rgb(0 0 0 / 0.08));
+    filter: drop-shadow(0 20px 13px rgb(0 0 0 / 0.03))
+        drop-shadow(0 8px 5px rgb(0 0 0 / 0.08));
 }
 
 .weather-section h4 {
@@ -1613,40 +1630,41 @@ div.gm-style-iw.gm-style-iw-c {
     align-items: center;
     border-radius: 4px;
     border: 2px solid var(--color-light-gray);
-    filter: drop-shadow(0 4px 3px rgb(0 0 0 / 0.07)) drop-shadow(0 2px 2px rgb(0 0 0 / 0.06));
+    filter: drop-shadow(0 4px 3px rgb(0 0 0 / 0.07))
+        drop-shadow(0 2px 2px rgb(0 0 0 / 0.06));
     white-space: nowrap;
     -ms-overflow-style: none;
     scrollbar-width: none;
     overflow: auto;
 }
 
-html[data-theme=dark] .gmnoprint button,
-html[data-theme=dark] .gmnoprint ul,
-html[data-theme=dark] .gmnoprint li {
+html[data-theme="dark"] .gmnoprint button,
+html[data-theme="dark"] .gmnoprint ul,
+html[data-theme="dark"] .gmnoprint li {
     background: var(--color-d-bg-container) !important;
     color: var(--color-d-text) !important;
 }
 
-html[data-theme=dark] .ssQIHO-checkbox-menu-item span,
-html[data-theme=dark] .ssQIHO-checkbox-menu-item label {
+html[data-theme="dark"] .ssQIHO-checkbox-menu-item span,
+html[data-theme="dark"] .ssQIHO-checkbox-menu-item label {
     color: var(--color-d-text);
     fill: var(--color-d-text);
 }
 
-html[data-theme=dark] .gmnoprint div,
-html[data-theme=dark] .ssQIHO-checkbox-menu-item span span {
+html[data-theme="dark"] .gmnoprint div,
+html[data-theme="dark"] .ssQIHO-checkbox-menu-item span span {
     background: var(--color-d-text) !important;
 }
 
-html[data-theme=dark] .gmnoprint button span {
+html[data-theme="dark"] .gmnoprint button span {
     color: var(--color-d-text);
 }
 
-html[data-theme=dark] .gmnoprint button {
+html[data-theme="dark"] .gmnoprint button {
     background: var(--color-d-bg-container) !important;
 }
 
-html[data-theme=dark] .gmnoprint button span {
+html[data-theme="dark"] .gmnoprint button span {
     color: var(--color-d-text);
 }
 
@@ -1789,7 +1807,8 @@ html[data-theme=dark] .gmnoprint button span {
     padding: 16px 0;
     border-radius: 4px;
     margin: 12px 0;
-    filter: drop-shadow(0 10px 8px rgb(0 0 0 / 0.04)) drop-shadow(0 4px 3px rgb(0 0 0 / 0.1));
+    filter: drop-shadow(0 10px 8px rgb(0 0 0 / 0.04))
+        drop-shadow(0 4px 3px rgb(0 0 0 / 0.1));
 }
 
 .incidentReportTable {
@@ -1800,7 +1819,8 @@ html[data-theme=dark] .gmnoprint button span {
 .incident-report-container {
     background: var(--color-text);
     border-radius: 4px;
-    filter: drop-shadow(0 4px 3px rgb(0 0 0 / 0.07)) drop-shadow(0 2px 2px rgb(0 0 0 / 0.06));
+    filter: drop-shadow(0 4px 3px rgb(0 0 0 / 0.07))
+        drop-shadow(0 2px 2px rgb(0 0 0 / 0.06));
 }
 
 .incident-report-content {
@@ -1810,7 +1830,8 @@ html[data-theme=dark] .gmnoprint button span {
 }
 
 .report-photo-container {
-    filter: drop-shadow(0 4px 3px rgb(0 0 0 / 0.07)) drop-shadow(0 2px 2px rgb(0 0 0 / 0.06));
+    filter: drop-shadow(0 4px 3px rgb(0 0 0 / 0.07))
+        drop-shadow(0 2px 2px rgb(0 0 0 / 0.06));
 }
 
 .incident-report-details {
@@ -1890,7 +1911,8 @@ html[data-theme=dark] .gmnoprint button span {
     padding: 24px;
     background: var(--color-text);
     border-radius: 6px;
-    filter: drop-shadow(0 20px 13px rgb(0 0 0 / 0.03)) drop-shadow(0 8px 5px rgb(0 0 0 / 0.08));
+    filter: drop-shadow(0 20px 13px rgb(0 0 0 / 0.03))
+        drop-shadow(0 8px 5px rgb(0 0 0 / 0.08));
 }
 
 .e-ligtas-tagline {
@@ -1923,7 +1945,8 @@ html[data-theme=dark] .gmnoprint button span {
     text-align: center;
     background: var(--color-light-gray);
     border-radius: 6px;
-    filter: drop-shadow(0 20px 13px rgb(0 0 0 / 0.03)) drop-shadow(0 8px 5px rgb(0 0 0 / 0.08));
+    filter: drop-shadow(0 20px 13px rgb(0 0 0 / 0.03))
+        drop-shadow(0 8px 5px rgb(0 0 0 / 0.08));
 }
 
 .about-content {
@@ -1943,7 +1966,8 @@ html[data-theme=dark] .gmnoprint button span {
     background: var(--color-text);
     color: var(--color-black);
     border-radius: 6px;
-    filter: drop-shadow(0 20px 13px rgb(0 0 0 / 0.03)) drop-shadow(0 8px 5px rgb(0 0 0 / 0.08));
+    filter: drop-shadow(0 20px 13px rgb(0 0 0 / 0.03))
+        drop-shadow(0 8px 5px rgb(0 0 0 / 0.08));
 }
 
 .addressData,
@@ -1981,7 +2005,8 @@ html[data-theme=dark] .gmnoprint button span {
 
 .social-section,
 .telephone-section {
-    filter: drop-shadow(0 20px 13px rgb(0 0 0 / 0.03)) drop-shadow(0 8px 5px rgb(0 0 0 / 0.08));
+    filter: drop-shadow(0 20px 13px rgb(0 0 0 / 0.03))
+        drop-shadow(0 8px 5px rgb(0 0 0 / 0.08));
     background: var(--color-text);
     color: var(--color-black);
     border-radius: 6px;
@@ -2026,77 +2051,109 @@ html[data-theme=dark] .gmnoprint button span {
     margin-bottom: 0;
 }
 
-.hotline-header {
-    display: flex;
-    justify-content: space-between;
-}
-
-.hotline-header .hotline-label {
-    flex: 1;
-}
-
-.add-hotline-btn .btn-remove {
-    padding: 8px 16px;
-}
-
-.add-hotline-btn {
-    float: right;
-    margin-top: 10px;
-}
-
-.hotline-content {
-    width: 100%;
-}
-
-.hotline-details {
-    width: 100%;
-    margin: auto;
-    padding: 0 10px;
-}
-
-.header-btn-container {
-    margin: auto;
-}
-
-.header-btn-container button {
-    padding: 4px;
-}
-
-.header-btn-container button i {
-    padding: 10px;
-    font-size: 15px;
-    margin: auto;
-}
-
-.input-field-section {
-    display: flex;
-    flex-direction: row;
-    width: 100%;
-}
-
-.hotline-logo img {
-    width: 100px;
-    margin: 15px 20px;
-}
-
-.hotline-logo {
-    margin: 0 10px;
-    display: flex;
-    flex-direction: column;
-}
-
 .hotline-container {
     display: flex;
-    flex-direction: row;
     margin: 10px 0;
-    padding: 24px 10px;
     background: var(--color-text);
     border-radius: 4px;
-    filter: drop-shadow(0 20px 13px rgb(0 0 0 / 0.03)) drop-shadow(0 8px 5px rgb(0 0 0 / 0.08));
+    filter: drop-shadow(0 20px 13px rgb(0 0 0 / 0.03))
+        drop-shadow(0 8px 5px rgb(0 0 0 / 0.08));
 }
 
-.hotline-container hr {
-    margin: 15px 0;
+.hotline-logo-container {
+    width: 140px;
+    margin: 10px;
+    text-align: center;
+}
+
+.hotline-logo-container-list {
+    width: 80px;
+    margin: 10px;
+    text-align: center;
+}
+
+#hotline-preview-image {
+    max-width: 140px;
+    height: 140px;
+    border-radius: 4px;
+}
+
+.hotline-preview-image-list {
+    max-width: 80px;
+    height: 80px;
+    border-radius: 4px;
+}
+
+.hotline-logo-container button {
+    margin-top: 10px;
+    width: 100%;
+}
+
+.hotline-details-container {
+    width: 100%;
+    margin: 10px 10px 10px 0;
+    justify-content: center;
+    align-items: center;
+}
+
+.hotline-details-container hr {
+    margin: 0 !important;
+}
+
+.hotline-data-container {
+    padding: 10px 0;
+    font-size: 16px;
+    word-wrap: break-word;
+}
+
+.hotline-data-container:first-of-type {
+    padding-top: 8px;
+}
+
+.hotline-data-container.last-data {
+    padding-bottom: 0;
+}
+
+.hotline-form-content .last-label {
+    margin-top: 12px;
+}
+
+.hotline-form-content input {
+    border-radius: 5px;
+    font-weight: 400;
+    font-size: 0.875rem;
+    border: 2px solid var(--color-d-sub-text);
+    height: 40px;
+}
+
+.hotline-form-button-container,
+.hotline-form-button-container-list {
+    display: flex;
+    margin-top: 10px;
+    align-items: center;
+    justify-content: end;
+    height: fit-content;
+    text-align: center;
+}
+
+.hotline-form-button-container-list a,
+.hotline-form-button-container .btn-remove,
+.hotline-form-button-container-list .btn-remove {
+    padding: 8px 16px;
+    margin-left: 10px;
+}
+
+.hotline-form-button-container-list a,
+.hotline-form-button-container .updateNumber,
+.hotline-form-button-container .removeNumber,
+.hotline-form-button-container-list .updateNumber,
+.hotline-form-button-container-list .removeNumber {
+    padding: 4px 8px;
+}
+
+.hotline-container i {
+    font-size: 14px !important;
+    margin-right: 8px !important;
 }
 
 .number-section .font-bold a {
@@ -2117,7 +2174,8 @@ html[data-theme=dark] .gmnoprint button span {
     margin-top: 18px;
     margin-bottom: 10px;
     border-radius: 4px;
-    filter: drop-shadow(0 10px 8px rgb(0 0 0 / 0.04)) drop-shadow(0 4px 3px rgb(0 0 0 / 0.1));
+    filter: drop-shadow(0 10px 8px rgb(0 0 0 / 0.04))
+        drop-shadow(0 4px 3px rgb(0 0 0 / 0.1));
 }
 
 .user-profile-container hr {
@@ -2188,7 +2246,8 @@ html[data-theme=dark] .gmnoprint button span {
     height: max-content;
     padding: 10px;
     font-weight: 700;
-    filter: drop-shadow(0 10px 8px rgb(0 0 0 / 0.04)) drop-shadow(0 4px 3px rgb(0 0 0 / 0.1));
+    filter: drop-shadow(0 10px 8px rgb(0 0 0 / 0.04))
+        drop-shadow(0 4px 3px rgb(0 0 0 / 0.1));
     border-bottom-right-radius: 0.25rem;
     border-bottom-left-radius: 0.25rem;
 }
@@ -2570,7 +2629,8 @@ span.error {
 .table-container {
     padding: 12px;
     background: var(--color-text);
-    filter: drop-shadow(0 10px 8px rgb(0 0 0 / 0.04)) drop-shadow(0 4px 3px rgb(0 0 0 / 0.1));
+    filter: drop-shadow(0 10px 8px rgb(0 0 0 / 0.04))
+        drop-shadow(0 4px 3px rgb(0 0 0 / 0.1));
     border-radius: 8px;
     overflow: hidden;
 }
@@ -2675,442 +2735,452 @@ select.form-select option {
     font-size: 15px;
 }
 
-html[data-theme=dark] {
+html[data-theme="dark"] {
     background: var(--color-d-background);
 }
 
-html[data-theme=dark] * {
+html[data-theme="dark"] * {
     font-weight: 500 !important;
     color: var(--color-text);
 }
 
-html[data-theme=dark] .header-section {
+html[data-theme="dark"] .header-section {
     background: var(--color-gray);
     transition: 0.2s all ease;
 }
 
-html[data-theme=dark] #btn-sidebar-mobile {
+html[data-theme="dark"] #btn-sidebar-mobile {
     color: var(--color-d-text) !important;
 }
 
-html[data-theme=dark] .sidebar {
+html[data-theme="dark"] .sidebar {
     background: var(--color-d-bg-container);
 }
 
-html[data-theme=dark] .sub-menu {
+html[data-theme="dark"] .sub-menu {
     background: #55657e;
 }
 
-html[data-theme=dark] .links_name,
-html[data-theme=dark] .navigation-item i {
+html[data-theme="dark"] .links_name,
+html[data-theme="dark"] .navigation-item i {
     color: var(--color-d-text) !important;
 }
 
-html[data-theme=dark] .sidebar ul .navigation-item a:not(.active-link):hover {
+html[data-theme="dark"] .sidebar ul .navigation-item a:not(.active-link):hover {
     background: #3a4555 !important;
 }
 
-html[data-theme=dark] .sidebar .active-link {
+html[data-theme="dark"] .sidebar .active-link {
     background: var(--color-gray) !important;
 }
 
-html[data-theme=dark] .user-details {
+html[data-theme="dark"] .user-details {
     background: var(--color-gray);
     color: var(--color-d-text);
 }
 
-html[data-theme=dark] .guideline-type {
+html[data-theme="dark"] .guideline-type {
     background: var(--color-gray);
 }
 
-html[data-theme=dark] .header-title {
+html[data-theme="dark"] .header-title {
     color: var(--color-d-text);
     background: var(--color-gray);
 }
 
-html[data-theme=dark] .map-section,
-html[data-theme=dark] .area-map,
-html[data-theme=dark] .report-markers,
-html[data-theme=dark] .reporting-map,
-html[data-theme=dark] .evacuation-markers {
+html[data-theme="dark"] .map-section,
+html[data-theme="dark"] .area-map,
+html[data-theme="dark"] .report-markers,
+html[data-theme="dark"] .reporting-map,
+html[data-theme="dark"] .evacuation-markers {
     border-color: var(--color-gray);
 }
 
-html[data-theme=dark] .markers-header {
+html[data-theme="dark"] .markers-header {
     background: var(--color-gray);
 }
 
-html[data-theme=dark] .location-section,
-html[data-theme=dark] .social-section,
-html[data-theme=dark] .telephone-section,
-html[data-theme=dark] .hotline-container,
-html[data-theme=dark] .about-eligtas,
-html[data-theme=dark] .about-header {
+html[data-theme="dark"] .location-section,
+html[data-theme="dark"] .social-section,
+html[data-theme="dark"] .telephone-section,
+html[data-theme="dark"] .hotline-container,
+html[data-theme="dark"] .about-eligtas,
+html[data-theme="dark"] .about-header {
     background: var(--color-d-bg-container) !important;
 }
 
-html[data-theme=dark] .social-section p,
-html[data-theme=dark] .telephone-section p {
+html[data-theme="dark"] .social-section p,
+html[data-theme="dark"] .telephone-section p {
     color: var(--color-d-text);
 }
 
-html[data-theme=dark] .info-description.photo img,
-html[data-theme=dark] #selectedReportImage,
-html[data-theme=dark] select,
-html[data-theme=dark] input,
-html[data-theme=dark] textarea,
-html[data-theme=dark] .form-map,
-html[data-theme=dark] .info-window-details-container,
-html[data-theme=dark] .info-window-update-container {
+html[data-theme="dark"] .info-description.photo img,
+html[data-theme="dark"] #selectedReportImage,
+html[data-theme="dark"] select,
+html[data-theme="dark"] input,
+html[data-theme="dark"] textarea,
+html[data-theme="dark"] .form-map,
+html[data-theme="dark"] .info-window-details-container,
+html[data-theme="dark"] .info-window-update-container {
     border-color: var(--color-d-sub-text) !important;
 }
 
-html[data-theme=dark] .update-details-container small {
+html[data-theme="dark"] .update-details-container small {
     color: var(--color-yellow-hover);
 }
 
-html[data-theme=dark] select::placeholder,
-html[data-theme=dark] input::placeholder,
-html[data-theme=dark] textarea::placeholder {
+html[data-theme="dark"] select::placeholder,
+html[data-theme="dark"] input::placeholder,
+html[data-theme="dark"] textarea::placeholder {
     background: var(--color-d-bg-container) !important;
     color: var(--color-d-text) !important;
 }
 
-html[data-theme=dark]::-webkit-scrollbar-thumb,
-html[data-theme=dark] .info-window-details-container::-webkit-scrollbar-thumb,
-html[data-theme=dark] .info-window-update-container::-webkit-scrollbar-thumb,
-html[data-theme=dark] .report-markers::-webkit-scrollbar-thumb,
-html[data-theme=dark] .marker-container::-webkit-scrollbar-thumb,
-html[data-theme=dark] .evacuation-markers::-webkit-scrollbar-thumb {
+html[data-theme="dark"] ::-webkit-scrollbar-thumb {
     background: #55657e !important;
 }
 
-html[data-theme=dark] #loader-inner {
+html[data-theme="dark"] #loader-inner {
     border-top-color: var(--color-gray);
 }
 
-html[data-theme=dark] #btn-sidebar-close {
+html[data-theme="dark"] #btn-sidebar-close {
     color: var(--color-d-text) !important;
 }
 
-html[data-theme=dark] .action-container select {
+html[data-theme="dark"] .action-container select {
     border: none;
 }
 
-html[data-theme=dark] .dropdown-menu {
+html[data-theme="dark"] .dropdown-menu {
     background: var(--color-d-bg-container);
     border-color: var(--color-d-text);
 }
 
-html[data-theme=dark] .dropdown-menu .dropdown-item.changeTheme:active {
+html[data-theme="dark"] .dropdown-menu .dropdown-item.changeTheme:active {
     background-color: var(--color-text) !important;
 }
 
-html[data-theme=dark] .flatpickr-day:hover,
-html[data-theme=dark] .dropdown-menu .dropdown-item.changeTheme:active #themeText,
-html[data-theme=dark] .dropdown-menu .dropdown-item.changeTheme:active #themeIcon {
+html[data-theme="dark"] .flatpickr-day:hover,
+html[data-theme="dark"]
+    .dropdown-menu
+    .dropdown-item.changeTheme:active
+    #themeText,
+html[data-theme="dark"]
+    .dropdown-menu
+    .dropdown-item.changeTheme:active
+    #themeIcon {
     color: var(--color-black);
 }
 
-html[data-theme=dark] .flatpickr-day.selected {
+html[data-theme="dark"] .flatpickr-day.selected {
     background: var(--color-gray);
 }
 
-html[data-theme=dark] .flatpickr-weekday,
-html[data-theme=dark] .flatpickr-day,
-html[data-theme=dark] .dropdown-menu a {
+html[data-theme="dark"] .flatpickr-weekday,
+html[data-theme="dark"] .flatpickr-day,
+html[data-theme="dark"] .dropdown-menu a {
     color: var(--color-d-text);
 }
 
-html[data-theme=dark] .flatpickr-day.prevMonthDay,
-html[data-theme=dark] .flatpickr-day.nextMonthDay {
+html[data-theme="dark"] .flatpickr-day.prevMonthDay,
+html[data-theme="dark"] .flatpickr-day.nextMonthDay {
     color: var(--color-d-sub-text);
 }
 
-html[data-theme=dark] .dropdown-item:hover,
-html[data-theme=dark] .flatpickr-day.selected:hover,
-html[data-theme=dark] .flatpickr-day.prevMonthDay:hover,
-html[data-theme=dark] .flatpickr-day.nextMonthDay:hover,
-html[data-theme=dark] .custom-dropdown .dropdown-options ul {
+html[data-theme="dark"] .dropdown-item:hover,
+html[data-theme="dark"] .flatpickr-day.selected:hover,
+html[data-theme="dark"] .flatpickr-day.prevMonthDay:hover,
+html[data-theme="dark"] .flatpickr-day.nextMonthDay:hover,
+html[data-theme="dark"] .custom-dropdown .dropdown-options ul {
     background: var(--color-gray) !important;
 }
 
-html[data-theme=dark] .dropdown-item:focus,
-html[data-theme=dark] .renderable-component-text-box {
+html[data-theme="dark"] .dropdown-item:focus,
+html[data-theme="dark"] .renderable-component-text-box {
     background: var(--color-d-bg-container) !important;
 }
 
-html[data-theme=dark] .dropdown-menu:first:focus {
+html[data-theme="dark"] .dropdown-menu:first:focus {
     color: var(--color-black) !important;
 }
 
-html[data-theme=dark] .label-container i {
+html[data-theme="dark"] .label-container i {
     background: var(--color-gray);
 }
 
-html[data-theme=dark] .changePasswordBtn:active {
+html[data-theme="dark"] .changePasswordBtn:active {
     background: var(--color-primary) !important;
 }
 
-html[data-theme=dark] .myAccount:active {
+html[data-theme="dark"] .myAccount:active {
     background: var(--color-green) !important;
 }
 
-html[data-theme=dark] .logout:active {
+html[data-theme="dark"] .logout:active {
     background: var(--color-red) !important;
 }
 
-html[data-theme=dark] .label-container span,
-html[data-theme=dark] .report-container p,
-html[data-theme=dark] .wigdet-header p {
+html[data-theme="dark"] .label-container span,
+html[data-theme="dark"] .report-container p,
+html[data-theme="dark"] .wigdet-header p {
     color: var(--color-d-text);
 }
 
-html[data-theme=dark] .report-container span {
+html[data-theme="dark"] .report-container span {
     color: #f87171;
 }
 
-html[data-theme=dark] .widget {
+html[data-theme="dark"] .widget {
     background: var(--color-d-bg-container);
 }
 
-html[data-theme=dark] .content-description span {
+html[data-theme="dark"] .content-description span {
     color: var(--color-d-sub-text);
 }
 
-html[data-theme=dark] .highcharts-background {
+html[data-theme="dark"] .highcharts-background {
     fill: var(--color-d-bg-container);
 }
 
-html[data-theme=dark] .highcharts-title {
+html[data-theme="dark"] .highcharts-title {
     fill: var(--color-d-text) !important;
 }
 
-html[data-theme=dark] text {
+html[data-theme="dark"] text {
     fill: var(--color-text) !important;
 }
 
-html[data-theme=dark] .highcharts-label path {
+html[data-theme="dark"] .highcharts-label path {
     color: var(--color-d-sub-text) !important;
     fill: var(--color-d-background) !important;
 }
 
-html[data-theme=dark] .highcharts-bar-series path {
+html[data-theme="dark"] .highcharts-bar-series path {
     stroke: none;
 }
 
-html[data-theme=dark] .highcharts-color-1,
-html[data-theme=dark] .highcharts-bar-series path {
+html[data-theme="dark"] .highcharts-color-1,
+html[data-theme="dark"] .highcharts-bar-series path {
     fill: #f87171;
 }
 
-html[data-theme=dark] .highcharts-color-0,
-html[data-theme=dark] .highcharts-series-1 path {
+html[data-theme="dark"] .highcharts-color-0,
+html[data-theme="dark"] .highcharts-series-1 path {
     fill: #0369a1;
 }
 
-html[data-theme=dark] .highcharts-series-2 path {
+html[data-theme="dark"] .highcharts-series-2 path {
     fill: #16a34a;
 }
 
-html[data-theme=dark] .highcharts-series-3 path {
+html[data-theme="dark"] .highcharts-series-3 path {
     fill: #0d9488;
 }
 
-html[data-theme=dark] .highcharts-series-4 path {
+html[data-theme="dark"] .highcharts-series-4 path {
     fill: #b45309;
 }
 
-html[data-theme=dark] .highcharts-series-5 path {
+html[data-theme="dark"] .highcharts-series-5 path {
     fill: #7c3aed;
 }
 
-html[data-theme=dark] .highcharts-data-label-connector {
+html[data-theme="dark"] .highcharts-data-label-connector {
     stroke: var(--color-text);
 }
 
-html[data-theme=dark] .guideline-content {
+html[data-theme="dark"] .guideline-content {
     background: var(--color-d-bg-container);
 }
 
-html[data-theme=dark] .user-profile-container {
+html[data-theme="dark"] .user-profile-container {
     background: var(--color-d-bg-container);
 }
 
-html[data-theme=dark] .profile-details {
+html[data-theme="dark"] .profile-details {
     background: var(--color-d-bg-container);
 }
 
-html[data-theme=dark] .table-container {
+html[data-theme="dark"] .table-container {
     background: var(--color-d-bg-container);
 }
 
-html[data-theme=dark] th {
+html[data-theme="dark"] th {
     background: var(--color-gray);
 }
 
-html[data-theme=dark] table,
-html[data-theme=dark] th,
-html[data-theme=dark] td {
+html[data-theme="dark"] table,
+html[data-theme="dark"] th,
+html[data-theme="dark"] td {
     border-color: var(--color-d-sub-text) !important;
 }
 
-html[data-theme=dark] tr.selectedRow {
+html[data-theme="dark"] tr.selectedRow {
     background: var(--color-gray) !important;
 }
 
-html[data-theme=dark] .table-container select option {
+html[data-theme="dark"] .table-container select option {
     color: var(--color-black);
 }
 
-html[data-theme=dark] .dataTables_wrapper .dataTables_paginate .paginate_button.disabled,
-html[data-theme=dark] .dataTables_wrapper .dataTables_paginate .paginate_button.disabled:hover,
-html[data-theme=dark] .dataTables_wrapper .dataTables_paginate .paginate_button.disabled:active {
+html[data-theme="dark"]
+    .dataTables_wrapper
+    .dataTables_paginate
+    .paginate_button.disabled,
+html[data-theme="dark"]
+    .dataTables_wrapper
+    .dataTables_paginate
+    .paginate_button.disabled:hover,
+html[data-theme="dark"]
+    .dataTables_wrapper
+    .dataTables_paginate
+    .paginate_button.disabled:active {
     color: var(--color-d-sub-text) !important;
 }
 
-html[data-theme=dark] .modal-content {
+html[data-theme="dark"] .modal-content {
     background: var(--color-d-background);
     border-color: var(--color-background);
 }
 
-html[data-theme=dark] .form-content {
+html[data-theme="dark"] .form-content {
     background: var(--color-d-bg-container);
 }
 
-html[data-theme=dark] span.error,
-html[data-theme=dark] .report-time,
-html[data-theme=dark] .dataTables_empty,
-html[data-theme=dark] div.view-link span {
+html[data-theme="dark"] span.error,
+html[data-theme="dark"] .report-time,
+html[data-theme="dark"] .dataTables_empty,
+html[data-theme="dark"] div.view-link span {
     color: var(--color-yellow);
 }
 
-html[data-theme=dark] .reportUpdateForm textarea,
-html[data-theme=dark] #reportAreaForm textarea,
-html[data-theme=dark] .form-content textarea,
-html[data-theme=dark] #reportAreaForm input,
-html[data-theme=dark] .field-container input,
-html[data-theme=dark] #changeYearSelect,
-html[data-theme=dark] #hotlineForm input,
-html[data-theme=dark] #changeArchivedReportType,
-html[data-theme=dark] #changeEvacueeDataSelect,
-html[data-theme=dark] #changeArchiveEvacueeDataSelect,
-html[data-theme=dark] .field-container select,
-html[data-theme=dark] #reportAreaForm select,
-html[data-theme=dark] #search_guideline,
-html[data-theme=dark] .guideline-header .search-container .search-icon {
+html[data-theme="dark"] .reportUpdateForm textarea,
+html[data-theme="dark"] #reportAreaForm textarea,
+html[data-theme="dark"] .form-content textarea,
+html[data-theme="dark"] #reportAreaForm input,
+html[data-theme="dark"] .field-container input,
+html[data-theme="dark"] #changeYearSelect,
+html[data-theme="dark"] #hotlineForm input,
+html[data-theme="dark"] #changeArchivedReportType,
+html[data-theme="dark"] #changeEvacueeDataSelect,
+html[data-theme="dark"] #changeArchiveEvacueeDataSelect,
+html[data-theme="dark"] .field-container select,
+html[data-theme="dark"] #reportAreaForm select,
+html[data-theme="dark"] #search_guideline,
+html[data-theme="dark"] .guideline-header .search-container .search-icon {
     background: var(--color-d-bg-container);
     color: var(--color-d-text);
 }
 
-html[data-theme=dark] #guidelineForm textarea,
-html[data-theme=dark] #guideForm textarea {
+html[data-theme="dark"] #guidelineForm textarea,
+html[data-theme="dark"] #guideForm textarea {
     border: 2px solid var(--color-d-sub-text) !important;
 }
 
-html[data-theme=dark] .guideline-header .search-container .search-icon {
+html[data-theme="dark"] .guideline-header .search-container .search-icon {
     border: 1px solid var(--color-d-sub-text);
 }
 
-html[data-theme=dark] .weather-section,
-html[data-theme=dark] .guides-container {
+html[data-theme="dark"] .weather-section,
+html[data-theme="dark"] .guides-container {
     background: var(--color-d-bg-container);
 }
 
-html[data-theme=dark] .guide-label {
+html[data-theme="dark"] .guide-label {
     background: var(--color-d-background);
 }
 
-html[data-theme=dark] .guide-item,
-html[data-theme=dark] .dropdown-notification:hover {
+html[data-theme="dark"] .guide-item,
+html[data-theme="dark"] .dropdown-notification:hover {
     background: var(--color-gray);
 }
 
-html[data-theme=dark] .form-content textarea::placeholder,
-html[data-theme=dark] #reportAreaForm input::placeholder,
-html[data-theme=dark] .field-container input::placeholder,
-html[data-theme=dark] .field-container .form-select,
-html[data-theme=dark] #changeYearSelect,
-html[data-theme=dark] #changeArchivedReportType,
-html[data-theme=dark] #changeEvacueeDataSelect,
-html[data-theme=dark] #changeArchiveEvacueeDataSelect,
-html[data-theme=dark] #reportAreaForm select {
+html[data-theme="dark"] .form-content textarea::placeholder,
+html[data-theme="dark"] #reportAreaForm input::placeholder,
+html[data-theme="dark"] .field-container input::placeholder,
+html[data-theme="dark"] .field-container .form-select,
+html[data-theme="dark"] #changeYearSelect,
+html[data-theme="dark"] #changeArchivedReportType,
+html[data-theme="dark"] #changeEvacueeDataSelect,
+html[data-theme="dark"] #changeArchiveEvacueeDataSelect,
+html[data-theme="dark"] #reportAreaForm select {
     color: var(--color-d-text);
 }
 
-html[data-theme=dark] .flatpickr-monthDropdown-months {
+html[data-theme="dark"] .flatpickr-monthDropdown-months {
     color: var(--color-text) !important;
 }
 
-html[data-theme=dark] .flatpickr-monthDropdown-months option,
-html[data-theme=dark] #changeEvacueeDataSelect option,
-html[data-theme=dark] .dataTables_length select option,
-html[data-theme=dark] select.form-select option {
+html[data-theme="dark"] .flatpickr-monthDropdown-months option,
+html[data-theme="dark"] #changeEvacueeDataSelect option,
+html[data-theme="dark"] .dataTables_length select option,
+html[data-theme="dark"] select.form-select option {
     background: var(--color-d-background) !important;
     color: var(--color-d-text) !important;
 }
 
-html[data-theme=dark] .swal2-popup {
+html[data-theme="dark"] .swal2-popup {
     background: var(--color-d-background);
     border: 1px solid var(--color-d-sub-text);
 }
 
-html[data-theme=dark] .swal2-icon-content {
+html[data-theme="dark"] .swal2-icon-content {
     color: var(--color-primary);
 }
 
-html[data-theme=dark] .gm-style-iw,
-html[data-theme=dark] .gm-style-iw a,
-html[data-theme=dark] .gm-style-iw div,
-html[data-theme=dark] .gm-style-iw-tc::after {
+html[data-theme="dark"] .gm-style-iw,
+html[data-theme="dark"] .gm-style-iw a,
+html[data-theme="dark"] .gm-style-iw div,
+html[data-theme="dark"] .gm-style-iw-tc::after {
     background: var(--color-d-bg-container);
     color: var(--color-d-text);
 }
 
-html[data-theme=dark] .report-markers,
-html[data-theme=dark] .evacuation-markers {
+html[data-theme="dark"] .report-markers,
+html[data-theme="dark"] .evacuation-markers {
     background: var(--color-d-bg-container);
 }
 
-html[data-theme=dark] .info-window-hr {
+html[data-theme="dark"] .info-window-hr {
     background: var(--color-text);
 }
 
 .gmnoprint span,
 .ssQIHO-checkbox-menu-item label,
-html[data-theme=dark] .count-container span {
+html[data-theme="dark"] .count-container span {
     color: var(--color-black);
 }
 
-html[data-theme=dark] .flatpickr-calendar {
+html[data-theme="dark"] .flatpickr-calendar {
     background: var(--color-d-background);
     color: var(--color-text) !important;
 }
 
-html[data-theme=dark] .image-wrapper,
-html[data-theme=dark] .image-overlay {
+html[data-theme="dark"] .image-wrapper,
+html[data-theme="dark"] .image-overlay {
     border-color: var(--color-gray);
     background: var(--color-gray);
 }
 
-html[data-theme=dark] .profile-img {
+html[data-theme="dark"] .profile-img {
     border-color: var(--color-gray);
 }
 
-html[data-theme=dark] .profile-details-label {
+html[data-theme="dark"] .profile-details-label {
     background: var(--color-gray);
     color: var(--color-d-text) !important;
 }
 
-html[data-theme=dark] .guideline-widget button {
+html[data-theme="dark"] .guideline-widget button {
     background: var(--color-d-bg-container);
 }
 
-html[data-theme=dark] button.gm-ui-hover-effect span {
+html[data-theme="dark"] button.gm-ui-hover-effect span {
     background-color: var(--color-yellow-hover) !important;
 }
 
-html[data-theme=dark] button.changeTheme {
+html[data-theme="dark"] button.changeTheme {
     background: var(--color-d-bg-container);
 }
 
@@ -3129,7 +3199,6 @@ html[data-theme=dark] button.changeTheme {
 }
 
 @media only screen and (max-width: 1150px) {
-
     .auth-container,
     .recover-content,
     .res-password-content {
@@ -3169,7 +3238,7 @@ html[data-theme=dark] button.changeTheme {
         display: contents;
     }
 
-    .about-content>div {
+    .about-content > div {
         margin: 15px;
     }
 
@@ -3234,7 +3303,6 @@ html[data-theme=dark] button.changeTheme {
     }
 
     .sidebar,
-    html[data-theme=dark] .sidebar,
     .sidebar:hover {
         width: 0;
     }
@@ -3246,8 +3314,7 @@ html[data-theme=dark] button.changeTheme {
         display: block;
     }
 
-    .sidebar.active,
-    html[data-theme=dark] .sidebar.active {
+    .sidebar.active {
         width: 320px;
     }
 
@@ -3335,9 +3402,10 @@ html[data-theme=dark] button.changeTheme {
 
     .label-container {
         margin-bottom: 20px;
+        word-wrap: break-word;
     }
 
-    #toast-container>.toast-warning {
+    #toast-container > .toast-warning {
         width: 15em;
         background-size: 20px;
     }
@@ -3460,8 +3528,7 @@ html[data-theme=dark] button.changeTheme {
         padding: 8px 13px 2px 13px;
     }
 
-    .sidebar.active,
-    html[data-theme=dark] .sidebar.active {
+    .sidebar.active {
         width: 280px;
     }
 
@@ -3633,7 +3700,7 @@ html[data-theme=dark] button.changeTheme {
         font-size: 16px;
     }
 
-    .about-content>div {
+    .about-content > div {
         margin: 20px 0;
     }
 
@@ -3704,8 +3771,9 @@ html[data-theme=dark] button.changeTheme {
         padding: 8px !important;
     }
 
-    .number-section .fw-bold {
+    .hotline-form-content label {
         font-size: 14px;
+        margin-top: 12px;
     }
 
     .number-section p {
@@ -3728,6 +3796,8 @@ html[data-theme=dark] button.changeTheme {
     .sendUpdateBtn,
     .info-description.photo button,
     .info-window-action-container button,
+    .hotline-container button,
+    .hotline-container a,
     #submitAreaBtn,
     table td {
         font-size: 11px !important;
@@ -3756,8 +3826,7 @@ html[data-theme=dark] button.changeTheme {
         font-size: 10px !important;
     }
 
-    #reportAreaForm span.error,
-    .reportUpdateForm span.error {
+    span.error {
         font-size: 10px;
     }
 
@@ -3797,7 +3866,8 @@ html[data-theme=dark] button.changeTheme {
 
     .modal-content input,
     .modal-content select,
-    .modal-content textarea {
+    .modal-content textarea,
+    .hotline-form-content input {
         font-size: 12px !important;
         height: fit-content !important;
     }
@@ -3905,12 +3975,92 @@ html[data-theme=dark] button.changeTheme {
     }
 
     .empty-data-container {
-        margin: 50px 25px !important;
+        margin: 50px 0 !important;
     }
 
     .empty-data-container img {
         width: 100%;
         height: fit-content;
+    }
+
+    .empty-data-container p {
+        font-size: 12px;
+    }
+
+    .hotline-container {
+        flex-direction: column;
+    }
+
+    .hotline-preview-image-list {
+        max-width: 140px;
+    }
+
+    .hotline-logo-container,
+    .hotline-logo-container-list,
+    .hotline-image-container,
+    .hotline-image-container-list,
+    #hotline-preview-image,
+    .hotline-preview-image-list {
+        width: 100%;
+        height: fit-content;
+    }
+
+    .hotline-logo-container,
+    .hotline-logo-container-list,
+    .hotline-image-container,
+    .hotline-image-container-list {
+        padding-right: 10px;
+    }
+
+    .hotline-preview-image-list {
+        width: 140px;
+    }
+
+    .hotline-logo-container {
+        margin-bottom: -10px;
+    }
+
+    .hotline-logo-container button {
+        width: fit-content;
+        margin-right: 10px;
+    }
+
+    .hotline-details-container {
+        padding: 0 10px;
+        margin-top: 0;
+    }
+
+    .hotline-data-container {
+        font-size: 14px;
+    }
+
+    .hotline-data-container:first-child {
+        padding-top: 0;
+    }
+
+    .hotline-form-button-container,
+    .hotline-form-button-container-list {
+        flex-wrap: wrap;
+        justify-content: space-evenly;
+        margin-top: 0;
+    }
+
+    .hotline-form-button-container button,
+    .hotline-form-button-container-list a,
+    .hotline-form-button-container-list button {
+        margin-top: 10px;
+    }
+
+    .hotline-form-button-container-list a,
+    .hotline-form-button-container .btn-remove,
+    .hotline-form-button-container-list .btn-remove {
+        margin-left: 0;
+    }
+}
+
+@media only screen and (max-width: 200px) {
+    .hotline-preview-image-list {
+        width: 100%;
     }
 }
 

@@ -3,7 +3,7 @@
 <meta name="csrf-token" content="{{ csrf_token() }}">
 <meta http-equiv="X-UA-Compatible" content="ie=edge">
 <title>{{ config('app.name') }}</title>
-{{-- @vite(['resources/js/app.js']) --}}
+@vite(['resources/js/app.js'])
 <script>
     document.documentElement.setAttribute('data-theme', localStorage.getItem('theme'));
 </script>

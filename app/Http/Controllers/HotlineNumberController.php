@@ -14,33 +14,32 @@ class HotlineNumberController extends Controller
 
     public function __construct()
     {
-        $this->hotlineNumbers = new HotlineNumbers;
         $this->logActivity    = new ActivityUserLog;
+        $this->hotlineNumbers = new HotlineNumbers;
     }
 
     public function addHotlineNumber(Request $request)
     {
         $hotlineNumberValidation = Validator::make($request->all(), [
-            'logo'   => 'image',
             'label'  => 'required',
             'number' => 'required|numeric'
         ]);
 
         if ($hotlineNumberValidation->fails())
-            return response(['status' => 'warning', 'message' => $hotlineNumberValidation->errors()->first()]);
+            return response(['status' => 'warning', 'message' =>  implode('<br>', $hotlineNumberValidation->errors()->all())]);
 
         $hotlineLogo     = $request->file('logo');
         $hotlineLogoPath = $hotlineLogo;
 
         if ($hotlineLogoPath) {
             $hotlineLogoPath = $hotlineLogo->store();
-            $hotlineLogo->move(public_path('assets/img/'), $hotlineLogoPath);
+            $hotlineLogo->move(public_path('hotline_logo/'), $hotlineLogoPath);
         }
 
         $hotlineNumber = $this->hotlineNumbers->create([
+            'logo'    => $hotlineLogoPath,
             'label'   => Str::title(trim($request->label)),
             'number'  => trim($request->number),
-            'logo'    => $hotlineLogoPath,
             'user_id' => auth()->user()->id
         ]);
 
@@ -53,30 +52,29 @@ class HotlineNumberController extends Controller
     public function updateHotlineNumber(Request $request, $hotlineId)
     {
         $hotlineNumberValidation = Validator::make($request->all(), [
-            'logo'   => 'image',
             'label'  => 'required',
             'number' => 'required|numeric'
         ]);
 
         if ($hotlineNumberValidation->fails())
-            return response(['status' => 'warning', 'message' => $hotlineNumberValidation->errors()->first()]);
+            return response(['status' => 'warning', 'message' => implode('<br>', $hotlineNumberValidation->errors()->all())]);
 
-        $hotlineNumber       = $this->hotlineNumbers->find($hotlineId);
-        $hotlineLogo         = $request->file('logo');
-        $hotlineNumberData   = [
+        $hotlineLogo       = $request->file('logo');
+        $hotlineNumber     = $this->hotlineNumbers->find($hotlineId);
+        $hotlineNumberData = [
             'label'   => Str::title(trim($request->label)),
             'number'  => trim($request->number),
             'user_id' => auth()->user()->id
         ];
 
         if ($hotlineLogo) {
-            $hotlineLogoOld            = $hotlineNumber->logo;
             $hotlineLogo               = $hotlineLogo->store();
+            $hotlineLogoOld            = $hotlineNumber->logo;
             $hotlineNumberData['logo'] = $hotlineLogo;
-            $request->logo->move(public_path('assets/img/'), $hotlineLogo);
+            $request->logo->move(public_path('hotline_logo/'), $hotlineLogo);
 
             if ($hotlineLogoOld) {
-                $hotlineLogoOldPath = public_path('assets/img/' . $hotlineLogoOld);
+                $hotlineLogoOldPath = public_path('hotline_logo/' . $hotlineLogoOld);
 
                 if (file_exists($hotlineLogoOldPath)) unlink($hotlineLogoOldPath);
             }
@@ -94,7 +92,7 @@ class HotlineNumberController extends Controller
         $hotlineLogo   = $hotlineNumber->logo;
 
         if ($hotlineLogo) {
-            $hotlineLogoPath = public_path('assets/img/' . $hotlineLogo);
+            $hotlineLogoPath = public_path('hotline_logo/' . $hotlineLogo);
 
             if (file_exists($hotlineLogoPath)) unlink($hotlineLogoPath);
         }
