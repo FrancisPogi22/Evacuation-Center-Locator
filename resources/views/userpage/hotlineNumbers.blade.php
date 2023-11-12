@@ -72,7 +72,7 @@
                         <div class="hotline-container">
                             <div class="hotline-logo-container-list">
                                 <div class="hotline-image-container-list">
-                                    <img src="{{ $hotlineNumber->logo ? asset('assets/hotline_logo/' . $hotlineNumber->logo) : asset('assets/img/empty-data.svg') }}"
+                                    <img src="{{ $hotlineNumber->logo ? '/hotline_logo/' . $hotlineNumber->logo : asset('assets/img/empty-data.svg') }}"
                                         class="hotline-preview-image-list" alt="logo">
                                 </div>
                             </div>
@@ -194,7 +194,7 @@
                                                     <div class="hotline-container">
                                                         <div class="hotline-logo-container-list">
                                                             <div class="hotline-image-container-list">
-                                                                <img src="/assets/${hotlineLogo ? `hotline_logo/${hotlineLogo}` : 'img/empty-data.svg'}"
+                                                                <img src="/${hotlineLogo ? `hotline_logo/${hotlineLogo}` : 'assets/img/empty-data.svg'}"
                                                                     class="hotline-preview-image-list" alt="logo">
                                                             </div>
                                                         </div>
@@ -239,18 +239,20 @@
                     });
 
                     $('#addNumberBtnModal').click(() => {
-                        if (hotlineItem) {
-                            replaceHotlineItem();
-                            resetHotlineForm();
-                            hotlineItem = "";
-                        }
+                        if (operation != 'add') {
+                            if (hotlineItem) {
+                                replaceHotlineItem();
+                                resetHotlineForm();
+                                hotlineItem = "";
+                            }
 
-                        $(".empty-data-container").prop('hidden', $(".empty-data-container").length > 0);
-                        operation = "add";
-                        validator.resetForm();
-                        hotlineForm.prop('hidden', 0);
-                        formBtn.removeClass('bg-warning').text('Add');
-                        scrollTo('#hotlineForm');
+                            $(".empty-data-container").prop('hidden', $(".empty-data-container").length > 0);
+                            operation = "add";
+                            validator.resetForm();
+                            hotlineForm.prop('hidden', 0);
+                            formBtn.removeClass('bg-warning').text('Add');
+                            scrollTo('#hotlineForm');
+                        }
                     });
 
                     $(document).on('click', '.updateNumber', function() {

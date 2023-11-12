@@ -209,16 +209,16 @@
                                                         <p>${report.id}</p>
                                                     </div>
                                                     ${isPending ? `${approveBtn}
-                                                        <button class="btn btn-sm btn-danger removeBtn" aria-report-type="${ariaType}">
-                                                            <i class="bi bi-x-circle"></i> Remove
-                                                        </button>` :
-                                                    `${condition != 2 ?
-                                                        (status == "Resolved" || status == "Rescued") ? "" : approveBtn :
-                                                        `<button class="btn btn-sm btn-primary updateBtn">
+                                                    <button class="btn btn-sm btn-danger removeBtn" aria-report-type="${ariaType}">
+                                                        <i class="bi bi-x-circle"></i> Remove
+                                                    </button>` :
+                                                    `${condition != 2 ? (status == "Resolved" || status == "Rescued") ?
+                                                    "" : approveBtn :
+                                                    `<button class="btn btn-sm btn-primary updateBtn">
                                                         <i class="bi bi-chat-square-text"></i> Update
                                                     </button>`}
-                                                        ${(status == "Approved" || status == "Resolved" || status == "Rescued") ?
-                                                        `<button class="btn btn-sm btn-danger
+                                                    ${(status == "Approved" || status == "Resolved" || status == "Rescued") ?
+                                                    `<button class="btn btn-sm btn-danger
                                                         archive${condition == 1 && status == "Rescued" ? "Emergency" : ""}Btn"
                                                         aria-report-type="${ariaType}">
                                                         <i class="bi bi-box-arrow-in-down-right"></i> Archive
@@ -263,14 +263,14 @@
                                                             pastDate = currentDate;
 
                                                             return `${dateOutput}
-                                                                    <p class="update-details-container">
-                                                                        <small>
-                                                                            as of ${formatDateTime(update.update_time, 'time')}
-                                                                        </small><br>
-                                                                        <span class="update-details">
-                                                                            ${update.update_details}
-                                                                        </span>
-                                                                    </p>`;
+                                                                <p class="update-details-container">
+                                                                    <small>
+                                                                        as of ${formatDateTime(update.update_time, 'time')}
+                                                                    </small><br>
+                                                                    <span class="update-details">
+                                                                        ${update.update_details}
+                                                                    </span>
+                                                                </p>`;
                                                         }).join('')
                                                     }
                                                 </div>
@@ -315,16 +315,17 @@
                                                     ${report.details}
                                                 </div>
                                             </div>
-                                            <div class="info-description photo" ${report.photo || "hidden"}>
-                                                <span>Image: </span>
-                                                <div class="${type}" hidden>
-                                                    ${report.latitude}, ${report.longitude}
-                                                </div>
-                                                <button class="btn btn-sm btn-primary toggleImageBtn">
-                                                    <i class="bi bi-chevron-expand"></i> View
-                                                </button>
-                                                <img src="{{ asset('reports_image/${report.photo}') }}" class="form-control" hidden>
-                                            </div>
+                                            ${report.photo ?
+                                                `<div class="info-description photo">
+                                                    <span>Image: </span>
+                                                    <div class="${type}" hidden>
+                                                        ${report.latitude}, ${report.longitude}
+                                                    </div>
+                                                    <button class="btn btn-sm btn-primary toggleImageBtn">
+                                                        <i class="bi bi-chevron-expand"></i> View
+                                                    </button>
+                                                    <img src="/reports_image/${report.photo}" class="form-control" hidden>
+                                                </div>` : ""}
                                             ${updateSection}
                                             ${action}
                                         </div>
@@ -591,24 +592,24 @@
 
                     $(document).on('click', '#closeModalBtn', function() {
                         $('#archivedReportForm')[0].reset();
-                        $('#selectedReportImage').attr('src', '').attr('hidden', 1);
+                        $('#selectedReportImage').attr('src', '').prop('hidden', 1);
                         $('#imageBtn').html('<i class="bi bi-image"></i> Select');
                         setInfoWindowButtonStyles($('#imageBtn'), 'var(--color-primary');
                         archiveFormValidator && archiveFormValidator.resetForm();
                     });
                 @endif
 
-                // Echo.channel('incident-report').listen('IncidentReport', (e) => {
-                //     ajaxRequest("Incident").then(() => checkNoReports("Incident"));
-                // });
+                Echo.channel('incident-report').listen('IncidentReport', (e) => {
+                    ajaxRequest("Incident").then(() => checkNoReports("Incident"));
+                });
 
-                // Echo.channel('emergency-report').listen('EmergencyReport', (e) => {
-                //     ajaxRequest("Emergency").then(() => checkNoReports("Emergency"));
-                // });
+                Echo.channel('emergency-report').listen('EmergencyReport', (e) => {
+                    ajaxRequest("Emergency").then(() => checkNoReports("Emergency"));
+                });
 
-                // Echo.channel('area-report').listen('AreaReport', (e) => {
-                //     ajaxRequest("Area").then(() => checkNoReports("Area"));
-                // });
+                Echo.channel('area-report').listen('AreaReport', (e) => {
+                    ajaxRequest("Area").then(() => checkNoReports("Area"));
+                });
             @else
                 if ('{{ $yearList->isEmpty() }}')
                     showInfoMessage('There is no archived report.');

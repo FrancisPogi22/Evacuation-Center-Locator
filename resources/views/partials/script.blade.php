@@ -32,7 +32,7 @@
             if (this.files[0]) {
                 if (!['image/jpeg', 'image/jpg', 'image/png'].includes(this.files[0].type)) {
                     $('#areaInputImage').val('');
-                    $('#selectedReportImage').attr('src', '').attr('hidden', 1);
+                    $('#selectedReportImage').attr('src', '').prop('hidden', 1);
                     $('#imageBtn').html('<i class="bi bi-image"></i> Select');
                     setInfoWindowButtonStyles($('#imageBtn'), 'var(--color-primary');
                     $('#image-error').text('Please select an image file.')
@@ -47,7 +47,7 @@
                 reader.readAsDataURL(this.files[0]);
                 $('#imageBtn').html('<i class="bi bi-arrow-repeat"></i> Change');
                 setInfoWindowButtonStyles($('#imageBtn'), 'var(--color-yellow');
-                $('#selectedReportImage').attr('hidden', 0);
+                $('#selectedReportImage').prop('hidden', 0);
                 const container = $(this).closest('.gm-style-iw-d');
                 container.animate({
                     scrollTop: container.prop('scrollHeight')
@@ -194,9 +194,9 @@
                 });
             });
 
-            // Echo.channel('notification').listen('Notification', (e) => {
-            //     getNotifications();
-            // });
+            Echo.channel('notification').listen('Notification', (e) => {
+                getNotifications();
+            });
         @endif
     @endauth
     $(document).on('click', '.changeTheme', () => {

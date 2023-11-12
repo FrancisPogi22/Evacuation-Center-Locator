@@ -256,7 +256,7 @@
                             <button class="btn btn-sm btn-primary toggleImageBtn">
                                 <i class="bi bi-chevron-expand"></i> View
                             </button>
-                            <img src="{{ asset('reports_image/${data.photo}') }}" class="form-control" hidden>
+                            <img src="/reports_image/${data.photo}" class="form-control" hidden>
                         </div>
                         <div class="info-description update" ${data.update.length == 0 && "hidden"}>
                             <span>Updates Today: </span>
@@ -268,14 +268,14 @@
                                     data.update.length > 0 ?
                                         data.update.map((update) => {
                                             return `
-                                <p class="update-details-container">
-                                    <small>
-                                        as of ${formatDateTime(update.update_time, 'time')}
-                                    </small><br>
-                                    <span class="update-details">
-                                        ${update.update_details}
-                                    </span>
-                                </p>`
+                                                <p class="update-details-container">
+                                                    <small>
+                                                        as of ${formatDateTime(update.update_time, 'time')}
+                                                    </small><br>
+                                                    <span class="update-details">
+                                                        ${update.update_details}
+                                                    </span>
+                                                </p>`
                                         }).join('') : ''
                                 }
                             </div>
@@ -508,7 +508,7 @@
                             );
 
                             if ($('.stop-btn-container').is(':hidden')) {
-                                $('#reportAreaBtn').attr('hidden', 0);
+                                $('#reportAreaBtn').prop('hidden', 0);
                                 $('#loader').removeClass('show');
                                 directionDisplay.setMap(map);
                                 var bounds = new google.maps.LatLngBounds();
@@ -684,7 +684,7 @@
                         scrollTo('.locator-content');
                         $("#loading-text").text("Locating evacuation center...");
                         $('#loader').addClass('show');
-                        $('#reportAreaBtn').attr('hidden', 1);
+                        $('#reportAreaBtn').prop('hidden', 1);
                     }
                     findNearestActive = !$(this).hasClass('locateEvacuationCenter');
                     rowData = findNearestActive ? null : getRowData(this, evacuationCenterTable);
@@ -850,47 +850,47 @@
                 toggleShowImageBtn($(this), $(this).next(), areaMarkers);
             });
 
-            // Echo.channel('area-report').listen('AreaReport', (e) => {
-            //     ajaxRequest('reportArea');
-            // });
+            Echo.channel('area-report').listen('AreaReport', (e) => {
+                ajaxRequest('reportArea');
+            });
 
-            // Echo.channel('evacuation-center-locator').listen('EvacuationCenterLocator', (e) => {
-            //     ajaxRequest().then(() => {
-            //         if (locating && (rowData != null || prevNearestEvacuationCenter != null)) {
-            //             const {
-            //                 id,
-            //                 status,
-            //                 latitude,
-            //                 longitude
-            //             } = findNearestActive ? prevNearestEvacuationCenter : rowData;
+            Echo.channel('evacuation-center-locator').listen('EvacuationCenterLocator', (e) => {
+                ajaxRequest().then(() => {
+                    if (locating && (rowData != null || prevNearestEvacuationCenter != null)) {
+                        const {
+                            id,
+                            status,
+                            latitude,
+                            longitude
+                        } = findNearestActive ? prevNearestEvacuationCenter : rowData;
 
-            //             const isCenterUnavailable = findNearestActive ?
-            //                 !evacuationCentersData.some(evacuationCenter =>
-            //                     evacuationCenter.id == id && ['Active', 'Full'].includes(
-            //                         evacuationCenter.status)) :
-            //                 !evacuationCentersData.some(evacuationCenter =>
-            //                     evacuationCenter.id == id),
+                        const isCenterUnavailable = findNearestActive ?
+                            !evacuationCentersData.some(evacuationCenter =>
+                                evacuationCenter.id == id && ['Active', 'Full'].includes(
+                                    evacuationCenter.status)) :
+                            !evacuationCentersData.some(evacuationCenter =>
+                                evacuationCenter.id == id),
 
-            //                 isLocationUpdated = !evacuationCentersData.some(
-            //                     evacuationCenter =>
-            //                     evacuationCenter.latitude == latitude &&
-            //                     evacuationCenter.longitude == longitude);
+                            isLocationUpdated = !evacuationCentersData.some(
+                                evacuationCenter =>
+                                evacuationCenter.latitude == latitude &&
+                                evacuationCenter.longitude == longitude);
 
-            //             if (isCenterUnavailable || isLocationUpdated) {
-            //                 $('#stopLocatingBtn').click();
-            //                 showWarningMessage(
-            //                     isCenterUnavailable ?
-            //                     'The evacuation center you are locating is no longer available.' :
-            //                     'The location of the evacuation center you are locating is updated.'
-            //                 );
+                        if (isCenterUnavailable || isLocationUpdated) {
+                            $('#stopLocatingBtn').click();
+                            showWarningMessage(
+                                isCenterUnavailable ?
+                                'The evacuation center you are locating is no longer available.' :
+                                'The location of the evacuation center you are locating is updated.'
+                            );
 
-            //                 if (findNearestActive) prevNearestEvacuationCenter = null;
-            //             }
-            //         }
+                            if (findNearestActive) prevNearestEvacuationCenter = null;
+                        }
+                    }
 
-            //         evacuationCenterTable.clear().rows.add(evacuationCentersData).draw();
-            //     });
-            // });
+                    evacuationCenterTable.clear().rows.add(evacuationCentersData).draw();
+                });
+            });
         });
     </script>
 </body>

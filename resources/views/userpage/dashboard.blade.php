@@ -185,14 +185,14 @@
 
             evacueeData();
 
-            // Echo.channel('active-evacuees').listen('ActiveEvacuees', (e) => {
-            //     $("#totalEvacuee").text(e.activeEvacuees);
-            //     evacueeData();
-            // });
+            Echo.channel('active-evacuees').listen('ActiveEvacuees', (e) => {
+                $("#totalEvacuee").text(e.activeEvacuees);
+                evacueeData();
+            });
 
-            // Echo.channel('incident-report').listen('IncidentReport', (e) => {
-            //     $("#totalReport").text(e.totalReport);
-            // });
+            Echo.channel('incident-report').listen('IncidentReport', (e) => {
+                $("#totalReport").text(e.totalReport);
+            });
         });
 
         function evacueeData() {
