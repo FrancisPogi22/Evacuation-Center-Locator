@@ -33,7 +33,7 @@ class HotlineNumberController extends Controller
 
         if ($hotlineLogoPath) {
             $hotlineLogoPath = $hotlineLogo->store();
-            $hotlineLogo->move(public_path('assets/hotline_logo/'), $hotlineLogoPath);
+            $hotlineLogo->move(public_path('hotline_logo/'), $hotlineLogoPath);
         }
 
         $hotlineNumber = $this->hotlineNumbers->create([
@@ -71,10 +71,10 @@ class HotlineNumberController extends Controller
             $hotlineLogo               = $hotlineLogo->store();
             $hotlineLogoOld            = $hotlineNumber->logo;
             $hotlineNumberData['logo'] = $hotlineLogo;
-            $request->logo->move(public_path('assets/hotline_logo/'), $hotlineLogo);
+            $request->logo->move(public_path('hotline_logo/'), $hotlineLogo);
 
             if ($hotlineLogoOld) {
-                $hotlineLogoOldPath = public_path('assets/hotline_logo/' . $hotlineLogoOld);
+                $hotlineLogoOldPath = public_path('hotline_logo/' . $hotlineLogoOld);
 
                 if (file_exists($hotlineLogoOldPath)) unlink($hotlineLogoOldPath);
             }
@@ -92,7 +92,7 @@ class HotlineNumberController extends Controller
         $hotlineLogo   = $hotlineNumber->logo;
 
         if ($hotlineLogo) {
-            $hotlineLogoPath = public_path('assets/hotline_logo/' . $hotlineLogo);
+            $hotlineLogoPath = public_path('hotline_logo/' . $hotlineLogo);
 
             if (file_exists($hotlineLogoPath)) unlink($hotlineLogoPath);
         }
