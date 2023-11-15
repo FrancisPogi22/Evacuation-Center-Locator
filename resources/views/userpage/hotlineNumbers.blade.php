@@ -72,7 +72,7 @@
                         <div class="hotline-container">
                             <div class="hotline-logo-container-list">
                                 <div class="hotline-image-container-list">
-                                    <img src="{{ $hotlineNumber->logo ? '/hotline_logo/' . $hotlineNumber->logo : asset('assets/img/empty-data.svg') }}"
+                                    <img src="{{ $hotlineNumber->logo ? '/hotline_logo/' . $hotlineNumber->logo : asset('assets/img/Empty-Data.svg') }}"
                                         class="hotline-preview-image-list" alt="logo">
                                 </div>
                             </div>
@@ -132,7 +132,7 @@
                         logoError = $('#image-error'),
                         changeLogoBtn = $('#imageBtn'),
                         hotlineLogo = $('.hotlineLogo'),
-                        hotlineForm = $('#hotlineForm'),
+                        hotlineForm = $($('#hotlineForm')),
                         previewLogo = $('#hotline-preview-image');
 
                     $.ajaxSetup({
@@ -194,7 +194,7 @@
                                                     <div class="hotline-container">
                                                         <div class="hotline-logo-container-list">
                                                             <div class="hotline-image-container-list">
-                                                                <img src="/${hotlineLogo ? `hotline_logo/${hotlineLogo}` : 'assets/img/empty-data.svg'}"
+                                                                <img src="/${hotlineLogo ? `hotline_logo/${hotlineLogo}` : 'assets/img/Empty-Data.svg'}"
                                                                     class="hotline-preview-image-list" alt="logo">
                                                             </div>
                                                         </div>
@@ -251,7 +251,7 @@
                             validator.resetForm();
                             hotlineForm.prop('hidden', 0);
                             formBtn.removeClass('bg-warning').text('Add');
-                            scrollTo('#hotlineForm');
+                            scrollToElement('#hotlineForm');
                         }
                     });
 
@@ -269,7 +269,7 @@
                         formBtn.addClass('bg-warning').text('Update');
                         operation = "update";
                         hotlineLogoChanged = false;
-                        scrollTo('#hotlineForm');
+                        scrollToElement('#hotlineForm');
                     });
 
                     $(document).on('click', '.removeNumber', function() {
@@ -335,6 +335,7 @@
                         hotlineForm.prop('hidden', 1);
                         resetHotlineForm();
                         hotlineItem = "";
+                        operation = "";
                     });
 
                     function resetHotlineForm() {

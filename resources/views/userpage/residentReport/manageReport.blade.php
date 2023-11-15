@@ -584,15 +584,16 @@
                                 response.status == "warning" ?
                                     showWarningMessage(response.message) : (showSuccessMessage(
                                         `Successfully ${(operation == "approve" && reportType != "Area") ? "change the status of" : `${operation}d`} the report.`
-                                    ), $('#closeModalBtn').click());
+                                    ),modal.modal('hide'));
                             },
                             error: showErrorMessage
                         });
                     }
 
-                    $(document).on('click', '#closeModalBtn', function() {
+                   modal.on('hidden.bs.modal', () => {
                         $('#archivedReportForm')[0].reset();
                         $('#selectedReportImage').attr('src', '').prop('hidden', 1);
+                        $('#image-error').text('').prop('hidden', 1);
                         $('#imageBtn').html('<i class="bi bi-image"></i> Select');
                         setInfoWindowButtonStyles($('#imageBtn'), 'var(--color-primary');
                         archiveFormValidator && archiveFormValidator.resetForm();

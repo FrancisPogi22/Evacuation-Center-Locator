@@ -21,7 +21,7 @@
             <hr>
             <section class="about-eligtas">
                 <div class="e-ligtas-tagline">
-                    <img src="{{ asset('assets/img/e-ligtas-logo-black.png') }}" alt="logo">
+                    <img src="{{ asset('assets/img/E-Ligtas-Logo-Black.png') }}" alt="logo">
                     <p>"E-LIGTAS can help you to locate an evacuation centers in Cabuyao, Laguna, as well as provide
                         disaster preparedness information."</p>
                 </div>

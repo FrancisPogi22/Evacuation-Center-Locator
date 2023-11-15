@@ -32,7 +32,7 @@
                             <div class="guide-item">
                                 <div class="guide-img">
                                     <img
-                                        src="{{ $guide->guide_photo ? asset('guideline_image/' . $guide->guide_photo) : asset('assets/img/empty-data.svg') }}">
+                                        src="{{ $guide->guide_photo ? asset('guideline_image/' . $guide->guide_photo) : asset('assets/img/Empty-Data.svg') }}">
                                 </div>
                                 <div class="guide-details">
                                     <h1>{{ $guide->label }}</h1>
@@ -58,7 +58,7 @@
                         </div>
                     @empty
                         <div class="empty-data-container">
-                            <img src="{{ asset('assets/img/empty-data.svg') }}" alt="Picture">
+                            <img src="{{ asset('assets/img/Empty-Data.svg') }}" alt="Picture">
                             <p>No guide uploaded.</p>
                         </div>
                     @endforelse
@@ -273,7 +273,7 @@
 
                                 if (guidesContainer.text().trim() == "") {
                                     guidesContainer.append(`<div class="empty-data-container">
-                                            <img src="{{ asset('assets/img/empty-data.svg') }}" alt="Picture">
+                                            <img src="{{ asset('assets/img/Empty-Data.svg') }}" alt="Picture">
                                             <p>No guide uploaded.</p>
                                         </div>`);
                                 }
