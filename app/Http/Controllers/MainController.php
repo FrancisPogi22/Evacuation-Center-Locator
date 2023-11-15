@@ -207,6 +207,33 @@ class MainController extends Controller
         return request()->ajax() ? response()->json($disasterData) : $disasterData;
     }
 
+    public function fetchReportData()
+    {
+        $startDate = now()->subMonth();
+
+        $reportData = $this->residentReport
+            ->selectRaw('type, DATE(report_time) as report_date, COUNT(*) as report_count')
+            ->whereBetween('report_time', [$startDate, now()])
+            ->groupBy(['type', 'report_date'])
+            ->orderBy('report_date')
+            ->get()
+            ->groupBy('type')
+            ->map(function ($typeData, $type) {
+                return [
+                    'type' => $type,
+                    'data' => $typeData->map(function ($data) {
+                        return [
+                            'report_date' => $data->report_date,
+                            'report_count' => $data->report_count,
+                        ];
+                    })->values(),
+                ];
+            })
+            ->values();
+
+        return response(['data' => $reportData, 'start_date' => $startDate]);
+    }
+
     public function hotlineNumbers()
     {
         $hotlineNumbers = HotlineNumbers::all();
