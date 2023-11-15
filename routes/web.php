@@ -104,6 +104,7 @@ Route::middleware('auth')->group(function () {
     Route::prefix('cdrrmo')->middleware('check.cdrrmo')->group(function () {
         Route::controller(MainController::class)->group(function () {
             Route::get('/dashboard', 'dashboard')->name('dashboard.cdrrmo');
+            Route::get('/fetchReportData', 'fetchReportData')->name('fetchReportData');
             Route::get('/manageReport/{operation}', 'manageReport')->name('manage.report');
         });
 
