@@ -241,12 +241,12 @@
                     }
                 });
 
-                $(document).on('change', '#organization', function() {
+                $('#organization').change(function() {
                     initPositionOption($(this).val());
                     positionContainer.add(nameContainer).add(emailContainer).prop('hidden', 0);
                 });
 
-                $(document).on('click', '#createUserAccount', () => {
+                $('#createUserAccount').click(() => {
                     modalLabelContainer.removeClass('bg-warning');
                     modalLabel.text('Create User Account');
                     formButton.addClass('btn-submit').removeClass('btn-update').text('Create');

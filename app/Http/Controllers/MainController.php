@@ -57,6 +57,7 @@ class MainController extends Controller
     public function generateExcelEvacueeData(Request $request)
     {
         $generateReportValidation = Validator::make($request->all(), ['disaster_id' => 'required']);
+        
         if ($generateReportValidation->fails()) return back()->with('warning', "Disaster is not exist.");
 
         return Excel::download(new EvacueeDataExport($request->disaster_id), 'evacuee-data.xlsx', FileFormat::XLSX);
@@ -243,7 +244,6 @@ class MainController extends Controller
 
     public function about()
     {
-
         return view('userpage.about');
     }
 }

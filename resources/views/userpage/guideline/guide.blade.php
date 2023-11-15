@@ -178,8 +178,7 @@
                                 $.ajax({
                                     data: formData,
                                     url: "{{ route('guide.update', 'guideId') }}".replace(
-                                        'guideId',
-                                        guideId),
+                                        'guideId', guideId),
                                     method: "POST",
                                     cache: false,
                                     contentType: false,
@@ -191,8 +190,8 @@
                                         content,
                                         guide_photo
                                     }) {
-                                        if (status == 'warning') return showWarningMessage(
-                                            message);
+                                        if (status == 'warning')
+                                            return showWarningMessage(message);
 
                                         if (guideImageChanged)
                                             $(currentGuide).find('.guide-img img').attr('src',
@@ -235,17 +234,15 @@
                     modal.modal('show');
                 });
 
-                $(document).on('click', '.guideImgBtn', () => {
-                    guideImgInput.click();
-                });
+                $('.guideImgBtn').click(() => guideImgInput.click());
 
-                $(document).on('change', '#guidePhoto', function() {
+                $('#guidePhoto').change(function() {
                     let reader = new FileReader();
 
-                    reader.onload = (e) => $('.guideImage').attr('src', e.target.result);
-                    reader.readAsDataURL(this.files[0]);
                     guideImageChanged = true;
-                    changeImageBtn('change');
+                    reader.onload = (e) => ($('.guideImage').attr('src', e.target.result), changeImageBtn(
+                        'change'));
+                    reader.readAsDataURL(this.files[0]);
                 });
 
                 $(document).on('click', '.removeGuideBtn', function() {
@@ -258,7 +255,6 @@
                             headers: {
                                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                             },
-                            data: guideId,
                             url: "{{ route('guide.remove', 'guideId') }}".replace(
                                 'guideId', guideId),
                             method: "DELETE",

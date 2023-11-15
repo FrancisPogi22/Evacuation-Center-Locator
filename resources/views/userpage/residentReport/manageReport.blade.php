@@ -170,7 +170,7 @@
 
                 return new Promise((resolve, reject) => {
                     $.ajax({
-                        type: 'GET',
+                        method: 'GET',
                         url: url,
                         success(response) {
                             let isPending, status, ariaType, button, updateSection,

@@ -71,7 +71,7 @@
                     if (!result.isConfirmed) return;
 
                     $.ajax({
-                        type: "PUT",
+                        method: "PUT",
                         url: $('#changePasswordRoute').data('route'),
                         data: $(form).serialize(),
                         success(response) {
@@ -107,7 +107,7 @@
                     headers: {
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                     },
-                    type: 'POST',
+                    method: 'POST',
                     url: checkPasswordRoute,
                     data: {
                         current_password: current_password
@@ -179,7 +179,7 @@
                     headers: {
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                     },
-                    type: 'PATCH',
+                    method: 'PATCH',
                     url: "{{ route('notification.remove', 'reportId') }}"
                         .replace('reportId', list.attr('aria-id')),
                     success() {

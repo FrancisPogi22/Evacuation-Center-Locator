@@ -21,6 +21,12 @@
             <hr>
             <section class="content-item">
                 <div class="guideline-header">
+                    <form class="search-container" id="searchGuidelineForm">
+                        @csrf
+                        <input type="text" name="guideline_name" id="search_guideline" class="form-control"
+                            placeholder="Search Guideline" autocomplete="off" required>
+                        <button type="submit" class="search-icon"><i class="bi bi-search"></i></button>
+                    </form>
                     @auth
                         @if (auth()->user()->is_disable == 0)
                             <button class="btn-submit" id="createGuidelineBtn">
@@ -29,12 +35,6 @@
                             @include('userpage.guideline.guidelineModal')
                         @endif
                     @endauth
-                    <form class="search-container" id="searchGuidelineForm">
-                        @csrf
-                        <input type="text" name="guideline_name" id="search_guideline" class="form-control"
-                            placeholder="Search Guideline" autocomplete="off" required>
-                        <button type="submit" class="search-icon"><i class="bi bi-search"></i></button>
-                    </form>
                 </div>
                 <div class="guideline-container">
                     @forelse ($guidelineData as $guidelineItem)
@@ -182,7 +182,7 @@
                     }
                 });
 
-                $(document).on('click', '#createGuidelineBtn', () => {
+                $('#createGuidelineBtn').click(() => {
                     operation = "create";
                     modalLabelContainer.removeClass('bg-warning');
                     modalLabel.text('Create Guideline');
@@ -207,7 +207,7 @@
                     guidelineImg.attr('src', guidelineWidget.querySelector('.guideline-content img')
                         .getAttribute('src'));
 
-                    if (guidelineImg.attr('src').split('/').pop().split('.')[0] != "empty-data")
+                    if (guidelineImg.attr('src').split('/').pop().split('.')[0] != "Empty-Guideline")
                         changeImageBtn('change');
 
                     guidelineType = guidelineLabel;
@@ -288,17 +288,15 @@
                     $(`#guidePhoto${$(this).attr('id').replace('selectImage', '')}`).click();
                 });
 
-                $(document).on('click', '.guidelineImgBtn', () => {
-                    guidelineImgInput.click();
-                });
+                $('.guidelineImgBtn').click(() => guidelineImgInput.click());
 
-                $(document).on('change', '#guidelineImgInput', function() {
+                $('#guidelineImgInput').change(function() {
                     let reader = new FileReader();
 
                     guidelineImgChanged = true;
-                    reader.onload = (e) => guidelineImg.attr('src', e.target.result);
+                    reader.onload = (e) => (guidelineImg.attr('src', e.target.result),
+                        changeImageBtn('change'));
                     reader.readAsDataURL(this.files[0]);
-                    changeImageBtn('change');
                 });
 
                 $(document).on('click', '.removeImage', function() {
@@ -321,7 +319,7 @@
                     reader.readAsDataURL(this.files[0]);
                     $(`#selectImage${guideField}`).addClass('bg-primary').html(
                         '<i class="bi bi-arrow-repeat"></i>Change Image');
-                    $(`#removeImage${guideField}`).prop('hidden', false);
+                    $(`#removeImage${guideField}`).prop('hidden', 0);
                 });
 
                 $(document).on('click', '#removeGuideField', function() {
