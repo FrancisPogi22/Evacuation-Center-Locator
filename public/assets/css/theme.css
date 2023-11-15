@@ -497,7 +497,8 @@ button.changeTheme:hover {
 }
 
 .sidebar-content::-webkit-scrollbar,
-.gm-style-iw-d::-webkit-scrollbar {
+.gm-style-iw-d::-webkit-scrollbar,
+#notification-container .dropdown-menu::-webkit-scrollbar {
     width: 0;
     display: none;
     appearance: none;
@@ -2923,7 +2924,8 @@ html[data-theme="dark"] .logout:active {
 
 html[data-theme="dark"] .label-container span,
 html[data-theme="dark"] .report-container p,
-html[data-theme="dark"] .wigdet-header p {
+html[data-theme="dark"] .wigdet-header p,
+html[data-theme="dark"] #loading-text {
     color: var(--color-d-text);
 }
 
@@ -2960,35 +2962,42 @@ html[data-theme="dark"] .highcharts-bar-series path {
     stroke: none;
 }
 
-html[data-theme="dark"] .highcharts-color-1,
-html[data-theme="dark"] .highcharts-bar-series path {
+html[data-theme="dark"] .pie-chart.evacuee .highcharts-color-1,
+html[data-theme="dark"] .bar-graph.evacuee .highcharts-bar-series path {
     fill: #f87171;
 }
 
 html[data-theme="dark"] .highcharts-color-0,
-html[data-theme="dark"] .highcharts-series-1 path {
+html[data-theme="dark"] .bar-graph.evacuee .highcharts-series-1 path {
     fill: #0369a1;
 }
 
-html[data-theme="dark"] .highcharts-series-2 path {
+html[data-theme="dark"] .bar-graph.evacuee .highcharts-series-2 path {
     fill: #16a34a;
 }
 
-html[data-theme="dark"] .highcharts-series-3 path {
+html[data-theme="dark"] .bar-graph.evacuee .highcharts-series-3 path {
     fill: #0d9488;
 }
 
-html[data-theme="dark"] .highcharts-series-4 path {
+html[data-theme="dark"] .bar-graph.evacuee .highcharts-series-4 path {
     fill: #b45309;
 }
 
-html[data-theme="dark"] .highcharts-series-5 path {
+html[data-theme="dark"] .bar-graph.evacuee .highcharts-series-5 path {
     fill: #7c3aed;
 }
 
 html[data-theme="dark"] .highcharts-data-label-connector {
     stroke: var(--color-text);
 }
+
+html[data-theme="dark"] #report-chart .highcharts-axis-line,
+html[data-theme="dark"] #report-chart .highcharts-tick {
+    stroke: var(--color-d-text);
+}
+
+html[data-theme="dark"] .highcharts-bar-series highcharts-tracker-line
 
 html[data-theme="dark"] .guideline-content {
     background: var(--color-d-bg-container);
@@ -3249,6 +3258,10 @@ html[data-theme="dark"] button.changeTheme {
     .chart-container {
         display: contents;
         margin: 30px 0;
+    }
+
+    #report-chart {
+        margin-top: 20px;
     }
 
     .pie-chart {
