@@ -20,6 +20,11 @@
                 <span>REPORT INCIDENT</span>
             </div>
             <hr>
+            <div class="page-button-container" hidden>
+                <button class="btn-table-primary" id="retryGeolocation">
+                    <i class="bi bi-geo"></i>Get Current Location Again
+                </button>
+            </div>
             <div class="map-border">
                 <div class="area-map" id="map">
                     <div id="loader" class="show">
@@ -42,7 +47,7 @@
     </script>
     @include('partials.toastr')
     <script>
-        let map, reportMarker, reportWindow, timeout = false;
+        let map, reportMarker, reportWindow, btnContainer = $('.page-button-container');
 
         function initMap(userLocation, zoom) {
             map = new google.maps.Map(document.getElementById("map"), {
@@ -131,34 +136,76 @@
         function executeInitMap(userLocation, zoom = 13, geoLocation = false) {
             initMap(userLocation, zoom);
             $('#loader').removeClass('show');
-            geoLocation ?
-                showInfoMessage('Click on the map to pinpoint the location of the incident.') :
-                showWarningMessage(
-                    `${timeout ? 'Geolocation service failed' :
-                    'Your browser lacks geolocation support or you\'ve denied access'}. Therefore, you need to manually navigate to your location.`
-                );
+            geoLocation && showInfoMessage('Click on the map to pinpoint the location of the incident.');
+        }
+
+        function getCurrentPosition() {
+            let currentWatchID;
+
+            currentWatchID = navigator.geolocation.watchPosition(
+                (position) => {
+                    console.log(position.coords.accuracy)
+
+                    if (position.coords.accuracy <= 500) {
+                        navigator.geolocation.clearWatch(currentWatchID);
+                        currentWatchID = null;
+
+                        const coords = {
+                            lat: position.coords.latitude,
+                            lng: position.coords.longitude
+                        };
+
+                        executeInitMap(coords, 18, true)
+
+                        const userMarker = new google.maps.Marker({
+                            position: coords,
+                            map,
+                            icon: {
+                                url: "{{ asset('assets/img/User.png') }}",
+                                scaledSize: new google.maps.Size(35, 35),
+                            }
+                        });
+
+                        userMarker.addListener('click', () => {
+                            map.panTo(userMarker.getPosition());
+                            map.setZoom(19);
+                        });
+
+                        btnContainer.prop('hidden', 1);
+                    }
+                },
+                (error) => {
+                    let message;
+                    switch (error.code) {
+                        case error.PERMISSION_DENIED:
+                            message =
+                                'Request for geolocation denied.';
+                            break;
+                        case error.TIMEOUT:
+                        case error.POSITION_UNAVAILABLE:
+                        case error.POSITION_OUT_OF_BOUNDS:
+                            btnContainer.prop('hidden', 0);
+                            message = 'Cannot get your current location.';
+                            break;
+                    }
+                    showWarningMessage(message);
+                    navigator.geolocation.clearWatch(currentWatchID);
+                    currentWatchID = null;
+                    $('#retryGeolocation').prop('disabled', 0);
+                    executeInitMap();
+                }, {
+                    enableHighAccuracy: true,
+                    timeout: 10000,
+                    maximumAge: 0
+                }
+            );
         }
 
         $(document).ready(() => {
             if (!navigator.geolocation) {
                 executeInitMap();
             } else {
-                navigator.geolocation.getCurrentPosition(
-                    ({
-                        coords
-                    }) => executeInitMap({
-                        lat: coords.latitude,
-                        lng: coords.longitude
-                    }, 18, true),
-                    (error) => {
-                        if (error.code === error.TIMEOUT) timeout = true;
-                        executeInitMap();
-                    }, {
-                        enableHighAccuracy: true,
-                        timeout: 5000,
-                        maximumAge: 0
-                    }
-                );
+                getCurrentPosition();
             }
 
             $(document).on('click', '#submitAreaBtn', () => {
@@ -210,6 +257,11 @@
                         });
                     }
                 });
+            });
+
+            $(document).on('click', '#retryGeolocation', () => {
+                $(this).prop('disabled', 1);
+                getCurrentPosition();
             });
         });
     </script>

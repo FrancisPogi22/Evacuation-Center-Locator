@@ -146,9 +146,19 @@
                 maximumAge: 0
             },
             errorCallback = () => {
-                showWarningMessage(
-                    'Request for geolocation denied. To use this feature, please allow the browser to locate you.'
-                );
+                let message;
+                switch (error.code) {
+                    case error.PERMISSION_DENIED:
+                        message =
+                            'Request for geolocation denied. To use this feature, please allow the browser to locate you.';
+                        break;
+                    case error.TIMEOUT:
+                    case error.POSITION_UNAVAILABLE:
+                    case error.POSITION_OUT_OF_BOUNDS:
+                        message = 'Cannot get your current location.';
+                        break;
+                }
+                showWarningMessage(message);
                 $('#locateNearestBtn').removeAttr('disabled');
                 locating = false;
                 geolocationBlocked = true;
@@ -380,6 +390,8 @@
         }
 
         function getUserLocation() {
+            let currentWatchID;
+
             return new Promise((resolve, reject) => {
                 if (!navigator.geolocation) {
                     showInfoMessage('Geolocation is not supported by this browser.');
@@ -387,9 +399,15 @@
                     return;
                 }
 
-                navigator.geolocation.getCurrentPosition((position) => {
-                    geolocationBlocked = false;
-                    resolve(position);
+                currentWatchID = navigator.geolocation.watchPosition((position) => {
+                    console.log(position.coords.accuracy);
+
+                    if (position.coords.accuracy <= 500) {
+                        navigator.geolocation.clearWatch(currentWatchID);
+                        currentWatchID = null;
+                        geolocationBlocked = false;
+                        resolve(position);
+                    }
                 }, errorCallback, options);
             });
         }
@@ -471,32 +489,33 @@
 
         function locateEvacuationCenter() {
             watchId = navigator.geolocation.watchPosition(async (position) => {
-                geolocationBlocked = false;
+                if (position.coords.accuracy <= 500) {
+                    geolocationBlocked = false;
 
-                if (findNearestActive && evacuationCenterJson.length == 0) {
-                    await getEvacuationCentersDistance();
-                    if (!hasActiveEvacuationCenter) return;
-                }
+                    if (findNearestActive && evacuationCenterJson.length == 0) {
+                        await getEvacuationCentersDistance();
+                        if (!hasActiveEvacuationCenter) return;
+                    }
 
-                const {
-                    latitude,
-                    longitude
-                } = findNearestActive ?
-                    evacuationCenterJson[0] : rowData;
+                    const {
+                        latitude,
+                        longitude
+                    } = findNearestActive ?
+                        evacuationCenterJson[0] : rowData;
 
-                const directionService = new google.maps.DirectionsService();
+                    const directionService = new google.maps.DirectionsService();
 
-                directionService.route(
-                    request(
-                        newLatLng(position.coords.latitude, position.coords.longitude),
-                        newLatLng(latitude, longitude)
-                    ),
-                    function(response, status) {
-                        if (status == 'OK' && locating) {
-                            setMarker(response.routes[0].legs[0].start_location);
-                            generateInfoWindow(
-                                userMarker,
-                                `<div class="info-window-container">
+                    directionService.route(
+                        request(
+                            newLatLng(position.coords.latitude, position.coords.longitude),
+                            newLatLng(latitude, longitude)
+                        ),
+                        function(response, status) {
+                            if (status == 'OK' && locating) {
+                                setMarker(response.routes[0].legs[0].start_location);
+                                generateInfoWindow(
+                                    userMarker,
+                                    `<div class="info-window-container">
                                         <center>You are here.</center>
                                         <center class="info-description">
                                             <span>Pathway distance to evacuation: </span>
@@ -505,35 +524,36 @@
                                             )} km
                                         </center>
                                     </div>`
-                            );
-
-                            if ($('.stop-btn-container').is(':hidden')) {
-                                $('#reportAreaBtn').prop('hidden', 0);
-                                $('#loader').removeClass('show');
-                                directionDisplay.setMap(map);
-                                var bounds = new google.maps.LatLngBounds();
-                                response.routes[0].legs.forEach(({
-                                        steps
-                                    }) =>
-                                    steps.forEach(({
-                                            start_location,
-                                            end_location
-                                        }) =>
-                                        (bounds.extend(start_location), bounds.extend(
-                                            end_location))
-                                    )
                                 );
-                                map.fitBounds(bounds);
-                                $('.stop-btn-container').show();
-                                scrollMarkers();
-                            }
 
-                            directionDisplay.setDirections(response);
-                            if (findNearestActive)
-                                prevNearestEvacuationCenter = evacuationCenterJson[0];
+                                if ($('.stop-btn-container').is(':hidden')) {
+                                    $('#reportAreaBtn').prop('hidden', 0);
+                                    $('#loader').removeClass('show');
+                                    directionDisplay.setMap(map);
+                                    var bounds = new google.maps.LatLngBounds();
+                                    response.routes[0].legs.forEach(({
+                                            steps
+                                        }) =>
+                                        steps.forEach(({
+                                                start_location,
+                                                end_location
+                                            }) =>
+                                            (bounds.extend(start_location), bounds.extend(
+                                                end_location))
+                                        )
+                                    );
+                                    map.fitBounds(bounds);
+                                    $('.stop-btn-container').show();
+                                    scrollMarkers();
+                                }
+
+                                directionDisplay.setDirections(response);
+                                if (findNearestActive)
+                                    prevNearestEvacuationCenter = evacuationCenterJson[0];
+                            }
                         }
-                    }
-                );
+                    );
+                }
             }, errorCallback, options);
         }
 
@@ -671,7 +691,7 @@
                                     <center>You are here.</center>
                                 </div>
                             </div>`);
-                        scrollTo('.locator-content');
+                        scrollToElement('.locator-content');
                         zoomToUserLocation();
                         scrollMarkers();
                     });
@@ -681,7 +701,7 @@
             $(document).on("click", "#locateNearestBtn, .locateEvacuationCenter", function() {
                 if (!locating) {
                     if (!geolocationBlocked) {
-                        scrollTo('.locator-content');
+                        scrollToElement('.locator-content');
                         $("#loading-text").text("Locating evacuation center...");
                         $('#loader').addClass('show');
                         $('#reportAreaBtn').prop('hidden', 1);
