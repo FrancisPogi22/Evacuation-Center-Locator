@@ -22,7 +22,7 @@
                 <span>{{ $operation == 'active' ? 'MANAGE' : 'ARCHIVED' }} EVACUATION CENTER</span>
             </div>
             <hr>
-            @if (auth()->user()->is_disable == 0 && $operation == 'active')
+            @if ($operation == 'active')
                 <div class="page-button-container">
                     <button class="btn-submit" id="addEvacuationCenter">
                         <i class="bi bi-house-down-fill"></i>
@@ -108,26 +108,28 @@
                 }
             ],
             columnDefs: [{
-                targets: 5,
-                render: function(data) {
-                    let color = data == 'Active' ? 'success' : data == 'Inactive' ? 'danger' :
-                        'warning';
+                    targets: 5,
+                    render: function(data) {
+                        let color = data == 'Active' ? 'success' : data == 'Inactive' ? 'danger' :
+                            'warning';
 
-                    return `
+                        return `
                         <div class="status-container">
                             <div class="status-content bg-${color}">
                                 ${data}
                             </div>
                         </div>
                     `;
-                }
-            }, {
-                targets: 6,
-                visible: {{ auth()->user()->is_disable }} == 0 ? true : false
-            }]
+                    }
+                },
+                // {
+                //     targets: 6,
+                //     visible: {{ auth()->user()->is_disable }} == 0 ? true : false
+                // }
+            ]
         });
 
-        @if (auth()->user()->is_disable == 0)
+        // @if (auth()->user()->is_disable == 0)
             let map, marker;
 
             function initMap() {
@@ -333,7 +335,7 @@
                     });
                 }
             });
-        @endif
+        // @endif
     </script>
 </body>
 

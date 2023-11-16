@@ -1,5 +1,5 @@
 @auth
-    @if (auth()->user()->is_disable == 0)
+    {{-- @if (auth()->user()->is_disable == 0) --}}
         <div class="modal fade" id="guideModal" data-bs-backdrop="static" aria-hidden="true">
             <div class="modal-dialog modal-xl">
                 <div class="modal-content">
@@ -46,5 +46,5 @@
                 </div>
             </div>
         </div>
-    @endif
+    {{-- @endif --}}
 @endauth

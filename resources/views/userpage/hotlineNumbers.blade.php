@@ -21,15 +21,15 @@
             <hr>
             <section class="hotline-content">
                 @auth
-                    @if (auth()->user()->is_disable == 0)
-                        @if (auth()->user()->position == 'President' || auth()->user()->position == 'Focal')
-                            <div class="page-button-container">
-                                <button class="btn-submit" id="addNumberBtnModal">
-                                    <i class="bi bi-telephone-plus"></i>Add Hotline Number
-                                </button>
-                            </div>
-                        @endif
+                    {{-- @if (auth()->user()->is_disable == 0) --}}
+                    @if (auth()->user()->position == 'President' || auth()->user()->position == 'Focal')
+                        <div class="page-button-container">
+                            <button class="btn-submit" id="addNumberBtnModal">
+                                <i class="bi bi-telephone-plus"></i>Add Hotline Number
+                            </button>
+                        </div>
                     @endif
+                    {{-- @endif --}}
                 @endauth
                 <div class="number-section">
                     @auth
@@ -86,12 +86,12 @@
                                 </div>
                                 <div class="hotline-form-button-container-list">
                                     @auth
-                                        @if (auth()->user()->is_disable == 0)
-                                            <button class="btn-update updateNumber" data-id="{{ $hotlineNumber->id }}">
-                                                <i class="bi bi-pencil-square"></i>Update</button>
-                                            <button class="btn-remove removeNumber" data-id="{{ $hotlineNumber->id }}">
-                                                <i class="bi bi-trash3"></i>Remove</button>
-                                        @endif
+                                        {{-- @if (auth()->user()->is_disable == 0) --}}
+                                        <button class="btn-update updateNumber" data-id="{{ $hotlineNumber->id }}">
+                                            <i class="bi bi-pencil-square"></i>Update</button>
+                                        <button class="btn-remove removeNumber" data-id="{{ $hotlineNumber->id }}">
+                                            <i class="bi bi-trash3"></i>Remove</button>
+                                        {{-- @endif --}}
                                     @endauth
                                     @guest
                                         <a href="tel:+{{ $hotlineNumber->number }}" class="btn-submit">
@@ -122,75 +122,75 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/jquery.validate.min.js"
             integrity="sha512-rstIgDs0xPgmG6RX1Aba4KV5cWJbAMcvRCVmglpam9SoHZiUCyQVDdH2LPlxoHtrv17XWblE/V/PP+Tr04hbtA=="
             crossorigin="anonymous"></script>
-        @if (auth()->user()->is_disable == 0)
-            <script>
-                $(document).ready(() => {
-                    let operation, hotlineLabel, hotlineNumber, hotlineId, validator,
-                        hotlineItem = "",
-                        hotlineLogoChanged = false,
-                        formBtn = $('#addNumberBtn'),
-                        logoError = $('#image-error'),
-                        changeLogoBtn = $('#imageBtn'),
-                        hotlineLogo = $('.hotlineLogo'),
-                        hotlineForm = $($('#hotlineForm')),
-                        previewLogo = $('#hotline-preview-image');
+        {{-- @if (auth()->user()->is_disable == 0) --}}
+        <script>
+            $(document).ready(() => {
+                let operation, hotlineLabel, hotlineNumber, hotlineId, validator,
+                    hotlineItem = "",
+                    hotlineLogoChanged = false,
+                    formBtn = $('#addNumberBtn'),
+                    logoError = $('#image-error'),
+                    changeLogoBtn = $('#imageBtn'),
+                    hotlineLogo = $('.hotlineLogo'),
+                    hotlineForm = $($('#hotlineForm')),
+                    previewLogo = $('#hotline-preview-image');
 
-                    $.ajaxSetup({
-                        headers: {
-                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                        }
-                    });
+                $.ajaxSetup({
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    }
+                });
 
-                    validator = hotlineForm.validate({
-                        rules: {
-                            label: 'required',
-                            number: 'required'
-                        },
-                        messages: {
-                            label: 'Please enter number label.',
-                            number: 'Please enter hotline number.'
-                        },
-                        errorElement: 'span',
-                        submitHandler(form, e) {
-                            let formData = new FormData(form);
+                validator = hotlineForm.validate({
+                    rules: {
+                        label: 'required',
+                        number: 'required'
+                    },
+                    messages: {
+                        label: 'Please enter number label.',
+                        number: 'Please enter hotline number.'
+                    },
+                    errorElement: 'span',
+                    submitHandler(form, e) {
+                        let formData = new FormData(form);
 
-                            confirmModal(`Do you want to ${operation} this hotline number?`).then((result) => {
-                                if (!result.isConfirmed) return;
+                        confirmModal(`Do you want to ${operation} this hotline number?`).then((result) => {
+                            if (!result.isConfirmed) return;
 
-                                operation == "update" && hotlineLabel == $('#hotlineLabel').val() &&
-                                    hotlineNumber == $('#hotlineNumber').val() && !hotlineLogoChanged ?
-                                    showWarningMessage() :
-                                    $.ajax({
-                                        data: formData,
-                                        url: operation == 'add' ? "{{ route('hotline.add') }}" :
-                                            "{{ route('hotline.update', 'hotlineId') }}".replace(
-                                                'hotlineId', hotlineId),
-                                        method: "POST",
-                                        cache: false,
-                                        contentType: false,
-                                        processData: false,
-                                        success(response) {
-                                            if (response.status == 'warning')
-                                                return showWarningMessage(response.message);
+                            operation == "update" && hotlineLabel == $('#hotlineLabel').val() &&
+                                hotlineNumber == $('#hotlineNumber').val() && !hotlineLogoChanged ?
+                                showWarningMessage() :
+                                $.ajax({
+                                    data: formData,
+                                    url: operation == 'add' ? "{{ route('hotline.add') }}" :
+                                        "{{ route('hotline.update', 'hotlineId') }}".replace(
+                                            'hotlineId', hotlineId),
+                                    method: "POST",
+                                    cache: false,
+                                    contentType: false,
+                                    processData: false,
+                                    success(response) {
+                                        if (response.status == 'warning')
+                                            return showWarningMessage(response.message);
 
-                                            let {
-                                                label,
-                                                number,
-                                                hotlineLogo,
-                                                hotlineId
-                                            } = response;
+                                        let {
+                                            label,
+                                            number,
+                                            hotlineLogo,
+                                            hotlineId
+                                        } = response;
 
-                                            if (operation == "update") {
-                                                if (hotlineLogoChanged)
-                                                    hotlineItem.find('.hotline-preview-image-list')
-                                                    .attr('src', previewLogo.attr('src'));
-                                                hotlineItem.find('.hotline-data-container:first b')
-                                                    .text(label);
-                                                hotlineItem.find('.hotline-data-container:last')
-                                                    .text(number);
-                                                replaceHotlineItem();
-                                            } else {
-                                                $('.number-section').append(`
+                                        if (operation == "update") {
+                                            if (hotlineLogoChanged)
+                                                hotlineItem.find('.hotline-preview-image-list')
+                                                .attr('src', previewLogo.attr('src'));
+                                            hotlineItem.find('.hotline-data-container:first b')
+                                                .text(label);
+                                            hotlineItem.find('.hotline-data-container:last')
+                                                .text(number);
+                                            replaceHotlineItem();
+                                        } else {
+                                            $('.number-section').append(`
                                                     <div class="hotline-container">
                                                         <div class="hotline-logo-container-list">
                                                             <div class="hotline-image-container-list">
@@ -208,12 +208,12 @@
                                                             </div>
                                                             <div class="hotline-form-button-container-list">
                                                                 @auth
-                                                                    @if (auth()->user()->is_disable == 0)
+                                                                    //@if (auth()->user()->is_disable == 0)
                                                                         <button class="btn-update updateNumber" data-id="${hotlineId}">
                                                                             <i class="bi bi-pencil-square"></i>Update</button>
                                                                         <button class="btn-remove removeNumber" data-id="${hotlineId}">
                                                                             <i class="bi bi-trash3"></i>Remove</button>
-                                                                    @endif
+                                                                    //@endif
                                                                 @endauth
                                                                 @guest
                                                                     <a href="tel:+${number}" class="btn-submit">
@@ -223,140 +223,140 @@
                                                             </div>
                                                         </div>
                                                     </div>`);
-                                                $(".empty-data-container").remove();
-                                                hotlineForm.prop('hidden', 1);
-                                            }
-                                            showSuccessMessage(
-                                                `Hotline number successfully ${operation == "add" ? "added" : "updated"}.`
-                                            );
-                                            resetHotlineForm();
-                                            hotlineItem = "";
-                                        },
-                                        error: showErrorMessage
-                                    });
-                            });
+                                            $(".empty-data-container").remove();
+                                            hotlineForm.prop('hidden', 1);
+                                        }
+                                        showSuccessMessage(
+                                            `Hotline number successfully ${operation == "add" ? "added" : "updated"}.`
+                                        );
+                                        resetHotlineForm();
+                                        hotlineItem = "";
+                                    },
+                                    error: showErrorMessage
+                                });
+                        });
+                    }
+                });
+
+                $('#addNumberBtnModal').click(() => {
+                    if (operation != 'add') {
+                        if (hotlineItem) {
+                            replaceHotlineItem();
+                            resetHotlineForm();
+                            hotlineItem = "";
                         }
-                    });
 
-                    $('#addNumberBtnModal').click(() => {
-                        if (operation != 'add') {
-                            if (hotlineItem) {
-                                replaceHotlineItem();
-                                resetHotlineForm();
-                                hotlineItem = "";
-                            }
-
-                            $(".empty-data-container").prop('hidden', $(".empty-data-container").length > 0);
-                            operation = "add";
-                            validator.resetForm();
-                            hotlineForm.prop('hidden', 0);
-                            formBtn.removeClass('bg-warning').text('Add');
-                            scrollToElement('#hotlineForm');
-                        }
-                    });
-
-                    $(document).on('click', '.updateNumber', function() {
+                        $(".empty-data-container").prop('hidden', $(".empty-data-container").length > 0);
+                        operation = "add";
                         validator.resetForm();
-                        hotlineItem && replaceHotlineItem();
-                        hotlineItem = $(this).closest('.hotline-container');
-                        hotlineId = $(this).data('id');
-                        replaceHotlineItem(false);
-                        hotlineLabel = hotlineItem.find('.hotline-data-container:first').text().trim();
-                        hotlineNumber = hotlineItem.find('.hotline-data-container.last-data').text().trim();
-                        previewLogo.attr('src', hotlineItem.find('.hotline-preview-image-list').attr('src'));
-                        $('#hotlineLabel').val(hotlineLabel);
-                        $('#hotlineNumber').val(hotlineNumber);
-                        formBtn.addClass('bg-warning').text('Update');
-                        operation = "update";
-                        hotlineLogoChanged = false;
+                        hotlineForm.prop('hidden', 0);
+                        formBtn.removeClass('bg-warning').text('Add');
                         scrollToElement('#hotlineForm');
-                    });
+                    }
+                });
 
-                    $(document).on('click', '.removeNumber', function() {
-                        hotlineItem = $(this).closest('.hotline-container');
-                        hotlineId = $(this).data('id');
+                $(document).on('click', '.updateNumber', function() {
+                    validator.resetForm();
+                    hotlineItem && replaceHotlineItem();
+                    hotlineItem = $(this).closest('.hotline-container');
+                    hotlineId = $(this).data('id');
+                    replaceHotlineItem(false);
+                    hotlineLabel = hotlineItem.find('.hotline-data-container:first').text().trim();
+                    hotlineNumber = hotlineItem.find('.hotline-data-container.last-data').text().trim();
+                    previewLogo.attr('src', hotlineItem.find('.hotline-preview-image-list').attr('src'));
+                    $('#hotlineLabel').val(hotlineLabel);
+                    $('#hotlineNumber').val(hotlineNumber);
+                    formBtn.addClass('bg-warning').text('Update');
+                    operation = "update";
+                    hotlineLogoChanged = false;
+                    scrollToElement('#hotlineForm');
+                });
 
-                        confirmModal(`Do you want to remove this hotline number?`).then((result) => {
-                            if (!result.isConfirmed) return;
+                $(document).on('click', '.removeNumber', function() {
+                    hotlineItem = $(this).closest('.hotline-container');
+                    hotlineId = $(this).data('id');
 
-                            $.ajax({
-                                url: "{{ route('hotline.remove', 'hotlineId') }}".replace(
-                                    'hotlineId', hotlineId),
-                                method: "DELETE",
-                                success(response) {
-                                    response.status == 'warning' ? showWarningMessage(response
-                                        .message) : (hotlineItem.remove(), showSuccessMessage(
-                                            `Hotline number successfully removed.`),
-                                        hotlineItem = "");
+                    confirmModal(`Do you want to remove this hotline number?`).then((result) => {
+                        if (!result.isConfirmed) return;
 
-                                    if ($('.hotline-container').length == 1)
-                                        $('.number-section').append(`<div class="empty-data-container">
+                        $.ajax({
+                            url: "{{ route('hotline.remove', 'hotlineId') }}".replace(
+                                'hotlineId', hotlineId),
+                            method: "DELETE",
+                            success(response) {
+                                response.status == 'warning' ? showWarningMessage(response
+                                    .message) : (hotlineItem.remove(), showSuccessMessage(
+                                        `Hotline number successfully removed.`),
+                                    hotlineItem = "");
+
+                                if ($('.hotline-container').length == 1)
+                                    $('.number-section').append(`<div class="empty-data-container">
                                             <img src="{{ asset('assets/img/Empty-Hotline.svg') }}" alt="Picture">
                                             <p>No hotline numbers added yet.</p>
                                         </div>`);
-                                },
-                                error: showErrorMessage
-                            });
+                            },
+                            error: showErrorMessage
                         });
                     });
+                });
 
-                    changeLogoBtn.click(() => $('#hotlineLogo').click());
+                changeLogoBtn.click(() => $('#hotlineLogo').click());
 
-                    $('#hotlineLogo').change(function() {
-                        if (this.files[0]) {
-                            if (!['image/jpeg', 'image/jpg', 'image/png'].includes(this.files[0].type)) {
-                                if (operation == "add" || hotlineLogoChanged) {
-                                    $(this).val('');
-                                    previewLogo.attr('src', hotlineLogoChanged && operation == 'update' ?
-                                        hotlineItem.find('.hotline-preview-image-list').attr('src') :
-                                        'assets/img/Select-Image.svg');
-                                    if (hotlineLogoChanged) hotlineLogoChanged = false;
-                                }
-                                logoError.text('Please select an image file.')
-                                    .prop('style', 'display: block !important');
-                                changeButton(true);
-                                return;
+                $('#hotlineLogo').change(function() {
+                    if (this.files[0]) {
+                        if (!['image/jpeg', 'image/jpg', 'image/png'].includes(this.files[0].type)) {
+                            if (operation == "add" || hotlineLogoChanged) {
+                                $(this).val('');
+                                previewLogo.attr('src', hotlineLogoChanged && operation == 'update' ?
+                                    hotlineItem.find('.hotline-preview-image-list').attr('src') :
+                                    'assets/img/Select-Image.svg');
+                                if (hotlineLogoChanged) hotlineLogoChanged = false;
                             }
-                            const reader = new FileReader();
-                            reader.onload = function(e) {
-                                previewLogo.attr('src', e.target.result);
-                            };
-                            reader.readAsDataURL(this.files[0]);
-                            hotlineLogoChanged = true;
-                            logoError.prop('style', 'display: none !important');
-                            changeButton();
+                            logoError.text('Please select an image file.')
+                                .prop('style', 'display: block !important');
+                            changeButton(true);
+                            return;
                         }
-                    });
-
-                    $('#closeFormBtn').click((e) => {
-                        e.preventDefault();
-                        if (operation != 'add') hotlineItem.prop('hidden', 0);
-                        $(".empty-data-container").prop('hidden', $(".empty-data-container").length > 1);
-                        hotlineForm.prop('hidden', 1);
-                        resetHotlineForm();
-                        hotlineItem = "";
-                        operation = "";
-                    });
-
-                    function resetHotlineForm() {
-                        hotlineForm[0].reset();
-                        hotlineLogoChanged = false;
-                        previewLogo.attr('src', 'assets/img/Select-Image.svg');
-                        changeButton(true);
-                    }
-
-                    function replaceHotlineItem(bool = true) {
-                        hotlineForm.prop('hidden', bool);
-                        hotlineItem.prop('hidden', !bool);
-                    }
-
-                    function changeButton(primary = false) {
-                        changeLogoBtn.html(`<i class="bi bi-image"></i> ${primary ? 'Select' : 'Change'} Logo`);
-                        setInfoWindowButtonStyles(changeLogoBtn, `var(--color-${primary ? 'primary' : 'yellow'}`);
+                        const reader = new FileReader();
+                        reader.onload = function(e) {
+                            previewLogo.attr('src', e.target.result);
+                        };
+                        reader.readAsDataURL(this.files[0]);
+                        hotlineLogoChanged = true;
+                        logoError.prop('style', 'display: none !important');
+                        changeButton();
                     }
                 });
-            </script>
-        @endif
+
+                $('#closeFormBtn').click((e) => {
+                    e.preventDefault();
+                    if (operation != 'add') hotlineItem.prop('hidden', 0);
+                    $(".empty-data-container").prop('hidden', $(".empty-data-container").length > 1);
+                    hotlineForm.prop('hidden', 1);
+                    resetHotlineForm();
+                    hotlineItem = "";
+                    operation = "";
+                });
+
+                function resetHotlineForm() {
+                    hotlineForm[0].reset();
+                    hotlineLogoChanged = false;
+                    previewLogo.attr('src', 'assets/img/Select-Image.svg');
+                    changeButton(true);
+                }
+
+                function replaceHotlineItem(bool = true) {
+                    hotlineForm.prop('hidden', bool);
+                    hotlineItem.prop('hidden', !bool);
+                }
+
+                function changeButton(primary = false) {
+                    changeLogoBtn.html(`<i class="bi bi-image"></i> ${primary ? 'Select' : 'Change'} Logo`);
+                    setInfoWindowButtonStyles(changeLogoBtn, `var(--color-${primary ? 'primary' : 'yellow'}`);
+                }
+            });
+        </script>
+        {{-- @endif --}}
     @endauth
 </body>
 
