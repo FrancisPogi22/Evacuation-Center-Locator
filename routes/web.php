@@ -153,7 +153,7 @@ Route::middleware('auth')->group(function () {
     });
 
     Route::controller(MainController::class)->group(function () {
-        Route::get('/fetchDisasters/{year}', 'fetchDisasters')->name('fetch.disasters');
+        Route::get('/searchDisaster/{year}', 'searchDisaster')->name('searchDisaster');
         Route::get('/eligtasGuideline', 'eligtasGuideline')->name('eligtas.guideline');
         Route::get('/searchGuideline', 'searchGuideline')->name('guideline.search');
         Route::get('/guide/{guidelineId}', 'guide')->name('eligtas.guide');
@@ -162,8 +162,8 @@ Route::middleware('auth')->group(function () {
         Route::get('/userProfile', 'userProfile')->name('display.profile');
         Route::get('/hotlineNumber', 'hotlineNumbers')->name('hotline.number');
         Route::get('/about', 'about')->name('about');
+        Route::get('/fetchBarangayData', 'fetchBarangayData')->name('fetchBarangayData');
         Route::get('/fetchDisasterData', 'fetchDisasterData')->name('fetchDisasterData');
-        Route::get('/initDisasterData/{disasterName}', 'initDisasterData')->name('initDisasterData');
     });
 
     Route::controller(HotlineNumberController::class)->group(function () {

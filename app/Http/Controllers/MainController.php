@@ -34,30 +34,23 @@ class MainController extends Controller
     public function dashboard()
     {
         $disaster         = $this->disaster->all();
-        $disasterData     = $this->fetchDisasterData();
         $totalEvacuee     = strval($this->evacuee->where('status', "Evacuated")->sum('individuals'));
         $residentReport   = $this->residentReport->whereRaw('DATE(report_time) <= CURDATE()')->count();
         $onGoingDisasters = $disaster->where('status', "On Going");
         $activeEvacuation = $this->evacuationCenter->where('status', "Active")->count();
 
-        return view('userpage.dashboard', compact('activeEvacuation', 'disasterData', 'totalEvacuee', 'onGoingDisasters', 'disaster', 'residentReport'));
+        return view('userpage.dashboard', compact('activeEvacuation', 'totalEvacuee', 'onGoingDisasters', 'disaster', 'residentReport'));
     }
 
-    public function fetchDisasters($year)
+    public function searchDisaster($year)
     {
         return $this->disaster->where('year', $year)->get();
-    }
-
-    public function initDisasterData($disasterName)
-    {
-        $disaterData = $this->disaster->select('id', 'name', 'year')->where('name', 'LIKE', "%{$disasterName}%")->get();
-        return response($disaterData);
     }
 
     public function generateExcelEvacueeData(Request $request)
     {
         $generateReportValidation = Validator::make($request->all(), ['disaster_id' => 'required']);
-        
+
         if ($generateReportValidation->fails()) return back()->with('warning', "Disaster is not exist.");
 
         return Excel::download(new EvacueeDataExport($request->disaster_id), 'evacuee-data.xlsx', FileFormat::XLSX);
@@ -181,6 +174,15 @@ class MainController extends Controller
             $yearList = $this->residentReport->selectRaw('YEAR(report_time) as year')->where('is_archive', 1)->distinct()->orderBy('year', 'desc')->get();
 
         return view('userpage.residentReport.manageReport', compact('operation', 'prefix', 'yearList', 'reportType'));
+    }
+
+    public function fetchBarangayData()
+    {
+        $barangayData = $this->evacuee->groupBy('barangay')
+            ->selectRaw('barangay, SUM(male) as male, SUM(female) as female')
+            ->get();
+
+        return request()->ajax() ? response()->json($barangayData) : $barangayData;
     }
 
     public function fetchDisasterData()

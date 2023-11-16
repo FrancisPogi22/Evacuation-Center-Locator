@@ -83,8 +83,7 @@ textarea::placeholder {
     font-weight: 600;
     border-radius: 4px;
     padding: 8px 16px;
-    filter: drop-shadow(0 4px 3px rgb(0 0 0 / 0.07))
-        drop-shadow(0 2px 2px rgb(0 0 0 / 0.06));
+    filter: drop-shadow(0 4px 3px rgb(0 0 0 / 0.07)) drop-shadow(0 2px 2px rgb(0 0 0 / 0.06));
     border: none;
 }
 
@@ -175,8 +174,7 @@ textarea::placeholder {
 .btn-update,
 .btn-remove,
 #pinpointCurrentLocationBtn {
-    filter: drop-shadow(0 4px 3px rgb(0 0 0 / 0.07))
-        drop-shadow(0 2px 2px rgb(0 0 0 / 0.06));
+    filter: drop-shadow(0 4px 3px rgb(0 0 0 / 0.07)) drop-shadow(0 2px 2px rgb(0 0 0 / 0.06));
 }
 
 .sendUpdateBtn,
@@ -245,8 +243,7 @@ textarea::placeholder {
     height: 60px;
     background: var(--color-light-gray);
     z-index: 1;
-    filter: drop-shadow(0 10px 8px rgb(0 0 0 / 0.04))
-        drop-shadow(0 4px 3px rgb(0 0 0 / 0.1));
+    filter: drop-shadow(0 10px 8px rgb(0 0 0 / 0.04)) drop-shadow(0 4px 3px rgb(0 0 0 / 0.1));
 }
 
 .header-section .container-fluid {
@@ -464,8 +461,7 @@ button.changeTheme:hover {
     z-index: 100;
     left: 0;
     top: 0;
-    filter: drop-shadow(0 10px 8px rgb(0 0 0 / 0.04))
-        drop-shadow(0 4px 3px rgb(0 0 0 / 0.1));
+    filter: drop-shadow(0 10px 8px rgb(0 0 0 / 0.04)) drop-shadow(0 4px 3px rgb(0 0 0 / 0.1));
     overflow: hidden;
     transition: 0.2s all ease;
 }
@@ -711,8 +707,7 @@ button.changeTheme:hover {
     width: 100%;
     max-width: 430px;
     border-radius: 6px;
-    filter: drop-shadow(0 10px 8px rgb(0 0 0 / 0.04))
-        drop-shadow(0 4px 3px rgb(0 0 0 / 0.1));
+    filter: drop-shadow(0 10px 8px rgb(0 0 0 / 0.04)) drop-shadow(0 4px 3px rgb(0 0 0 / 0.1));
 }
 
 .auth-form-section form {
@@ -811,8 +806,7 @@ button.changeTheme:hover {
     width: 100%;
     max-width: 500px;
     border-radius: 6px;
-    filter: drop-shadow(0 10px 8px rgb(0 0 0 / 0.04))
-        drop-shadow(0 4px 3px rgb(0 0 0 / 0.1));
+    filter: drop-shadow(0 10px 8px rgb(0 0 0 / 0.04)) drop-shadow(0 4px 3px rgb(0 0 0 / 0.1));
 }
 
 .recover-form form label,
@@ -938,8 +932,7 @@ button.changeTheme:hover {
     position: relative;
     overflow: hidden;
     border-radius: 15px;
-    filter: drop-shadow(0 10px 8px rgb(0 0 0 / 0.04))
-        drop-shadow(0 4px 3px rgb(0 0 0 / 0.1));
+    filter: drop-shadow(0 10px 8px rgb(0 0 0 / 0.04)) drop-shadow(0 4px 3px rgb(0 0 0 / 0.1));
     -webkit-animation: scaleIn 0.5s;
     animation: scaleIn 0.5s;
 }
@@ -976,18 +969,57 @@ button.changeTheme:hover {
     padding: 0 8px;
 }
 
-.chart-container {
+.dasboard-content {
     display: flex;
-    justify-content: flex-start;
+    gap: 20px;
+}
+
+.pie-container {
     margin: 20px 0;
+    width: 300px;
+    overflow: hidden;
 }
 
 .pie-chart {
-    width: 500px;
-    border-radius: 15px;
-    margin-right: 20px;
-    filter: drop-shadow(0 10px 8px rgb(0 0 0 / 0.04))
-        drop-shadow(0 4px 3px rgb(0 0 0 / 0.1));
+    width: 100%;
+    height: 350px;
+    padding: 10px 10px 20px;
+    filter: drop-shadow(0 10px 8px rgb(0 0 0 / 0.04)) drop-shadow(0 4px 3px rgb(0 0 0 / 0.1));
+}
+
+.pie-container .highcharts-background {
+    fill: var(--color-text) !important;
+}
+
+.pie-label {
+    text-align: center;
+    padding: 10px;
+    background: var(--color-light-gray);
+    color: var(--color-text);
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.pie-container {
+    flex: 1;
+}
+
+.bar-container {
+    flex: 2.5;
+}
+
+.pie-content {
+    display: flex;
+    flex-direction: column;
+    background: var(--color-d-sub-text);
+    height: 0;
+    overflow: hidden;
+    overflow-y: auto;
+    transition: 0.2s all ease;
+}
+
+.pie-container.active .pie-content {
+    height: 690px;
 }
 
 .highcharts-background {
@@ -995,11 +1027,10 @@ button.changeTheme:hover {
 }
 
 .bar-graph {
-    flex: 1;
+    margin: 20px 0;
     height: 400px;
     border-radius: 15px;
-    filter: drop-shadow(0 10px 8px rgb(0 0 0 / 0.04))
-        drop-shadow(0 4px 3px rgb(0 0 0 / 0.1));
+    filter: drop-shadow(0 10px 8px rgb(0 0 0 / 0.04)) drop-shadow(0 4px 3px rgb(0 0 0 / 0.1));
 }
 
 .highcharts-label path {
@@ -1108,8 +1139,7 @@ text {
     position: relative;
     width: 300px;
     transition: 0.1s all ease-in-out;
-    filter: drop-shadow(0 10px 8px rgb(0 0 0 / 0.04))
-        drop-shadow(0 4px 3px rgb(0 0 0 / 0.1));
+    filter: drop-shadow(0 10px 8px rgb(0 0 0 / 0.04)) drop-shadow(0 4px 3px rgb(0 0 0 / 0.1));
 }
 
 .guideline-widget:hover {
@@ -1147,8 +1177,7 @@ text {
     z-index: -50;
     position: relative;
     background: var(--color-text);
-    filter: drop-shadow(0 20px 13px rgb(0 0 0 / 0.03))
-        drop-shadow(0 8px 5px rgb(0 0 0 / 0.08));
+    filter: drop-shadow(0 20px 13px rgb(0 0 0 / 0.03)) drop-shadow(0 8px 5px rgb(0 0 0 / 0.08));
     border-radius: 4px;
 }
 
@@ -1295,8 +1324,7 @@ text {
 .guideline-btn .btn-container button i {
     padding: 8px;
     font-size: 18px;
-    filter: drop-shadow(0 20px 13px rgb(0 0 0 / 0.03))
-        drop-shadow(0 8px 5px rgb(0 0 0 / 0.08));
+    filter: drop-shadow(0 20px 13px rgb(0 0 0 / 0.03)) drop-shadow(0 8px 5px rgb(0 0 0 / 0.08));
 }
 
 .guideline-btn div {
@@ -1333,8 +1361,7 @@ text {
     text-align: center;
     background: var(--color-text);
     border-radius: 10px;
-    filter: drop-shadow(0 20px 13px rgb(0 0 0 / 0.03))
-        drop-shadow(0 8px 5px rgb(0 0 0 / 0.08));
+    filter: drop-shadow(0 20px 13px rgb(0 0 0 / 0.03)) drop-shadow(0 8px 5px rgb(0 0 0 / 0.08));
 }
 
 .weather-section h4 {
@@ -1629,8 +1656,7 @@ div.gm-style-iw.gm-style-iw-c {
     align-items: center;
     border-radius: 4px;
     border: 2px solid var(--color-light-gray);
-    filter: drop-shadow(0 4px 3px rgb(0 0 0 / 0.07))
-        drop-shadow(0 2px 2px rgb(0 0 0 / 0.06));
+    filter: drop-shadow(0 4px 3px rgb(0 0 0 / 0.07)) drop-shadow(0 2px 2px rgb(0 0 0 / 0.06));
     white-space: nowrap;
     -ms-overflow-style: none;
     scrollbar-width: none;
@@ -1806,8 +1832,7 @@ html[data-theme="dark"] .gmnoprint button span {
     padding: 16px 0;
     border-radius: 4px;
     margin: 12px 0;
-    filter: drop-shadow(0 10px 8px rgb(0 0 0 / 0.04))
-        drop-shadow(0 4px 3px rgb(0 0 0 / 0.1));
+    filter: drop-shadow(0 10px 8px rgb(0 0 0 / 0.04)) drop-shadow(0 4px 3px rgb(0 0 0 / 0.1));
 }
 
 .incidentReportTable {
@@ -1818,8 +1843,7 @@ html[data-theme="dark"] .gmnoprint button span {
 .incident-report-container {
     background: var(--color-text);
     border-radius: 4px;
-    filter: drop-shadow(0 4px 3px rgb(0 0 0 / 0.07))
-        drop-shadow(0 2px 2px rgb(0 0 0 / 0.06));
+    filter: drop-shadow(0 4px 3px rgb(0 0 0 / 0.07)) drop-shadow(0 2px 2px rgb(0 0 0 / 0.06));
 }
 
 .incident-report-content {
@@ -1829,8 +1853,7 @@ html[data-theme="dark"] .gmnoprint button span {
 }
 
 .report-photo-container {
-    filter: drop-shadow(0 4px 3px rgb(0 0 0 / 0.07))
-        drop-shadow(0 2px 2px rgb(0 0 0 / 0.06));
+    filter: drop-shadow(0 4px 3px rgb(0 0 0 / 0.07)) drop-shadow(0 2px 2px rgb(0 0 0 / 0.06));
 }
 
 .incident-report-details {
@@ -1910,8 +1933,7 @@ html[data-theme="dark"] .gmnoprint button span {
     padding: 24px;
     background: var(--color-text);
     border-radius: 6px;
-    filter: drop-shadow(0 20px 13px rgb(0 0 0 / 0.03))
-        drop-shadow(0 8px 5px rgb(0 0 0 / 0.08));
+    filter: drop-shadow(0 20px 13px rgb(0 0 0 / 0.03)) drop-shadow(0 8px 5px rgb(0 0 0 / 0.08));
 }
 
 .e-ligtas-tagline {
@@ -1944,8 +1966,7 @@ html[data-theme="dark"] .gmnoprint button span {
     text-align: center;
     background: var(--color-light-gray);
     border-radius: 6px;
-    filter: drop-shadow(0 20px 13px rgb(0 0 0 / 0.03))
-        drop-shadow(0 8px 5px rgb(0 0 0 / 0.08));
+    filter: drop-shadow(0 20px 13px rgb(0 0 0 / 0.03)) drop-shadow(0 8px 5px rgb(0 0 0 / 0.08));
 }
 
 .about-content {
@@ -1965,8 +1986,7 @@ html[data-theme="dark"] .gmnoprint button span {
     background: var(--color-text);
     color: var(--color-black);
     border-radius: 6px;
-    filter: drop-shadow(0 20px 13px rgb(0 0 0 / 0.03))
-        drop-shadow(0 8px 5px rgb(0 0 0 / 0.08));
+    filter: drop-shadow(0 20px 13px rgb(0 0 0 / 0.03)) drop-shadow(0 8px 5px rgb(0 0 0 / 0.08));
 }
 
 .addressData,
@@ -2004,8 +2024,7 @@ html[data-theme="dark"] .gmnoprint button span {
 
 .social-section,
 .telephone-section {
-    filter: drop-shadow(0 20px 13px rgb(0 0 0 / 0.03))
-        drop-shadow(0 8px 5px rgb(0 0 0 / 0.08));
+    filter: drop-shadow(0 20px 13px rgb(0 0 0 / 0.03)) drop-shadow(0 8px 5px rgb(0 0 0 / 0.08));
     background: var(--color-text);
     color: var(--color-black);
     border-radius: 6px;
@@ -2055,8 +2074,7 @@ html[data-theme="dark"] .gmnoprint button span {
     margin: 10px 0;
     background: var(--color-text);
     border-radius: 4px;
-    filter: drop-shadow(0 20px 13px rgb(0 0 0 / 0.03))
-        drop-shadow(0 8px 5px rgb(0 0 0 / 0.08));
+    filter: drop-shadow(0 20px 13px rgb(0 0 0 / 0.03)) drop-shadow(0 8px 5px rgb(0 0 0 / 0.08));
 }
 
 .hotline-logo-container {
@@ -2173,8 +2191,7 @@ html[data-theme="dark"] .gmnoprint button span {
     margin-top: 18px;
     margin-bottom: 10px;
     border-radius: 4px;
-    filter: drop-shadow(0 10px 8px rgb(0 0 0 / 0.04))
-        drop-shadow(0 4px 3px rgb(0 0 0 / 0.1));
+    filter: drop-shadow(0 10px 8px rgb(0 0 0 / 0.04)) drop-shadow(0 4px 3px rgb(0 0 0 / 0.1));
 }
 
 .user-profile-container hr {
@@ -2245,8 +2262,7 @@ html[data-theme="dark"] .gmnoprint button span {
     height: max-content;
     padding: 10px;
     font-weight: 700;
-    filter: drop-shadow(0 10px 8px rgb(0 0 0 / 0.04))
-        drop-shadow(0 4px 3px rgb(0 0 0 / 0.1));
+    filter: drop-shadow(0 10px 8px rgb(0 0 0 / 0.04)) drop-shadow(0 4px 3px rgb(0 0 0 / 0.1));
     border-bottom-right-radius: 0.25rem;
     border-bottom-left-radius: 0.25rem;
 }
@@ -2628,8 +2644,7 @@ span.error {
 .table-container {
     padding: 12px;
     background: var(--color-text);
-    filter: drop-shadow(0 10px 8px rgb(0 0 0 / 0.04))
-        drop-shadow(0 4px 3px rgb(0 0 0 / 0.1));
+    filter: drop-shadow(0 10px 8px rgb(0 0 0 / 0.04)) drop-shadow(0 4px 3px rgb(0 0 0 / 0.1));
     border-radius: 8px;
     overflow: hidden;
 }
@@ -2865,14 +2880,8 @@ html[data-theme="dark"] .dropdown-menu .dropdown-item.changeTheme:active {
 }
 
 html[data-theme="dark"] .flatpickr-day:hover,
-html[data-theme="dark"]
-    .dropdown-menu
-    .dropdown-item.changeTheme:active
-    #themeText,
-html[data-theme="dark"]
-    .dropdown-menu
-    .dropdown-item.changeTheme:active
-    #themeIcon {
+html[data-theme="dark"] .dropdown-menu .dropdown-item.changeTheme:active #themeText,
+html[data-theme="dark"] .dropdown-menu .dropdown-item.changeTheme:active #themeIcon {
     color: var(--color-black);
 }
 
@@ -3019,6 +3028,18 @@ html[data-theme="dark"] td {
     border-color: var(--color-d-sub-text) !important;
 }
 
+html[data-theme="dark"] .pie-container .highcharts-background {
+    fill: var(--color-d-bg-container) !important;
+}
+
+html[data-theme="dark"] .pie-label {
+    background: var(--color-d-bg-container);
+}
+
+html[data-theme="dark"] .pie-content {
+    background: var(--color-d-sub-text);
+}
+
 html[data-theme="dark"] tr.selectedRow {
     background: var(--color-gray) !important;
 }
@@ -3027,18 +3048,9 @@ html[data-theme="dark"] .table-container select option {
     color: var(--color-black);
 }
 
-html[data-theme="dark"]
-    .dataTables_wrapper
-    .dataTables_paginate
-    .paginate_button.disabled,
-html[data-theme="dark"]
-    .dataTables_wrapper
-    .dataTables_paginate
-    .paginate_button.disabled:hover,
-html[data-theme="dark"]
-    .dataTables_wrapper
-    .dataTables_paginate
-    .paginate_button.disabled:active {
+html[data-theme="dark"] .dataTables_wrapper .dataTables_paginate .paginate_button.disabled,
+html[data-theme="dark"] .dataTables_wrapper .dataTables_paginate .paginate_button.disabled:hover,
+html[data-theme="dark"] .dataTables_wrapper .dataTables_paginate .paginate_button.disabled:active {
     color: var(--color-d-sub-text) !important;
 }
 
@@ -3199,9 +3211,67 @@ html[data-theme="dark"] button.changeTheme {
     .locator-button-container {
         margin-top: 16px;
     }
+
+    .pie-container {
+        flex: none;
+        width: 40px;
+        position: relative;
+        overflow: auto;
+    }
+
+    .pie-label {
+        height: 100%;
+        width: 40px;
+        position: absolute;
+        display: flex;
+        justify-content: center;
+        align-items: center
+    }
+
+    .pie-container .pie-label::before {
+        content: ">";
+    }
+
+    .pie-container.active .pie-label::before {
+        content: "";
+    }
+
+    .pie-container.active .pie-label::after {
+        content: "<";
+    }
+
+    .pie-label span {
+        display: none;
+    }
+
+    .pie-content {
+        display: flex;
+        flex-direction: row;
+    }
+
+    .pie-figure {
+        margin-left: 40px;
+        height: 100%;
+        width: 100%;
+        overflow: auto;
+    }
+
+    .dasboard-content {
+        overflow: hidden;
+    }
+
+    .pie-container.active {
+        width: 100%;
+    }
+
+    .pie-container.active .pie-content {
+        height: 400px;
+        overflow: auto;
+    }
 }
 
 @media only screen and (max-width: 1150px) {
+
     .auth-container,
     .recover-content,
     .res-password-content {
@@ -3241,22 +3311,12 @@ html[data-theme="dark"] button.changeTheme {
         display: contents;
     }
 
-    .about-content > div {
+    .about-content>div {
         margin: 15px;
     }
 
     .widget-container {
         grid-template-columns: repeat(3, minmax(0, 1fr));
-    }
-
-    .chart-container {
-        display: contents;
-        margin: 30px 0;
-    }
-
-    .pie-chart {
-        width: 100%;
-        margin: 20px 0;
     }
 
     .about-content .location-section,
@@ -3453,7 +3513,7 @@ html[data-theme="dark"] button.changeTheme {
         word-wrap: break-word;
     }
 
-    #toast-container > .toast-warning {
+    #toast-container>.toast-warning {
         width: 15em;
         background-size: 20px;
     }
@@ -3703,7 +3763,7 @@ html[data-theme="dark"] button.changeTheme {
         font-size: 16px;
     }
 
-    .about-content > div {
+    .about-content>div {
         margin: 20px 0;
     }
 
