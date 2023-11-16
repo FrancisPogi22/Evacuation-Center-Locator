@@ -21,9 +21,9 @@ Route::controller(AuthenticationController::class)->group(function () {
         Route::view('/', 'authentication/authUser')->name('home');
     });
 
-    Route::middleware('check.attempt')->group(function () {
-        Route::post('/', 'authUser')->name('login');
-    });
+    // Route::middleware('check.attempt')->group(function () {
+    Route::post('/', 'authUser')->name('login');
+    // });
 
     Route::get('/logout', 'logout')->name('logout.user');
     Route::view('/recoverAccount', 'authentication.forgotPassword')->name('recoverAccount');
@@ -177,10 +177,7 @@ Route::middleware('auth')->group(function () {
         Route::post('/createAccount', 'createAccount')->name('create');
         Route::put('/updateAccount/{userId}', 'updateAccount')->name('update');
         Route::get('/displayUserAccount/{operation}', 'userAccounts')->name('display.users');
-        Route::patch('/disableAccount/{userId}', 'disableAccount')->name('disable');
-        Route::patch('/enableAccount/{userId}', 'enableAccount')->name('enable');
-        Route::put('/suspendAccount/{userId}', 'suspendAccount')->name('suspend');
-        Route::patch('/openAccount/{userId}', 'openAccount')->name('open');
+        Route::patch('/activeAccount/{userId}/{operation}', 'activeAccount')->name('active');
         Route::put('/resetPassword/{userId}', 'resetPassword')->name('reset.password');
         Route::post('/checkPassword', 'checkPassword')->name('check.password');
         Route::patch('/archiveAccount/{userId}/{operation}', 'archiveAccount')->name('archive');
