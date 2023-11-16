@@ -116,23 +116,30 @@
                     </div>
                 @endif
             </section>
-            <div class="dasboard-content">
-                <div class="pie-container">
-                    <div class="pie-label"><span>Barangay Data Chart</span></div>
-                    <div class="pie-content">
-                        <div class="pie-figure"></div>
+            @if (auth()->user()->organization == 'CDRRMO')
+                <figure class="chart-container report">
+                    <div id="report-chart" class="bar-graph"></div>
+                </figure>
+            @else
+                <div class="dasboard-content">
+                    <div class="pie-container">
+                        <div class="pie-label"><span>Barangay Data Chart</span></div>
+                        <div class="pie-content">
+                            <div class="pie-figure"></div>
+                        </div>
+                    </div>
+                    <div class="bar-container">
+                        <figure class="bar-figure"></figure>
                     </div>
                 </div>
-                <div class="bar-container">
-                    <figure class="bar-figure"></figure>
-                </div>
-            </div>
+            @endif
         </div>
         @include('userpage.changePasswordModal')
     </div>
 
     @include('partials.script')
     <script src="https://code.highcharts.com/highcharts.js"></script>
+    <script src="https://code.highcharts.com/modules/data.js"></script>
     <script src="https://code.highcharts.com/modules/exporting.js"></script>
     <script src="https://code.highcharts.com/modules/export-data.js"></script>
     <script src="https://code.highcharts.com/modules/accessibility.js"></script>
@@ -189,22 +196,84 @@
                 form[0].reset();
             });
 
-            initializePieChart();
+            @if (auth()->user()->organization == 'CDRRMO')
+                reportData();
 
-            initializeBarGraph();
+                Echo.channel('incident-report').listen('IncidentReport', (e) => {
+                    $("#totalReport").text(e.totalReport);
+                });
 
-            Echo.channel('active-evacuees').listen('ActiveEvacuees', (e) => {
+                Echo.channel('notification').listen('Notification', (e) => {
+                    reportData();
+                });
+            @else
+                initializePieChart();
+
+                initializeBarGraph();
+
+               Echo.channel('active-evacuees').listen('ActiveEvacuees', (e) => {
                 $("#totalEvacuee").text(e.activeEvacuees);
                 initializePieChart();
                 initializeBarGraph();
             });
-
-            Echo.channel('incident-report').listen('IncidentReport', (e) => {
-                $("#totalReport").text(e.totalReport);
-            });
+            @endif
         });
+        
+        @if (auth()->user()->organization == 'CDRRMO')
+            function reportData() {
+                $.get("{{ route('fetchReportData') }}").done(response => {
+                    const color = {
+                        'Emergency': '#ef4444',
+                        'Incident': '#ffcb2f',
+                        'Flooded': '#2682fa',
+                        'Roadblocked': '#000000'
+                    };
 
-        function initializeBarGraph() {
+                    Highcharts.chart('report-chart', {
+                        title: {
+                            text: 'Resident Report Count',
+                            align: 'center'
+                        },
+                        subtitle: {
+                            text: `From ${formatDateTime(response['start_date'], 'date')} to ${formatDateTime(new Date(), 'date')}`,
+                            align: 'center'
+                        },
+                        series: response['data'].map(({
+                            type,
+                            data
+                        }) => ({
+                            name: type,
+                            color: color[type],
+                            data: data.map(({
+                                report_date,
+                                report_count
+                            }) => ({
+                                x: new Date(report_date).getTime(),
+                                y: report_count
+                            }))
+                        })),
+                        yAxis: {
+                            title: {
+                                text: 'Count'
+                            }
+                        },
+                        xAxis: {
+                            type: 'datetime',
+                            labels: {
+                                formatter: function() {
+                                    return formatDateTime(this.value, 'date');
+                                }
+                            }
+                        },
+                        exporting: false,
+                        credits: {
+                            enabled: false
+                        }
+                    });
+                });
+            }
+        @else
+            function initializeBarGraph() {
             $('.bar-chart').remove();
             $.get("{{ route('fetchDisasterData') }}")
                 .done(disasterData => disasterData.forEach((disaster, count) => {

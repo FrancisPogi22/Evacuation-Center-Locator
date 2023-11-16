@@ -207,32 +207,56 @@
         confirmModal('Are you in need of help or rescue?').then((result) => {
             if (!result.isConfirmed) return;
 
-            navigator.geolocation.getCurrentPosition(
-                ({
-                    coords
-                }) => $.post("{{ route('resident.emergency.report') }}", {
-                    _token: "{{ csrf_token() }}",
-                    latitude: coords.latitude,
-                    longitude: coords.longitude
-                }, function(response) {
-                    if (response.status == "blocked")
-                        showWarningMessage(response.message);
-                    else
-                        Swal.fire({
-                            title: 'Message',
-                            text: response.status == "duplicate" ?
-                                response.message :
-                                "A rescue request has been sent. If it's safe, please remain where you are and try to stay calm. Your safety is our priority.",
-                            icon: 'info',
-                            iconColor: '#1d4ed8',
-                            showDenyButton: false,
-                            confirmButtonText: 'Close',
-                            confirmButtonColor: '#2682fa',
-                            allowOutsideClick: false
+            let currentWatchID;
+
+            currentWatchID = navigator.geolocation.watchPosition(
+                (position) => {
+                    if (position.coords.accuracy <= 500) {
+                        navigator.geolocation.clearWatch(currentWatchID);
+                        currentWatchID = null;
+                        $.post("{{ route('resident.emergency.report') }}", {
+                            _token: "{{ csrf_token() }}",
+                            latitude: position.coords.latitude,
+                            longitude: position.coords.longitude
+                        }, function(response) {
+                            if (response.status == "blocked")
+                                showWarningMessage(response.message);
+                            else
+                                Swal.fire({
+                                    title: 'Message',
+                                    text: response.status == "duplicate" ?
+                                        response.message :
+                                        "A rescue request has been sent. If it's safe, please remain where you are and try to stay calm. Your safety is our priority.",
+                                    icon: 'info',
+                                    iconColor: '#1d4ed8',
+                                    showDenyButton: false,
+                                    confirmButtonText: 'Close',
+                                    confirmButtonColor: '#2682fa',
+                                    allowOutsideClick: false
+                                });
                         });
-                }),
-                (error) => {}, {
+                    }
+                },
+                (error) => {
+                    let message;
+                    switch (error.code) {
+                        case error.PERMISSION_DENIED:
+                            message =
+                                'Request for geolocation denied.';
+                            break;
+                        case error.TIMEOUT:
+                        case error.POSITION_UNAVAILABLE:
+                        case error.POSITION_OUT_OF_BOUNDS:
+                            btnContainer.prop('hidden', 0);
+                            message = 'Cannot get your current location.';
+                            break;
+                    }
+                    showWarningMessage(message);
+                    navigator.geolocation.clearWatch(currentWatchID);
+                    currentWatchID = null;
+                }, {
                     enableHighAccuracy: true,
+                    timeout: 10000,
                     maximumAge: 0
                 }
             );
@@ -492,7 +516,7 @@
         return table.row(currentRow).data();
     }
 
-    function scrollTo(element) {
+    function scrollToElement(element) {
         $('html, body').animate({
             scrollTop: $(element).offset().top - 15
         }, 500);

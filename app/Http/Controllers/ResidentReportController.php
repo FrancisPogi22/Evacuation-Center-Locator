@@ -27,7 +27,7 @@ class ResidentReportController extends Controller
             ->addColumn('photo', function ($report) {
                 return '<div class="photo-container">
                             <div class="image-wrapper">
-                                <img class="report-img" src="' . ($report->photo ? asset('reports_image/' . $report->photo) : asset('assets/img/empty-data.svg')) . '">
+                                <img class="report-img" src="' . ($report->photo ? asset('reports_image/' . $report->photo) : asset('assets/img/Empty-Data.svg')) . '">
                                 <div class="image-overlay">
                                     <div class="overlay-text">View Photo</div>
                                 </div>

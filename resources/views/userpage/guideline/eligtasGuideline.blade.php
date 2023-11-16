@@ -158,7 +158,7 @@
 
                                             guideline_img = guideline_img ?
                                                 `guideline_image/${guideline_img}` :
-                                                'assets/img/empty-data.svg';
+                                                'assets/img/Empty-Data.svg';
                                             guidelineContainer.append(initGuidelineItem(
                                                 guideline_id, guideline_img, type));
                                         } else {
@@ -257,7 +257,7 @@
                                     <div class="image-preview">
                                         <a href="javascript:void(0)" class="btn-remove removeImage" id="removeImage${guideField}"
                                             hidden><i class="bi bi-trash3"></i></a>
-                                        <img src="{{ asset('assets/img/e-ligtas-logo-${checkThemeColor()}.png') }}" alt="Image"
+                                        <img src="{{ asset('assets/img/E-Ligtas-Logo-${checkThemeColor()}.png') }}" alt="Image"
                                             class="guideImage" id="image_preview_container${guideField}">
                                     </div>
                                     <input type="file" name="guidePhoto[]" id="guidePhoto${guideField}"
@@ -304,7 +304,7 @@
 
                     $(`#guidePhoto${guideFieldId}`).val('');
                     $(`#image_preview_container${guideFieldId}`).attr('src',
-                        `{{ asset('assets/img/e-ligtas-logo-${checkThemeColor()}.png') }}`);
+                        `{{ asset('assets/img/E-Ligtas-Logo-${checkThemeColor()}.png') }}`);
                     $(this).prop('hidden', 1);
                     $(`#selectImage${guideFieldId}`).removeClass('bg-primary').html(
                         '<i class="bi bi-image"></i>Choose Image');
@@ -370,12 +370,12 @@
                 }
 
                 function checkThemeColor() {
-                    return localStorage.getItem('theme') == 'dark' ? 'white' : 'black';
+                    return localStorage.getItem('theme') == 'dark' ? 'White' : 'Black';
                 }
 
                 function changeImageColor() {
                     guidelineImg.attr('src',
-                        `{{ asset('assets/img/e-ligtas-logo-${checkThemeColor()}.png') }}`);
+                        `{{ asset('assets/img/E-Ligtas-Logo-${checkThemeColor()}.png') }}`);
                 }
 
                 function changeImageBtn(action) {
@@ -409,7 +409,7 @@
                     response.guidelineData.forEach(guideline => {
                         let result_guideline_img = guideline.guideline_img ?
                             `guideline_image/${guideline.guideline_img}` :
-                            'assets/img/empty-data.svg';
+                            'assets/img/Empty-Data.svg';
 
                         guidelineContainer.append(initGuidelineItem(guideline.id,
                             result_guideline_img, guideline.type));
