@@ -34,7 +34,7 @@ class EvacuationCenterController extends Controller
                 if ($operation == "locator")
                     return '<button class="btn-table-primary locateEvacuationCenter"><i class="bi bi-search"></i>Locate</button>';
 
-                if (auth()->user()->is_disable == 1) return;
+                // if (auth()->user()->is_disable == 1) return;
 
                 $selectOption = $updateBtn = $archiveBtn = "";
 
