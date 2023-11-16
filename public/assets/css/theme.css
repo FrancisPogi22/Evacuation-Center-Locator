@@ -645,7 +645,7 @@ button.changeTheme:hover {
 }
 
 .user-active,
-.user-disable,
+/* .user-disable, */
 .resident {
     width: 16px;
     background: var(--color-green);
@@ -653,9 +653,9 @@ button.changeTheme:hover {
     border-radius: 100%;
 }
 
-.user-disable {
+/* .user-disable {
     background: var(--color-red);
-}
+} */
 
 .resident {
     background: var(--color-yellow);
@@ -3009,9 +3009,7 @@ html[data-theme="dark"] #report-chart .highcharts-tick {
     stroke: var(--color-d-text);
 }
 
-html[data-theme="dark"] .highcharts-bar-series highcharts-tracker-line
-
-html[data-theme="dark"] .guideline-content {
+html[data-theme="dark"] .highcharts-bar-series highcharts-tracker-line html[data-theme="dark"] .guideline-content {
     background: var(--color-d-bg-container);
 }
 
@@ -3341,7 +3339,7 @@ html[data-theme="dark"] button.changeTheme {
         width: 100%;
         margin: 20px 0;
     }
- 
+
     .about-content .location-section,
     .about-content .right-side {
         margin-left: 0;

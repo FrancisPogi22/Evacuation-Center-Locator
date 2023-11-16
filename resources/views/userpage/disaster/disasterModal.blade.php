@@ -1,4 +1,4 @@
-@if (auth()->user()->is_disable == 0)
+{{-- @if (auth()->user()->is_disable == 0) --}}
     <div class="modal fade" id="disasterModal" data-bs-backdrop="static" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -26,4 +26,4 @@
             </div>
         </div>
     </div>
-@endif
+{{-- @endif --}}

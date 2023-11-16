@@ -1,4 +1,4 @@
-@if (auth()->user()->is_disable == 0)
+{{-- @if (auth()->user()->is_disable == 0) --}}
     <div class="modal fade" id="userAccountModal" data-bs-backdrop="static" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -30,11 +30,6 @@
                                 <select name="position" class="form-select" id="position" placeholder="Enter Position">
                                 </select>
                             </div>
-                            <div class="field-container" id="suspend-container">
-                                <label for="suspend_time">Suspend Time</label>
-                                <input name="suspend_time" class="form-control" id="suspend"
-                                    placeholder="Select Suspend Time" autocomplete="off">
-                            </div>
                             <div class="field-container" id="name-container" hidden>
                                 <label for="name">Full Name</label>
                                 <input type="text" name="name" class="form-control" id="name"
@@ -54,4 +49,4 @@
             </div>
         </div>
     </div>
-@endif
+{{-- @endif --}}

@@ -37,7 +37,7 @@ class DisasterController extends Controller
             }
                 . '">' . $disaster->status . '</div></div>')
             ->addColumn('action', function ($disaster) use ($operation) {
-                if (auth()->user()->is_disable == 1) return;
+                // if (auth()->user()->is_disable == 1) return;
 
                 $evacuees      = $this->evacuee->where('disaster_id', $disaster->id)->where('status', 'Evacuated')->count();
                 $updateButton  = $operation == "manage" ? '<button class="btn-table-update" id="updateDisaster"><i class="bi bi-pencil-square"></i>Update</button>' : '';

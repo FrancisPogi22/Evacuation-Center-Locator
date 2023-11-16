@@ -38,7 +38,7 @@ class EvacueeController extends Controller
                 return '<input type="checkbox" class="rowCheckBox" value="' . $row->id . '">';
             })
             ->addColumn('action', function () use ($operation) {
-                if (auth()->user()->is_disable == 1) return;
+                // if (auth()->user()->is_disable == 1) return;
 
                 return $operation == 'archived' ? '' :
                     '<div class="action-container"><button class="btn-table-update" id="updateEvacueeBtn"><i class="bi bi-pencil-square"></i>Update</button></div>';

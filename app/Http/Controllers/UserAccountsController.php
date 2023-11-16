@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use Carbon\Carbon;
 use App\Models\User;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
@@ -33,34 +32,46 @@ class UserAccountsController extends Controller
         return DataTables::of($userAccounts)
             ->addColumn('status', fn ($account) => '<div class="status-container"><div class="status-content bg-' . match ($account->status) {
                 'Active'    => 'success',
-                'Disabled'  => 'danger',
-                'Suspended' => 'warning'
+                // 'Disabled'  => 'danger',
+                // 'Suspended' => 'warning'
+                'Inactive'  => 'warning',
+                'Archived'  => 'danger'
             }
                 . '">' . $account->status . '</div></div>')
-            ->addColumn('action', function ($user) use ($operation) {
-                if (auth()->user()->is_disable == 1) return;
+            ->addColumn('action', function ($account) use ($operation) {
+                // if (auth()->user()->is_disable == 1) return;
+                // $staticOption = '<option value="disableAccount">Disable Account</option><option value="suspendAccount">Suspend Account</option>';
+                // $actionBtns   = '<div class="action-container"><select class="form-select actionSelect">
+                // <option value="" disabled selected hidden>Select Action</option>' . '<option value="updateAccount">Update Account</option>';
+                // if ($operation == "active") {
+                //     $actionBtns .= $user->is_suspend == 0 && $user->is_disable == 0
+                //         ? $staticOption
+                //         : ($user->is_suspend == 1
+                //             ? '<option value="openAccount">Open Account</option>'
+                //             : '<option value="enableAccount">Enable Account</option>'
+                //         );
+                //     $actionBtns .= '<option value="archiveAccount">Archive Account</option></select>';
+                // } else {
+                //     $actionBtns .= ($user->is_suspend == 0 && $user->is_disable == 0)
+                //         ? $staticOption
+                //         : ($user->is_suspend == 1
+                //             ? '<option value="openAccount">Open Account</option>'
+                //             : '<option value="enableAccount">Enable Account</option>'
+                //         );
+                //     $actionBtns .= '<option value="unArchiveAccount">Unarchive Account</option></select>';
+                // }
+                // return $actionBtns . '</div>';
+                $actionBtns = '<div class="action-container"><select class="form-select actionSelect">
+                    <option value="" disabled selected hidden>Select Action</option>
+                    <option value="updateAccount">Update Account</option>';
 
-                $staticOption = '<option value="disableAccount">Disable Account</option><option value="suspendAccount">Suspend Account</option>';
-                $actionBtns   = '<div class="action-container"><select class="form-select actionSelect">
-                <option value="" disabled selected hidden>Select Action</option>' . '<option value="updateAccount">Update Account</option>';
-
-                if ($operation == "active") {
-                    $actionBtns .= $user->is_suspend == 0 && $user->is_disable == 0
-                        ? $staticOption
-                        : ($user->is_suspend == 1
-                            ? '<option value="openAccount">Open Account</option>'
-                            : '<option value="enableAccount">Enable Account</option>'
-                        );
-                    $actionBtns .= '<option value="archiveAccount">Archive Account</option></select>';
-                } else {
-                    $actionBtns .= ($user->is_suspend == 0 && $user->is_disable == 0)
-                        ? $staticOption
-                        : ($user->is_suspend == 1
-                            ? '<option value="openAccount">Open Account</option>'
-                            : '<option value="enableAccount">Enable Account</option>'
-                        );
-                    $actionBtns .= '<option value="unArchiveAccount">Unarchive Account</option></select>';
-                }
+                $actionBtns .= $account->status == "Archived"
+                    ? '<option value="unArchiveAccount">Unarchive Account</option></select>'
+                    : ($operation == "active" ? ($account->status == "Active"
+                        ? '<option value="inactiveAccount">Inactive Account</option>'
+                        : '<option value="activeAccount">Active Account</option>') .
+                        '<option value="archiveAccount">Archive Account</option></select>'
+                        : '</select>');
 
                 return $actionBtns . '</div>';
             })
@@ -89,7 +100,7 @@ class UserAccountsController extends Controller
             'password'     => Hash::make($defaultPassword),
             'status'       => "Active",
             'is_disable'   => 0,
-            'is_suspend'   => 0,
+            // 'is_suspend'   => 0,
             'is_archive'   => 0
         ]);
         Mail::to(trim($request->email))->send(new UserCredentialsMail([
@@ -127,60 +138,14 @@ class UserAccountsController extends Controller
         return response([]);
     }
 
-    public function disableAccount($userId)
+    public function activeAccount($userId, $operation)
     {
         $userAccount = $this->user->find($userId);
         $userAccount->update([
-            'status'     => 'Disabled',
-            'is_disable' => 1
+            'status' => $operation == "active" ? "Active" : "Inactive",
+            'is_disable' => $operation == "active" ? 0 : 1
         ]);
-        $this->logActivity->generateLog($userId, $userAccount->name, 'disabled a account');
-
-        return response([]);
-    }
-
-    public function enableAccount($userId)
-    {
-        $userAccount = $this->user->find($userId);
-        $userAccount->update([
-            'status'     => 'Active',
-            'is_disable' => 0
-        ]);
-        $this->logActivity->generateLog($userId, $userAccount->name, 'enabled a account');
-
-        return response([]);
-    }
-
-    public function suspendAccount(Request $request, $userId)
-    {
-        $suspendAccountValidation = Validator::make($request->all(), [
-            'suspend_time' => 'required'
-        ]);
-
-        if ($suspendAccountValidation->fails())
-            return response(['status' => 'warning', 'message' => $suspendAccountValidation->errors()->first()]);
-
-        $userAccount = $this->user->find($userId);
-        $userAccount->update([
-            'status'       => "Suspended",
-            'is_suspend'   => 1,
-            'suspend_time' => Carbon::parse($request->suspend_time)->format('Y-m-d H:i:s')
-        ]);
-        $this->logActivity->generateLog($userId, $userAccount->name, 'suspended a account');
-
-        return response([]);
-    }
-
-    public function openAccount($userId)
-    {
-        $userAccount = $this->user->find($userId);
-        $userAccount->update([
-            'status'       => 'Active',
-            'is_disable'   => 0,
-            'is_suspend'   => 0,
-            'suspend_time' => null
-        ]);
-        $this->logActivity->generateLog($userId, $userAccount->name, 'opened an account');
+        $this->logActivity->generateLog($userId, $userAccount->name, $operation . "d a account");
 
         return response([]);
     }
@@ -214,7 +179,10 @@ class UserAccountsController extends Controller
     public function archiveAccount($userId, $operation)
     {
         $userAccount = $this->user->find($userId);
-        $userAccount->update(['is_archive' => $operation == "archive" ? 1 : 0]);
+        $userAccount->update([
+            'is_archive' => $operation == "archive" ? 1 : 0,
+            'status' => $operation == "archive" ? "Archived" : "Active"
+        ]);
         $this->logActivity->generateLog($userId, $userAccount->name, $operation . "d a account");
 
         return response([]);

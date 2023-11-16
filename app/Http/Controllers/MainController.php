@@ -66,15 +66,20 @@ class MainController extends Controller
     public function searchGuideline(Request $request)
     {
         $searchGuidelineValdation = Validator::make($request->all(), ['guideline_name' => 'required']);
+
         if ($searchGuidelineValdation->fails()) return response(['warning' => $searchGuidelineValdation->errors()->first()]);
 
-        $guideline = $this->guideline->select('id', 'type', 'guideline_img');
-        if (auth()->check()) $guideline->where('organization', auth()->user()->organization);
+        $guidelineData = $this->guideline
+            ->select('id', 'type', 'guideline_img')
+            ->when(auth()->check(), function ($query) {
+                $query->where('organization', auth()->user()->organization);
+            })
+            ->where('type', 'LIKE', "%{$request->guideline_name}%")
+            ->get();
 
-        $guidelineData = $guideline->where('type', 'LIKE', "%{$request->guideline_name}%")->get();
-        if ($guidelineData->isEmpty()) return back()->with('warning', "Sorry, we couldn't find any result.");
-
-        return response(['guidelineData' => $guidelineData]);
+        return $guidelineData->isEmpty()
+            ? back()->with('warning', "Sorry, we couldn't find any result.")
+            : response(['guidelineData' => $guidelineData]);
     }
 
     public function guide($guidelineId)
@@ -128,18 +133,18 @@ class MainController extends Controller
                 return $userLog->name . ' ' . $userLog->activity . ' ' . $userLog->data_name;
             })
             ->addColumn('action', function ($userLog) {
-                if (auth()->user()->is_disable == 1) return;
+                // if (auth()->user()->is_disable == 1) return;
 
                 $actionBtn = '<div class="action-container">';
 
-                if (auth()->user()->id != $userLog->user_id) {
-                    if ($userLog->is_suspend == 0) {
-                        if ($userLog->is_disable == 0)
-                            $actionBtn .= '<button class="btn-table-remove" id="disableBtn" title="Disable"><i class="bi bi-x-lg"></i></button>';
+                // if (auth()->user()->id != $userLog->user_id) {
+                //     if ($userLog->is_suspend == 0) {
+                //         if ($userLog->is_disable == 0)
+                //             $actionBtn .= '<button class="btn-table-remove" id="disableBtn" title="Disable"><i class="bi bi-x-lg"></i></button>';
 
-                        $actionBtn .= '<button class="btn-table-update" id="suspendBtn" title="Suspend"><i class="bi bi-clock-history"></i></button>';
-                    }
-                }
+                //         $actionBtn .= '<button class="btn-table-update" id="suspendBtn" title="Suspend"><i class="bi bi-clock-history"></i></button>';
+                //     }
+                // }
 
                 return '<button class="btn-table-primary" title="View" role="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="bi bi-eye"></i></button>
                         <ul class="dropdown-menu log-dropdown">
@@ -178,36 +183,26 @@ class MainController extends Controller
 
     public function fetchBarangayData()
     {
-        $barangayData = $this->evacuee->groupBy('barangay')
-            ->selectRaw('barangay, SUM(male) as male, SUM(female) as female')
-            ->get();
-
-        return request()->ajax() ? response()->json($barangayData) : $barangayData;
+        return response()->json($this->evacuee->where('status', 'Evacuated')->selectRaw('barangay, SUM(male) as male, SUM(female) as female')->groupBy('barangay')->get());
     }
 
     public function fetchDisasterData()
     {
-        $disasterData     = [];
-        $onGoingDisasters = $this->disaster->join('evacuee', 'evacuee.disaster_id', '=', 'disaster.id')->where('evacuee.status', 'Evacuated')->select('disaster.*')->distinct()->get();
-
-        foreach ($onGoingDisasters as $disaster) {
-            $totalEvacuee = 0;
-            $totalEvacuee += $this->evacuee->where('disaster_id', $disaster->id)->sum('individuals');
-            $result = $this->evacuee->where('disaster_id', $disaster->id)
-                ->where('status', "Evacuated")
-                ->selectRaw('SUM(male) as totalMale,
-                    SUM(female) as totalFemale,
-                    SUM(senior_citizen) as totalSeniorCitizen,
-                    SUM(minors) as totalMinors,
-                    SUM(infants) as totalInfants,
-                    SUM(pwd) as totalPwd,
-                    SUM(pregnant) as totalPregnant,
-                    SUM(lactating) as totalLactating')
-                ->first();
-            $disasterData[] = array_merge(['disasterName' => $disaster->name, 'totalEvacuee' => $totalEvacuee], $result->toArray());
-        }
-
-        return request()->ajax() ? response()->json($disasterData) : $disasterData;
+        return response()->json($this->disaster
+            ->join('evacuee', 'evacuee.disaster_id', 'disaster.id')
+            ->where('evacuee.status', 'Evacuated')
+            ->selectRaw('disaster.name as disasterName, 
+                SUM(evacuee.male) as male,
+                SUM(evacuee.female) as female,
+                SUM(evacuee.senior_citizen) as senior_citizen,
+                SUM(evacuee.minors) as minors,
+                SUM(evacuee.infants) as infants,
+                SUM(evacuee.pwd) as pwd,
+                SUM(evacuee.pregnant) as pregnant,
+                SUM(evacuee.lactating) as lactating')
+            ->groupBy('disaster.id', 'disaster.name')
+            ->get()
+            ->toArray());
     }
 
     public function fetchReportData()

@@ -92,22 +92,23 @@ class AuthenticationController extends Controller
         if (!auth()->check()) return back();
 
         $userAuthenticated = auth()->user();
+        // if ($userAuthenticated->is_suspend == 1) {
+        //     if ($userAuthenticated->suspend_time <= now()->format('Y-m-d H:i:s')) {
+        //         $this->user->find($userAuthenticated->id)->update([
+        //             'status'       => 'Active',
+        //             'is_suspend'   => 0,
+        //             'suspend_time' => null
+        //         ]);
+        //     } else {
+        //         auth()->logout();
+        //         session()->flush();
 
-        if ($userAuthenticated->is_suspend == 1) {
-            if ($userAuthenticated->suspend_time <= now()->format('Y-m-d H:i:s')) {
-                $this->user->find($userAuthenticated->id)->update([
-                    'status'       => 'Active',
-                    'is_suspend'   => 0,
-                    'suspend_time' => null
-                ]);
-            } else {
-                auth()->logout();
-                session()->flush();
-                return back()->withInput()->with('warning', 'Your account has been suspended until ' . Carbon::parse($userAuthenticated->suspend_time)->format('F j, Y H:i:s'));
-            }
-        } elseif ($userAuthenticated->is_archive == 1) {
+        //     return back()->withInput()->with('warning', 'Your account is not accessible, please reach out to admin.');
+        // }
+        if ($userAuthenticated->is_disable == 1 || $userAuthenticated->is_archive == 1) {
             auth()->logout();
             session()->flush();
+
             return back()->withInput()->with('warning', 'Your account is not accessible, please reach out to admin.');
         }
 

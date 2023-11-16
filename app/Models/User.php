@@ -24,8 +24,8 @@ class User extends Authenticatable
         'password',
         'status',
         'is_disable',
-        'is_suspend',
-        'suspend_time',
+        // 'is_suspend',
+        // 'suspend_time',
         'is_archive',
     ];
 
