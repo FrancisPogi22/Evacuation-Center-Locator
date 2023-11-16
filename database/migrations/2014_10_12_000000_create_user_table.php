@@ -17,8 +17,8 @@ return new class extends Migration
             $table->string('position');
             $table->string('status');
             $table->boolean('is_disable');
-            $table->boolean('is_suspend');
-            $table->timestamp('suspend_time')->nullable();
+            // $table->boolean('is_suspend');
+            // $table->timestamp('suspend_time')->nullable();
             $table->boolean('is_archive');
         });
     }
