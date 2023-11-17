@@ -134,8 +134,6 @@ Route::middleware('auth')->group(function () {
             Route::delete('/removeAreaReport/{reportId}', 'removeAreaReport')->name('remove');
             Route::patch('/archiveAreaReport/{reportId}', 'archiveAreaReport')->name('archive');
         });
-
-        Route::get('/getResidentReport/{year}', ResidentReportController::class . '@getResidentReport')->name('resident.report.get');
     });
 
     Route::prefix('eligtasGuideline')->controller(GuidelineController::class)->group(function () {
@@ -158,7 +156,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/searchGuideline', 'searchGuideline')->name('guideline.search');
         Route::get('/guide/{guidelineId}', 'guide')->name('eligtas.guide');
         Route::post('/generateEvacueeData', 'generateExcelEvacueeData')->name('generate.evacuee.data');
-        Route::get('/userAccounts/{operation}', 'userAccounts')->name('display.users.account');
+        Route::get('/userAccounts/{operation}', 'userAccounts')->name('display.users.account')->middleware('check.position');
         Route::get('/userProfile', 'userProfile')->name('display.profile');
         Route::get('/hotlineNumber', 'hotlineNumbers')->name('hotline.number');
         Route::get('/fetchBarangayData', 'fetchBarangayData')->name('fetchBarangayData');

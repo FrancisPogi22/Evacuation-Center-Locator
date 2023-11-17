@@ -2489,7 +2489,6 @@ span.error {
     background: var(--color-text);
     filter: drop-shadow(0 10px 8px rgb(0 0 0 / 0.04)) drop-shadow(0 4px 3px rgb(0 0 0 / 0.1));
     border-radius: 8px;
-    overflow: hidden;
 }
 
 .table-content {
