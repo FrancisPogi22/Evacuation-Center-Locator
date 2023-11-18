@@ -57,7 +57,7 @@ class MainController extends Controller
     public function generateExcelEvacueeData(Request $request)
     {
         $generateReportValidation = Validator::make($request->all(), ['disaster_id' => 'required']);
-        
+
         if ($generateReportValidation->fails()) return back()->with('warning', "Disaster is not exist.");
 
         return Excel::download(new EvacueeDataExport($request->disaster_id), 'evacuee-data.xlsx', FileFormat::XLSX);
@@ -129,37 +129,28 @@ class MainController extends Controller
     {
         if (!request()->ajax()) return view('userpage.activityLog');
 
+        $name = '';
+
         return DataTables::of(ActivityUserLog::join('user', 'activity_log.user_id', '=', 'user.id')
-            ->select('activity_log.*', 'user.*')->orderBy('activity_log.id', 'desc')->where('user.id', '!=', auth()->user()->id)->get())
-            ->addColumn('activity', function ($userLog) {
-                return $userLog->name . ' ' . $userLog->activity . ' ' . $userLog->data_name;
-            })
-            ->addColumn('action', function ($userLog) {
-                if (auth()->user()->is_disable == 1) return;
-
-                $actionBtn = '<div class="action-container">';
-
-                if (auth()->user()->id != $userLog->user_id) {
-                    if ($userLog->is_suspend == 0) {
-                        if ($userLog->is_disable == 0)
-                            $actionBtn .= '<button class="btn-table-remove" id="disableBtn" title="Disable"><i class="bi bi-x-lg"></i></button>';
-
-                        $actionBtn .= '<button class="btn-table-update" id="suspendBtn" title="Suspend"><i class="bi bi-clock-history"></i></button>';
-                    }
+            ->select('activity_log.*', 'user.name', 'user.status')
+            ->orderByDesc('activity_log.id')
+            ->where('user.id', '!=', auth()->user()->id)
+            ->get())
+            ->addColumn('user_status', fn ($userLog) => '<div class="status-container"><div class="status-content bg-' .
+                match ($userLog->status) {
+                    'Active' => 'success',
+                    'Archived' => 'warning',
+                    'Disabled' => 'danger'
                 }
+                . '">' . $userLog->status . '</div></div>')
+            ->addColumn('action', function ($userLog) use (&$name) {
+                $newName = $userLog->name != $name;
+                $name = $userLog->name;
 
-                return '<button class="btn-table-primary" title="View" role="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="bi bi-eye"></i></button>
-                        <ul class="dropdown-menu log-dropdown">
-                            <div class="log-container">
-                                <p>Name: ' . $userLog->name . ' </p>
-                                <p>Activity: ' . $userLog->activity . ' ' . $userLog->data_name . '</p>
-                                <p>Time Issued: <span>' . $userLog->date_time . '</span></p>
-                                <p>Status: <span class="log-status text-' . ($userLog->status == "Disabled" ? 'danger' : ($userLog->status == "Suspended" ? 'warning' : 'success')) . '">' . $userLog->status . '</span> </p>
-                            </div>
-                            <hr>
-                            ' . $actionBtn . '</div>
-                        </ul>';
-            })->rawColumns(['activity', 'action'])->make(true);
+                return $userLog->status == 'Active' && $newName ?
+                    '<div class="action-container"><button class="btn-table-remove" id="disableBtn"><i class="bi bi-person-lock"></i>Disable Account</button></div>' :
+                    '';
+            })->rawColumns(['user_status', 'action'])->make(1);
     }
 
     public function userAccounts($operation)

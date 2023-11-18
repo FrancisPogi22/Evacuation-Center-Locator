@@ -37,8 +37,6 @@ class DisasterController extends Controller
             }
                 . '">' . $disaster->status . '</div></div>')
             ->addColumn('action', function ($disaster) use ($operation) {
-                if (auth()->user()->is_disable == 1) return;
-
                 $evacuees      = $this->evacuee->where('disaster_id', $disaster->id)->where('status', 'Evacuated')->count();
                 $updateButton  = $operation == "manage" ? '<button class="btn-table-update" id="updateDisaster"><i class="bi bi-pencil-square"></i>Update</button>' : '';
                 $statusOptions = $disaster->status == 'On Going' ? '<option value="Inactive">Inactive</option>' : '<option value="On Going">On Going</option>';
@@ -48,74 +46,59 @@ class DisasterController extends Controller
                     '<button class="btn-table-remove" id="unArchiveDisaster"><i class="bi bi-box-arrow-up-left"></i>Unarchive</button>';
 
                 return '<div class="action-container">' . $updateButton . $archiveButton . $selectStatus . '</div>';
-            })
-            ->rawColumns(['status', 'action'])
-            ->make(true);
+            })->rawColumns(['status', 'action'])->make(true);
     }
 
     public function createDisasterData(Request $request)
     {
-        $validatedDisasterValidation = Validator::make($request->all(), [
-            'name' => 'required'
-        ]);
-
-        if ($validatedDisasterValidation->fails())
-            return response(['status' => 'warning', 'message' => $validatedDisasterValidation->errors()->first()]);
+        $validatedDisasterValidation = Validator::make($request->all(), ['name' => 'required']);
+        if ($validatedDisasterValidation->fails()) return response(['status' => 'warning', 'message' => $validatedDisasterValidation->errors()->first()]);
 
         $disasterData = $this->disaster->create([
-            'name'       => "Typhoon " . Str::title(trim($request->name)),
-            'year'       => date('Y'),
-            'status'     => "On Going",
-            'user_id'    => auth()->user()->id,
-            'is_archive' => 0
+            'name'    => "Typhoon " . Str::title(trim($request->name)),
+            'year'    => date('Y'),
+            'user_id' => auth()->user()->id
         ]);
-        $this->logActivity->generateLog($disasterData->id, $disasterData->name, 'added a new disaster data');
+        $this->logActivity->generateLog('Added a new disaster(ID - ' . $disasterData->id . ')');
 
         return response([]);
     }
 
     public function updateDisasterData(Request $request, $disasterId)
     {
-        $validatedDisasterValidation = Validator::make($request->all(), [
-            'name' => 'required'
-        ]);
+        $validatedDisasterValidation = Validator::make($request->all(), ['name' => 'required']);
+        if ($validatedDisasterValidation->fails()) return response(['status' => 'warning', 'message' => $validatedDisasterValidation->errors()->first()]);
 
-        if ($validatedDisasterValidation->fails())
-            return response(['status' => 'warning', 'message' => $validatedDisasterValidation->errors()->first()]);
-
-        $disasterData = $this->disaster->find($disasterId);
-        $disasterData->update([
+        $this->disaster->find($disasterId)->update([
             'name'    => Str::title(trim($request->name)),
             'user_id' => auth()->user()->id
         ]);
-        $this->logActivity->generateLog($disasterId, $disasterData->name, 'updated a disaster data');
+        $this->logActivity->generateLog('Updated info of disaster(ID - ' . $disasterId . ')');
 
         return response([]);
     }
 
     public function archiveDisasterData($disasterId, $operation)
     {
-        $disasterData = $this->disaster->find($disasterId);
         $archiveValue = $operation == 'archive' ? 1 : 0;
-        $disasterData->update([
+        $this->disaster->find($disasterId)->update([
             'user_id'    => auth()->user()->id,
             'status'     => 'Inactive',
             'is_archive' => $archiveValue
         ]);
         $this->evacuee->where('disaster_id', $disasterId)->update(['is_archive' => $archiveValue]);
-        $this->logActivity->generateLog($disasterId, $disasterData->name, $operation . "d a disaster data");
+        $this->logActivity->generateLog(ucfirst($operation) . 'd disaster(ID - ' . $disasterId . ')');
 
         return response([]);
     }
 
     public function changeDisasterStatus(Request $request, $disasterId)
     {
-        $disasterData = $this->disaster->find($disasterId);
-        $disasterData->update([
+        $this->disaster->find($disasterId)->update([
             'status'  => $request->status,
             'user_id' => auth()->user()->id
         ]);
-        $this->logActivity->generateLog($disasterId, $disasterData->name, 'changed a disaster status');
+        $this->logActivity->generateLog('Changed a disaster(ID - ' . $disasterId . ') status to ' . $request->status);
 
         return response([]);
     }

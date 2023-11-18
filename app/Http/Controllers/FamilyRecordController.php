@@ -44,13 +44,12 @@ class FamilyRecordController extends Controller
             'female'         => 'required|numeric'
         ]);
 
-        if ($familyRecordValidation->fails())
-            return response(['status' => 'warning', 'message' => implode('<br>', $familyRecordValidation->errors()->all())]);
+        if ($familyRecordValidation->fails()) return response(['status' => 'warning', 'message' => implode('<br>', $familyRecordValidation->errors()->all())]);
 
         $familyRecord['individuals'] = $familyRecord['male'] + $familyRecord['female'];
         $familyRecord['user_id']     = auth()->user()->id;
         $familyRecord                = $this->familyRecord->create($familyRecord);
-        $this->logActivity->generateLog($familyRecord->id, $familyRecord->barangay, 'recorded a new family record');
+        $this->logActivity->generateLog('Recorded a new family record(ID - ' . $familyRecord->id . ') in ' . $familyRecord->barangay);
 
         return $familyRecord->id;
     }
@@ -72,8 +71,7 @@ class FamilyRecordController extends Controller
             'female'         => 'required|numeric'
         ]);
 
-        if ($familyRecordValidation->fails())
-            return response(['status' => 'warning', 'message' => implode('<br>', $familyRecordValidation->errors()->all())]);
+        if ($familyRecordValidation->fails()) return response(['status' => 'warning', 'message' => implode('<br>', $familyRecordValidation->errors()->all())]);
 
         $familyRecord['individuals'] = $familyRecord['male'] + $familyRecord['female'];
         $familyRecord['user_id']     = auth()->user()->id;

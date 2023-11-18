@@ -38,13 +38,9 @@ class EvacueeController extends Controller
                 return '<input type="checkbox" class="rowCheckBox" value="' . $row->id . '">';
             })
             ->addColumn('action', function () use ($operation) {
-                if (auth()->user()->is_disable == 1) return;
-
                 return $operation == 'archived' ? '' :
                     '<div class="action-container"><button class="btn-table-update" id="updateEvacueeBtn"><i class="bi bi-pencil-square"></i>Update</button></div>';
-            })
-            ->rawColumns(['select', 'action'])
-            ->make(true);
+            })->rawColumns(['select', 'action'])->make(true);
     }
 
     public function recordEvacueeInfo(Request $request)
@@ -66,8 +62,7 @@ class EvacueeController extends Controller
             'senior_citizen' => 'required|numeric'
         ]);
 
-        if ($evacueeInfoValidation->fails())
-            return response(['status' => 'warning', 'message' => implode('<br>', $evacueeInfoValidation->errors()->all())]);
+        if ($evacueeInfoValidation->fails()) return response(['status' => 'warning', 'message' => implode('<br>', $evacueeInfoValidation->errors()->all())]);
 
         if ($this->evacuee
             ->where([
@@ -91,7 +86,7 @@ class EvacueeController extends Controller
         $evacueeInfo['family_id']   = $latestRecordId;
         $evacueeInfo['user_id']     = auth()->user()->id;
         $evacueeInfo                = $this->evacuee->create($evacueeInfo);
-        $this->logActivity->generateLog($evacueeInfo->id, $evacueeInfo->barangay, 'recorded a new evacuee information');
+        $this->logActivity->generateLog('Recorded a new evacuee(ID - ' . $evacueeInfo->id . ') in ' . lcfirst($evacueeInfo->barangay));
         event(new ActiveEvacuees());
 
         return response([]);
@@ -115,8 +110,7 @@ class EvacueeController extends Controller
             'senior_citizen' => 'required|numeric'
         ]);
 
-        if ($evacueeInfoValidation->fails())
-            return response(['status' => 'warning', 'message' => implode('<br>', $evacueeInfoValidation->errors()->all())]);
+        if ($evacueeInfoValidation->fails()) return response(['status' => 'warning', 'message' => implode('<br>', $evacueeInfoValidation->errors()->all())]);
 
         $this->familyController->updateFamilyRecord($request);
         $evacueeInfo                = $request->only([
@@ -128,7 +122,7 @@ class EvacueeController extends Controller
         $evacueeInfo['family_id']   = $this->familyRecord->latest('updated_at')->first()->id;
         $evacueeInfo['user_id']     = auth()->user()->id;
         $evacueeInfo                = $this->evacuee->find($evacueeId)->update($evacueeInfo);
-        $this->logActivity->generateLog($evacueeId, '', 'updated a evacuee information');
+        $this->logActivity->generateLog('Updated a evacuee(ID - ' . $evacueeId . ') information in ' . lcfirst($evacueeInfo->barangay));
         event(new ActiveEvacuees());
 
         return response([]);
@@ -143,7 +137,7 @@ class EvacueeController extends Controller
             $familyIds[] = tap($evacuee)->update(['status' => $request->status, 'updated_at' => date('Y-m-d H:i:s')])->id;
         }
 
-        $this->logActivity->generateLog(implode(', ', $familyIds), '', 'updated evacuee status to return home');
+        $this->logActivity->generateLog('Updated evacuee(ID - ' . implode(', ', $familyIds) . ') status to return home');
 
         return response([]);
     }

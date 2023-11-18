@@ -81,8 +81,7 @@ class EmergencyReportController extends Controller
                 'user_ip'   => $userIp,
                 'latitude'  => $request->latitude,
                 'longitude' => $request->longitude
-            ])
-            ->exists()
+            ])->exists()
         ) return response(['status' => 'duplicate', 'message' => 'You\'ve already requested help.']);
 
         $this->emergencyReport->create([
@@ -101,8 +100,9 @@ class EmergencyReportController extends Controller
     public function changeEmergencyReportStatus($reportId)
     {
         $report = $this->emergencyReport->find($reportId);
-        $report->update(['status' => $report->status == "Pending" ? "Rescuing" : "Rescued"]);
-        $this->logActivity->generateLog($reportId, 'Emergency', 'set the emergency report status to resolving');
+        $status = $report->status == "Pending" ? "Rescuing" : "Rescued";
+        $report->update(['status' => $status]);
+        $this->logActivity->generateLog('Set the emergency report(ID - ' . $reportId . ') status to ' . $status);
         event(new EmergencyReport());
         event(new Notification());
 
@@ -112,7 +112,7 @@ class EmergencyReportController extends Controller
     public function removeEmergencyReport($reportId)
     {
         $this->emergencyReport->find($reportId)->delete();
-        $this->logActivity->generateLog($reportId, ' Emergency', 'removed emergency report');
+        $this->logActivity->generateLog('Removed emergency report(ID - ' . $reportId . ')');
         event(new EmergencyReport());
         event(new Notification());
 
@@ -126,8 +126,7 @@ class EmergencyReportController extends Controller
             'details' => 'required'
         ]);
 
-        if ($emergencyReportValidation->fails())
-            return response(['status' => 'warning', 'message' =>  implode('<br>', $emergencyReportValidation->errors()->all())]);
+        if ($emergencyReportValidation->fails()) return response(['status' => 'warning', 'message' => implode('<br>', $emergencyReportValidation->errors()->all())]);
 
         $reportPhotoPath = $request->file('image')->store();
         $request->image->move(public_path('reports_image'), $reportPhotoPath);
@@ -136,7 +135,7 @@ class EmergencyReportController extends Controller
             'details'    => trim($request->details),
             'is_archive' => 1
         ]);
-        $this->logActivity->generateLog($reportId, 'Emergency', "archived emergency report");
+        $this->logActivity->generateLog('Archived emergency report(ID - ' . $reportId . ')');
         event(new EmergencyReport());
 
         return response([]);

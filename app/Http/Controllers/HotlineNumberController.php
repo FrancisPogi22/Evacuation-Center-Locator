@@ -22,11 +22,10 @@ class HotlineNumberController extends Controller
     {
         $hotlineNumberValidation = Validator::make($request->all(), [
             'label'  => 'required',
-            'number' => 'required|numeric'
+            'number' => 'required'
         ]);
 
-        if ($hotlineNumberValidation->fails())
-            return response(['status' => 'warning', 'message' =>  implode('<br>', $hotlineNumberValidation->errors()->all())]);
+        if ($hotlineNumberValidation->fails()) return response(['status' => 'warning', 'message' =>  implode('<br>', $hotlineNumberValidation->errors()->all())]);
 
         $hotlineLogo     = $request->file('logo');
         $hotlineLogoPath = $hotlineLogo;
@@ -44,7 +43,7 @@ class HotlineNumberController extends Controller
         ]);
 
         $hotlineId = $hotlineNumber->id;
-        $this->logActivity->generateLog($hotlineId, $hotlineNumber->label, 'added a new hotline number');
+        $this->logActivity->generateLog('Added a new hotline number(ID - ' . $hotlineId . ')');
 
         return response(['hotlineId' => $hotlineId, 'hotlineLogo' => $hotlineLogoPath, 'label' => $hotlineNumber->label, 'number' => $hotlineNumber->number]);
     }
@@ -56,8 +55,7 @@ class HotlineNumberController extends Controller
             'number' => 'required|numeric'
         ]);
 
-        if ($hotlineNumberValidation->fails())
-            return response(['status' => 'warning', 'message' => implode('<br>', $hotlineNumberValidation->errors()->all())]);
+        if ($hotlineNumberValidation->fails()) return response(['status' => 'warning', 'message' => implode('<br>', $hotlineNumberValidation->errors()->all())]);
 
         $hotlineLogo       = $request->file('logo');
         $hotlineNumber     = $this->hotlineNumbers->find($hotlineId);
@@ -81,7 +79,7 @@ class HotlineNumberController extends Controller
         }
 
         $hotlineNumber->update($hotlineNumberData);
-        $this->logActivity->generateLog($hotlineId, $hotlineNumber->label, 'updated a hotline number');
+        $this->logActivity->generateLog('Updated a hotline number(ID - ' . $hotlineId . ')');
 
         return response(['hotlineId' => $hotlineId, 'label' => $hotlineNumber->label, 'number' => $hotlineNumber->number]);
     }
@@ -97,7 +95,7 @@ class HotlineNumberController extends Controller
             if (file_exists($hotlineLogoPath)) unlink($hotlineLogoPath);
         }
 
-        $this->logActivity->generateLog($hotlineId, $hotlineNumber->label, 'removed a hotline number');
+        $this->logActivity->generateLog('Removed a hotline number(ID - ' . $hotlineId . ')');
         $hotlineNumber->delete();
 
         return response([]);

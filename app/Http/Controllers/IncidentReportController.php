@@ -107,7 +107,7 @@ class IncidentReportController extends Controller
     {
         $report = $this->incidentReport->find($reportId);
         $report->update(['status' => $report->status == "Pending" ? "Resolving" : "Resolved"]);
-        $this->logActivity->generateLog($reportId, 'Incident', 'set the incident report status to resolving');
+        $this->logActivity->generateLog('Set the incident report(ID - ' . $reportId . ') status to resolving');
         event(new IncidentReport());
         event(new Notification());
 
@@ -119,7 +119,7 @@ class IncidentReportController extends Controller
         $report = $this->incidentReport->find($reportId);
         $report->delete();
         unlink(public_path('reports_image/' . $report->photo));
-        $this->logActivity->generateLog($reportId, ' Incident', 'removed incident report');
+        $this->logActivity->generateLog('Removed incident report(ID - ' . $reportId . ')');
         event(new IncidentReport());
         event(new Notification());
 
@@ -129,7 +129,7 @@ class IncidentReportController extends Controller
     public function archiveIncidentReport($reportId)
     {
         $this->incidentReport->find($reportId)->update(['is_archive' => 1]);
-        $this->logActivity->generateLog($reportId, 'Incident', "archived incident report");
+        $this->logActivity->generateLog('Archived incident report(ID - ' . $reportId . ')');
         event(new IncidentReport());
 
         return response([]);

@@ -70,8 +70,7 @@ class AuthenticationController extends Controller
             'password_confirmation' => 'required'
         ]);
 
-        if ($resetPasswordValidation->fails())
-            return back()->withInput()->with('warning', $resetPasswordValidation->errors()->first());
+        if ($resetPasswordValidation->fails()) return back()->withInput()->with('warning', implode('<br>', $resetPasswordValidation->errors()->all()));
 
         $this->user->where('email', $request->email)->update(['password' => Hash::make($request->password)]);
         DB::table('password_resets')->where('email', $request->email)->delete();
@@ -81,7 +80,7 @@ class AuthenticationController extends Controller
 
     public function logout()
     {
-        $this->logActivity->generateLog(null, null, 'logged out');
+        $this->logActivity->generateLog('Logged out account');
         auth()->logout();
         session()->flush();
         return redirect('/')->with('success', 'Successfully Logged out.');
@@ -93,25 +92,13 @@ class AuthenticationController extends Controller
 
         $userAuthenticated = auth()->user();
 
-        if ($userAuthenticated->is_suspend == 1) {
-            if ($userAuthenticated->suspend_time <= now()->format('Y-m-d H:i:s')) {
-                $this->user->find($userAuthenticated->id)->update([
-                    'status'       => 'Active',
-                    'is_suspend'   => 0,
-                    'suspend_time' => null
-                ]);
-            } else {
-                auth()->logout();
-                session()->flush();
-                return back()->withInput()->with('warning', 'Your account has been suspended until ' . Carbon::parse($userAuthenticated->suspend_time)->format('F j, Y H:i:s'));
-            }
-        } elseif ($userAuthenticated->is_archive == 1) {
+        if ($userAuthenticated->status != 'Active') {
             auth()->logout();
             session()->flush();
             return back()->withInput()->with('warning', 'Your account is not accessible, please reach out to admin.');
         }
 
-        $this->logActivity->generateLog(null, null, 'Logged In');
+        $this->logActivity->generateLog('Logged in account');
 
         return redirect("/" . Str::of($userAuthenticated->organization)->lower() . "/dashboard")->with('success', "Welcome " . $userAuthenticated->name . ".");
     }

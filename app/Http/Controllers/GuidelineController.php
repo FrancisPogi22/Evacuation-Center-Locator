@@ -23,8 +23,8 @@ class GuidelineController extends Controller
     public function createGuideline(Request $request)
     {
         $guidelineValidation = Validator::make($request->all(), [
-            'guidelineImg' => 'image|mimes:jpeg|max:2048',
-            'type'         => 'required|unique:guideline,type'
+            'type'         => 'required|unique:guideline,type',
+            'guidelineImg' => 'image|mimes:jpeg|max:2048'
         ]);
 
         $guideValidation = Validator::make($request->all(), [
@@ -32,11 +32,9 @@ class GuidelineController extends Controller
             'content.*' => 'required'
         ]);
 
-        if ($guidelineValidation->fails())
-            return response(['status' => 'warning', 'message' => $guidelineValidation->errors()->first()]);
+        if ($guidelineValidation->fails()) return response(['status' => 'warning', 'message' => implode('<br>', $guidelineValidation->errors()->all())]);
 
-        if ($guideValidation->fails())
-            return response(['status' => 'warning', 'message' => "All guide fields are required, fill them out."]);
+        if ($guideValidation->fails()) return response(['status' => 'warning', 'message' => "All guide fields are required, fill them out."]);
 
         $userId             = auth()->user()->id;
         $guidelineImg       = $request->file('guidelineImg');
@@ -53,7 +51,7 @@ class GuidelineController extends Controller
             'organization'  => auth()->user()->organization,
             'guideline_img' => $guidelineImagePath
         ]);
-        $this->logActivity->generateLog($guideline->id, $guideline->type, 'created a new guideline');
+        $this->logActivity->generateLog('Created a new guideline(ID - ' . $guideline->id . ')');
         $labels   = $request->label;
         $contents = $request->content;
 
@@ -64,8 +62,8 @@ class GuidelineController extends Controller
                 $guideData = [
                     'label'        => Str::upper(trim($label)),
                     'content'      => $contents[$count],
-                    'guideline_id' => $guideline->id,
-                    'user_id'      => $userId
+                    'user_id'      => $userId,
+                    'guideline_id' => $guideline->id
                 ];
 
                 if (isset($guideImages[$count])) {
@@ -75,7 +73,7 @@ class GuidelineController extends Controller
                 }
 
                 $guide = $this->guide->create($guideData);
-                $this->logActivity->generateLog($guide->id, $guide->label, 'created a new guide');
+                $this->logActivity->generateLog('Created a new guide(ID - ' . $guide->id . ')');
             }
         }
 
@@ -85,8 +83,8 @@ class GuidelineController extends Controller
     public function updateGuideline(Request $request, $guidelineId)
     {
         $guidelineValidation = Validator::make($request->all(), [
-            'guidelineImg' => 'image|mimes:jpeg|max:2048',
-            'type'         => 'required'
+            'type'         => 'required',
+            'guidelineImg' => 'image|mimes:jpeg|max:2048'
         ]);
 
         $guideValidation = Validator::make($request->all(), [
@@ -94,11 +92,9 @@ class GuidelineController extends Controller
             'content.*' => 'required'
         ]);
 
-        if ($guidelineValidation->fails())
-            return response(['status' => 'warning', 'message' => $guidelineValidation->errors()->first()]);
+        if ($guidelineValidation->fails()) return response(['status' => 'warning', 'message' => implode('<br>', $guidelineValidation->errors()->all())]);
 
-        if ($guideValidation->fails())
-            return response(['status' => 'warning', 'message' => "All guide fields are required, fill them out."]);
+        if ($guideValidation->fails()) return response(['status' => 'warning', 'message' => "All guide fields are required, fill them out."]);
 
         $userId          = auth()->user()->id;
         $guideline       = $this->guideline->find($guidelineId);
@@ -122,7 +118,7 @@ class GuidelineController extends Controller
         }
 
         $guideline->update($guidelineData);
-        $this->logActivity->generateLog($guideline->id, $guideline->type, 'updated a guideline');
+        $this->logActivity->generateLog('Updated ' . lcfirst($guideline->type) . ' guideline(ID - ' . $guideline->id . ')');
         $labels   = $request->label;
         $contents = $request->content;
 
@@ -144,7 +140,7 @@ class GuidelineController extends Controller
                 }
 
                 $guide = $this->guide->create($guideData);
-                $this->logActivity->generateLog($guide->id, $guide->label, 'created a new guide');
+                $this->logActivity->generateLog('Updated a guide(ID - ' . $guide->id . ')');
             }
         }
 
@@ -167,7 +163,7 @@ class GuidelineController extends Controller
             if (file_exists($guidelineImgPath)) unlink($guidelineImgPath);
         }
 
-        $this->logActivity->generateLog($guidelineId, $guideline->type, 'removed a guideline');
+        $this->logActivity->generateLog('Removed ' . lcfirst($guideline->type) . ' guideline(ID - ' . $guidelineId . ')');
         $guideline->delete();
 
         return response([]);
@@ -176,17 +172,16 @@ class GuidelineController extends Controller
     public function updateGuide(Request $request, $guideId)
     {
         $guideValidation = Validator::make($request->all(), [
-            'guidePhoto' => 'image|mimes:jpeg|max:2048',
             'label'      => 'required',
-            'content'    => 'required'
+            'content'    => 'required',
+            'guidePhoto' => 'image|mimes:jpeg|max:2048'
         ]);
 
-        if ($guideValidation->fails())
-            return response(['status' => 'warning', 'message' => $guideValidation->errors()->first()]);
+        if ($guideValidation->fails()) return response(['status' => 'warning', 'message' => implode('<br>', $guideValidation->errors()->all())]);
 
-        $guide       = $this->guide->find($guideId);
-        $guideImg    = $request->file('guidePhoto');
-        $guideData   = [
+        $guide     = $this->guide->find($guideId);
+        $guideImg  = $request->file('guidePhoto');
+        $guideData = [
             'label'   => Str::upper(trim($request->label)),
             'content' => Str::ucfirst(trim($request->content)),
             'user_id' => auth()->user()->id
@@ -206,7 +201,7 @@ class GuidelineController extends Controller
         }
 
         $guide->update($guideData);
-        $this->logActivity->generateLog($guideId, $guide->label, 'updated a guide');
+        $this->logActivity->generateLog('Updated a guide(ID - ' . $guideId . ')');
 
         return response(['label' => $guide->label, 'content' => $guide->content, 'guide_photo' => $guide->guide_photo]);
     }
@@ -216,7 +211,7 @@ class GuidelineController extends Controller
         $guide      = $this->guide->find($guideId);
         $guideImage = $guide->guide_photo;
         $this->removeGuideImage($guideImage);
-        $this->logActivity->generateLog($guideId, $guide->label, 'removed a guide');
+        $this->logActivity->generateLog('Removed a guide(ID - ' . $guideId . ')');
         $guide->delete();
 
         return response([]);
