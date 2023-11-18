@@ -18,7 +18,6 @@ class DatabaseSeeder extends Seeder
             'position' => 'President',
             'status' => 'Active',
             'is_disable' => 0,
-            'is_suspend' => 0,
             'is_archive' => 0
         ]);
 
@@ -30,7 +29,6 @@ class DatabaseSeeder extends Seeder
             'position' => 'Focal',
             'status' => 'Active',
             'is_disable' => 0,
-            'is_suspend' => 0,
             'is_archive' => 0
         ]);
 

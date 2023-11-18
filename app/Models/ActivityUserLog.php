@@ -14,23 +14,19 @@ class ActivityUserLog extends Model
     protected $primaryKey = 'id';
 
     protected $fillable = [
-        'data_id',
-        'data_name',
         'user_id',
         'activity',
-        'date_time'
+        'log_time'
     ];
 
     public $timestamps = false;
 
-    public function generateLog($data_id, $data_name, $activity)
+    public function generateLog($activity)
     {
         $this->create([
-            'data_id'   => $data_id,
-            'data_name' => $data_name,
-            'user_id'   => auth()->user()->id,
+            'user_id' => auth()->user()->id,
             'activity'  => trim($activity),
-            'date_time' => now()->toDayDateTimeString()
+            'log_time' => now()->toDayDateTimeString()
         ]);
     }
 }

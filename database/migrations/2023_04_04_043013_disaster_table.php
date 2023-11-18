@@ -13,9 +13,9 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('year');
-            $table->string('status');
+            $table->string('status')->default('On Going');
             $table->foreignId('user_id')->references('id')->on('user')->cascadeOnUpdate();
-            $table->boolean('is_archive');
+            $table->boolean('is_archive')->default(0);
         });
     }
 
