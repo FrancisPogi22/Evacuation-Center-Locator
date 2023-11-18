@@ -136,9 +136,9 @@ class MainController extends Controller
             ->get())
             ->addColumn('user_status', fn ($userLog) => '<div class="status-container"><div class="status-content bg-' .
                 match ($userLog->status) {
-                    'Active' => 'success',
-                    'Archived' => 'warning',
-                    'Disabled' => 'danger'
+                    'Active'   => 'success',
+                    'Inactive' => 'warning',
+                    'Archived' => 'danger'
                 }
                 . '">' . $userLog->status . '</div></div>')
             ->addColumn('action', function ($userLog) use (&$name) {

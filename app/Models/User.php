@@ -33,8 +33,4 @@ class User extends Authenticatable
     ];
 
     public $timestamps = false;
-
-    // protected $casts = [
-    //     'email_verified_at' => 'datetime',
-    // ];
 }
