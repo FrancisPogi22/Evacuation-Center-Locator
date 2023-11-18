@@ -23,11 +23,17 @@
             font-size: 14px;
             border-radius: 5px;
         }
+
+        #last-hr {
+            margin-top: 30px;
+        }
     </style>
 </head>
 
 <body>
-    <p>Thank you for selecting E-LIGTAS System, we pledge to protect your entire life.</p>
+    <p>
+        These are the login details for your admin account. You can modify your password after successfully logging in.
+    </p>
     <hr>
 
     <p>Email Address: {{ $userCredentials['email'] }}</p>
@@ -48,7 +54,7 @@
         <a href="http://127.0.0.1:8000/" id="btn-login">Login With Credentials</a>
     </center>
 
-    <hr>
+    <hr id="last-hr">
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz" crossorigin="anonymous">
