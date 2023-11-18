@@ -648,23 +648,6 @@ button.changeTheme:hover {
     border: none;
 }
 
-.user-active,
-.user-disable,
-.resident {
-    width: 16px;
-    background: var(--color-green);
-    padding: 8px 0;
-    border-radius: 100%;
-}
-
-.user-disable {
-    background: var(--color-red);
-}
-
-.resident {
-    background: var(--color-yellow);
-}
-
 .auth-section {
     position: relative;
 }
