@@ -42,7 +42,7 @@ class UserAccountsController extends Controller
                     '<option value="" disabled selected hidden>Select Action</option>' .
                     '<option value="updateAccount">Update Account</option>' .
                     ($operation == 'active' ?
-                        '<option value="' . ($user->is_disable == 0 ? 'disableAccount' : 'enableAccount') . '">' .
+                        '<option value="' . ($user->is_disable == 0 ? 'inactiveAccount' : 'activeAccount') . '">' .
                         ($user->is_disable == 0 ? 'Disable' : 'Enable') . ' Account</option>' : '') .
                     '<option value="' . ($operation == 'active' ? 'archiveAccount' : 'unArchiveAccount') . '">' .
                     ($operation == 'active' ? 'Archive' : 'Unarchive') . ' Account</option>' .
