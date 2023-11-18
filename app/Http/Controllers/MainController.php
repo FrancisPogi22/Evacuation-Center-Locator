@@ -229,9 +229,4 @@ class MainController extends Controller
 
         return view('userpage.hotlineNumbers', compact('hotlineNumbers'));
     }
-
-    public function about()
-    {
-        return view('userpage.about');
-    }
 }

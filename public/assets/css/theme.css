@@ -1912,147 +1912,6 @@ html[data-theme="dark"] .gmnoprint button span {
     transform: scale(1.05);
 }
 
-.about-eligtas {
-    margin-bottom: 20px;
-    padding: 24px;
-    background: var(--color-text);
-    border-radius: 6px;
-    filter: drop-shadow(0 20px 13px rgb(0 0 0 / 0.03)) drop-shadow(0 8px 5px rgb(0 0 0 / 0.08));
-}
-
-.e-ligtas-tagline {
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    flex-direction: column;
-    align-items: center;
-}
-
-.e-ligtas-tagline img {
-    margin: 40px 0;
-    width: 400px;
-}
-
-.e-ligtas-tagline p {
-    margin: 20px 0;
-    font-size: 20px;
-    font-weight: 700;
-}
-
-.about-container {
-    padding: 20px 0;
-}
-
-.about-header {
-    font-size: 20px;
-    font-weight: 700;
-    padding: 20px 0;
-    text-align: center;
-    background: var(--color-light-gray);
-    border-radius: 6px;
-    filter: drop-shadow(0 20px 13px rgb(0 0 0 / 0.03)) drop-shadow(0 8px 5px rgb(0 0 0 / 0.08));
-}
-
-.about-content {
-    display: flex;
-    margin-top: 16px;
-}
-
-.about-content a {
-    color: var(--color-text);
-}
-
-.about-content .location-section,
-.guides-container {
-    flex: 3;
-    margin: 0;
-    padding: 24px;
-    background: var(--color-text);
-    color: var(--color-black);
-    border-radius: 6px;
-    filter: drop-shadow(0 20px 13px rgb(0 0 0 / 0.03)) drop-shadow(0 8px 5px rgb(0 0 0 / 0.08));
-}
-
-.addressData,
-.right-side hr {
-    margin: 0;
-    color: var(--color-black);
-}
-
-.location-section hr {
-    margin: 13px 0;
-}
-
-.location-section .text-center p {
-    font-weight: 700;
-    font-size: 24px;
-    margin-bottom: 0;
-}
-
-.location-detail {
-    padding: 20px 0;
-}
-
-.location-detail i {
-    margin-right: 16px;
-    font-size: 18px;
-}
-
-.right-side {
-    display: flex;
-    flex: 1;
-    flex-direction: column;
-    margin-left: 17px;
-    width: 100%;
-}
-
-.social-section,
-.telephone-section {
-    filter: drop-shadow(0 20px 13px rgb(0 0 0 / 0.03)) drop-shadow(0 8px 5px rgb(0 0 0 / 0.08));
-    background: var(--color-text);
-    color: var(--color-black);
-    border-radius: 6px;
-}
-
-.social-section {
-    margin-bottom: 16px;
-}
-
-.social-section hr,
-.telephone-section hr {
-    margin: 0 25px !important;
-}
-
-.social-section span,
-.telephone-section span {
-    font-weight: 700;
-    font-size: 18px;
-}
-
-.social-section p,
-.telephone-section p {
-    margin: 0;
-    padding: 24px;
-    color: var(--color-black);
-}
-
-.social-section i,
-.telephone-section i {
-    margin-right: 16px;
-}
-
-.social-section div,
-.telephone-section div {
-    text-align: center;
-    padding: 25px;
-}
-
-.social-section p,
-.telephone-section p,
-.number-section p {
-    margin-bottom: 0;
-}
-
 .hotline-container {
     display: flex;
     margin: 10px 0;
@@ -2805,9 +2664,7 @@ html[data-theme="dark"] .markers-header {
 html[data-theme="dark"] .location-section,
 html[data-theme="dark"] .social-section,
 html[data-theme="dark"] .telephone-section,
-html[data-theme="dark"] .hotline-container,
-html[data-theme="dark"] .about-eligtas,
-html[data-theme="dark"] .about-header {
+html[data-theme="dark"] .hotline-container {
     background: var(--color-d-bg-container) !important;
 }
 
@@ -3297,14 +3154,6 @@ html[data-theme="dark"] button.changeTheme {
         margin: 0 auto;
     }
 
-    .about-content {
-        display: contents;
-    }
-
-    .about-content>div {
-        margin: 15px;
-    }
-
     .widget-container {
         grid-template-columns: repeat(3, minmax(0, 1fr));
     }
@@ -3321,11 +3170,6 @@ html[data-theme="dark"] button.changeTheme {
     .pie-chart {
         width: 100%;
         margin: 20px 0;
-    }
-
-    .about-content .location-section,
-    .about-content .right-side {
-        margin-left: 0;
     }
 
     .guide-items-section {
@@ -3766,15 +3610,7 @@ html[data-theme="dark"] button.changeTheme {
         text-align: center;
         font-size: 16px;
     }
-
-    .about-content>div {
-        margin: 20px 0;
-    }
-
-    .about-content .location-section {
-        margin-top: 15px;
-    }
-
+    
     .location-detail i {
         margin-right: 6px;
     }

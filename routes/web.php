@@ -41,7 +41,6 @@ Route::prefix('resident')->middleware('guest')->group(function () {
             Route::get('/evacuationCenterLocator', 'evacuationCenterLocator')->name('evacuation.center.locator');
             Route::get('/incidentReporting', 'incidentReporting')->name('reporting');
             Route::get('/hotlineNumber', 'hotlineNumbers')->name('hotline.number');
-            Route::get('/about', 'about')->name('about');
         });
 
         Route::name('area.')->controller(AreaReportController::class)->group(function () {
@@ -162,7 +161,6 @@ Route::middleware('auth')->group(function () {
         Route::get('/userAccounts/{operation}', 'userAccounts')->name('display.users.account');
         Route::get('/userProfile', 'userProfile')->name('display.profile');
         Route::get('/hotlineNumber', 'hotlineNumbers')->name('hotline.number');
-        Route::get('/about', 'about')->name('about');
         Route::get('/fetchBarangayData', 'fetchBarangayData')->name('fetchBarangayData');
         Route::get('/fetchDisasterData', 'fetchDisasterData')->name('fetchDisasterData');
     });

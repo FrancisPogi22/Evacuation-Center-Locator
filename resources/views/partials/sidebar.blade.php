@@ -73,12 +73,6 @@
                                 <span class="links_name">Hotline Numbers</span>
                             </a>
                         </div>
-                        <div class="navigation-item">
-                            <a href="{{ route('about') }}" class="menu-link">
-                                <i class="bi bi-info-circle"></i>
-                                <span class="links_name">About</span>
-                            </a>
-                        </div>
                     @elseif (auth()->user()->organization == 'CSWD')
                         <div class="navigation-item">
                             <a href="{{ route('dashboard.cswd') }}" class="menu-link">
@@ -178,12 +172,6 @@
                                 <span class="links_name">Hotline Numbers</span>
                             </a>
                         </div>
-                        <div class="navigation-item">
-                            <a href="{{ route('about') }}" class="menu-link">
-                                <i class="bi bi-info-circle"></i>
-                                <span class="links_name">About</span>
-                            </a>
-                        </div>
                     @endif
                 @endauth
                 @guest
@@ -209,12 +197,6 @@
                         <a href="{{ route('resident.hotline.number') }}" class="menu-link">
                             <i class="bi bi-telephone"></i>
                             <span class="links_name">Hotline Numbers</span>
-                        </a>
-                    </div>
-                    <div class="navigation-item">
-                        <a href="{{ route('resident.about') }}" class="menu-link">
-                            <i class="bi bi-info-circle"></i>
-                            <span class="links_name">About</span>
                         </a>
                     </div>
                     <div class="navigation-item">
