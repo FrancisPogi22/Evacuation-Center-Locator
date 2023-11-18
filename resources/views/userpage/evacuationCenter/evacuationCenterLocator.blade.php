@@ -335,7 +335,7 @@
         }
 
         function generateCircle(center) {
-            const color = sessionStorage.getItem('theme') == 'dark' ? "#ffffff" : "#557ed8";
+            const color = localStorage.getItem('theme') == 'dark' ? "#ffffff" : "#557ed8";
 
             return new google.maps.Circle({
                 map,

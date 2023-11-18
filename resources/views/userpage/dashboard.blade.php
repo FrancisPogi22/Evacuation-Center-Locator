@@ -117,7 +117,7 @@
                 @endif
             </section>
             @if (auth()->user()->organization == 'CDRRMO')
-                <figure class="chart-container report">
+                <figure class="chart-container report" hidden>
                     <div id="report-chart" class="bar-graph"></div>
                 </figure>
             @else
@@ -212,54 +212,61 @@
         @if (auth()->user()->organization == 'CDRRMO')
             function reportData() {
                 $.get("{{ route('fetchReportData') }}").done(response => {
-                    const color = {
-                        'Emergency': '#ef4444',
-                        'Incident': '#ffcb2f',
-                        'Flooded': '#2682fa',
-                        'Roadblocked': '#000000'
-                    };
+                    if (response['data'].length > 0) {
+                        $('.chart-container.report').prop('hidden', 0);
 
-                    Highcharts.chart('report-chart', {
-                        title: {
-                            text: 'Resident Report Count',
-                            align: 'center'
-                        },
-                        subtitle: {
-                            text: `From ${formatDateTime(response['start_date'], 'date')} to ${formatDateTime(new Date(), 'date')}`,
-                            align: 'center'
-                        },
-                        series: response['data'].map(({
-                            type,
-                            data
-                        }) => ({
-                            name: type,
-                            color: color[type],
-                            data: data.map(({
-                                report_date,
-                                report_count
-                            }) => ({
-                                x: new Date(report_date).getTime(),
-                                y: report_count
-                            }))
-                        })),
-                        yAxis: {
+                        const color = {
+                            'Emergency': '#ef4444',
+                            'Incident': '#ffcb2f',
+                            'Flooded': '#2682fa',
+                            'Roadblocked': '#000000'
+                        };
+
+                        Highcharts.chart('report-chart', {
                             title: {
-                                text: 'Count'
-                            }
-                        },
-                        xAxis: {
-                            type: 'datetime',
-                            labels: {
-                                formatter: function() {
-                                    return formatDateTime(this.value, 'date');
+                                text: 'Resident Report Count',
+                                align: 'center'
+                            },
+                            subtitle: {
+                                text: `From ${formatDateTime(response['start_date'], 'date')} to ${formatDateTime(new Date(), 'date')}`,
+                                align: 'center'
+                            },
+                            series: response['data'].map(({
+                                type,
+                                data
+                            }) => ({
+                                name: type,
+                                color: color[type],
+                                data: data.map(({
+                                    report_date,
+                                    report_count
+                                }) => ({
+                                    x: new Date(report_date).getTime(),
+                                    y: report_count
+                                }))
+                            })),
+                            yAxis: {
+                                title: {
+                                    text: 'Count'
                                 }
+                            },
+                            xAxis: {
+                                type: 'datetime',
+                                labels: {
+                                    formatter: function() {
+                                        return formatDateTime(this.value, 'date');
+                                    }
+                                }
+                            },
+                            exporting: false,
+                            credits: {
+                                enabled: false
                             }
-                        },
-                        exporting: false,
-                        credits: {
-                            enabled: false
-                        }
-                    });
+                        });
+                    } else {
+                        $('.chart-container.report').prop('hidden', 1);
+                        Highcharts.series = [];
+                    }
                 });
             }
         @else
@@ -323,78 +330,79 @@
                 });
             }
 
-        function initializeBarGraph(disaster, count) {
-            Highcharts.chart(`evacueeGraph${count + 1}`, {
-                chart: {
-                    type: 'bar'
-                },
-                title: false,
-                xAxis: {
-                    categories: ['SENIOR CITIZEN', 'MINORS', 'INFANTS', 'PWD', 'PREGNANT', 'LACTATING']
-                },
-                yAxis: {
-                    allowDecimals: false,
-                    title: {
-                        text: 'Estimated Numbers'
-                    }
-                },
-                legend: {
-                    reversed: true
-                },
-                plotOptions: {
-                    bar: {
-                        dataLabels: {
-                            enabled: true,
-                            style: {
-                                textOutline: 'none'
-                            }
+            function initializeBarGraph(disaster, count) {
+                Highcharts.chart(`evacueeGraph${count + 1}`, {
+                    chart: {
+                        type: 'bar'
+                    },
+                    title: false,
+                    xAxis: {
+                        categories: ['SENIOR CITIZEN', 'MINORS', 'INFANTS', 'PWD', 'PREGNANT', 'LACTATING']
+                    },
+                    yAxis: {
+                        allowDecimals: false,
+                        title: {
+                            text: 'Estimated Numbers'
                         }
                     },
-                    series: {
-                        stacking: 'normal',
-                        dataLabels: {
-                            enabled: true,
-                            formatter: function() {
-                                if (this.y != 0) {
-                                    return this.y;
-                                } else {
-                                    return null;
+                    legend: {
+                        reversed: true
+                    },
+                    plotOptions: {
+                        bar: {
+                            dataLabels: {
+                                enabled: true,
+                                style: {
+                                    textOutline: 'none'
+                                }
+                            }
+                        },
+                        series: {
+                            stacking: 'normal',
+                            dataLabels: {
+                                enabled: true,
+                                formatter: function() {
+                                    if (this.y != 0) {
+                                        return this.y;
+                                    } else {
+                                        return null;
+                                    }
                                 }
                             }
                         }
-                    }
-                },
-                series: [{
-                    name: 'SENIOR CITIZEN',
-                    data: [parseInt(disaster.totalSeniorCitizen), '', '', '', '', ''],
-                    color: '#e74c3c'
-                }, {
-                    name: 'MINORS',
-                    data: ['', parseInt(disaster.totalMinors), '', '', '', ''],
-                    color: '#3498db'
-                }, {
-                    name: 'INFANTS',
-                    data: ['', '', parseInt(disaster.totalInfants), '', '', ''],
-                    color: '#2ecc71'
-                }, {
-                    name: 'PWD',
-                    data: ['', '', '', parseInt(disaster.totalPwd), '', ''],
-                    color: '#1abc9c'
-                }, {
-                    name: 'PREGNANT',
-                    data: ['', '', '', '', parseInt(disaster.totalPregnant), ''],
-                    color: '#e67e22'
-                }, {
-                    name: 'LACTATING',
-                    data: ['', '', '', '', '', parseInt(disaster.totalLactating)],
-                    color: '#9b59b6'
-                }],
-                exporting: false,
-                credits: {
-                    enabled: false
-                },
-            });
-        }
+                    },
+                    series: [{
+                        name: 'SENIOR CITIZEN',
+                        data: [parseInt(disaster.totalSeniorCitizen), '', '', '', '', ''],
+                        color: '#e74c3c'
+                    }, {
+                        name: 'MINORS',
+                        data: ['', parseInt(disaster.totalMinors), '', '', '', ''],
+                        color: '#3498db'
+                    }, {
+                        name: 'INFANTS',
+                        data: ['', '', parseInt(disaster.totalInfants), '', '', ''],
+                        color: '#2ecc71'
+                    }, {
+                        name: 'PWD',
+                        data: ['', '', '', parseInt(disaster.totalPwd), '', ''],
+                        color: '#1abc9c'
+                    }, {
+                        name: 'PREGNANT',
+                        data: ['', '', '', '', parseInt(disaster.totalPregnant), ''],
+                        color: '#e67e22'
+                    }, {
+                        name: 'LACTATING',
+                        data: ['', '', '', '', '', parseInt(disaster.totalLactating)],
+                        color: '#9b59b6'
+                    }],
+                    exporting: false,
+                    credits: {
+                        enabled: false
+                    },
+                });
+            }
+        @endif
     </script>
 </body>
 

@@ -200,32 +200,30 @@
                                             ${condition != 2 ? `Set as ${condition == 1 ? 'Rescu' : 'Resolv'}${isPending ? 'ing' : 'ed'}` : "Approve"}
                                         </button>`;
 
-                                    @if (auth()->user()->is_disable == 0)
-                                        action = `<div class="info-description">
-                                                <span>Actions</span>
-                                                <hr class="info-window-hr">
-                                                <div class="info-window-action-container">
-                                                    <div class="status" hidden>
-                                                        <p>${report.id}</p>
-                                                    </div>
-                                                    ${isPending ? `${approveBtn}
+                                    action = `<div class="info-description">
+                                            <span>Actions</span>
+                                            <hr class="info-window-hr">
+                                            <div class="info-window-action-container">
+                                                <div class="status" hidden>
+                                                    <p>${report.id}</p>
+                                                </div>
+                                                ${isPending ? `${approveBtn}
                                                     <button class="btn btn-sm btn-danger removeBtn" aria-report-type="${ariaType}">
                                                         <i class="bi bi-x-circle"></i> Remove
                                                     </button>` :
-                                                    `${condition != 2 ? (status == "Resolved" || status == "Rescued") ?
+                                                `${condition != 2 ? (status == "Resolved" || status == "Rescued") ?
                                                     "" : approveBtn :
                                                     `<button class="btn btn-sm btn-primary updateBtn">
-                                                        <i class="bi bi-chat-square-text"></i> Update
-                                                    </button>`}
+                                                    <i class="bi bi-chat-square-text"></i> Update
+                                                </button>`}
                                                     ${(status == "Approved" || status == "Resolved" || status == "Rescued") ?
                                                     `<button class="btn btn-sm btn-danger
-                                                        archive${condition == 1 && status == "Rescued" ? "Emergency" : ""}Btn"
-                                                        aria-report-type="${ariaType}">
-                                                        <i class="bi bi-box-arrow-in-down-right"></i> Archive
-                                                    </button>` : ''}`}
-                                                </div>
-                                            </div>`;
-                                    @endif
+                                                    archive${condition == 1 && status == "Rescued" ? "Emergency" : ""}Btn"
+                                                    aria-report-type="${ariaType}">
+                                                    <i class="bi bi-box-arrow-in-down-right"></i> Archive
+                                                </button>` : ''}`}
+                                            </div>
+                                        </div>`;
 
                                     let reportMarker = new google.maps.Marker({
                                         position: {
@@ -263,14 +261,14 @@
                                                             pastDate = currentDate;
 
                                                             return `${dateOutput}
-                                                                <p class="update-details-container">
-                                                                    <small>
-                                                                        as of ${formatDateTime(update.update_time, 'time')}
-                                                                    </small><br>
-                                                                    <span class="update-details">
-                                                                        ${update.update_details}
-                                                                    </span>
-                                                                </p>`;
+                                                                    <p class="update-details-container">
+                                                                        <small>
+                                                                            as of ${formatDateTime(update.update_time, 'time')}
+                                                                        </small><br>
+                                                                        <span class="update-details">
+                                                                            ${update.update_details}
+                                                                        </span>
+                                                                    </p>`;
                                                         }).join('')
                                                     }
                                                 </div>
@@ -317,15 +315,15 @@
                                             </div>
                                             ${report.photo ?
                                                 `<div class="info-description photo">
-                                                    <span>Image: </span>
-                                                    <div class="${type}" hidden>
-                                                        ${report.latitude}, ${report.longitude}
-                                                    </div>
-                                                    <button class="btn btn-sm btn-primary toggleImageBtn">
-                                                        <i class="bi bi-chevron-expand"></i> View
-                                                    </button>
-                                                    <img src="/reports_image/${report.photo}" class="form-control" hidden>
-                                                </div>` : ""}
+                                                        <span>Image: </span>
+                                                        <div class="${type}" hidden>
+                                                            ${report.latitude}, ${report.longitude}
+                                                        </div>
+                                                        <button class="btn btn-sm btn-primary toggleImageBtn">
+                                                            <i class="bi bi-chevron-expand"></i> View
+                                                        </button>
+                                                        <img src="/reports_image/${report.photo}" class="form-control" hidden>
+                                                    </div>` : ""}
                                             ${updateSection}
                                             ${action}
                                         </div>
@@ -425,180 +423,178 @@
                         if (type != undefined && type != 'null') openReportDetails(type, lat, lng);
                     });
 
-                @if (auth()->user()->is_disable == 0)
-                    $(document).on('click', '.toggleImageBtn', function() {
-                        let markers = $(this).prev().attr("class") == "Incident" ?
-                            reportMarkers[0] : reportMarkers[2];
-                        toggleShowImageBtn($(this), $(this).next(), markers);
-                    });
+                $(document).on('click', '.toggleImageBtn', function() {
+                    let markers = $(this).prev().attr("class") == "Incident" ?
+                        reportMarkers[0] : reportMarkers[2];
+                    toggleShowImageBtn($(this), $(this).next(), markers);
+                });
 
-                    $(document).on('click', '.updateBtn', function() {
-                        if ($(this).text().includes('Update')) {
-                            const container = $(this).closest('.gm-style-iw-d');
-                            container.animate({
-                                scrollTop: container.prop('scrollHeight')
-                            }, 800);
-                        }
-
-                        const updateForm = $(this).parent().parent().prev(),
-                            updateDiv = updateForm.prev(),
-                            isPrimary = this.textContent.includes('Update'),
-                            text = updateDiv ? updateDiv.text().split(':')[1]?.trim() : "";
-
-                        updateDiv.prop('hidden', isPrimary || (!isPrimary && text == ""));
-                        updateForm.prop('hidden', !isPrimary);
-                        updateForm.find('textarea').val('');
-                        $(this).html(
-                            `<i class="bi bi-${isPrimary ? 'x-circle' : 'chat-square-text'}"></i> ${isPrimary ? 'Cancel' : 'Update'}`
-                        );
-                        setInfoWindowButtonStyles($(this), isPrimary ? 'var(--color-yellow' :
-                            'var(--color-primary');
-                    });
-
-                    $(document).on('click', '.approveBtn', function() {
-                        let reportType = $(this).attr('aria-report-type');
-
-                        confirmModal(
-                            `Are you sure you want to ${reportType != "Area" ?  "change the status of" : "approve"} this report?`
-                        ).then((result) => {
-                            if (!result.isConfirmed) return;
-
-                            let url = reportType == "Incident" ?
-                                "{{ route('incident.change.status', 'reportId') }}" :
-                                reportType == "Emergency" ?
-                                "{{ route('emergency.change.status', 'reportId') }}" :
-                                "{{ route('area.approve', 'reportId') }}";
-
-                            submitHandler($(this), 'PATCH', 'approve', url, reportType);
-                        });
-                    });
-
-                    $(document).on('click', '.sendUpdateBtn', function() {
-                        let form = $(this).parent().parent();
-
-                        form.validate({
-                            rules: {
-                                update: 'required'
-                            },
-                            messages: {
-                                update: 'Please enter update details.'
-                            },
-                            errorElement: 'span',
-                            submitHandler() {
-                                confirmModal(
-                                        "Are you sure you want to add update to this report?")
-                                    .then((result) => {
-                                        if (!result.isConfirmed) return;
-                                        submitHandler(form, 'PATCH', 'update',
-                                            "{{ route('area.update', 'reportId') }}",
-                                            "Area");
-                                    });
-                            }
-                        });
-                    });
-
-                    $(document).on('click', '.removeBtn, .archiveBtn', function() {
-                        const operation = $(this).text().includes('Remove') ? 'remove' : 'archive';
-
-                        confirmModal(`Are you sure you want to ${operation} this report?`).then((
-                            result) => {
-                            if (!result.isConfirmed) return;
-
-                            let reportType = $(this).attr('aria-report-type'),
-                                isRemove = operation == 'remove',
-                                url = reportType == "Incident" ? (
-                                    isRemove ?
-                                    "{{ route('incident.remove', 'reportId') }}" :
-                                    "{{ route('incident.archive', 'reportId') }}"
-                                ) : reportType == "Emergency" ?
-                                "{{ route('emergency.remove', 'reportId') }}" :
-                                isRemove ?
-                                "{{ route('area.remove', 'reportId') }}" :
-                                "{{ route('area.archive', 'reportId') }}";
-
-                            submitHandler($(this), isRemove ? 'DELETE' : 'PATCH',
-                                operation, url, reportType);
-                        });
-                    });
-
-                    $(document).on('click', '.archiveEmergencyBtn', function() {
-                        emergencyArchiveBtn = $(this);
-                        modal.modal('show');
-                    });
-
-                    $(document).on('click', '#archiveReportBtn', function() {
-                        archiveFormValidator = $('#archivedReportForm').validate({
-                            rules: {
-                                details: 'required'
-                            },
-                            messages: {
-                                details: 'Please enter details.'
-                            },
-                            errorElement: 'span',
-                            showErrors() {
-                                this.defaultShowErrors();
-
-                                $('#image-error').text('Please select an image.')
-                                    .prop('style', `display: ${$('#areaInputImage').val() == '' ?
-                                        'block' : 'none'} !important`);
-                            },
-                            submitHandler() {
-                                if ($('#areaInputImage').val() == '') return;
-
-                                confirmModal('Are you sure about the info you added?').then((
-                                    result) => {
-                                    if (!result.isConfirmed) return;
-
-                                    submitHandler(emergencyArchiveBtn, "POST", "archive",
-                                        "{{ route('emergency.archive', 'reportId') }}",
-                                        "Emergency");
-                                });
-                            }
-                        });
-                    });
-
-                    function submitHandler(element, type, operation, url, reportType) {
-                        let data = element.serialize(),
-                            processData = true,
-                            contentType = 'application/x-www-form-urlencoded';
-
-                        if (reportType != "Area") {
-                            element = element.prev();
-                            if (operation == "remove") element = element.prev();
-                        } else
-                        if (operation != 'update') element = element.parent().parent().prev();
-
-                        if (reportType == "Emergency" && operation == "archive") {
-                            data = new FormData($('#archivedReportForm')[0]);
-                            contentType = false;
-                            processData = false;
-                        }
-
-                        $.ajax({
-                            type: type,
-                            url: url.replace('reportId', element.find('p:first').text()),
-                            data: data,
-                            contentType: contentType,
-                            processData: processData,
-                            success(response) {
-                                response.status == "warning" ?
-                                    showWarningMessage(response.message) : (showSuccessMessage(
-                                        `Successfully ${(operation == "approve" && reportType != "Area") ? "change the status of" : `${operation}d`} the report.`
-                                    ),modal.modal('hide'));
-                            },
-                            error: showErrorMessage
-                        });
+                $(document).on('click', '.updateBtn', function() {
+                    if ($(this).text().includes('Update')) {
+                        const container = $(this).closest('.gm-style-iw-d');
+                        container.animate({
+                            scrollTop: container.prop('scrollHeight')
+                        }, 800);
                     }
 
-                   modal.on('hidden.bs.modal', () => {
-                        $('#archivedReportForm')[0].reset();
-                        $('#selectedReportImage').attr('src', '').prop('hidden', 1);
-                        $('#image-error').text('').prop('hidden', 1);
-                        $('#imageBtn').html('<i class="bi bi-image"></i> Select');
-                        setInfoWindowButtonStyles($('#imageBtn'), 'var(--color-primary');
-                        archiveFormValidator && archiveFormValidator.resetForm();
+                    const updateForm = $(this).parent().parent().prev(),
+                        updateDiv = updateForm.prev(),
+                        isPrimary = this.textContent.includes('Update'),
+                        text = updateDiv ? updateDiv.text().split(':')[1]?.trim() : "";
+
+                    updateDiv.prop('hidden', isPrimary || (!isPrimary && text == ""));
+                    updateForm.prop('hidden', !isPrimary);
+                    updateForm.find('textarea').val('');
+                    $(this).html(
+                        `<i class="bi bi-${isPrimary ? 'x-circle' : 'chat-square-text'}"></i> ${isPrimary ? 'Cancel' : 'Update'}`
+                    );
+                    setInfoWindowButtonStyles($(this), isPrimary ? 'var(--color-yellow' :
+                        'var(--color-primary');
+                });
+
+                $(document).on('click', '.approveBtn', function() {
+                    let reportType = $(this).attr('aria-report-type');
+
+                    confirmModal(
+                        `Are you sure you want to ${reportType != "Area" ?  "change the status of" : "approve"} this report?`
+                    ).then((result) => {
+                        if (!result.isConfirmed) return;
+
+                        let url = reportType == "Incident" ?
+                            "{{ route('incident.change.status', 'reportId') }}" :
+                            reportType == "Emergency" ?
+                            "{{ route('emergency.change.status', 'reportId') }}" :
+                            "{{ route('area.approve', 'reportId') }}";
+
+                        submitHandler($(this), 'PATCH', 'approve', url, reportType);
                     });
-                @endif
+                });
+
+                $(document).on('click', '.sendUpdateBtn', function() {
+                    let form = $(this).parent().parent();
+
+                    form.validate({
+                        rules: {
+                            update: 'required'
+                        },
+                        messages: {
+                            update: 'Please enter update details.'
+                        },
+                        errorElement: 'span',
+                        submitHandler() {
+                            confirmModal(
+                                    "Are you sure you want to add update to this report?")
+                                .then((result) => {
+                                    if (!result.isConfirmed) return;
+                                    submitHandler(form, 'PATCH', 'update',
+                                        "{{ route('area.update', 'reportId') }}",
+                                        "Area");
+                                });
+                        }
+                    });
+                });
+
+                $(document).on('click', '.removeBtn, .archiveBtn', function() {
+                    const operation = $(this).text().includes('Remove') ? 'remove' : 'archive';
+
+                    confirmModal(`Are you sure you want to ${operation} this report?`).then((
+                        result) => {
+                        if (!result.isConfirmed) return;
+
+                        let reportType = $(this).attr('aria-report-type'),
+                            isRemove = operation == 'remove',
+                            url = reportType == "Incident" ? (
+                                isRemove ?
+                                "{{ route('incident.remove', 'reportId') }}" :
+                                "{{ route('incident.archive', 'reportId') }}"
+                            ) : reportType == "Emergency" ?
+                            "{{ route('emergency.remove', 'reportId') }}" :
+                            isRemove ?
+                            "{{ route('area.remove', 'reportId') }}" :
+                            "{{ route('area.archive', 'reportId') }}";
+
+                        submitHandler($(this), isRemove ? 'DELETE' : 'PATCH',
+                            operation, url, reportType);
+                    });
+                });
+
+                $(document).on('click', '.archiveEmergencyBtn', function() {
+                    emergencyArchiveBtn = $(this);
+                    modal.modal('show');
+                });
+
+                $(document).on('click', '#archiveReportBtn', function() {
+                    archiveFormValidator = $('#archivedReportForm').validate({
+                        rules: {
+                            details: 'required'
+                        },
+                        messages: {
+                            details: 'Please enter details.'
+                        },
+                        errorElement: 'span',
+                        showErrors() {
+                            this.defaultShowErrors();
+
+                            $('#image-error').text('Please select an image.')
+                                .prop('style', `display: ${$('#areaInputImage').val() == '' ?
+                                        'block' : 'none'} !important`);
+                        },
+                        submitHandler() {
+                            if ($('#areaInputImage').val() == '') return;
+
+                            confirmModal('Are you sure about the info you added?').then((
+                                result) => {
+                                if (!result.isConfirmed) return;
+
+                                submitHandler(emergencyArchiveBtn, "POST", "archive",
+                                    "{{ route('emergency.archive', 'reportId') }}",
+                                    "Emergency");
+                            });
+                        }
+                    });
+                });
+
+                function submitHandler(element, type, operation, url, reportType) {
+                    let data = element.serialize(),
+                        processData = true,
+                        contentType = 'application/x-www-form-urlencoded';
+
+                    if (reportType != "Area") {
+                        element = element.prev();
+                        if (operation == "remove") element = element.prev();
+                    } else
+                    if (operation != 'update') element = element.parent().parent().prev();
+
+                    if (reportType == "Emergency" && operation == "archive") {
+                        data = new FormData($('#archivedReportForm')[0]);
+                        contentType = false;
+                        processData = false;
+                    }
+
+                    $.ajax({
+                        type: type,
+                        url: url.replace('reportId', element.find('p:first').text()),
+                        data: data,
+                        contentType: contentType,
+                        processData: processData,
+                        success(response) {
+                            response.status == "warning" ?
+                                showWarningMessage(response.message) : (showSuccessMessage(
+                                    `Successfully ${(operation == "approve" && reportType != "Area") ? "change the status of" : `${operation}d`} the report.`
+                                ), modal.modal('hide'));
+                        },
+                        error: showErrorMessage
+                    });
+                }
+
+                modal.on('hidden.bs.modal', () => {
+                    $('#archivedReportForm')[0].reset();
+                    $('#selectedReportImage').attr('src', '').prop('hidden', 1);
+                    $('#image-error').text('').prop('hidden', 1);
+                    $('#imageBtn').html('<i class="bi bi-image"></i> Select');
+                    setInfoWindowButtonStyles($('#imageBtn'), 'var(--color-primary');
+                    archiveFormValidator && archiveFormValidator.resetForm();
+                });
 
                 Echo.channel('incident-report').listen('IncidentReport', (e) => {
                     ajaxRequest("Incident").then(() => checkNoReports("Incident"));

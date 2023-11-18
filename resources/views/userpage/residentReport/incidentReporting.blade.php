@@ -144,8 +144,6 @@
 
             currentWatchID = navigator.geolocation.watchPosition(
                 (position) => {
-                    console.log(position.coords.accuracy)
-
                     if (position.coords.accuracy <= 500) {
                         navigator.geolocation.clearWatch(currentWatchID);
                         currentWatchID = null;
@@ -195,7 +193,7 @@
                     executeInitMap();
                 }, {
                     enableHighAccuracy: true,
-                    timeout: 10000,
+                    timeout: 5000,
                     maximumAge: 0
                 }
             );

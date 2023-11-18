@@ -22,7 +22,7 @@
                 <span>{{ $operation == 'active' ? 'MANAGE' : 'ARCHIVED' }} EVACUATION CENTER</span>
             </div>
             <hr>
-            @if (auth()->user()->is_disable == 0 && $operation == 'active')
+            @if ($operation == 'active')
                 <div class="page-button-container">
                     <button class="btn-submit" id="addEvacuationCenter">
                         <i class="bi bi-house-down-fill"></i>
@@ -121,219 +121,214 @@
                         </div>
                     `;
                 }
-            }, {
-                targets: 6,
-                visible: {{ auth()->user()->is_disable }} == 0 ? true : false
             }]
         });
 
-        @if (auth()->user()->is_disable == 0)
-            let map, marker;
+        let map, marker;
 
-            function initMap() {
-                map = new google.maps.Map(document.getElementById("map"), {
-                    center: {
-                        lat: 14.246261,
-                        lng: 121.12772
-                    },
-                    zoom: 13,
-                    clickableIcons: false,
-                    mapTypeControlOptions: {
-                        style: google.maps.MapTypeControlStyle.DROPDOWN_MENU
-                    }
-                });
+        function initMap() {
+            map = new google.maps.Map(document.getElementById("map"), {
+                center: {
+                    lat: 14.246261,
+                    lng: 121.12772
+                },
+                zoom: 13,
+                clickableIcons: false,
+                mapTypeControlOptions: {
+                    style: google.maps.MapTypeControlStyle.DROPDOWN_MENU
+                }
+            });
 
-                map.addListener("click", (event) => {
-                    let location = event.latLng;
+            map.addListener("click", (event) => {
+                let location = event.latLng;
 
-                    if (marker) {
-                        marker.setPosition(location);
-                    } else {
-                        marker = new google.maps.Marker({
-                            position: location,
-                            map: map,
-                            icon: {
-                                url: "{{ asset('assets/img/Default.png') }}",
-                                scaledSize: new google.maps.Size(35, 35)
-                            }
-                        });
-                    }
-
-                    $('#latitude').val(location.lat());
-                    $('#longitude').val(location.lng());
-                    $('#location-error').text('').prop('style', 'display: none');
-                });
-            }
-
-            $(document).ready(() => {
-                let evacuationCenterId, operation, validator, defaultFormData, status,
-                    modalLabelContainer = $('.modal-label-container'),
-                    modalLabel = $('.modal-label'),
-                    formButton = $('#createEvacuationCenterBtn'),
-                    modal = $('#evacuationCenterModal'),
-                    saveBtnClicked = false;
-
-                validator = $("#evacuationCenterForm").validate({
-                    rules: {
-                        name: 'required',
-                        barangayName: 'required'
-                    },
-                    messages: {
-                        name: 'Please enter evacuation center name.',
-                        barangayName: 'Please select a barangay.'
-                    },
-                    showErrors: function() {
-                        this.defaultShowErrors();
-
-                        if (!marker && saveBtnClicked)
-                            $('#location-error').text('Please select a location.').
-                        prop('style', 'display: block !important');
-                    },
-                    errorElement: 'span',
-                    submitHandler: formSubmitHandler
-                });
-
-                $(document).on('click', '#addEvacuationCenter', () => {
-                    modalLabelContainer.removeClass('bg-warning');
-                    modalLabel.text('Add Evacuation Center');
-                    formButton.addClass('btn-submit').removeClass('btn-update').text('Add');
-                    operation = "add";
-                    modal.modal('show');
-                });
-
-                $(document).on('click', '#updateEvacuationCenter', function() {
-                    let {
-                        id,
-                        name,
-                        latitude,
-                        longitude,
-                        capacity,
-                        barangay_name
-                    } = getRowData(this, evacuationCenterTable);
-                    evacuationCenterId = id;
-                    modalLabelContainer.addClass('bg-warning');
-                    modalLabel.text('Update Evacuation Center');
-                    formButton.addClass('btn-update').removeClass('btn-submit').text('Update');
-                    operation = "update";
-                    $('#name').val(name);
-                    $('#latitude').val(latitude);
-                    $('#longitude').val(longitude);
-                    $(`#barangayName, option[value="${barangay_name}"`).prop('selected', 1);
-
+                if (marker) {
+                    marker.setPosition(location);
+                } else {
                     marker = new google.maps.Marker({
-                        position: {
-                            lat: parseFloat(latitude),
-                            lng: parseFloat(longitude)
-                        },
+                        position: location,
                         map: map,
                         icon: {
                             url: "{{ asset('assets/img/Default.png') }}",
-                            scaledSize: new google.maps.Size(35, 35),
-                        },
+                            scaledSize: new google.maps.Size(35, 35)
+                        }
                     });
+                }
 
-                    modal.modal('show');
-                    defaultFormData = $('#evacuationCenterForm').serialize();
+                $('#latitude').val(location.lat());
+                $('#longitude').val(location.lng());
+                $('#location-error').text('').prop('style', 'display: none');
+            });
+        }
+
+        $(document).ready(() => {
+            let evacuationCenterId, operation, validator, defaultFormData, status,
+                modalLabelContainer = $('.modal-label-container'),
+                modalLabel = $('.modal-label'),
+                formButton = $('#createEvacuationCenterBtn'),
+                modal = $('#evacuationCenterModal'),
+                saveBtnClicked = false;
+
+            validator = $("#evacuationCenterForm").validate({
+                rules: {
+                    name: 'required',
+                    barangayName: 'required'
+                },
+                messages: {
+                    name: 'Please enter evacuation center name.',
+                    barangayName: 'Please select a barangay.'
+                },
+                showErrors: function() {
+                    this.defaultShowErrors();
+
+                    if (!marker && saveBtnClicked)
+                        $('#location-error').text('Please select a location.').
+                    prop('style', 'display: block !important');
+                },
+                errorElement: 'span',
+                submitHandler: formSubmitHandler
+            });
+
+            $(document).on('click', '#addEvacuationCenter', () => {
+                modalLabelContainer.removeClass('bg-warning');
+                modalLabel.text('Add Evacuation Center');
+                formButton.addClass('btn-submit').removeClass('btn-update').text('Add');
+                operation = "add";
+                modal.modal('show');
+            });
+
+            $(document).on('click', '#updateEvacuationCenter', function() {
+                let {
+                    id,
+                    name,
+                    latitude,
+                    longitude,
+                    capacity,
+                    barangay_name
+                } = getRowData(this, evacuationCenterTable);
+                evacuationCenterId = id;
+                modalLabelContainer.addClass('bg-warning');
+                modalLabel.text('Update Evacuation Center');
+                formButton.addClass('btn-update').removeClass('btn-submit').text('Update');
+                operation = "update";
+                $('#name').val(name);
+                $('#latitude').val(latitude);
+                $('#longitude').val(longitude);
+                $(`#barangayName, option[value="${barangay_name}"`).prop('selected', 1);
+
+                marker = new google.maps.Marker({
+                    position: {
+                        lat: parseFloat(latitude),
+                        lng: parseFloat(longitude)
+                    },
+                    map: map,
+                    icon: {
+                        url: "{{ asset('assets/img/Default.png') }}",
+                        scaledSize: new google.maps.Size(35, 35),
+                    },
                 });
 
-                $(document).on('click', '#archiveEvacuationCenter', function() {
-                    let url = "{{ route('evacuation.center.archive', ['evacuationCenterId', 'archive']) }}"
-                        .replace(
-                            'evacuationCenterId', getRowData(this, evacuationCenterTable).id);
-                    alterEvacuationCenter(url, 'PATCH', 'archive');
-                })
+                modal.modal('show');
+                defaultFormData = $('#evacuationCenterForm').serialize();
+            });
 
-                $(document).on('click', '#unArchiveEvacuationCenter', function() {
-                    let url =
-                        "{{ route('evacuation.center.archive', ['evacuationCenterId', 'unarchive']) }}"
-                        .replace(
-                            'evacuationCenterId', getRowData(this, evacuationCenterTable).id);
-                    alterEvacuationCenter(url, 'PATCH', 'unarchive');
-                })
+            $(document).on('click', '#archiveEvacuationCenter', function() {
+                let url = "{{ route('evacuation.center.archive', ['evacuationCenterId', 'archive']) }}"
+                    .replace(
+                        'evacuationCenterId', getRowData(this, evacuationCenterTable).id);
+                alterEvacuationCenter(url, 'PATCH', 'archive');
+            })
 
-                $(document).on('change', '#changeEvacuationStatus', function() {
-                    status = $(this).val();
-                    let url = "{{ route('evacuation.center.change.status', 'evacuationCenterId') }}"
-                        .replace('evacuationCenterId', getRowData(this, evacuationCenterTable).id);
-                    alterEvacuationCenter(url, 'PATCH', 'change');
-                })
+            $(document).on('click', '#unArchiveEvacuationCenter', function() {
+                let url =
+                    "{{ route('evacuation.center.archive', ['evacuationCenterId', 'unarchive']) }}"
+                    .replace(
+                        'evacuationCenterId', getRowData(this, evacuationCenterTable).id);
+                alterEvacuationCenter(url, 'PATCH', 'unarchive');
+            })
 
-                modal.on('hidden.bs.modal', () => {
-                    validator && validator.resetForm();
-                    $('#evacuationCenterForm')[0].reset();
-                    if (marker) {
-                        marker.setMap(null);
-                        marker = undefined;
-                    }
-                    map.setCenter({
-                        lat: 14.2471423,
-                        lng: 121.1366715
-                    });
-                    map.setZoom(13);
-                    saveBtnClicked = false;
+            $(document).on('change', '#changeEvacuationStatus', function() {
+                status = $(this).val();
+                let url = "{{ route('evacuation.center.change.status', 'evacuationCenterId') }}"
+                    .replace('evacuationCenterId', getRowData(this, evacuationCenterTable).id);
+                alterEvacuationCenter(url, 'PATCH', 'change');
+            })
+
+            modal.on('hidden.bs.modal', () => {
+                validator && validator.resetForm();
+                $('#evacuationCenterForm')[0].reset();
+                if (marker) {
+                    marker.setMap(null);
+                    marker = undefined;
+                }
+                map.setCenter({
+                    lat: 14.2471423,
+                    lng: 121.1366715
                 });
+                map.setZoom(13);
+                saveBtnClicked = false;
+            });
 
-                $(document).on('click', '#createEvacuationCenterBtn', () => saveBtnClicked = true);
+            formButton.click(() => saveBtnClicked = true);
 
-                function formSubmitHandler(form) {
-                    if (!marker) return;
+            function formSubmitHandler(form) {
+                if (!marker) return;
+
+                confirmModal(`Do you want to ${operation} this evacuation center?`).then((result) => {
+                    if (!result.isConfirmed) return;
 
                     let formData = $(form).serialize();
 
-                    confirmModal(`Do you want to ${operation} this evacuation center?`).then((result) => {
-                        if (!result.isConfirmed) return;
+                    return operation == 'update' && defaultFormData == formData ?
+                        showWarningMessage() :
+                        $.ajax({
+                            data: formData,
+                            url: operation == 'add' ? "{{ route('evacuation.center.create') }}" :
+                                "{{ route('evacuation.center.update', 'evacuationCenterId') }}".
+                            replace('evacuationCenterId', evacuationCenterId),
+                            method: operation == 'add' ? 'POST' : 'PUT',
+                            success(response) {
+                                response.status == "warning" ? showWarningMessage(response
+                                    .message) : (showSuccessMessage(
+                                    `Successfully ${operation == 'add' ? 'added' : 'updated'} evacuation center.`
+                                ), evacuationCenterTable.draw(), modal.modal('hide'));
+                            },
+                            error: showErrorMessage
+                        });
+                });
+            }
 
-                        return operation == 'update' && defaultFormData == formData ?
-                            showWarningMessage() :
-                            $.ajax({
-                                data: formData,
-                                url: operation == 'add' ? "{{ route('evacuation.center.create') }}" :
-                                    "{{ route('evacuation.center.update', 'evacuationCenterId') }}".
-                                replace('evacuationCenterId', evacuationCenterId),
-                                method: operation == 'add' ? 'POST' : 'PUT',
-                                success(response) {
-                                    response.status == "warning" ? showWarningMessage(response
-                                        .message) : (showSuccessMessage(
-                                        `Successfully ${operation == 'add' ? 'added' : 'updated'} evacuation center.`
-                                    ), evacuationCenterTable.draw(), modal.modal('show'));
-                                },
-                                error: showErrorMessage
-                            });
-                    });
-                }
+            function alterEvacuationCenter(url, type, operation) {
+                confirmModal(
+                    `Do you want to ${operation == "change" ? "change the status of" : operation} this evacuation center?`
+                ).then((result) => {
+                    return !result.isConfirmed ? $('#changeEvacuationStatus').val('') :
+                        $.ajax({
+                            headers: {
+                                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                            },
+                            method: type,
+                            data: {
+                                status
+                            },
+                            url: url,
+                            success() {
+                                let operationList = {
+                                    archive: "archived",
+                                    unarchive: "unarchived",
+                                    change: "changed the status of"
+                                };
 
-                function alterEvacuationCenter(url, type, operation) {
-                    confirmModal(
-                        `Do you want to ${operation == "change" ? "change the status of" : operation} this evacuation center?`
-                    ).then((result) => {
-                        return !result.isConfirmed ? $('#changeEvacuationStatus').val('') :
-                            $.ajax({
-                                headers: {
-                                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                                },
-                                method: type,
-                                data: {
-                                    status
-                                },
-                                url: url,
-                                success() {
-                                    let operationList = {
-                                        archive: "archived",
-                                        unarchive: "unarchived",
-                                        change: "changed the status of"
-                                    };
-
-                                    showSuccessMessage(
-                                        `Successfully ${operationList[operation]} evacuation center.`
-                                    );
-                                    evacuationCenterTable.draw();
-                                },
-                                error: showErrorMessage
-                            });
-                    });
-                }
-            });
-        @endif
+                                showSuccessMessage(
+                                    `Successfully ${operationList[operation]} evacuation center.`
+                                );
+                                evacuationCenterTable.draw();
+                            },
+                            error: showErrorMessage
+                        });
+                });
+            }
+        });
     </script>
 </body>
 

@@ -25,16 +25,14 @@
             <hr>
             <div class="page-button-container manage-evacuee">
                 @if ($operation == 'manage')
-                    @if (auth()->user()->is_disable == 0)
-                        @if (!$disasterList->isEmpty())
-                            <select id="changeEvacueeDataSelect" class="form-control form-select">
-                                @foreach ($disasterList as $disaster)
-                                    <option value="{{ $disaster->id }}">
-                                        {{ $disaster->name }}</option>
-                                @endforeach
-                            </select>
-                            <button class="btn-submit" id="changeEvacueeDataBtn"></button>
-                        @endif
+                    @if (!$disasterList->isEmpty())
+                        <select id="changeEvacueeDataSelect" class="form-control form-select">
+                            @foreach ($disasterList as $disaster)
+                                <option value="{{ $disaster->id }}">
+                                    {{ $disaster->name }}</option>
+                            @endforeach
+                        </select>
+                        <button class="btn-submit" id="changeEvacueeDataBtn"></button>
                     @endif
                 @else
                     @if (!$archiveDisasterList->isEmpty())
@@ -57,7 +55,7 @@
                 <div class="table-content">
                     <div class="evacuee-table-header">
                         <header class="table-label">Evacuees Informations Table</header>
-                        @if (auth()->user()->is_disable == 0 && $operation == 'manage' && !$disasterList->isEmpty())
+                        @if ($operation == 'manage' && !$disasterList->isEmpty())
                             <div class="page-button-container manage-evacuee-table">
                                 <button id="recordEvacueeBtn" data-toggle="modal" data-target="#evacueeInfoFormModal"
                                     class="btn-submit">
@@ -319,8 +317,7 @@
                 ],
                 columnDefs: [{
                         targets: 18,
-                        visible: {{ auth()->user()->is_disable }} == 1 || '{{ $operation }}' ==
-                            'archived' ? false : true
+                        visible: '{{ $operation }}' == 'archived' ? false : true
                     },
                     {
                         targets: 1,

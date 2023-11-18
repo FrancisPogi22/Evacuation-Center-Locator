@@ -7,16 +7,10 @@
         <div class="user-details">
             <div class="details-content">
                 @auth
-                    @if (auth()->user()->is_disable == 0)
-                        <div title="Active" class="user-active"></div>
-                    @else
-                        <div title="Currently Disabled" class="user-disable"></div>
-                    @endif
                     <img src="{{ asset('assets/img/' . auth()->user()->organization . '-LOGO.png') }}" alt="Logo">
                     <span>{{ auth()->user()->organization }}</span>
                 @endauth
                 @guest
-                    <div title="Resident" class="resident"></div>
                     <span class="py-2">Cabuyao Resident</span>
                 @endguest
             </div>

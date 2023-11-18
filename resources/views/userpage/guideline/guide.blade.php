@@ -39,20 +39,18 @@
                                     <p>{{ $guide->content }}</p>
                                 </div>
                                 @auth
-                                    @if (auth()->user()->is_disable == 0)
-                                        <div class="guide-btn-container">
-                                            <div class="guide-update-btn">
-                                                <button class="btn-update updateGuideBtn" data-guide="{{ $guide->id }}">
-                                                    <i class="bi bi-pencil-square"></i> Update
-                                                </button>
-                                            </div>
-                                            <div class="guide-remove-btn">
-                                                <button class="btn-remove removeGuideBtn" data-guide="{{ $guide->id }}">
-                                                    <i class="bi bi-trash3-fill"></i> Remove
-                                                </button>
-                                            </div>
+                                    <div class="guide-btn-container">
+                                        <div class="guide-update-btn">
+                                            <button class="btn-update updateGuideBtn" data-guide="{{ $guide->id }}">
+                                                <i class="bi bi-pencil-square"></i> Update
+                                            </button>
                                         </div>
-                                    @endif
+                                        <div class="guide-remove-btn">
+                                            <button class="btn-remove removeGuideBtn" data-guide="{{ $guide->id }}">
+                                                <i class="bi bi-trash3-fill"></i> Remove
+                                            </button>
+                                        </div>
+                                    </div>
                                 @endauth
                             </div>
                         </div>
@@ -145,152 +143,150 @@
             });
 
             @auth
-            @if (auth()->user()->is_disable == 0)
-                let guideId, validator, guideWidget, guideWidgetItem, defaultFormData, guideLabel,
-                    guideContent, currentGuide, guideImageChanged = false,
-                    guidelineId = $('.guidelineId').val(),
-                    modal = $('#guideModal'),
-                    modalLabel = $('.modal-label'),
-                    form = $("#guideForm"),
-                    modalLabelContainer = $('.modal-label-container'),
-                    guideBtn = $('.guideImgBtn'),
-                    guideImgInput = $('.guidePhoto'),
-                    formButton = $('#submitGuideBtn');
+            let guideId, validator, guideWidget, guideWidgetItem, defaultFormData, guideLabel,
+                guideContent, currentGuide, guideImageChanged = false,
+                guidelineId = $('.guidelineId').val(),
+                modal = $('#guideModal'),
+                modalLabel = $('.modal-label'),
+                form = $("#guideForm"),
+                modalLabelContainer = $('.modal-label-container'),
+                guideBtn = $('.guideImgBtn'),
+                guideImgInput = $('.guidePhoto'),
+                formButton = $('#submitGuideBtn');
 
-                validator = form.validate({
-                    rules: {
-                        label: 'required',
-                        content: 'required'
-                    },
-                    messages: {
-                        label: 'Please Enter Guide Label.',
-                        content: 'Please Enter Guide Content.'
-                    },
-                    errorElement: 'span',
-                    submitHandler(form) {
-                        let formData = new FormData(form);
+            validator = form.validate({
+                rules: {
+                    label: 'required',
+                    content: 'required'
+                },
+                messages: {
+                    label: 'Please Enter Guide Label.',
+                    content: 'Please Enter Guide Content.'
+                },
+                errorElement: 'span',
+                submitHandler(form) {
+                    let formData = new FormData(form);
 
-                        confirmModal(`Do you want to update this guide?`).then((result) => {
-                            if (!result.isConfirmed) return;
-
-                            return guideLabel == $('#label').val() && guideContent == $('#content')
-                                .val() && !guideImageChanged ? showWarningMessage() :
-                                $.ajax({
-                                    data: formData,
-                                    url: "{{ route('guide.update', 'guideId') }}".replace(
-                                        'guideId', guideId),
-                                    method: "POST",
-                                    cache: false,
-                                    contentType: false,
-                                    processData: false,
-                                    success({
-                                        status,
-                                        message,
-                                        label,
-                                        content,
-                                        guide_photo
-                                    }) {
-                                        if (status == 'warning')
-                                            return showWarningMessage(message);
-
-                                        if (guideImageChanged)
-                                            $(currentGuide).find('.guide-img img').attr('src',
-                                                `{{ asset('guideline_image/${guide_photo}') }}`
-                                            );
-
-                                        let guideDetails = currentGuide.querySelector(
-                                            '.guide-details');
-                                        guideDetails.querySelector('h1').textContent = label;
-                                        guideDetails.querySelector('p').textContent = content;
-                                        currentGuide.querySelector('.guide-label').textContent =
-                                            label;
-                                        showSuccessMessage(`Guide successfully updated.`);
-                                        modal.modal('hide');
-                                    },
-                                    error: showErrorMessage
-                                });
-                        });
-                    }
-                });
-
-                $(document).on('click', '.updateGuideBtn', function() {
-                    currentGuide = this.closest('.guide-content');
-                    guideWidget = $(this).closest('.guide-content');
-                    guideWidgetItem = guideWidget.find('.guide-item');
-                    guideId = $(this).data('guide');
-                    modalLabelContainer.addClass('bg-warning');
-                    modalLabel.text('Update Guide');
-                    formButton.addClass('btn-update').removeClass('btn-submit').text('Update');
-                    $('#image_preview_container').attr('src', guideWidgetItem.find('img').attr('src'));
-                    guideLabel = guideWidgetItem.find('h1').text();
-                    guideContent = guideWidgetItem.find('p').text();
-                    $('#label').val(guideLabel);
-                    $('#content').val(guideContent);
-
-                    if (guideWidgetItem.find('img').attr('src').split('/').pop().split('.')[0] !=
-                        "empty-data")
-                        changeImageBtn('change');
-
-                    modal.modal('show');
-                });
-
-                $('.guideImgBtn').click(() => guideImgInput.click());
-
-                $('#guidePhoto').change(function() {
-                    let reader = new FileReader();
-
-                    guideImageChanged = true;
-                    reader.onload = (e) => ($('.guideImage').attr('src', e.target.result), changeImageBtn(
-                        'change'));
-                    reader.readAsDataURL(this.files[0]);
-                });
-
-                $(document).on('click', '.removeGuideBtn', function() {
-                    currentGuide = $(this.closest('.guide-content'));
-                    guideId = $(this).data('guide');
-                    confirmModal('Do you want to remove this guide?').then((result) => {
+                    confirmModal(`Do you want to update this guide?`).then((result) => {
                         if (!result.isConfirmed) return;
 
-                        $.ajax({
-                            headers: {
-                                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                            },
-                            url: "{{ route('guide.remove', 'guideId') }}".replace(
-                                'guideId', guideId),
-                            method: "DELETE",
-                            success(response) {
-                                if (response.status == 'warning')
-                                    return showWarningMessage(response.message);
+                        return guideLabel == $('#label').val() && guideContent == $('#content')
+                            .val() && !guideImageChanged ? showWarningMessage() :
+                            $.ajax({
+                                data: formData,
+                                url: "{{ route('guide.update', 'guideId') }}".replace(
+                                    'guideId', guideId),
+                                method: "POST",
+                                cache: false,
+                                contentType: false,
+                                processData: false,
+                                success({
+                                    status,
+                                    message,
+                                    label,
+                                    content,
+                                    guide_photo
+                                }) {
+                                    if (status == 'warning')
+                                        return showWarningMessage(message);
 
-                                let guidesContainer = $('.guides-container');
+                                    if (guideImageChanged)
+                                        $(currentGuide).find('.guide-img img').attr('src',
+                                            `{{ asset('guideline_image/${guide_photo}') }}`
+                                        );
 
-                                showSuccessMessage('Guide removed successfully.');
-                                currentGuide.remove();
+                                    let guideDetails = currentGuide.querySelector(
+                                        '.guide-details');
+                                    guideDetails.querySelector('h1').textContent = label;
+                                    guideDetails.querySelector('p').textContent = content;
+                                    currentGuide.querySelector('.guide-label').textContent =
+                                        label;
+                                    showSuccessMessage(`Guide successfully updated.`);
+                                    modal.modal('hide');
+                                },
+                                error: showErrorMessage
+                            });
+                    });
+                }
+            });
 
-                                if (guidesContainer.text().trim() == "") {
-                                    guidesContainer.append(`<div class="empty-data-container">
+            $(document).on('click', '.updateGuideBtn', function() {
+                currentGuide = this.closest('.guide-content');
+                guideWidget = $(this).closest('.guide-content');
+                guideWidgetItem = guideWidget.find('.guide-item');
+                guideId = $(this).data('guide');
+                modalLabelContainer.addClass('bg-warning');
+                modalLabel.text('Update Guide');
+                formButton.addClass('btn-update').removeClass('btn-submit').text('Update');
+                $('#image_preview_container').attr('src', guideWidgetItem.find('img').attr('src'));
+                guideLabel = guideWidgetItem.find('h1').text();
+                guideContent = guideWidgetItem.find('p').text();
+                $('#label').val(guideLabel);
+                $('#content').val(guideContent);
+
+                if (guideWidgetItem.find('img').attr('src').split('/').pop().split('.')[0] !=
+                    "empty-data")
+                    changeImageBtn('change');
+
+                modal.modal('show');
+            });
+
+            $('.guideImgBtn').click(() => guideImgInput.click());
+
+            $('#guidePhoto').change(function() {
+                let reader = new FileReader();
+
+                guideImageChanged = true;
+                reader.onload = (e) => ($('.guideImage').attr('src', e.target.result), changeImageBtn(
+                    'change'));
+                reader.readAsDataURL(this.files[0]);
+            });
+
+            $(document).on('click', '.removeGuideBtn', function() {
+                currentGuide = $(this.closest('.guide-content'));
+                guideId = $(this).data('guide');
+                confirmModal('Do you want to remove this guide?').then((result) => {
+                    if (!result.isConfirmed) return;
+
+                    $.ajax({
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                        },
+                        url: "{{ route('guide.remove', 'guideId') }}".replace(
+                            'guideId', guideId),
+                        method: "DELETE",
+                        success(response) {
+                            if (response.status == 'warning')
+                                return showWarningMessage(response.message);
+
+                            let guidesContainer = $('.guides-container');
+
+                            showSuccessMessage('Guide removed successfully.');
+                            currentGuide.remove();
+
+                            if (guidesContainer.text().trim() == "") {
+                                guidesContainer.append(`<div class="empty-data-container">
                                             <img src="{{ asset('assets/img/Empty-Data.svg') }}" alt="Picture">
                                             <p>No guide uploaded.</p>
                                         </div>`);
-                                }
-                            },
-                            error: showErrorMessage
-                        });
+                            }
+                        },
+                        error: showErrorMessage
                     });
                 });
+            });
 
-                function changeImageBtn(action) {
-                    action == 'remove' ?
-                        guideBtn.removeClass('bg-primary').html('<i class="bi bi-image"></i>Select Image') :
-                        guideBtn.addClass('bg-primary').html('<i class="bi bi-arrow-repeat"></i>Change Image');
-                }
+            function changeImageBtn(action) {
+                action == 'remove' ?
+                    guideBtn.removeClass('bg-primary').html('<i class="bi bi-image"></i>Select Image') :
+                    guideBtn.addClass('bg-primary').html('<i class="bi bi-arrow-repeat"></i>Change Image');
+            }
 
-                modal.on('hidden.bs.modal', () => {
-                    guideImageChanged = false;
-                    validator.resetForm();
-                    form[0].reset();
-                });
-            @endif
+            modal.on('hidden.bs.modal', () => {
+                guideImageChanged = false;
+                validator.resetForm();
+                form[0].reset();
+            });
         @endauth
 
         function updateTime() {

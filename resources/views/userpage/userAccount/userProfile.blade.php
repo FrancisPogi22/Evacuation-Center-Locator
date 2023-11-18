@@ -137,7 +137,6 @@
                 modalLabelContainer.removeClass('bg-success').addClass('bg-warning');
                 modalLabel.text('Update Profile Account');
                 formButton.removeClass('btn-submit').addClass('btn-update').text('Update');
-                $('#suspend-container').hide();
                 operation = "update";
                 organization.val($('#user-organization').find('p').data('organization'));
                 name.val($('#user-name').text());

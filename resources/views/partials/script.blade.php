@@ -11,6 +11,7 @@
     @auth
     let changePasswordValidation, currentPassword = $('#current_password'),
         password = $('#password'),
+        modal = $('#changePasswordModal'),
         confirmPassword = $('#confirmPassword'),
         resetPasswordBtn = $('#resetPasswordBtn'),
         passwordShowIcon = $('#showPassword'),
@@ -78,8 +79,8 @@
                             return response.status == "warning" ? showWarningMessage(
                                     response.message) :
                                 (showSuccessMessage('Password successfully changed.'),
-                                    $(form)[0].reset(),
-                                    currentPassword.text(""), modal.modal('hide'));
+                                    $(form)[0].reset(), currentPassword.text(""), modal
+                                    .modal('hide'));
                         },
                         error: showErrorMessage
                     });
@@ -133,7 +134,7 @@
             }, 500));
         });
 
-        $('#changePasswordModal').on('hidden.bs.modal', () => {
+        modal.on('hidden.bs.modal', () => {
             resetChangePasswordForm();
             resetPasswordBtn.prop('hidden', 1);
             checkPasswordIcon.removeClass('success').removeClass('error').prop('hidden', 1);
@@ -247,7 +248,6 @@
                         case error.TIMEOUT:
                         case error.POSITION_UNAVAILABLE:
                         case error.POSITION_OUT_OF_BOUNDS:
-                            btnContainer.prop('hidden', 0);
                             message = 'Cannot get your current location.';
                             break;
                     }
@@ -271,12 +271,10 @@
             $.get('{{ route('notifications.get') }}', (notifications) => {
                 let count = notifications.length;
 
-                if (count) {
-                    $('.bi-bell-fill').append(
-                        `<div id="notification-count-container">
+                $('.bi-bell-fill').html(
+                    `<div id="notification-count-container">
                         <span id="notification-count">${count}</span>
                     </div>`);
-                }
 
                 $('.dropdown-menu.notification').html(count > 0 ? notifications.map(notification => `
                     <li class="dropdown-notification" aria-id="${notification.id}"

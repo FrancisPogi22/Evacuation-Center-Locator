@@ -29,7 +29,10 @@
                     <table class="table" id="activityTable" width="100%">
                         <thead>
                             <tr>
-                                <th colspan="3">Activity</th>
+                                <th colspan="2">User</th>
+                                <th>Account Status</th>
+                                <th>Activity</th>
+                                <th>Log Time</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -56,7 +59,7 @@
     @include('partials.toastr')
     <script>
         $(document).ready(() => {
-            let userId, defaultFormData, dateSuspendTime = datePicker("#suspend"),
+            let userId, defaultFormData,
                 modal = $('#userAccountModal'),
                 activityLogTable = $('#activityTable').DataTable({
                     ordering: false,
@@ -65,57 +68,35 @@
                     serverSide: true,
                     ajax: "{{ route('activity.log') }}",
                     columns: [{
-                            data: 'id',
-                            name: 'id',
-                            visible: false
-                        },
-                        {
                             data: 'user_id',
                             name: 'user_id',
                             visible: false,
                             searchable: false
                         },
                         {
+                            data: 'name',
+                            name: 'name'
+                        },
+                        {
+                            data: 'user_status',
+                            name: 'user_status'
+                        },
+                        {
                             data: 'activity',
-                            name: 'activity',
+                            name: 'activity'
+                        },
+                        {
+                            data: 'log_time',
+                            name: 'log_time'
                         },
                         {
                             data: 'action',
                             name: 'action',
-                            width: '10%',
+                            width: 170,
                             orderable: false,
                             searchable: false
                         }
                     ]
-                }),
-                validator = $("#accountForm").validate({
-                    rules: {
-                        suspend_time: 'required'
-                    },
-                    messages: {
-                        suspend_time: 'Please enter a suspension time.'
-                    },
-                    errorElement: 'span',
-                    submitHandler(form) {
-                        confirmModal(`Do you want to suspend this user?`).then((result) => {
-                            if (!result.isConfirmed) return;
-
-                            $.ajax({
-                                data: $(form).serialize(),
-                                url: "{{ route('account.suspend', 'userId') }}".replace(
-                                    'userId', userId),
-                                method: "PUT",
-                                success(response) {
-                                    response.status == 'warning' ?
-                                        showWarningMessage(response.message) :
-                                        (showSuccessMessage(`User successfully suspended.`),
-                                            $('#closeModalBtn').click(), activityLogTable.draw()
-                                        );
-                                },
-                                error: showErrorMessage
-                            });
-                        });
-                    }
                 });
 
             $.ajaxSetup({
@@ -142,21 +123,6 @@
                             error: showErrorMessage
                         });
                     });
-            });
-
-            $(document).on('click', '#suspendBtn', function() {
-                $('.modal-label-container').removeClass('bg-success').addClass('bg-warning');
-                $('.modal-label').text('Suspend User Account');
-                $('#saveProfileDetails').removeClass('btn-submit').addClass('btn-update').text('Suspend');
-                $('#organization-container').add('#position-container').add('#name-container').add(
-                    '#email-container').prop('hidden', 1);
-                $('#userAccountModal').modal('show');
-                defaultFormData = $('#accountForm').serialize();
-                userId = getRowData(this, activityLogTable).user_id;
-            });
-
-            $(document).on('change', '#suspend', () => {
-                $('.flatpickr-calendar').prop('hidden', 1);
             });
         });
     </script>
