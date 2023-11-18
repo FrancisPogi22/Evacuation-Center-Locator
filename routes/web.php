@@ -179,8 +179,6 @@ Route::middleware('auth')->group(function () {
         Route::get('/displayUserAccount/{operation}', 'userAccounts')->name('display.users');
         Route::patch('/disableAccount/{userId}', 'disableAccount')->name('disable');
         Route::patch('/enableAccount/{userId}', 'enableAccount')->name('enable');
-        Route::put('/suspendAccount/{userId}', 'suspendAccount')->name('suspend');
-        Route::patch('/openAccount/{userId}', 'openAccount')->name('open');
         Route::put('/resetPassword/{userId}', 'resetPassword')->name('reset.password');
         Route::post('/checkPassword', 'checkPassword')->name('check.password');
         Route::patch('/archiveAccount/{userId}/{operation}', 'archiveAccount')->name('archive');
