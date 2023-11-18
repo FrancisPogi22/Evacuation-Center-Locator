@@ -184,14 +184,14 @@
                 switch (selectedAction) {
                     case 'activeAccount':
                         ajaxRequest('active',
-                            "{{ route('account.active', ['userId', 'active']) }}"
+                            "{{ route('account.toggle.status', ['userId', 'active']) }}"
                             .replace(
                                 'userId', userId));
                         break;
 
                     case 'inactiveAccount':
                         ajaxRequest('inactive',
-                            "{{ route('account.active', ['userId', 'inactive']) }}"
+                            "{{ route('account.toggle.status', ['userId', 'inactive']) }}"
                             .replace(
                                 'userId', userId));
                         break;

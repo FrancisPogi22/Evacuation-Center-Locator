@@ -175,7 +175,7 @@ Route::middleware('auth')->group(function () {
         Route::post('/createAccount', 'createAccount')->name('create');
         Route::put('/updateAccount/{userId}', 'updateAccount')->name('update');
         Route::get('/displayUserAccount/{operation}', 'userAccounts')->name('display.users');
-        Route::patch('/activeAccount/{userId}/{operation}', 'activeAccount')->name('active');
+        Route::patch('/toggleAccountStatus/{userId}/{operation}', 'toggleAccountStatus')->name('toggle.status');
         Route::put('/resetPassword/{userId}', 'resetPassword')->name('reset.password');
         Route::post('/checkPassword', 'checkPassword')->name('check.password');
         Route::patch('/archiveAccount/{userId}/{operation}', 'archiveAccount')->name('archive');

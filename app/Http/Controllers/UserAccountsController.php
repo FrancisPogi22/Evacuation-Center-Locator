@@ -106,12 +106,12 @@ class UserAccountsController extends Controller
         return response([]);
     }
 
-    public function activeAccount($userId, $operation)
+    public function toggleAccountStatus($userId, $operation)
     {
         $account = $this->user->find($userId);
         $account->update([
-            'status'     => 'Disabled',
-            'is_disable' => 1
+            'status'     => $operation == "active" ? "Active" : "Inactive",
+            'is_disable' => $operation == "active" ? 0 : 1
         ]);
         $this->logActivity->generateLog('Disabled a account(ID - ' . $userId . ')');
 
