@@ -21,9 +21,9 @@ Route::controller(AuthenticationController::class)->group(function () {
         Route::view('/', 'authentication/authUser')->name('home');
     });
 
-    Route::middleware('check.attempt')->group(function () {
-        Route::post('/', 'authUser')->name('login');
-    });
+    // Route::middleware('check.attempt')->group(function () {
+    Route::post('/', 'authUser')->name('login');
+    // });
 
     Route::get('/logout', 'logout')->name('logout.user');
     Route::view('/recoverAccount', 'authentication.forgotPassword')->name('recoverAccount');
@@ -154,7 +154,7 @@ Route::middleware('auth')->group(function () {
     });
 
     Route::controller(MainController::class)->group(function () {
-        Route::get('/fetchDisasters/{year}', 'fetchDisasters')->name('fetch.disasters');
+        Route::get('/searchDisaster/{year}', 'searchDisaster')->name('searchDisaster');
         Route::get('/eligtasGuideline', 'eligtasGuideline')->name('eligtas.guideline');
         Route::get('/searchGuideline', 'searchGuideline')->name('guideline.search');
         Route::get('/guide/{guidelineId}', 'guide')->name('eligtas.guide');
@@ -163,8 +163,8 @@ Route::middleware('auth')->group(function () {
         Route::get('/userProfile', 'userProfile')->name('display.profile');
         Route::get('/hotlineNumber', 'hotlineNumbers')->name('hotline.number');
         Route::get('/about', 'about')->name('about');
+        Route::get('/fetchBarangayData', 'fetchBarangayData')->name('fetchBarangayData');
         Route::get('/fetchDisasterData', 'fetchDisasterData')->name('fetchDisasterData');
-        Route::get('/initDisasterData/{disasterName}', 'initDisasterData')->name('initDisasterData');
     });
 
     Route::controller(HotlineNumberController::class)->group(function () {
@@ -177,8 +177,7 @@ Route::middleware('auth')->group(function () {
         Route::post('/createAccount', 'createAccount')->name('create');
         Route::put('/updateAccount/{userId}', 'updateAccount')->name('update');
         Route::get('/displayUserAccount/{operation}', 'userAccounts')->name('display.users');
-        Route::patch('/disableAccount/{userId}', 'disableAccount')->name('disable');
-        Route::patch('/enableAccount/{userId}', 'enableAccount')->name('enable');
+        Route::patch('/activeAccount/{userId}/{operation}', 'activeAccount')->name('active');
         Route::put('/resetPassword/{userId}', 'resetPassword')->name('reset.password');
         Route::post('/checkPassword', 'checkPassword')->name('check.password');
         Route::patch('/archiveAccount/{userId}/{operation}', 'archiveAccount')->name('archive');

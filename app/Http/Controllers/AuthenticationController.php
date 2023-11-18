@@ -95,6 +95,7 @@ class AuthenticationController extends Controller
         if ($userAuthenticated->status != 'Active') {
             auth()->logout();
             session()->flush();
+
             return back()->withInput()->with('warning', 'Your account is not accessible, please reach out to admin.');
         }
 

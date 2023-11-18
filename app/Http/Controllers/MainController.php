@@ -34,24 +34,17 @@ class MainController extends Controller
     public function dashboard()
     {
         $disaster         = $this->disaster->all();
-        $disasterData     = $this->fetchDisasterData();
         $totalEvacuee     = strval($this->evacuee->where('status', "Evacuated")->sum('individuals'));
         $residentReport   = $this->residentReport->whereRaw('DATE(report_time) <= CURDATE()')->count();
         $onGoingDisasters = $disaster->where('status', "On Going");
         $activeEvacuation = $this->evacuationCenter->where('status', "Active")->count();
 
-        return view('userpage.dashboard', compact('activeEvacuation', 'disasterData', 'totalEvacuee', 'onGoingDisasters', 'disaster', 'residentReport'));
+        return view('userpage.dashboard', compact('activeEvacuation', 'totalEvacuee', 'onGoingDisasters', 'disaster', 'residentReport'));
     }
 
-    public function fetchDisasters($year)
+    public function searchDisaster($year)
     {
         return $this->disaster->where('year', $year)->get();
-    }
-
-    public function initDisasterData($disasterName)
-    {
-        $disaterData = $this->disaster->select('id', 'name', 'year')->where('name', 'LIKE', "%{$disasterName}%")->get();
-        return response($disaterData);
     }
 
     public function generateExcelEvacueeData(Request $request)
@@ -73,15 +66,20 @@ class MainController extends Controller
     public function searchGuideline(Request $request)
     {
         $searchGuidelineValdation = Validator::make($request->all(), ['guideline_name' => 'required']);
+
         if ($searchGuidelineValdation->fails()) return response(['warning' => $searchGuidelineValdation->errors()->first()]);
 
-        $guideline = $this->guideline->select('id', 'type', 'guideline_img');
-        if (auth()->check()) $guideline->where('organization', auth()->user()->organization);
+        $guidelineData = $this->guideline
+            ->select('id', 'type', 'guideline_img')
+            ->when(auth()->check(), function ($query) {
+                $query->where('organization', auth()->user()->organization);
+            })
+            ->where('type', 'LIKE', "%{$request->guideline_name}%")
+            ->get();
 
-        $guidelineData = $guideline->where('type', 'LIKE', "%{$request->guideline_name}%")->get();
-        if ($guidelineData->isEmpty()) return back()->with('warning', "Sorry, we couldn't find any result.");
-
-        return response(['guidelineData' => $guidelineData]);
+        return $guidelineData->isEmpty()
+            ? back()->with('warning', "Sorry, we couldn't find any result.")
+            : response(['guidelineData' => $guidelineData]);
     }
 
     public function guide($guidelineId)
@@ -174,29 +172,28 @@ class MainController extends Controller
         return view('userpage.residentReport.manageReport', compact('operation', 'prefix', 'yearList', 'reportType'));
     }
 
+    public function fetchBarangayData()
+    {
+        return response()->json($this->evacuee->where('status', 'Evacuated')->selectRaw('barangay, SUM(male) as male, SUM(female) as female')->groupBy('barangay')->get());
+    }
+
     public function fetchDisasterData()
     {
-        $disasterData     = [];
-        $onGoingDisasters = $this->disaster->join('evacuee', 'evacuee.disaster_id', '=', 'disaster.id')->where('evacuee.status', 'Evacuated')->select('disaster.*')->distinct()->get();
-
-        foreach ($onGoingDisasters as $disaster) {
-            $totalEvacuee = 0;
-            $totalEvacuee += $this->evacuee->where('disaster_id', $disaster->id)->sum('individuals');
-            $result = $this->evacuee->where('disaster_id', $disaster->id)
-                ->where('status', "Evacuated")
-                ->selectRaw('SUM(male) as totalMale,
-                    SUM(female) as totalFemale,
-                    SUM(senior_citizen) as totalSeniorCitizen,
-                    SUM(minors) as totalMinors,
-                    SUM(infants) as totalInfants,
-                    SUM(pwd) as totalPwd,
-                    SUM(pregnant) as totalPregnant,
-                    SUM(lactating) as totalLactating')
-                ->first();
-            $disasterData[] = array_merge(['disasterName' => $disaster->name, 'totalEvacuee' => $totalEvacuee], $result->toArray());
-        }
-
-        return request()->ajax() ? response()->json($disasterData) : $disasterData;
+        return response()->json($this->disaster
+            ->join('evacuee', 'evacuee.disaster_id', 'disaster.id')
+            ->where('evacuee.status', 'Evacuated')
+            ->selectRaw('disaster.name as disasterName,
+                SUM(evacuee.male) as male,
+                SUM(evacuee.female) as female,
+                SUM(evacuee.senior_citizen) as senior_citizen,
+                SUM(evacuee.minors) as minors,
+                SUM(evacuee.infants) as infants,
+                SUM(evacuee.pwd) as pwd,
+                SUM(evacuee.pregnant) as pregnant,
+                SUM(evacuee.lactating) as lactating')
+            ->groupBy('disaster.id', 'disaster.name')
+            ->get()
+            ->toArray());
     }
 
     public function fetchReportData()

@@ -401,7 +401,7 @@
                     response.guidelineData.forEach(guideline => {
                         let result_guideline_img = guideline.guideline_img ?
                             `guideline_image/${guideline.guideline_img}` :
-                            'assets/img/Empty-Data.svg';
+                            'assets/img/Empty-Guideline.svg';
 
                         guidelineContainer.append(initGuidelineItem(guideline.id,
                             result_guideline_img, guideline.type));

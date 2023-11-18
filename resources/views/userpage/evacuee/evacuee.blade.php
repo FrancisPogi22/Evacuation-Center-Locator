@@ -111,6 +111,8 @@
         crossorigin="anonymous"></script>
     @include('partials.toastr')
     <script>
+        sessionStorage.clear();
+
         if ('{{ $operation }}' == 'manage') {
             if (!sessionStorage.getItem('status'))
                 sessionStorage.setItem('status', 'Evacuated');

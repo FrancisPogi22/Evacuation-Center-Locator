@@ -49,6 +49,6 @@ class Kernel extends HttpKernel
         'check.login' => \App\Http\Middleware\AlreadyAuthenticated::class,
         'check.cdrrmo' => \App\Http\Middleware\Cdrrmo::class,
         'check.cswd' => \App\Http\Middleware\Cswd::class,
-        'check.attempt'=> \App\Http\Middleware\CheckLoginAttempt::class
+        // 'check.attempt'=> \App\Http\Middleware\CheckLoginAttempt::class
     ];
 }

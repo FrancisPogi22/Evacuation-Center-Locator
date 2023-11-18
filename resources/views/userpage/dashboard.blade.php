@@ -121,14 +121,17 @@
                     <div id="report-chart" class="bar-graph"></div>
                 </figure>
             @else
-                @foreach ($disasterData as $count => $disaster)
-                    @if ($disaster['totalEvacuee'] != 0)
-                        <figure class="chart-container">
-                            <div id="evacueePie{{ $count + 1 }}" class="pie-chart evacuee"></div>
-                            <div id="evacueeGraph{{ $count + 1 }}" class="bar-graph evacuee"></div>
-                        </figure>
-                    @endif
-                @endforeach
+                <div class="dasboard-content">
+                    <div class="pie-container" hidden>
+                        <div class="pie-label"><span>Barangay Data Chart</span></div>
+                        <div class="pie-content">
+                            <div class="pie-figure"></div>
+                        </div>
+                    </div>
+                    <div class="bar-container">
+                        <figure class="bar-figure"></figure>
+                    </div>
+                </div>
             @endif
         </div>
         @include('userpage.changePasswordModal')
@@ -155,7 +158,7 @@
                 searchResults = $('#disaster_id');
 
             $('#disaster_year').change(function() {
-                $.get(`{{ route('fetch.disasters', 'disasterYear') }}`
+                $.get(`{{ route('searchDisaster', 'disasterYear') }}`
                         .replace('disasterYear', $(this).val()))
                     .done(response => {
                         searchResults.empty().append(response.map(disaster =>
@@ -163,6 +166,10 @@
                         ));
                         disasterList.prop('hidden', 0);
                     }).fail(showErrorMessage);
+            });
+
+            $('.pie-container').click(function() {
+                this.classList.toggle('active');
             });
 
             validator = form.validate({
@@ -200,11 +207,14 @@
                     reportData();
                 });
             @else
-                evacueeData();
+                initializePieChart();
+
+                initializeBarGraph();
 
                 Echo.channel('active-evacuees').listen('ActiveEvacuees', (e) => {
                     $("#totalEvacuee").text(e.activeEvacuees);
-                    evacueeData();
+                    initializePieChart();
+                    initializeBarGraph();
                 });
             @endif
         });
@@ -270,137 +280,147 @@
                 });
             }
         @else
-            function evacueeData() {
-                $.ajax({
-                    url: "{{ route('fetchDisasterData') }}",
-                    method: 'GET',
-                    dataType: 'json',
-                    success(disasterData) {
-                        disasterData.forEach((disaster, count) => {
-                            if (disaster['totalEvacuee'] != 0) {
-                                initializePieChart(disaster, count);
-                                initializeBarGraph(disaster, count);
-                            }
-                        });
-                    },
-                    error: () => showErrorMessage("Unable to fetch data.")
-                });
-            }
-
-            function initializePieChart(disaster, count) {
-                Highcharts.chart(`evacueePie${count + 1}`, {
-                    chart: {
-                        type: 'pie'
-                    },
-                    title: {
-                        text: `As Affected of ${disaster.disasterName}`
-                    },
-                    tooltip: {
-                        pointFormat: '{series.name}: <b>{point.y}</b>'
-                    },
-                    plotOptions: {
-                        pie: {
-                            dataLabels: {
-                                enabled: true,
-                                style: {
-                                    textOutline: 'none'
-                                }
-                            }
-                        }
-                    },
-                    series: [{
-                        name: 'Evacuee',
-                        colorByPoint: true,
-                        data: [{
-                                name: 'Male',
-                                y: parseInt(disaster.totalMale),
-                                color: '#0284c7'
+            function initializeBarGraph() {
+                $('.bar-chart').remove();
+                $.get("{{ route('fetchDisasterData') }}")
+                    .done(disasterData => disasterData.forEach((disaster, count) => {
+                        $('.bar-figure').append(`<div id="evacueeGraph${count + 1}" class="bar-graph"></div>`);
+                        Highcharts.chart(`evacueeGraph${count + 1}`, {
+                            chart: {
+                                type: 'bar'
                             },
-                            {
-                                name: 'Female',
-                                y: parseInt(disaster.totalFemale),
-                                color: '#f43f5e'
-                            }
-                        ]
-                    }],
-                    exporting: false,
-                    credits: {
-                        enabled: false
-                    },
-                });
-            }
-
-            function initializeBarGraph(disaster, count) {
-                Highcharts.chart(`evacueeGraph${count + 1}`, {
-                    chart: {
-                        type: 'bar'
-                    },
-                    title: false,
-                    xAxis: {
-                        categories: ['SENIOR CITIZEN', 'MINORS', 'INFANTS', 'PWD', 'PREGNANT', 'LACTATING']
-                    },
-                    yAxis: {
-                        allowDecimals: false,
-                        title: {
-                            text: 'Estimated Numbers'
-                        }
-                    },
-                    legend: {
-                        reversed: true
-                    },
-                    plotOptions: {
-                        bar: {
-                            dataLabels: {
-                                enabled: true,
-                                style: {
-                                    textOutline: 'none'
+                            title: {
+                                text: `${disaster.disasterName}`
+                            },
+                            xAxis: {
+                                categories: ['SENIOR CITIZEN', 'MINORS', 'INFANTS', 'PWD', 'PREGNANT',
+                                    'LACTATING'
+                                ]
+                            },
+                            yAxis: {
+                                allowDecimals: false,
+                                title: {
+                                    text: 'Estimated Numbers'
                                 }
-                            }
-                        },
-                        series: {
-                            stacking: 'normal',
-                            dataLabels: {
-                                enabled: true,
-                                formatter: function() {
-                                    if (this.y != 0) {
-                                        return this.y;
-                                    } else {
-                                        return null;
+                            },
+                            legend: {
+                                reversed: true
+                            },
+                            plotOptions: {
+                                bar: {
+                                    dataLabels: {
+                                        enabled: true,
+                                        style: {
+                                            textOutline: 'none'
+                                        }
+                                    }
+                                },
+                                series: {
+                                    stacking: 'normal',
+                                    dataLabels: {
+                                        enabled: true,
+                                        formatter: function() {
+                                            if (this.y != 0) {
+                                                return this.y;
+                                            } else {
+                                                return null;
+                                            }
+                                        }
                                     }
                                 }
-                            }
+                            },
+                            series: [{
+                                name: 'SENIOR CITIZEN',
+                                data: [parseInt(disaster.senior_citizen), '', '', '', '', ''],
+                                color: '#e74c3c'
+                            }, {
+                                name: 'MINORS',
+                                data: ['', parseInt(disaster.minors), '', '', '', ''],
+                                color: '#3498db'
+                            }, {
+                                name: 'INFANTS',
+                                data: ['', '', parseInt(disaster.infants), '', '', ''],
+                                color: '#2ecc71'
+                            }, {
+                                name: 'PWD',
+                                data: ['', '', '', parseInt(disaster.pwd), '', ''],
+                                color: '#1abc9c'
+                            }, {
+                                name: 'PREGNANT',
+                                data: ['', '', '', '', parseInt(disaster.pregnant), ''],
+                                color: '#e67e22'
+                            }, {
+                                name: 'LACTATING',
+                                data: ['', '', '', '', '', parseInt(disaster.lactating)],
+                                color: '#9b59b6'
+                            }],
+                            exporting: false,
+                            credits: {
+                                enabled: false
+                            },
+                        })
+                    }))
+                    .fail(() => showErrorMessage("Unable to fetch data."));
+            }
+
+            function initializePieChart() {
+                $.get("{{ route('fetchBarangayData') }}")
+                    .done(barangayData => {
+                        if (barangayData.length > 0) {
+                            $('.pie-container').prop('hidden', 0);
+                            $('.pie-chart').remove();
+                            barangayData.forEach((barangay, count) => {
+                                $('.pie-figure').append(
+                                    `<div id="evacueePie${count + 1}" class="pie-chart"></div>`);
+                                Highcharts.chart(`evacueePie${count + 1}`, {
+                                    chart: {
+                                        type: 'pie'
+                                    },
+                                    title: false,
+                                    subtitle: {
+                                        text: barangay.barangay,
+                                        align: 'center',
+                                        verticalAlign: 'bottom'
+                                    },
+                                    tooltip: {
+                                        pointFormat: '{series.name}: <b>{point.y}</b>'
+                                    },
+                                    plotOptions: {
+                                        pie: {
+                                            dataLabels: {
+                                                enabled: true,
+                                                style: {
+                                                    textOutline: 'none'
+                                                }
+                                            },
+                                            center: ['50%', '50%'],
+                                            size: '80%'
+                                        }
+                                    },
+                                    series: [{
+                                        name: 'Evacuee',
+                                        colorByPoint: true,
+                                        data: [{
+                                            name: 'Male',
+                                            y: parseInt(barangay.male),
+                                            color: '#0284c7'
+                                        }, {
+                                            name: 'Female',
+                                            y: parseInt(barangay.female),
+                                            color: '#f43f5e'
+                                        }]
+                                    }],
+                                    exporting: false,
+                                    credits: {
+                                        enabled: false
+                                    }
+                                })
+                            });
+                        } else {
+                            $('.pie-container').prop('hidden', 1);
                         }
-                    },
-                    series: [{
-                        name: 'SENIOR CITIZEN',
-                        data: [parseInt(disaster.totalSeniorCitizen), '', '', '', '', ''],
-                        color: '#e74c3c'
-                    }, {
-                        name: 'MINORS',
-                        data: ['', parseInt(disaster.totalMinors), '', '', '', ''],
-                        color: '#3498db'
-                    }, {
-                        name: 'INFANTS',
-                        data: ['', '', parseInt(disaster.totalInfants), '', '', ''],
-                        color: '#2ecc71'
-                    }, {
-                        name: 'PWD',
-                        data: ['', '', '', parseInt(disaster.totalPwd), '', ''],
-                        color: '#1abc9c'
-                    }, {
-                        name: 'PREGNANT',
-                        data: ['', '', '', '', parseInt(disaster.totalPregnant), ''],
-                        color: '#e67e22'
-                    }, {
-                        name: 'LACTATING',
-                        data: ['', '', '', '', '', parseInt(disaster.totalLactating)],
-                        color: '#9b59b6'
-                    }],
-                    exporting: false,
-                    credits: {
-                        enabled: false
-                    },
-                });
+                    })
+                    .fail(() => showErrorMessage("Unable to fetch data."));
             }
         @endif
     </script>

@@ -98,7 +98,6 @@
                 ]
             });
 
-
             let disasterId, defaultFormData, operation, validator,
                 form = $("#disasterForm"),
                 modalLabelContainer = $('.modal-label-container'),

@@ -108,12 +108,12 @@
                 }
             ],
             columnDefs: [{
-                targets: 5,
-                render: function(data) {
-                    let color = data == 'Active' ? 'success' : data == 'Inactive' ? 'danger' :
-                        'warning';
+                    targets: 5,
+                    render: function(data) {
+                        let color = data == 'Active' ? 'success' : data == 'Inactive' ? 'danger' :
+                            'warning';
 
-                    return `
+                        return `
                         <div class="status-container">
                             <div class="status-content bg-${color}">
                                 ${data}

@@ -31,12 +31,11 @@ class UserAccountsController extends Controller
             $userAccounts->where('organization', 'CDRRMO')->whereNotIn('id', [$userId]);
 
         return DataTables::of($userAccounts)
-            ->addColumn('status', fn ($account) => '<div class="status-container"><div class="status-content bg-' .
-                match ($account->status) {
-                    'Active'    => 'success',
-                    'Archived'  => 'warning',
-                    'Disabled'  => 'danger'
-                }
+            ->addColumn('status', fn ($account) => '<div class="status-container"><div class="status-content bg-' . match ($account->status) {
+                'Active'   => 'success',
+                'Inactive' => 'warning',
+                'Archived' => 'danger'
+            }
                 . '">' . $account->status . '</div></div>')
             ->addColumn('action', function ($user) use ($operation) {
                 return '<div class="action-container"><select class="form-select actionSelect">' .
@@ -107,7 +106,7 @@ class UserAccountsController extends Controller
         return response([]);
     }
 
-    public function disableAccount($userId)
+    public function activeAccount($userId, $operation)
     {
         $account = $this->user->find($userId);
         $account->update([
@@ -158,7 +157,7 @@ class UserAccountsController extends Controller
     {
         $userAccount = $this->user->find($userId);
         $userAccount->update([
-            'status'     => $operation == 'archive' ? 'Archived' : ($userAccount->is_disable == 0 ? 'Active' : 'Disabled'),
+            'status'     => $operation == 'archive' ? 'Archived' : ($userAccount->is_disable == 0 ? 'Active' : 'Inactive'),
             'is_archive' => $operation == 'archive' ? 1 : 0
         ]);
         $this->logActivity->generateLog(ucfirst($operation) . 'd a account(ID - ' . $userId . ')');
