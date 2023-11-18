@@ -75,7 +75,7 @@ class EvacuationCenterController extends Controller
             'longitude'     => $request->longitude,
             'barangay_name' => $request->barangayName
         ]);
-        $this->logActivity->generateLog('Added a new evacuation center(ID - ' . $$evacuationCenter->id . ')');
+        $this->logActivity->generateLog('Added a new evacuation center(ID - ' . $evacuationCenter->id . ')');
         event(new EvacuationCenterLocator());
 
         return response([]);
