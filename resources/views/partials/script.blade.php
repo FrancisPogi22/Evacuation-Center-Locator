@@ -185,7 +185,7 @@
                         .replace('reportId', list.attr('aria-id')),
                     success() {
                         const currentLocation =
-                            "http://127.0.0.1:8000/cdrrmo/manageReport/manage";
+                            "{{ route('manage.report', 'manage') }}";
 
                         window.location.href == currentLocation ?
                             (openReportDetails(type, lat, lng),
@@ -271,10 +271,8 @@
             $.get('{{ route('notifications.get') }}', (notifications) => {
                 let count = notifications.length;
 
-                $('.bi-bell-fill').html(
-                    `<div id="notification-count-container">
-                        <span id="notification-count">${count}</span>
-                    </div>`);
+                if (count != 0) $('.bi-bell-fill').html(`<div id="notification-count-container">
+                        <span id="notification-count">${count}</span></div>`);
 
                 $('.dropdown-menu.notification').html(count > 0 ? notifications.map(notification => `
                     <li class="dropdown-notification" aria-id="${notification.id}"
