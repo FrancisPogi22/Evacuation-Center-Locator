@@ -21,9 +21,9 @@ Route::controller(AuthenticationController::class)->group(function () {
         Route::view('/', 'authentication/authUser')->name('home');
     });
 
-    // Route::middleware('check.attempt')->group(function () {
-    Route::post('/', 'authUser')->name('login');
-    // });
+    Route::middleware('check.attempt')->group(function () {
+        Route::post('/', 'authUser')->name('login');
+    });
 
     Route::get('/logout', 'logout')->name('logout.user');
     Route::view('/recoverAccount', 'authentication.forgotPassword')->name('recoverAccount');
