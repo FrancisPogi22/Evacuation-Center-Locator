@@ -329,6 +329,7 @@
                         $(".empty-data-container").prop('hidden', $(".empty-data-container").length > 1);
                         hotlineForm.prop('hidden', 1);
                         resetHotlineForm();
+                        operation = "";
                         hotlineItem = "";
                         operation = "";
                     });

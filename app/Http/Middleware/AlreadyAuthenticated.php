@@ -10,12 +10,8 @@ class AlreadyAuthenticated
 {
     public function handle(Request $request, Closure $next): Response
     {
-        if (auth()->check()) {
-            $userOrganization = auth()->user()->organization;
-            return $userOrganization  == "CDRRMO" ? redirect()->route('dashboard.cdrrmo')->with('warning', 'Request Can`t Perform.') :
-                redirect()->route('dashboard.cswd')->with('warning', 'Request Can`t Perform.');
-        }
-
-        return $next($request);
+        return auth()->check()
+            ? redirect()->route('dashboard.' . (auth()->user()->organization == "CDRRMO" ? 'cdrrmo' : 'cswd'))->with('warning', 'Request Can`t Perform.')
+            : $next($request);
     }
 }
