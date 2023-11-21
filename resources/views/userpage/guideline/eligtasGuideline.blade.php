@@ -252,7 +252,7 @@
                                     <div class="image-preview">
                                         <a href="javascript:void(0)" class="btn-remove removeImage" id="removeImage${guideField}"
                                             hidden><i class="bi bi-trash3"></i></a>
-                                        <img src="{{ asset('assets/img/E-Ligtas-Logo-${checkThemeColor()}.png') }}" alt="Image"
+                                        <img src="{{ asset('assets/img/E-LIGTAS-Logo-${checkThemeColor()}.png') }}" alt="Image"
                                             class="guideImage" id="image_preview_container${guideField}">
                                     </div>
                                     <input type="file" name="guidePhoto[]" id="guidePhoto${guideField}"
@@ -299,7 +299,7 @@
 
                 $(`#guidePhoto${guideFieldId}`).val('');
                 $(`#image_preview_container${guideFieldId}`).attr('src',
-                    `{{ asset('assets/img/E-Ligtas-Logo-${checkThemeColor()}.png') }}`);
+                    `{{ asset('assets/img/E-LIGTAS-Logo-${checkThemeColor()}.png') }}`);
                 $(this).prop('hidden', 1);
                 $(`#selectImage${guideFieldId}`).removeClass('bg-primary').html(
                     '<i class="bi bi-image"></i>Choose Image');
@@ -368,7 +368,7 @@
 
             function changeImageColor() {
                 guidelineImg.attr('src',
-                    `{{ asset('assets/img/E-Ligtas-Logo-${checkThemeColor()}.png') }}`);
+                    `{{ asset('assets/img/E-LIGTAS-Logo-${checkThemeColor()}.png') }}`);
             }
 
             function changeImageBtn(action) {
