@@ -14,7 +14,7 @@
                         <div class="form-content">
                             <div class="field-container guideline-field">
                                 <div class="guideline-img">
-                                    <img src="{{ asset('assets/img/E-Ligtas-Logo-Black.png') }}" class="guidelineImage"
+                                    <img src="{{ asset('assets/img/E-LIGTAS-Logo-Black.png') }}" class="guidelineImage"
                                         alt="Picture">
                                     <input type="file" name="guidelineImg" class="guidelineImgInput"
                                         id="guidelineImgInput" hidden>

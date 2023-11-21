@@ -28,10 +28,10 @@
                             <a href="{{ route('resident.eligtas.guideline') }}" class="btn-resident">Continue as
                                 resident</a>
                         </div>
-                        {{-- @if (session('limit'))
+                        @if (session('limit'))
                             <p id="error-attempt">The password you've enter is incorrect, please wait for <span
                                     id="time"></span> seconds.</p>
-                        @endif --}}
+                        @endif
                     </form>
                     <div class="forgot-password-container">
                         <a href="{{ route('recoverAccount') }}">Forgotten password?</a>
@@ -53,23 +53,23 @@
                 $(this).toggleClass("bi-eye-slash bi-eye");
             });
 
-            // @if (session('limit'))
-            //     let timeRemaining = {{ session('seconds') }};
+            @if (session('limit'))
+                let timeRemaining = {{ session('seconds') }};
 
-            //     function updateCountdown() {
-            //         if (timeRemaining <= 0) {
-            //             $('#error-attempt, #time').text("");
-            //             $('#loginBtn').prop('disabled', 0);
-            //         } else {
-            //             $('#loginBtn').prop('disabled', 1);
-            //             $('#time').text(timeRemaining);
-            //             timeRemaining--;
-            //             setTimeout(updateCountdown, 1000);
-            //         }
-            //     }
+                function updateCountdown() {
+                    if (timeRemaining <= 0) {
+                        $('#error-attempt, #time').text("");
+                        $('#loginBtn').prop('disabled', 0);
+                    } else {
+                        $('#loginBtn').prop('disabled', 1);
+                        $('#time').text(timeRemaining);
+                        timeRemaining--;
+                        setTimeout(updateCountdown, 1000);
+                    }
+                }
 
-            //     updateCountdown();
-            // @endif
+                updateCountdown();
+            @endif
         });
     </script>
 </body>

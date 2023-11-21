@@ -15,7 +15,7 @@
                             <div class="field-container guide-input-container">
                                 <div class="guide-field">
                                     <div class="guide-img-field">
-                                        <img src="{{ asset('assets/img/E-Ligtas-Logo-White.png') }}" alt="Picture"
+                                        <img src="{{ asset('assets/img/E-LIGTAS-Logo-White.png') }}" alt="Picture"
                                             class="guideImage" id="image_preview_container">
                                         <input type="file" name="guidePhoto" class="guidePhoto" id="guidePhoto"
                                             class="form-control" hidden>
