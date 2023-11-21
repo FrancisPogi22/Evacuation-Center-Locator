@@ -32,7 +32,7 @@ class AreaReportController extends Controller
         $areaReport = $this->areaReport->where('is_archive', $operation == "archived" ? 1 : 0);
 
         if ($operation != "archived") {
-            $prefix = request()->route()->getPrefix();
+            $prefix = basename(trim(request()->route()->getPrefix(), '/'));
             $areaReport = $areaReport->whereIn('type', ['Flooded', 'Roadblocked'])->when($prefix == "resident", fn ($query) => $query->where('status', 'Approved'))->get();
             foreach ($areaReport as $report) {
                 $report->update = $this->reportUpdate->where('report_id', $report->id)

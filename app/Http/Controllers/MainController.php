@@ -108,7 +108,7 @@ class MainController extends Controller
 
     public function evacuationCenterLocator()
     {
-        $prefix = request()->route()->getPrefix();
+        $prefix = basename(trim(request()->route()->getPrefix(), '/'));
 
         return view('userpage.evacuationCenter.evacuationCenterLocator', compact('prefix'));
     }
@@ -164,7 +164,7 @@ class MainController extends Controller
     public function manageReport($operation)
     {
         $yearList   = [];
-        $prefix     = request()->route()->getPrefix();
+        $prefix     = basename(trim(request()->route()->getPrefix(), '/'));
         $reportType = ['All', 'Emergency', 'Incident', 'Flooded', 'Roadblocked'];
         if ($operation == "archived")
             $yearList = $this->residentReport->selectRaw('YEAR(report_time) as year')->where('is_archive', 1)->distinct()->orderBy('year', 'desc')->get();
@@ -185,7 +185,7 @@ class MainController extends Controller
             ->selectRaw('disaster.name as disasterName,
                 SUM(evacuee.male) as male,
                 SUM(evacuee.female) as female,
-                SUM(evacuee.senior_citizen) as senior_citizen,
+                SUM(evacuee.senior_citizen) as seniorcitizen,
                 SUM(evacuee.minors) as minors,
                 SUM(evacuee.infants) as infants,
                 SUM(evacuee.pwd) as pwd,
