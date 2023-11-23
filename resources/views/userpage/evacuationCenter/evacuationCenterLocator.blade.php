@@ -229,54 +229,54 @@
                     <div class="areaReportContainer">
                         ${type == "evacuationCenter" ?
                         `<div class="info-description">
-                            <span>Name:</span> ${data.name}
-                        </div>
-                        <div class="info-description">
-                            <span>Barangay:</span> ${data.barangay_name}
-                        </div>
-                        <div class="info-description">
-                            <span>No. of evacuees:</span> ${data.evacuees}
-                        </div>
-                        <div class="info-description status">
-                            <span>Status:</span>
-                            <span class="status-content bg-${getStatusColor(data.status)}">
-                                ${data.status}
-                            </span>
-                        </div>` :
+                                            <span>Name:</span> ${data.name}
+                                        </div>
+                                        <div class="info-description">
+                                            <span>Barangay:</span> ${data.barangay_name}
+                                        </div>
+                                        <div class="info-description">
+                                            <span>No. of evacuees:</span> ${data.evacuees}
+                                        </div>
+                                        <div class="info-description status">
+                                            <span>Status:</span>
+                                            <span class="status-content bg-${getStatusColor(data.status)}">
+                                                ${data.status}
+                                            </span>
+                                        </div>` :
                         `<div class="info-description">
-                            <span>Report Date:</span> ${formatDateTime(data.report_time)}
-                        </div>
-                        <div class="info-description">
-                            <span>
-                                ${data.type == "Flooded" ? `${data.type} Area` : data.type }
-                            </span>
-                        </div>
-                        <div class="info-description details">
-                            <span>Details: </span>
-                            <div class="info-window-details-container">
-                                ${data.details}
-                            </div>
-                        </div>
-                        <div class="info-description photo">
-                            <span>Image: </span>
-                            <div hidden>
-                                ${data.latitude}, ${data.longitude}
-                            </div>
-                            <button class="btn btn-sm btn-primary toggleImageBtn">
-                                <i class="bi bi-chevron-expand"></i> View
-                            </button>
-                            <img src="/reports_image/${data.photo}" class="form-control" hidden>
-                        </div>
-                        <div class="info-description update" ${data.update.length == 0 && "hidden"}>
-                            <span>Updates Today: </span>
-                            <div class="info-window-update-container">
-                                <div class="update-date">
-                                    ${data.update.length > 0 ? formatDateTime(data.update[0].update_time, 'date') : ''}
-                                </div>
-                                ${
-                                    data.update.length > 0 ?
-                                        data.update.map((update) => {
-                                            return `
+                                            <span>Report Date:</span> ${formatDateTime(data.report_time)}
+                                        </div>
+                                        <div class="info-description">
+                                            <span>
+                                                ${data.type == "Flooded" ? `${data.type} Area` : data.type }
+                                            </span>
+                                        </div>
+                                        <div class="info-description details">
+                                            <span>Details: </span>
+                                            <div class="info-window-details-container">
+                                                ${data.details}
+                                            </div>
+                                        </div>
+                                        <div class="info-description photo">
+                                            <span>Image: </span>
+                                            <div hidden>
+                                                ${data.latitude}, ${data.longitude}
+                                            </div>
+                                            <button class="btn btn-sm btn-primary toggleImageBtn">
+                                                <i class="bi bi-chevron-expand"></i> View
+                                            </button>
+                                            <img src="/reports_image/${data.photo}" class="form-control" hidden>
+                                        </div>
+                                        <div class="info-description update" ${data.update.length == 0 && "hidden"}>
+                                            <span>Updates Today: </span>
+                                            <div class="info-window-update-container">
+                                                <div class="update-date">
+                                                    ${data.update.length > 0 ? formatDateTime(data.update[0].update_time, 'date') : ''}
+                                                </div>
+                                                ${
+                                                    data.update.length > 0 ?
+                                                        data.update.map((update) => {
+                                                            return `
                                                 <p class="update-details-container">
                                                     <small>
                                                         as of ${formatDateTime(update.update_time, 'time')}
@@ -285,10 +285,10 @@
                                                         ${update.update_details}
                                                     </span>
                                                 </p>`
-                                        }).join('') : ''
-                                }
-                            </div>
-                        </div>`}
+                                                        }).join('') : ''
+                                                }
+                                            </div>
+                                        </div>`}
                     </div>`;
 
                 generateInfoWindow(marker, content);
@@ -779,7 +779,11 @@
                                             <span id="image-error" class="error" hidden>Please select an image file.</span>
                                         </div>
                                         <center>
-                                            <button id="submitAreaBtn"><i class="bi bi-send"></i> Submit</button>
+                                            <button id="submitAreaBtn"><i class="bi bi-send"></i>
+                                                <div id="btn-loader">
+                                                    <div id="loader-inner"></div>
+                                                </div>Submit
+                                            </button>
                                         <center>
                                     </div>
                                 </form>`
@@ -845,7 +849,14 @@
                                 data: new FormData(form),
                                 contentType: false,
                                 processData: false,
+                                beforeSend() {
+                                    $('#btn-loader').addClass('show');
+                                    $('#submitAreaBtn').prop('disabled', 1);
+                                },
                                 success(response) {
+                                    $('#btn-loader').addClass('show');
+                                    $('#submitAreaBtn').prop('disabled', 0);
+                                    
                                     const status = response.status
 
                                     status == "warning" || status ==

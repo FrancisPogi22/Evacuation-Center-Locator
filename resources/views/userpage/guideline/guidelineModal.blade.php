@@ -33,7 +33,11 @@
                                 <a class="btn-update" id="addGuideInput"><i class="bi bi-plus-lg"></i></a>
                             </div>
                             <div class="form-button-container">
-                                <button id="submitGuidelineBtn"></button>
+                                <button id="submitGuidelineBtn" class="modalBtn">
+                                    <div id="btn-loader">
+                                        <div id="loader-inner"></div>
+                                    </div>
+                                </button>
                             </div>
                         </div>
                     </form>

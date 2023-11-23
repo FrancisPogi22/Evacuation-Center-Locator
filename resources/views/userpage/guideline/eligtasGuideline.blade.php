@@ -136,7 +136,13 @@
                                 cache: false,
                                 contentType: false,
                                 processData: false,
+                                beforeSend() {
+                                    $('#btn-loader').addClass('show');
+                                },
                                 success(response) {
+                                    $('#btn-loader').removeClass('show');
+                                    formBtn.prop('disabled', 1);
+
                                     if (response.status == 'warning')
                                         return showWarningMessage(response.message)
 
@@ -153,7 +159,7 @@
 
                                         guideline_img = guideline_img ?
                                             `guideline_image/${guideline_img}` :
-                                            'assets/img/Empty-Data.svg';
+                                            'assets/img/Empty-Guideline.svg';
                                         guidelineContainer.append(initGuidelineItem(
                                             guideline_id, guideline_img, type));
                                     } else {
@@ -181,7 +187,7 @@
                 operation = "create";
                 modalLabelContainer.removeClass('bg-warning');
                 modalLabel.text('Create Guideline');
-                formBtn.text('Create').add(addGuideInput).addClass('btn-submit').removeClass(
+                formBtn.append('Create').add(addGuideInput).addClass('btn-submit').removeClass(
                     'btn-update');
                 changeImageColor();
                 modal.modal('show');

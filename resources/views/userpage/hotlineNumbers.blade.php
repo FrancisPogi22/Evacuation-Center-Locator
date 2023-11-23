@@ -56,7 +56,7 @@
                                             </div>
                                             <div>
                                                 <label for="label" class="last-label">Number</label>
-                                                <input type="text" name="number" id="hotlineNumber" class="form-control"
+                                                <input type="number" name="number" id="hotlineNumber" class="form-control"
                                                     placeholder="Enter Number" autocomplete="off">
                                             </div>
                                             <div class="hotline-form-button-container">

@@ -112,7 +112,7 @@
 
                         $.ajax({
                             method: "PATCH",
-                            url: "{{ route('account.disable', 'userId') }}".replace('userId',
+                            url: "{{ route('account.toggle.status', ['userId', 'inactive']) }}".replace('userId',
                                 getRowData(this, activityLogTable).user_id),
                             success(response) {
                                 response.status == 'warning' ?

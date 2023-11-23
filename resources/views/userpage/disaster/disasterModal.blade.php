@@ -17,7 +17,11 @@
                                 placeholder="e.g. Ondoy" id="disasterName">
                         </div>
                         <div class="form-button-container">
-                            <button id="submitDisasterBtn"></button>
+                            <button id="submitDisasterBtn">
+                                <div id="btn-loader">
+                                    <div id="loader-inner"></div>
+                                </div>
+                            </button>
                         </div>
                     </div>
                 </form>

@@ -133,7 +133,13 @@
                                     "{{ route('disaster.update', 'disasterId') }}".replace(
                                         'disasterId', disasterId),
                                 method: operation == 'add' ? "POST" : "PATCH",
+                                beforeSend() {
+                                    $('#btn-loader').addClass('show');
+                                    formButton.prop('disabled', 1);
+                                },
                                 success(response) {
+                                    $('#btn-loader').addClass('show');
+                                    formButton.prop('disabled', 0);
                                     response.status == 'warning' ? showWarningMessage(
                                         response
                                         .message) : (
@@ -150,7 +156,7 @@
             $('#addDisasterData').click(() => {
                 modalLabelContainer.removeClass('bg-warning');
                 modalLabel.text('Add Disaster');
-                formButton.addClass('btn-submit').removeClass('btn-update').text('Add');
+                formButton.addClass('btn-submit').removeClass('btn-update').append('Add');
                 operation = "add";
                 modal.modal('show');
             });
@@ -164,7 +170,7 @@
                 $('#disasterName').val(name);
                 modalLabelContainer.addClass('bg-warning');
                 modalLabel.text('Update Disaster');
-                formButton.addClass('btn-update').removeClass('btn-submit').text('Update');
+                formButton.addClass('btn-update').removeClass('btn-submit').append('Update');
                 operation = "update";
                 modal.modal('show');
                 defaultFormData = form.serialize();
