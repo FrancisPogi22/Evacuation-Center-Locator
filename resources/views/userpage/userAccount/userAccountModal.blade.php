@@ -40,7 +40,11 @@
                                 placeholder="Enter Email Address">
                         </div>
                         <div class="form-button-container">
-                            <button id="saveProfileDetails"></button>
+                            <button id="saveProfileDetails">
+                                <div id="btn-loader">
+                                    <div id="loader-inner"></div>
+                                </div>
+                            </button>
                         </div>
                     </div>
                 </form>

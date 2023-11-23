@@ -131,7 +131,11 @@
                             </select>
                         </div>
                         <div class="form-button-container" hidden>
-                            <button id="recordEvacueeInfoBtn"></button>
+                            <button id="recordEvacueeInfoBtn">
+                                <div id="btn-loader">
+                                    <div id="loader-inner"></div>
+                                </div>
+                            </button>
                         </div>
                     </div>
                 </form>

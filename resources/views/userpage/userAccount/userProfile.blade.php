@@ -111,7 +111,14 @@
                                     'accountId', accountId),
                                 method: 'PUT',
                                 data: formData,
+                                beforeSend() {
+                                    $('#btn-loader').addClass('show');
+                                    formButton.prop('disabled', 1);
+                                },
                                 success(response) {
+                                    $('#btn-loader').removeClass('show');
+                                    formButton.prop('disabled', 0);
+
                                     if (response.status == 'warning') showWarningMessage(
                                         response.message);
 
@@ -136,12 +143,13 @@
             $(document).on('click', '#updateProfileBtn', () => {
                 modalLabelContainer.removeClass('bg-success').addClass('bg-warning');
                 modalLabel.text('Update Profile Account');
-                formButton.removeClass('btn-submit').addClass('btn-update').text('Update');
+                formButton.removeClass('btn-submit').addClass('btn-update').append('Update');
                 operation = "update";
                 organization.val($('#user-organization').find('p').data('organization'));
                 name.val($('#user-name').text());
                 email.val($('#user-email').text());
-                $('#position-container, #name-container, #email-container').prop('hidden', 0);
+                $('#organization-container, #position-container').prop('hidden', 1);
+                $('#name-container, #email-container').prop('hidden', 0);
                 initPositionOption(organization.val());
                 modal.modal('show');
                 defaultFormData = form.serialize();
@@ -152,6 +160,7 @@
             });
 
             modal.on('hidden.bs.modal', () => {
+                $('#organization-container, #position-container').prop('hidden', 0);
                 validator && validator.resetForm();
                 form[0].reset();
             });

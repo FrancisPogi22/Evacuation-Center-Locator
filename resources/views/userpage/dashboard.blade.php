@@ -65,7 +65,7 @@
                                                 </div>
                                                 <div class="form-button-container">
                                                     <button class="btn-submit modalBtn" id="btnSubmit">
-                                                        <div id="btn-loader" class="show">
+                                                        <div id="btn-loader">
                                                             <div id="loader-inner"></div>
                                                         </div>
                                                         Generate
@@ -199,8 +199,31 @@
             generateBtn.click(() => {
                 if (validator.form()) {
                     generateBtn.prop("disabled", 1);
-                    form.attr('action', '{{ route('generate.evacuee.data') }}').off('submit').submit();
-                    modal.modal('hide');
+                    $.ajax({
+                        type: "POST",
+                        url: '{{ route('generate.evacuee.data') }}',
+                        data: form.serialize(),
+                        xhrFields: {
+                            responseType: 'blob'
+                        },
+                        beforeSend() {
+                            $('#btn-loader').addClass('show');
+                        },
+                        success(response, xhr) {
+                            let blob = new Blob([response], {
+                                    type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+                                }),
+                                link = document.createElement('a');
+
+                            link.href = window.URL.createObjectURL(blob);
+                            link.download = 'evacuee-data.xlsx';
+                            link.click();
+                            $('#btn-loader').removeClass('show');
+                            generateBtn.prop("disabled", 0);
+                            modal.modal('hide');
+                        },
+                        error: showErrorMessage
+                    });
                 }
             });
 

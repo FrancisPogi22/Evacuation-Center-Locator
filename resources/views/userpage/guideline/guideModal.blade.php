@@ -37,7 +37,11 @@
                                 </div>
                             </div>
                             <div class="form-button-container">
-                                <button id="submitGuideBtn"></button>
+                                <button id="submitGuideBtn">
+                                    <div id="btn-loader">
+                                        <div id="loader-inner"></div>
+                                    </div>
+                                </button>
                             </div>
                         </div>
                     </form>
