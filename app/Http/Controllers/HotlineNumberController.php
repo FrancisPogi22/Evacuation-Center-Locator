@@ -21,12 +21,12 @@ class HotlineNumberController extends Controller
     public function addHotlineNumber(Request $request)
     {
         $hotlineNumberValidation = Validator::make($request->all(), [
-            'logo' => 'nullable|image|mimes:jpeg,png,jpg',
+            'logo'   => 'nullable|image|mimes:jpeg,png,jpg',
             'label'  => 'required',
-            'number' => 'required'
+            'number' => 'required|numeric'
         ]);
 
-        if ($hotlineNumberValidation->fails()) return response(['status' => 'warning', 'message' =>  implode('<br>', $hotlineNumberValidation->errors()->all())]);
+        if ($hotlineNumberValidation->fails()) return response(['status' => 'warning', 'message' => implode('<br>', $hotlineNumberValidation->errors()->all())]);
 
         $hotlineLogo     = $request->file('logo');
         $hotlineLogoPath = $hotlineLogo;
@@ -38,7 +38,7 @@ class HotlineNumberController extends Controller
 
         $hotlineNumber = $this->hotlineNumbers->create([
             'logo'    => $hotlineLogoPath,
-            'label'   => Str::title(trim($request->label)),
+            'label'   => Str::upper(trim($request->label)),
             'number'  => trim($request->number),
             'user_id' => auth()->user()->id
         ]);
@@ -52,7 +52,7 @@ class HotlineNumberController extends Controller
     public function updateHotlineNumber(Request $request, $hotlineId)
     {
         $hotlineNumberValidation = Validator::make($request->all(), [
-            'logo' => 'nullable|image|mimes:jpeg,png,jpg',
+            'logo'   => 'nullable|image|mimes:jpeg,png,jpg',
             'label'  => 'required',
             'number' => 'required|numeric'
         ]);
@@ -62,7 +62,7 @@ class HotlineNumberController extends Controller
         $hotlineLogo       = $request->file('logo');
         $hotlineNumber     = $this->hotlineNumbers->find($hotlineId);
         $hotlineNumberData = [
-            'label'   => Str::title(trim($request->label)),
+            'label'   => Str::upper(trim($request->label)),
             'number'  => trim($request->number),
             'user_id' => auth()->user()->id
         ];

@@ -12,7 +12,6 @@ use App\Models\ActivityUserLog;
 use App\Models\EvacuationCenter;
 use Illuminate\Http\Request;
 use App\Exports\EvacueeDataExport;
-use Maatwebsite\Excel\Facades\Excel;
 use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Support\Facades\Validator;
 use Maatwebsite\Excel\Excel as FileFormat;
@@ -51,9 +50,14 @@ class MainController extends Controller
     {
         $generateReportValidation = Validator::make($request->all(), ['disaster_id' => 'required']);
 
-        if ($generateReportValidation->fails()) return back()->with('warning', "Disaster is not exist.");
+        if ($generateReportValidation->fails()) {
+            return response(['status' => 'warning', 'message' => 'Disaster is not exist.']);
+        }
 
-        return Excel::download(new EvacueeDataExport($request->disaster_id), 'evacuee-data.xlsx', FileFormat::XLSX);
+        return (new EvacueeDataExport($request->disaster_id))
+            ->download('evacuee-data.xlsx', FileFormat::XLSX, [
+                'Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+            ]);
     }
 
     public function eligtasGuideline()
