@@ -75,7 +75,13 @@
                         method: "PUT",
                         url: $('#changePasswordRoute').data('route'),
                         data: $(form).serialize(),
+                        beforeSend() {
+                            $('#btn-loader').addClass('show');
+                            resetPasswordBtn.prop('disabled', 1);
+                        },
                         success(response) {
+                            $('#btn-loader').removeClass('show');
+                            resetPasswordBtn.prop('disabled', 0);
                             return response.status == "warning" ? showWarningMessage(
                                     response.message) :
                                 (showSuccessMessage('Password successfully changed.'),
