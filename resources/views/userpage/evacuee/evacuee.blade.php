@@ -334,7 +334,7 @@
                     number: true
                 };
                 messages[fieldName] = {
-                    required: `Please enter ${fieldName}.`,
+                    required: `Please enter number of ${fieldName}.`,
                     number: `Please enter a valid number for ${fieldName}.`
                 };
             });
@@ -383,7 +383,7 @@
             $(document).on('click', '#recordEvacueeBtn', () => {
                 modalLabelContainer.removeClass('bg-warning');
                 modalLabel.text('Record Evacuee Information');
-                formButton.addClass('btn-submit').removeClass('btn-update').append('Record');
+                formButton.addClass('btn-submit').removeClass('btn-update').find('.btn-text').text('Record');
                 operation = "record";
                 modal.modal('show');
             });
@@ -391,7 +391,7 @@
             $(document).on('click', '#updateEvacueeBtn', function() {
                 modalLabelContainer.addClass('bg-warning');
                 modalLabel.text('Update Evacuee Information');
-                formButton.addClass('btn-update').removeClass('btn-submit').prop('Update');
+                formButton.addClass('btn-update').removeClass('btn-submit').find('.btn-text').text('Update');
                 modalDialog.addClass('modal-lg');
                 fieldContainer.add(submitButtonContainer).prop('hidden', 0);
                 hiddenFieldContainer.add(formButtonContainer).add(fieldContainerSearch).prop('hidden',

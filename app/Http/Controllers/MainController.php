@@ -38,7 +38,7 @@ class MainController extends Controller
         $onGoingDisasters = $disaster->where('status', "On Going");
         $activeEvacuation = $this->evacuationCenter->where('status', "Active")->count();
 
-        return view('userpage.dashboard', compact('activeEvacuation', 'totalEvacuee', 'onGoingDisasters', 'disaster', 'residentReport'));
+        return view('userpage.dashboard.dashboard', compact('activeEvacuation', 'totalEvacuee', 'onGoingDisasters', 'disaster', 'residentReport'));
     }
 
     public function searchDisaster($year)
@@ -129,7 +129,7 @@ class MainController extends Controller
 
     public function userActivityLog()
     {
-        if (!request()->ajax()) return view('userpage.activityLog');
+        if (!request()->ajax()) return view('userpage.userAccount.activityLog');
 
         $name = '';
 
@@ -231,6 +231,6 @@ class MainController extends Controller
     {
         $hotlineNumbers = HotlineNumbers::all();
 
-        return view('userpage.hotlineNumbers', compact('hotlineNumbers'));
+        return view('userpage.hotlineNumber.hotlineNumbers', compact('hotlineNumbers'));
     }
 }

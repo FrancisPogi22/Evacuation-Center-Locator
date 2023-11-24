@@ -192,7 +192,7 @@
             $(document).on('click', '#addEvacuationCenter', () => {
                 modalLabelContainer.removeClass('bg-warning');
                 modalLabel.text('Add Evacuation Center');
-                formButton.addClass('btn-submit').removeClass('btn-update').text('Add');
+                formButton.addClass('btn-submit').removeClass('btn-update').find('.btn-text').text('Add');
                 operation = "add";
                 modal.modal('show');
             });
@@ -209,7 +209,7 @@
                 evacuationCenterId = id;
                 modalLabelContainer.addClass('bg-warning');
                 modalLabel.text('Update Evacuation Center');
-                formButton.addClass('btn-update').removeClass('btn-submit').append('Update');
+                formButton.addClass('btn-update').removeClass('btn-submit').find('.btn-text').text('Update');
                 operation = "update";
                 $('#name').val(name);
                 $('#latitude').val(latitude);

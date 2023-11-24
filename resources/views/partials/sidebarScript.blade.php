@@ -10,11 +10,8 @@
             menuLink.addClass('active-link');
             const subMenu = menuLink.closest('.sub-menu');
 
-            if (subMenu.length) {
-                const subBtn = subMenu.prev('.sub-btn');
-                subBtn.find('.dropdown').addClass('rotate');
-                subMenu.addClass('active');
-            }
+            if (subMenu.length)
+                subMenu.addClass('active').prev('.sub-btn').find('.dropdown').addClass('rotate');
         }
 
         $(window).resize(() => {
@@ -24,9 +21,7 @@
         document.addEventListener('click', ({
             target
         }) => {
-            const element = target;
-
-            if (element.id == 'btn-sidebar-mobile' || element.id == 'btn-sidebar-close')
+            if (target.id == 'btn-sidebar-mobile' || target.id == 'btn-sidebar-close')
                 sidebar.classList.toggle('active');
         });
     });

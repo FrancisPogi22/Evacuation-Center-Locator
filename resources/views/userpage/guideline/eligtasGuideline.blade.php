@@ -187,8 +187,8 @@
                 operation = "create";
                 modalLabelContainer.removeClass('bg-warning');
                 modalLabel.text('Create Guideline');
-                formBtn.append('Create').add(addGuideInput).addClass('btn-submit').removeClass(
-                    'btn-update');
+                formBtn.add(addGuideInput).addClass('btn-submit').removeClass(
+                    'btn-update').find('.btn-text').text('Create');
                 changeImageColor();
                 modal.modal('show');
             });
@@ -202,8 +202,8 @@
 
                 modalLabelContainer.addClass('bg-warning');
                 modalLabel.text('Update Guideline');
-                formBtn.text('Update').add(addGuideInput).addClass('btn-update').removeClass(
-                    'btn-submit');
+                formBtn.add(addGuideInput).addClass('btn-update').removeClass('btn-submit').find(
+                    '.btn-text').text('Update');
                 $('#guidelineType').val(guidelineLabel);
                 guidelineImg.attr('src', guidelineWidget.querySelector('.guideline-content img')
                     .getAttribute('src'));

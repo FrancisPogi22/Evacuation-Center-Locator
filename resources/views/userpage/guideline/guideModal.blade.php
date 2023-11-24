@@ -41,6 +41,7 @@
                                     <div id="btn-loader">
                                         <div id="loader-inner"></div>
                                     </div>
+                                    <span class="btn-text"></span>
                                 </button>
                             </div>
                         </div>
