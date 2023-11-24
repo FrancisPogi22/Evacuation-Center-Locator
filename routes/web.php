@@ -15,7 +15,6 @@ use App\Http\Controllers\ResidentReportController;
 use App\Http\Controllers\EmergencyReportController;
 use App\Http\Controllers\EvacuationCenterController;
 
-
 Route::controller(AuthenticationController::class)->group(function () {
     Route::middleware('check.login')->group(function () {
         Route::view('/', 'authentication/authUser')->name('home');
@@ -163,10 +162,10 @@ Route::middleware('auth')->group(function () {
         Route::get('/fetchDisasterData', 'fetchDisasterData')->name('fetchDisasterData');
     });
 
-    Route::controller(HotlineNumberController::class)->group(function () {
-        Route::post('/addHotlineNumber', 'addHotlineNumber')->name('hotline.add');
-        Route::post('/updateHotlineNumber/{hotlineId}', 'updateHotlineNumber')->name('hotline.update');
-        Route::delete('/removeHotlineNumber/{hotlineId}', 'removeHotlineNumber')->name('hotline.remove');
+    Route::name('hotline.')->controller(HotlineNumberController::class)->group(function () {
+        Route::post('/addHotlineNumber', 'addHotlineNumber')->name('add');
+        Route::post('/updateHotlineNumber/{hotlineId}', 'updateHotlineNumber')->name('update');
+        Route::delete('/removeHotlineNumber/{hotlineId}', 'removeHotlineNumber')->name('remove');
     });
 
     Route::name('account.')->controller(UserAccountsController::class)->group(function () {
