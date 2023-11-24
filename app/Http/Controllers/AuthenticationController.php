@@ -101,6 +101,6 @@ class AuthenticationController extends Controller
 
         $this->logActivity->generateLog('Logged in account');
 
-        return redirect("/" . Str::of($userAuthenticated->organization)->lower() . "/dashboard")->with('success', "Welcome " . $userAuthenticated->name . ".");
+        return redirect("/" . Str::lower($userAuthenticated->organization) . "/dashboard")->with('success', "Welcome " . $userAuthenticated->name . ".");
     }
 }

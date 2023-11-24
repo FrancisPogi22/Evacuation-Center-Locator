@@ -147,6 +147,7 @@ class UserAccountsController extends Controller
 
             $this->user->find($userId)->update(['password' => Hash::make(trim($request->password))]);
             $this->logActivity->generateLog('changed a password(ID - ' . $userId . ')');
+            
             return response([]);
         }
 

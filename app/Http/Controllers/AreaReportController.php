@@ -126,6 +126,7 @@ class AreaReportController extends Controller
     public function updateAreaReport(Request $request, $reportId)
     {
         $areaReportValidation = Validator::make($request->all(), ['update' => 'required']);
+        
         if ($areaReportValidation->fails()) return response(['status' => 'warning', 'message' =>  $areaReportValidation->errors()->first()]);
 
         $this->reportUpdate->addUpdate($reportId, $request->update);

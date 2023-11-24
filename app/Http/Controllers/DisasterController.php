@@ -51,11 +51,12 @@ class DisasterController extends Controller
 
     public function createDisasterData(Request $request)
     {
-        $validatedDisasterValidation = Validator::make($request->all(), ['name' => 'required']);
+        $validatedDisasterValidation = Validator::make($request->all(), ['name' => 'required|alpha']);
+
         if ($validatedDisasterValidation->fails()) return response(['status' => 'warning', 'message' => $validatedDisasterValidation->errors()->first()]);
 
         $disasterData = $this->disaster->create([
-            'name'    => "Typhoon " . Str::title(trim($request->name)),
+            'name'    => Str::title(trim($request->name)),
             'year'    => date('Y'),
             'user_id' => auth()->user()->id
         ]);
@@ -66,7 +67,8 @@ class DisasterController extends Controller
 
     public function updateDisasterData(Request $request, $disasterId)
     {
-        $validatedDisasterValidation = Validator::make($request->all(), ['name' => 'required']);
+        $validatedDisasterValidation = Validator::make($request->all(), ['name' => 'required|alpha']);
+        
         if ($validatedDisasterValidation->fails()) return response(['status' => 'warning', 'message' => $validatedDisasterValidation->errors()->first()]);
 
         $this->disaster->find($disasterId)->update([
@@ -87,7 +89,7 @@ class DisasterController extends Controller
             'is_archive' => $archiveValue
         ]);
         $this->evacuee->where('disaster_id', $disasterId)->update(['is_archive' => $archiveValue]);
-        $this->logActivity->generateLog(ucfirst($operation) . 'd disaster(ID - ' . $disasterId . ')');
+        $this->logActivity->generateLog(Str::title($operation) . 'd disaster(ID - ' . $disasterId . ')');
 
         return response([]);
     }
