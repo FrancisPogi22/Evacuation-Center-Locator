@@ -7,12 +7,10 @@ use Throwable;
 
 class Handler extends ExceptionHandler
 {
-    
     protected $levels = [
         //
     ];
 
-  
     protected $dontReport = [
         //
     ];
@@ -26,7 +24,6 @@ class Handler extends ExceptionHandler
     public function register(): void
     {
         $this->reportable(function (Throwable $e) {
-            //
         });
     }
 }
