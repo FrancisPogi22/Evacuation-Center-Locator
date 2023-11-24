@@ -37,7 +37,7 @@
                                 </div>
                             </div>
                             <div class="form-button-container">
-                                <button id="submitGuideBtn">
+                                <button id="submitGuideBtn" class="modalBtn">
                                     <div id="btn-loader">
                                         <div id="loader-inner"></div>
                                     </div>

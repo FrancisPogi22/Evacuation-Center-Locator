@@ -100,7 +100,8 @@
                                     <span id="image-error" class="error" hidden>Please select an image file.</span>
                                 </div>
                                 <center>
-                                    <button id="submitAreaBtn"><i class="bi bi-send"></i>
+                                    <button id="submitAreaBtn" class="modalBtn">
+                                        <i class="bi bi-send"></i>
                                         <div id="btn-loader">
                                             <div id="loader-inner"></div>
                                         </div>Submit
