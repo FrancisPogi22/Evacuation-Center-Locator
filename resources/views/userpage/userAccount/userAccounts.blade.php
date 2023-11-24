@@ -233,7 +233,7 @@
             $('#createUserAccount').click(() => {
                 modalLabelContainer.removeClass('bg-warning');
                 modalLabel.text('Create User Account');
-                formButton.addClass('btn-submit').removeClass('btn-update').text('Create');
+                formButton.addClass('btn-submit').removeClass('btn-update').find('.btn-text').text('Create');
                 operation = "create";
                 modal.modal('show');
             });
@@ -253,7 +253,7 @@
             function changeModalProperties(headerText, buttonText) {
                 modalLabelContainer.removeClass('bg-success').addClass('bg-warning');
                 modalLabel.text(headerText);
-                formButton.removeClass('btn-submit').addClass('btn-update').append(buttonText);
+                formButton.removeClass('btn-submit').addClass('btn-update').find('.btn-text').text(buttonText);
             }
 
             function initPositionOption(organization) {

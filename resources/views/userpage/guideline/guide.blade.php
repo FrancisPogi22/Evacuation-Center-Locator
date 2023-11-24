@@ -224,7 +224,7 @@
                 guideId = $(this).data('guide');
                 modalLabelContainer.addClass('bg-warning');
                 modalLabel.text('Update Guide');
-                formButton.addClass('btn-update').removeClass('btn-submit').append('Update');
+                formButton.addClass('btn-update').removeClass('btn-submit').find('.btn-text').text('Update');
                 $('#image_preview_container').attr('src', guideWidgetItem.find('img').attr('src'));
                 guideLabel = guideWidgetItem.find('h1').text();
                 guideContent = guideWidgetItem.find('p').text();
