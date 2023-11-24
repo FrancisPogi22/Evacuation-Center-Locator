@@ -50,7 +50,7 @@
                             <span id="location-error" class="error" hidden></span>
                         </div>
                         <div class="form-button-container">
-                            <button id="createEvacuationCenterBtn">
+                            <button id="createEvacuationCenterBtn" class="modalBtn">
                                 <div id="btn-loader">
                                     <div id="loader-inner"></div>
                                 </div>

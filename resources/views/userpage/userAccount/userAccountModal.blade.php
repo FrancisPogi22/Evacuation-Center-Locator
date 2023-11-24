@@ -40,7 +40,7 @@
                                 placeholder="Enter Email Address">
                         </div>
                         <div class="form-button-container">
-                            <button id="saveProfileDetails">
+                            <button id="saveProfileDetails" class="modalBtn">
                                 <div id="btn-loader">
                                     <div id="loader-inner"></div>
                                 </div>
