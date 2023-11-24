@@ -91,7 +91,7 @@ class EvacuationCenterSeeder extends Seeder
 
         EvacuationCenter::insert([
             'user_id' => 2,
-            'name' => 'Gulod Elementary Schooll',
+            'name' => 'Gulod Elementary School',
             'barangay_name' => 'Gulod',
             'latitude' => '14.2556',
             'longitude' => '121.1618',
