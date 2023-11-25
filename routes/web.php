@@ -40,7 +40,7 @@ Route::prefix('resident')->middleware('guest')->group(function () {
             Route::get('/guide/{guidelineId}', 'guide')->name('eligtas.guide');
             Route::get('/evacuationCenterLocator', 'evacuationCenterLocator')->name('evacuation.center.locator');
             Route::get('/incidentReporting', 'incidentReporting')->name('reporting');
-            Route::get('/hotlineNumber', 'hotlineNumbers')->name('hotline.number');
+            Route::get('/hotlineNumber/{operation}', 'hotlineNumbers')->name('hotline.number');
         });
 
         Route::name('area.')->controller(AreaReportController::class)->group(function () {
@@ -160,7 +160,7 @@ Route::middleware('auth')->group(function () {
         Route::post('/generateEvacueeData', 'generateExcelEvacueeData')->name('generate.evacuee.data');
         Route::get('/userAccounts/{operation}', 'userAccounts')->name('display.users.account');
         Route::get('/userProfile', 'userProfile')->name('display.profile');
-        Route::get('/hotlineNumber', 'hotlineNumbers')->name('hotline.number');
+        Route::get('/hotlineNumber/{operation}', 'hotlineNumbers')->name('hotline.number');
         Route::get('/fetchBarangayData', 'fetchBarangayData')->name('fetchBarangayData');
         Route::get('/fetchDisasterData', 'fetchDisasterData')->name('fetchDisasterData');
     });
