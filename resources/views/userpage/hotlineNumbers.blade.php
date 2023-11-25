@@ -20,7 +20,7 @@
             </div>
             <hr>
             <section class="hotline-content">
-                @if (auth()->user()->organization == 'CDRRMO')
+                @if ($operation == 'manage')
                     <div class="page-button-container">
                         <button class="btn-submit" id="addNumberBtnModal">
                             <i class="bi bi-telephone-plus"></i>Add Hotline Number
@@ -28,10 +28,10 @@
                     </div>
                 @endif
                 <div class="number-section">
-                    @if (auth()->user()->organization == 'CDRRMO')
+                    @if ($operation == 'manage')
                         <form id="hotlineForm" hidden>
                             @csrf
-                            <div class="hotline-container">
+                            <div class="hotline-form-container">
                                 <div class="hotline-logo-container">
                                     <div class="hotline-image-container">
                                         <img src="{{ asset('assets/img/Select-Image.svg') }}" alt="logo"
@@ -67,33 +67,38 @@
                     @endif
                     @forelse ($hotlineNumbers as $hotlineNumber)
                         <div class="hotline-container">
-                            <div class="hotline-logo-container-list">
-                                <div class="hotline-image-container-list">
-                                    <img src="{{ $hotlineNumber->logo ? '/hotline_logo/' . $hotlineNumber->logo : asset('assets/img/Empty-Data.svg') }}"
-                                        class="hotline-preview-image-list" alt="logo">
+                            @if ($operation == 'manage')
+                                <div class="id-container">
+                                    <b>(ID - {{ $hotlineNumber->id }})</b>
                                 </div>
-                            </div>
-                            <div class="hotline-details-container">
-                                <div class="hotline-data-container">
-                                    <b>{{ $hotlineNumber->label }}</b>
+                            @endif
+                            <div class="hotline-data-parent-container">
+                                <div class="hotline-logo-container-list">
+                                    <div class="hotline-image-container-list">
+                                        <img src="{{ $hotlineNumber->logo ? '/hotline_logo/' . $hotlineNumber->logo : asset('assets/img/Empty-Data.svg') }}"
+                                            class="hotline-preview-image-list" alt="logo">
+                                    </div>
                                 </div>
-                                <hr>
-                                <div class="hotline-data-container last-data">
-                                    {{ $hotlineNumber->number }}
-                                </div>
-                                <div class="hotline-form-button-container-list">
-                                    @if (auth()->user()->organization == 'CDRRMO')
-                                        <button class="btn-update updateNumber" data-id="{{ $hotlineNumber->id }}">
-                                            <i class="bi bi-pencil-square"></i>Update</button>
-                                        <button class="btn-remove removeNumber" data-id="{{ $hotlineNumber->id }}">
-                                            <i class="bi bi-trash3"></i>Remove</button>
-                                    @endif
-                                    @guest
+                                <div class="hotline-details-container">
+                                    <div class="hotline-data-container">
+                                        <b>{{ $hotlineNumber->label }}</b>
+                                    </div>
+                                    <hr>
+                                    <div class="hotline-data-container last-data">
+                                        {{ $hotlineNumber->number }}
+                                    </div>
+                                    <div class="hotline-form-button-container-list">
                                         <a href="tel:+{{ preg_replace('/\D/', '', $hotlineNumber->number) }}"
                                             class="btn-submit">
-                                            <i class="bi bi-telephone-outbound"></i>Call Number
+                                            <i class="bi bi-telephone-outbound"></i>Call
                                         </a>
-                                    @endguest
+                                        @if ($operation == 'manage')
+                                            <button class="btn-update updateNumber" data-id="{{ $hotlineNumber->id }}">
+                                                <i class="bi bi-pencil-square"></i>Update</button>
+                                            <button class="btn-remove removeNumber" data-id="{{ $hotlineNumber->id }}">
+                                                <i class="bi bi-trash3"></i>Remove</button>
+                                        @endif
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -118,7 +123,7 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/jquery.validate.min.js"
             integrity="sha512-rstIgDs0xPgmG6RX1Aba4KV5cWJbAMcvRCVmglpam9SoHZiUCyQVDdH2LPlxoHtrv17XWblE/V/PP+Tr04hbtA=="
             crossorigin="anonymous"></script>
-        @if (auth()->user()->organization == 'CDRRMO')
+        @if ($operation == 'manage')
             <script>
                 $(document).ready(() => {
                     let operation, hotlineLabel, hotlineNumber, hotlineId, validator,
@@ -172,8 +177,8 @@
                                             let {
                                                 label,
                                                 number,
-                                                hotlineLogo,
-                                                hotlineId
+                                                hotlineId,
+                                                hotlineLogo
                                             } = response;
 
                                             if (operation == "update") {
@@ -188,32 +193,37 @@
                                             } else {
                                                 $('.number-section').append(`
                                                     <div class="hotline-container">
-                                                        <div class="hotline-logo-container-list">
-                                                            <div class="hotline-image-container-list">
-                                                                <img src="/${hotlineLogo ? `hotline_logo/${hotlineLogo}` : 'assets/img/Empty-Data.svg'}"
-                                                                    class="hotline-preview-image-list" alt="logo">
+                                                        @if ($operation == 'manage')
+                                                            <div class="id-container">
+                                                                <b>(ID - ${hotlineId} )</b>
                                                             </div>
-                                                        </div>
-                                                        <div class="hotline-details-container">
-                                                            <div class="hotline-data-container">
-                                                                <b>${label}</b>
+                                                        @endif
+                                                        <div class="hotline-data-parent-container">
+                                                            <div class="hotline-logo-container-list">
+                                                                <div class="hotline-image-container-list">
+                                                                    <img src="/${hotlineLogo ? `hotline_logo/${hotlineLogo}` : 'assets/img/Empty-Data.svg'}"
+                                                                        class="hotline-preview-image-list" alt="logo">
+                                                                </div>
                                                             </div>
-                                                            <hr>
-                                                            <div class="hotline-data-container last-data">
-                                                                ${number}
-                                                            </div>
-                                                            <div class="hotline-form-button-container-list">
-                                                                @if (auth()->user()->organization == 'CDRRMO')
-                                                                    <button class="btn-update updateNumber" data-id="${hotlineId}">
-                                                                        <i class="bi bi-pencil-square"></i>Update</button>
-                                                                    <button class="btn-remove removeNumber" data-id="${hotlineId}">
-                                                                        <i class="bi bi-trash3"></i>Remove</button>
-                                                                @endif
-                                                                @guest
+                                                            <div class="hotline-details-container">
+                                                                <div class="hotline-data-container">
+                                                                    <b>${label}</b>
+                                                                </div>
+                                                                <hr>
+                                                                <div class="hotline-data-container last-data">
+                                                                    ${number}
+                                                                </div>
+                                                                <div class="hotline-form-button-container-list">
                                                                     <a href="tel:+${number.replace(/\D/g, '')}" class="btn-submit">
-                                                                        <i class="bi bi-telephone-outbound"></i>Call Number
+                                                                        <i class="bi bi-telephone-outbound"></i>Call
                                                                     </a>
-                                                                @endguest
+                                                                    @if ($operation == 'manage')
+                                                                        <button class="btn-update updateNumber" data-id="${hotlineId}">
+                                                                            <i class="bi bi-pencil-square"></i>Update</button>
+                                                                        <button class="btn-remove removeNumber" data-id="${hotlineId}">
+                                                                            <i class="bi bi-trash3"></i>Remove</button>
+                                                                    @endif
+                                                                </div>
                                                             </div>
                                                         </div>
                                                     </div>`);
@@ -225,6 +235,8 @@
                                             );
                                             resetHotlineForm();
                                             hotlineItem = "";
+                                            operation = "";
+                                            $('.btn-remove.removeNumber').prop('hidden', 0);
                                         },
                                         error: showErrorMessage
                                     });
@@ -246,6 +258,7 @@
                             hotlineForm.prop('hidden', 0);
                             formBtn.removeClass('bg-warning').text('Add');
                             scrollToElement('#hotlineForm');
+                            $('.btn-remove.removeNumber').prop('hidden', 0);
                         }
                     });
 
@@ -265,14 +278,15 @@
                         operation = "update";
                         hotlineLogoChanged = false;
                         scrollToElement('#hotlineForm');
+                        $('.btn-remove.removeNumber').prop('hidden', 1);
                     });
 
                     $(document).on('click', '.removeNumber', function() {
-                        hotlineItem = $(this).closest('.hotline-container');
-                        hotlineId = $(this).data('id');
-
                         confirmModal(`Do you want to remove this hotline number?`).then((result) => {
                             if (!result.isConfirmed) return;
+
+                            hotlineItem = $(this).closest('.hotline-container');
+                            hotlineId = $(this).data('id');
 
                             $.ajax({
                                 url: "{{ route('hotline.remove', 'hotlineId') }}".replace(
@@ -284,7 +298,7 @@
                                             `Hotline number successfully removed.`),
                                         hotlineItem = "");
 
-                                    if ($('.hotline-container').length == 1)
+                                    if ($('.hotline-container').length == 0)
                                         $('.number-section').append(`<div class="empty-data-container">
                                             <img src="{{ asset('assets/img/Empty-Hotline.svg') }}" alt="Picture">
                                             <p>No hotline numbers added yet.</p>
@@ -304,7 +318,7 @@
                                     $(this).val('');
                                     previewLogo.attr('src', hotlineLogoChanged && operation == 'update' ?
                                         hotlineItem.find('.hotline-preview-image-list').attr('src') :
-                                        'assets/img/Select-Image.svg');
+                                        '/assets/img/Select-Image.svg');
                                     if (hotlineLogoChanged) hotlineLogoChanged = false;
                                 }
                                 logoError.text('Please select an image file.')
@@ -331,12 +345,13 @@
                         resetHotlineForm();
                         hotlineItem = "";
                         operation = "";
+                        $('.btn-remove.removeNumber').prop('hidden', 0);
                     });
 
                     function resetHotlineForm() {
                         hotlineForm[0].reset();
                         hotlineLogoChanged = false;
-                        previewLogo.attr('src', 'assets/img/Select-Image.svg');
+                        previewLogo.attr('src', '/assets/img/Select-Image.svg');
                         changeButton(true);
                     }
 
@@ -346,7 +361,7 @@
                     }
 
                     function changeButton(primary = false) {
-                        changeLogoBtn.html(`<i class="bi bi-image"></i> ${primary ? 'Select' : 'Change'} Logo`);
+                        changeLogoBtn.html(`<i class="bi bi-image"></i>${primary ? 'Select' : 'Change'} Logo`);
                         setInfoWindowButtonStyles(changeLogoBtn, `var(--color-${primary ? 'primary' : 'yellow'}`);
                     }
                 });
@@ -356,3 +371,4 @@
 </body>
 
 </html>
+

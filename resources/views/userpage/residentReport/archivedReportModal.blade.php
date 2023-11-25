@@ -20,8 +20,7 @@
                             <input type="file" class="form-control" id="areaInputImage" name="image"
                                 accept=".jpeg, .jpg, .png" hidden>
                             <button class="btn btn-sm btn-primary" id="imageBtn">
-                                <i class="bi bi-image"></i>
-                                Select
+                                <i class="bi bi-image"></i>Select
                             </button>
                             <img id="selectedReportImage" src="" class="form-control" hidden>
                             <span id="image-error" class="error" hidden>Please select an image file.</span>

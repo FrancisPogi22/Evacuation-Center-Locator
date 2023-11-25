@@ -69,7 +69,8 @@
                     <table class="table" id="evacueeTable" width="100%">
                         <thead class="table-border">
                             <tr class="table-row">
-                                <th colspan="2">
+                                <th>ID</th>
+                                <th>
                                     <input type="checkbox" id="selectAllCheckBox">
                                 </th>
                                 <th colspan="2">Family Head</th>
@@ -215,8 +216,7 @@
                 ajax: url,
                 columns: [{
                         data: 'id',
-                        name: 'id',
-                        visible: false
+                        name: 'id'
                     },
                     {
                         data: 'select',

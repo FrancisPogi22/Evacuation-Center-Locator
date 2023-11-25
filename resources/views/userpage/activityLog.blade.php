@@ -59,6 +59,12 @@
     @include('partials.toastr')
     <script>
         $(document).ready(() => {
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+
             let userId, defaultFormData,
                 modal = $('#userAccountModal'),
                 activityLogTable = $('#activityTable').DataTable({
@@ -99,12 +105,6 @@
                     ]
                 });
 
-            $.ajaxSetup({
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                }
-            });
-
             $(document).on('click', '#disableBtn', function() {
                 confirmModal("Do you want to disable this user?")
                     .then((result) => {
@@ -112,7 +112,7 @@
 
                         $.ajax({
                             method: "PATCH",
-                            url: "{{ route('account.disable', 'userId') }}".replace('userId',
+                            url: "{{ route('account.toggle.status', ['userId', 'inactive']) }}".replace('userId',
                                 getRowData(this, activityLogTable).user_id),
                             success(response) {
                                 response.status == 'warning' ?

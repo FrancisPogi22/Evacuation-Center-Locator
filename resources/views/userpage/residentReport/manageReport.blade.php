@@ -75,7 +75,8 @@
                         <table class="table" id="reportTable" width="100%">
                             <thead>
                                 <tr>
-                                    <th colspan="2">Details</th>
+                                    <th>ID</th>
+                                    <th>Details</th>
                                     <th>Type</th>
                                     <th>Date</th>
                                     <th>Photo</th>
@@ -208,16 +209,16 @@
                                                     <p>${report.id}</p>
                                                 </div>
                                                 ${isPending ? `${approveBtn}
-                                                    <button class="btn btn-sm btn-danger removeBtn" aria-report-type="${ariaType}">
-                                                        <i class="bi bi-x-circle"></i> Remove
-                                                    </button>` :
+                                                <button class="btn btn-sm btn-danger removeBtn" aria-report-type="${ariaType}">
+                                                    <i class="bi bi-x-circle"></i> Remove
+                                                </button>` :
                                                 `${condition != 2 ? (status == "Resolved" || status == "Rescued") ?
-                                                    "" : approveBtn :
-                                                    `<button class="btn btn-sm btn-primary updateBtn">
+                                                "" : approveBtn :
+                                                `<button class="btn btn-sm btn-primary updateBtn">
                                                     <i class="bi bi-chat-square-text"></i> Update
                                                 </button>`}
-                                                    ${(status == "Approved" || status == "Resolved" || status == "Rescued") ?
-                                                    `<button class="btn btn-sm btn-danger
+                                                ${(status == "Approved" || status == "Resolved" || status == "Rescued") ?
+                                                `<button class="btn btn-sm btn-danger
                                                     archive${condition == 1 && status == "Rescued" ? "Emergency" : ""}Btn"
                                                     aria-report-type="${ariaType}">
                                                     <i class="bi bi-box-arrow-in-down-right"></i> Archive
@@ -261,14 +262,14 @@
                                                             pastDate = currentDate;
 
                                                             return `${dateOutput}
-                                                                    <p class="update-details-container">
-                                                                        <small>
-                                                                            as of ${formatDateTime(update.update_time, 'time')}
-                                                                        </small><br>
-                                                                        <span class="update-details">
-                                                                            ${update.update_details}
-                                                                        </span>
-                                                                    </p>`;
+                                                                <p class="update-details-container">
+                                                                    <small>
+                                                                        as of ${formatDateTime(update.update_time, 'time')}
+                                                                    </small><br>
+                                                                    <span class="update-details">
+                                                                        ${update.update_details}
+                                                                    </span>
+                                                                </p>`;
                                                         }).join('')
                                                     }
                                                 </div>
@@ -281,13 +282,16 @@
                                                     <textarea type="text" name="update" class="form-control" cols="50" rows="10"></textarea>
                                                 </div>
                                                 <center>
-                                                    <button class="sendUpdateBtn"><i class="bi bi-send"></i> Submit</button>
+                                                    <button class="sendUpdateBtn"><i class="bi bi-send"></i>Submit</button>
                                                 </center>
                                             </form>` : '';
 
                                     const infoWindow = new google.maps.InfoWindow({
                                         content: `
                                         <div class="reportContainer">
+                                            <div class="info-description">
+                                            <span>(ID - ${report.id}) </span>
+                                            </div>
                                             <div class="info-description">
                                             <span>Report Date:</span>
                                                 ${formatDateTime(report.report_time)}
@@ -315,15 +319,15 @@
                                             </div>
                                             ${report.photo ?
                                                 `<div class="info-description photo">
-                                                        <span>Image: </span>
-                                                        <div class="${type}" hidden>
-                                                            ${report.latitude}, ${report.longitude}
-                                                        </div>
-                                                        <button class="btn btn-sm btn-primary toggleImageBtn">
-                                                            <i class="bi bi-chevron-expand"></i> View
-                                                        </button>
-                                                        <img src="/reports_image/${report.photo}" class="form-control" hidden>
-                                                    </div>` : ""}
+                                                    <span>Image: </span>
+                                                    <div class="${type}" hidden>
+                                                        ${report.latitude}, ${report.longitude}
+                                                    </div>
+                                                    <button class="btn btn-sm btn-primary toggleImageBtn">
+                                                        <i class="bi bi-chevron-expand"></i>View
+                                                    </button>
+                                                    <img src="/reports_image/${report.photo}" class="form-control" hidden>
+                                                </div>` : ""}
                                             ${updateSection}
                                             ${action}
                                         </div>
@@ -360,9 +364,8 @@
                                     $(`#${key.toLowerCase()}-count`).text(
                                         `${key.toUpperCase()} - ${counts[key]}`);
                                     element.prop('hidden', 0);
-                                } else {
+                                } else
                                     element.prop('hidden', 1);
-                                }
                             }
 
                             resolve();
@@ -446,7 +449,7 @@
                     updateForm.prop('hidden', !isPrimary);
                     updateForm.find('textarea').val('');
                     $(this).html(
-                        `<i class="bi bi-${isPrimary ? 'x-circle' : 'chat-square-text'}"></i> ${isPrimary ? 'Cancel' : 'Update'}`
+                        `<i class="bi bi-${isPrimary ? 'x-circle' : 'chat-square-text'}"></i>${isPrimary ? 'Cancel' : 'Update'}`
                     );
                     setInfoWindowButtonStyles($(this), isPrimary ? 'var(--color-yellow' :
                         'var(--color-primary');
@@ -591,7 +594,7 @@
                     $('#archivedReportForm')[0].reset();
                     $('#selectedReportImage').attr('src', '').prop('hidden', 1);
                     $('#image-error').text('').prop('hidden', 1);
-                    $('#imageBtn').html('<i class="bi bi-image"></i> Select');
+                    $('#imageBtn').html('<i class="bi bi-image"></i>Select');
                     setInfoWindowButtonStyles($('#imageBtn'), 'var(--color-primary');
                     archiveFormValidator && archiveFormValidator.resetForm();
                 });
@@ -624,7 +627,7 @@
                     columns: [{
                             data: 'id',
                             name: 'id',
-                            visible: false
+                            width: '10%'
                         }, {
                             data: 'details',
                             name: 'details'

@@ -38,7 +38,8 @@
                     <table class="table" id="accountTable" width="100%">
                         <thead>
                             <tr>
-                                <th colspan="2">Name</th>
+                                <th>ID</th>
+                                <th>Name</th>
                                 <th>Email Address</th>
                                 <th>Organization</th>
                                 <th>Position</th>
@@ -77,8 +78,7 @@
                 ajax: "{{ route('account.display.users', $operation) }}",
                 columns: [{
                         data: 'id',
-                        name: 'id',
-                        visible: false
+                        name: 'id'
                     },
                     {
                         data: 'name',

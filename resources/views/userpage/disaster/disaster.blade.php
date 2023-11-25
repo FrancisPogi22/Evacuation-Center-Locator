@@ -36,7 +36,8 @@
                     <table class="table" id="disasterTable" width="100%">
                         <thead>
                             <tr>
-                                <th colspan="2">Disaster Name</th>
+                                <th>ID</th>
+                                <th>Disaster Name</th>
                                 <th>Year</th>
                                 <th>Status</th>
                                 <th>Action</th>
@@ -72,7 +73,6 @@
                 columns: [{
                         data: 'id',
                         name: 'id',
-                        visible: false
                     },
                     {
                         data: 'name',

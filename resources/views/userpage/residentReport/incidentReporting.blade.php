@@ -50,6 +50,12 @@
         let map, reportMarker, reportWindow, btnContainer = $('.page-button-container');
 
         function initMap(userLocation, zoom) {
+            if (map) {
+                map = null;
+                reportMarker = null;
+                reportWindow = null;
+            }
+
             map = new google.maps.Map(document.getElementById("map"), {
                 center: {
                     lat: userLocation ? userLocation.lat : 14.246261,
@@ -90,15 +96,14 @@
                                     <input type="file" name="image" class="form-control" id="areaInputImage" accept=".jpeg, .jpg, .png" hidden>
                                     <div class="info-window-action-container report-area">
                                         <button class="btn btn-sm btn-primary" id="imageBtn">
-                                            <i class="bi bi-image"></i>
-                                            Select
+                                            <i class="bi bi-image"></i>Select
                                         </button>
                                     </div>
                                     <img id="selectedReportImage" src="" class="form-control" hidden>
                                     <span id="image-error" class="error" hidden>Please select an image file.</span>
                                 </div>
                                 <center>
-                                    <button id="submitAreaBtn"><i class="bi bi-send"></i> Submit</button>
+                                    <button id="submitAreaBtn"><i class="bi bi-send"></i>Submit</button>
                                 <center>
                             </div>
                         </form>`
@@ -111,6 +116,10 @@
                         icon: {
                             url: "{{ asset('assets/img/Reporting.png') }}",
                             scaledSize: new google.maps.Size(35, 35)
+                        },
+                        label: {
+                            text: 'Report Location',
+                            className: 'report-marker-label'
                         }
                     });
 
@@ -140,13 +149,20 @@
         }
 
         function getCurrentPosition() {
+            if (!navigator.geolocation) {
+                executeInitMap();
+                showInfoMessage('Geolocation is not supported by this browser.');
+                return;
+            }
+
             let currentWatchID;
 
             currentWatchID = navigator.geolocation.watchPosition(
                 (position) => {
                     if (position.coords.accuracy <= 500) {
+                        console.log('succ')
+                        status = true;
                         navigator.geolocation.clearWatch(currentWatchID);
-                        currentWatchID = null;
 
                         const coords = {
                             lat: position.coords.latitude,
@@ -170,6 +186,17 @@
                         });
 
                         btnContainer.prop('hidden', 1);
+                    } else {
+                        setTimeout(() => {
+                            if (map == null) {
+                                navigator.geolocation.clearWatch(currentWatchID);
+                                btnContainer.prop('hidden', 0);
+                                showWarningMessage('Cannot get your current location.');
+                                $('#retryGeolocation').prop('disabled', 0);
+                                executeInitMap();
+                                console.log('err')
+                            }
+                        }, 5000);
                     }
                 },
                 (error) => {
@@ -181,16 +208,15 @@
                             break;
                         case error.TIMEOUT:
                         case error.POSITION_UNAVAILABLE:
-                        case error.POSITION_OUT_OF_BOUNDS:
                             btnContainer.prop('hidden', 0);
                             message = 'Cannot get your current location.';
                             break;
                     }
                     showWarningMessage(message);
                     navigator.geolocation.clearWatch(currentWatchID);
-                    currentWatchID = null;
                     $('#retryGeolocation').prop('disabled', 0);
                     executeInitMap();
+                    console.log('red err')
                 }, {
                     enableHighAccuracy: true,
                     timeout: 5000,
@@ -259,6 +285,7 @@
 
             $(document).on('click', '#retryGeolocation', () => {
                 $(this).prop('disabled', 1);
+                $('#loader').addClass('show');
                 getCurrentPosition();
             });
         });

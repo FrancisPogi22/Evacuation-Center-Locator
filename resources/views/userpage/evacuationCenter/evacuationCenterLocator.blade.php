@@ -78,7 +78,7 @@
                     </div>
                 </div>
                 <div class="locator-button-container">
-                    <button type="button" id="locateNearestBtn" disabled>
+                    <button type="button" id="locateNearestBtn" {{ $onGoingDisasters->isEmpty() ? 'hidden' : '' }} disabled>
                         <i class="bi bi-search"></i>Locate Nearest Active Evacuation</button>
                     <button type="button" id="pinpointCurrentLocationBtn">
                         <i class="bi bi-geo"></i>Pinpoint Current Location</button>
@@ -126,6 +126,8 @@
             prevNearestEvacuationCenter, evacuationCenterTable, findNearestActive, reportMarker, reportWindow,
             watchId = null,
             locating = false,
+            pinClicked = false,
+            routeDisplayed = false,
             geolocationBlocked = false,
             reportButtonClicked = false,
             hasActiveEvacuationCenter = false,
@@ -141,27 +143,34 @@
                 flooded: $('.marker-count.flooded'),
                 roadblocked: $('.marker-count.roadblocked')
             },
-            options = {
+            options = (timeout = Infinity) => ({
                 enableHighAccuracy: true,
+                timeout: timeout,
                 maximumAge: 0
-            },
-            errorCallback = () => {
-                let message;
+            }),
+            errorCallback = (navigatorId, error) => {
                 switch (error.code) {
                     case error.PERMISSION_DENIED:
-                        message =
-                            'Request for geolocation denied. To use this feature, please allow the browser to locate you.';
+                        showWarningMessage(
+                            'Request for geolocation denied. To use this feature, please allow the browser to locate you.'
+                        );
+                        $('#locateNearestBtn').removeAttr('disabled');
+                        locating = false;
+                        geolocationBlocked = true;
                         break;
                     case error.TIMEOUT:
                     case error.POSITION_UNAVAILABLE:
-                    case error.POSITION_OUT_OF_BOUNDS:
-                        message = 'Cannot get your current location.';
+                        if (!routeDisplayed) {
+                            locating = false;
+                            showWarningMessage('Cannot get your current location.');
+                        }
                         break;
                 }
-                showWarningMessage(message);
-                $('#locateNearestBtn').removeAttr('disabled');
-                locating = false;
-                geolocationBlocked = true;
+
+                pinClicked = false;
+                $('#loader').removeClass('show');
+                $('#reportAreaBtn').prop('hidden', 0);
+                if (navigatorId || (!navigatorId && routeDisplayed)) navigator.geolocation.clearWatch(navigatorId);
             };
 
         function initMap() {
@@ -264,7 +273,7 @@
                                 ${data.latitude}, ${data.longitude}
                             </div>
                             <button class="btn btn-sm btn-primary toggleImageBtn">
-                                <i class="bi bi-chevron-expand"></i> View
+                                <i class="bi bi-chevron-expand"></i>View
                             </button>
                             <img src="/reports_image/${data.photo}" class="form-control" hidden>
                         </div>
@@ -277,15 +286,14 @@
                                 ${
                                     data.update.length > 0 ?
                                         data.update.map((update) => {
-                                            return `
-                                                <p class="update-details-container">
-                                                    <small>
-                                                        as of ${formatDateTime(update.update_time, 'time')}
-                                                    </small><br>
-                                                    <span class="update-details">
-                                                        ${update.update_details}
-                                                    </span>
-                                                </p>`
+                                            return `<p class="update-details-container">
+                                                <small>
+                                                    as of ${formatDateTime(update.update_time, 'time')}
+                                                </small><br>
+                                                <span class="update-details">
+                                                    ${update.update_details}
+                                                </span>
+                                            </p>`
                                         }).join('') : ''
                                 }
                             </div>
@@ -390,8 +398,6 @@
         }
 
         function getUserLocation() {
-            let currentWatchID;
-
             return new Promise((resolve, reject) => {
                 if (!navigator.geolocation) {
                     showInfoMessage('Geolocation is not supported by this browser.');
@@ -399,16 +405,24 @@
                     return;
                 }
 
-                currentWatchID = navigator.geolocation.watchPosition((position) => {
-                    console.log(position.coords.accuracy);
+                let currentWatchID;
 
+                currentWatchID = navigator.geolocation.watchPosition((position) => {
                     if (position.coords.accuracy <= 500) {
                         navigator.geolocation.clearWatch(currentWatchID);
-                        currentWatchID = null;
                         geolocationBlocked = false;
                         resolve(position);
+                    } else {
+                        setTimeout(() => {
+                            pinClicked = false;
+                            $('#loader').removeClass('show');
+                            $('#reportAreaBtn').prop('hidden', 0);
+                            navigator.geolocation.clearWatch(currentWatchID);
+                            showWarningMessage('Cannot get your current location.');
+                            resolve(-1);
+                        }, 5000);
                     }
-                }, errorCallback, options);
+                }, (error) => (errorCallback(currentWatchID, error), resolve(-1)), options(5000));
             });
         }
 
@@ -424,6 +438,7 @@
         }
 
         async function getEvacuationCentersDistance() {
+            console.log('execute')
             $('#locateNearestBtn').attr('disabled', 1);
             evacuationCenterJson.length = 0;
             activeEvacuationCenters.length = 0;
@@ -444,42 +459,46 @@
                 hasActiveEvacuationCenter = true;
                 if (!geolocationBlocked) {
                     const position = await getUserLocation();
-                    const promises = activeEvacuationCenters.map(data => {
-                        return new Promise(resolve => {
-                            const direction = new google.maps.DirectionsService();
-                            direction.route(request(
-                                    newLatLng(position.coords.latitude, position.coords
-                                        .longitude),
-                                    newLatLng(data.latitude, data.longitude)),
-                                (response, status) => {
-                                    if (status == 'OK') {
-                                        evacuationCenterJson.push({
-                                            id: data.id,
-                                            status: data.status,
-                                            latitude: data.latitude,
-                                            longitude: data.longitude,
-                                            distance: parseFloat(getKilometers(response))
-                                        });
-                                        resolve();
-                                    }
-                                }
-                            );
-                        });
-                    });
 
-                    await Promise.all(promises);
-                    if (evacuationCenterJson.length > 1) {
-                        const unique = new Set();
-                        evacuationCenterJson = evacuationCenterJson
-                            .filter(({
-                                id,
-                                latitude,
-                                longitude
-                            }) => {
-                                const identifier = `${id}-${latitude}-${longitude}`;
-                                return unique.has(identifier) ? false : unique.add(identifier);
-                            })
-                            .sort((a, b) => a.distance - b.distance);
+                    if (position != -1) {
+                        const promises = activeEvacuationCenters.map(data => {
+                            return new Promise(resolve => {
+                                const direction = new google.maps.DirectionsService();
+                                direction.route(request(
+                                        newLatLng(position.coords.latitude, position.coords
+                                            .longitude),
+                                        newLatLng(data.latitude, data.longitude)),
+                                    (response, status) => {
+                                        if (status == 'OK') {
+                                            evacuationCenterJson.push({
+                                                id: data.id,
+                                                status: data.status,
+                                                latitude: data.latitude,
+                                                longitude: data.longitude,
+                                                distance: parseFloat(getKilometers(
+                                                    response))
+                                            });
+                                            resolve();
+                                        }
+                                    }
+                                );
+                            });
+                        });
+
+                        await Promise.all(promises);
+                        if (evacuationCenterJson.length > 1) {
+                            const unique = new Set();
+                            evacuationCenterJson = evacuationCenterJson
+                                .filter(({
+                                    id,
+                                    latitude,
+                                    longitude
+                                }) => {
+                                    const identifier = `${id}-${latitude}-${longitude}`;
+                                    return unique.has(identifier) ? false : unique.add(identifier);
+                                })
+                                .sort((a, b) => a.distance - b.distance);
+                        }
                     }
                 }
             }
@@ -488,13 +507,21 @@
         }
 
         function locateEvacuationCenter() {
+            let status = false;
+
             watchId = navigator.geolocation.watchPosition(async (position) => {
                 if (position.coords.accuracy <= 500) {
+                    status = true;
                     geolocationBlocked = false;
 
                     if (findNearestActive && evacuationCenterJson.length == 0) {
                         await getEvacuationCentersDistance();
-                        if (!hasActiveEvacuationCenter) return;
+                        console.log(findNearestActive + ' ' + evacuationCenterJson.length);
+                        if (!hasActiveEvacuationCenter || evacuationCenterJson.length == 0) {
+                            $('#stopLocatingBtn').click();
+                            navigator.geolocation.clearWatch(watchId);
+                            return;
+                        }
                     }
 
                     const {
@@ -527,6 +554,7 @@
                                 );
 
                                 if ($('.stop-btn-container').is(':hidden')) {
+                                    routeDisplayed = true;
                                     $('#reportAreaBtn').prop('hidden', 0);
                                     $('#loader').removeClass('show');
                                     directionDisplay.setMap(map);
@@ -553,8 +581,22 @@
                             }
                         }
                     );
+                } else {
+                    if (!routeDisplayed) {
+                        status = false;
+                        setTimeout(() => {
+                            if (!status) {
+                                if (!routeDisplayed) {
+                                    showWarningMessage('Cannot get your current location.');
+                                    navigator.geolocation.clearWatch(watchId);
+                                }
+                                $('#loader').removeClass('show');
+                                $('#stopLocatingBtn').click();
+                            }
+                        }, 5000);
+                    }
                 }
-            }, errorCallback, options);
+            }, (error) => errorCallback(null, error), options());
         }
 
         function ajaxRequest(type = "evacuationCenter") {
@@ -576,7 +618,7 @@
                         if (type == "evacuationCenter") {
                             data = data.data;
                             evacuationCentersData = data;
-                            getEvacuationCentersDistance();
+                            '{{ !$onGoingDisasters->isEmpty() }}' && getEvacuationCentersDistance();
                             let count = {
                                 active: 0,
                                 inactive: 0,
@@ -677,23 +719,33 @@
             });
 
             $(document).on("click", "#pinpointCurrentLocationBtn", function() {
-                if (!locating && (userMarker == null || !userMarker.getMap())) {
+                if (!locating && !pinClicked && (userMarker == null || !userMarker.getMap())) {
                     if (!geolocationBlocked) {
+                        scrollToElement('.locator-content');
                         $('#loader').addClass('show');
+                        $('#reportAreaBtn').prop('hidden', 1);
                         $("#loading-text").text("Getting your location...");
                     }
+
+                    pinClicked = true;
+
                     getUserLocation().then((position) => {
-                        $('#loader').removeClass('show');
-                        setMarker(newLatLng(position.coords.latitude, position.coords.longitude));
-                        generateInfoWindow(userMarker,
-                            `<div class="info-window-container">
-                                <div class="info-description">
-                                    <center>You are here.</center>
-                                </div>
-                            </div>`);
-                        scrollToElement('.locator-content');
-                        zoomToUserLocation();
-                        scrollMarkers();
+                        if (position != -1) {
+                            pinClicked = false;
+                            $('#loader').removeClass('show');
+                            $('#reportAreaBtn').prop('hidden', 0);
+                            setMarker(newLatLng(position.coords.latitude, position.coords
+                                .longitude));
+                            generateInfoWindow(userMarker,
+                                `<div class="info-window-container">
+                                    <div class="info-description">
+                                        <center>You are here.</center>
+                                    </div>
+                                </div>`);
+                            scrollToElement('.locator-content');
+                            zoomToUserLocation();
+                            scrollMarkers();
+                        }
                     });
                 }
             });
@@ -715,7 +767,8 @@
 
             $(document).on("click", "#stopLocatingBtn", function() {
                 locating = false;
-                watchId && (navigator.geolocation.clearWatch(watchId), watchId = null);
+                routeDisplayed = false;
+                watchId && (navigator.geolocation.clearWatch(watchId));
                 directionDisplay?.setMap(null);
                 userMarker?.setMap(null);
                 userBounds?.setMap(null);
@@ -772,15 +825,14 @@
                                             <input type="file" name="image" class="form-control" id="areaInputImage" accept=".jpeg, .jpg, .png" hidden>
                                             <div class="info-window-action-container report-area">
                                                 <button class="btn btn-sm btn-primary" id="imageBtn">
-                                                    <i class="bi bi-image"></i>
-                                                    Select
+                                                    <i class="bi bi-image"></i>Select
                                                 </button>
                                             </div>
                                             <img id="selectedReportImage" src="" class="form-control" hidden>
                                             <span id="image-error" class="error" hidden>Please select an image file.</span>
                                         </div>
                                         <center>
-                                            <button id="submitAreaBtn"><i class="bi bi-send"></i> Submit</button>
+                                            <button id="submitAreaBtn"><i class="bi bi-send"></i>Submit</button>
                                         <center>
                                     </div>
                                 </form>`

@@ -36,7 +36,8 @@
                     <table class="table" id="evacuationCenterTable" width="100%">
                         <thead>
                             <tr>
-                                <th colspan="2">Name</th>
+                                <th>ID</th>
+                                <th>Name</th>
                                 <th colspan="3">Barangay</th>
                                 <th>Status</th>
                                 <th>Action</th>
@@ -74,8 +75,7 @@
             ajax: "{{ route('evacuation.center.get', ['manage', $operation]) }}",
             columns: [{
                     data: 'id',
-                    name: 'id',
-                    visible: false
+                    name: 'id'
                 }, {
                     data: 'name',
                     name: 'name'

@@ -34,7 +34,7 @@
                 if (!['image/jpeg', 'image/jpg', 'image/png'].includes(this.files[0].type)) {
                     $('#areaInputImage').val('');
                     $('#selectedReportImage').attr('src', '').prop('hidden', 1);
-                    $('#imageBtn').html('<i class="bi bi-image"></i> Select');
+                    $('#imageBtn').html('<i class="bi bi-image"></i>Select');
                     setInfoWindowButtonStyles($('#imageBtn'), 'var(--color-primary');
                     $('#image-error').text('Please select an image file.')
                         .prop('style', 'display: block !important');
@@ -46,7 +46,7 @@
                     $('#selectedReportImage').attr('src', e.target.result);
                 };
                 reader.readAsDataURL(this.files[0]);
-                $('#imageBtn').html('<i class="bi bi-arrow-repeat"></i> Change');
+                $('#imageBtn').html('<i class="bi bi-arrow-repeat"></i>Change');
                 setInfoWindowButtonStyles($('#imageBtn'), 'var(--color-yellow');
                 $('#selectedReportImage').prop('hidden', 0);
                 const container = $(this).closest('.gm-style-iw-d');
@@ -205,16 +205,17 @@
     });
 
     @guest $('#emergencyBtn').on('click', () => {
+        if (!navigator.geolocation) return showInfoMessage('Geolocation is not supported by this browser.');
+
         confirmModal('Are you in need of help or rescue?').then((result) => {
             if (!result.isConfirmed) return;
 
-            let currentWatchID;
+            let emergencyWatchID;
 
-            currentWatchID = navigator.geolocation.watchPosition(
+            emergencyWatchID = navigator.geolocation.watchPosition(
                 (position) => {
                     if (position.coords.accuracy <= 500) {
-                        navigator.geolocation.clearWatch(currentWatchID);
-                        currentWatchID = null;
+                        navigator.geolocation.clearWatch(emergencyWatchID);
                         $.post("{{ route('resident.emergency.report') }}", {
                             _token: "{{ csrf_token() }}",
                             latitude: position.coords.latitude,
@@ -247,16 +248,14 @@
                             break;
                         case error.TIMEOUT:
                         case error.POSITION_UNAVAILABLE:
-                        case error.POSITION_OUT_OF_BOUNDS:
                             message = 'Cannot get your current location.';
                             break;
                     }
                     showWarningMessage(message);
-                    navigator.geolocation.clearWatch(currentWatchID);
-                    currentWatchID = null;
+                    navigator.geolocation.clearWatch(emergencyWatchID);
                 }, {
                     enableHighAccuracy: true,
-                    timeout: 10000,
+                    timeout: 5000,
                     maximumAge: 0
                 }
             );

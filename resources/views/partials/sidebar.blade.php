@@ -68,7 +68,7 @@
                             </div>
                         </div>
                         <div class="navigation-item">
-                            <a href="{{ route('hotline.number') }}" class="menu-link">
+                            <a href="{{ route('hotline.number', 'manage') }}" class="menu-link">
                                 <i class="bi bi-telephone"></i>
                                 <span class="links_name">Hotline Numbers</span>
                             </a>
@@ -167,7 +167,7 @@
                             </div>
                         @endif
                         <div class="navigation-item">
-                            <a href="{{ route('hotline.number') }}" class="menu-link">
+                            <a href="{{ route('hotline.number', 'view') }}" class="menu-link">
                                 <i class="bi bi-telephone"></i>
                                 <span class="links_name">Hotline Numbers</span>
                             </a>
@@ -194,7 +194,7 @@
                         </a>
                     </div>
                     <div class="navigation-item">
-                        <a href="{{ route('resident.hotline.number') }}" class="menu-link">
+                        <a href="{{ route('resident.hotline.number', 'view') }}" class="menu-link">
                             <i class="bi bi-telephone"></i>
                             <span class="links_name">Hotline Numbers</span>
                         </a>
