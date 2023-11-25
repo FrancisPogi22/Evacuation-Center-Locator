@@ -35,7 +35,7 @@ class MainController extends Controller
     {
         $disaster         = $this->disaster->all();
         $totalEvacuee     = strval($this->evacuee->where('status', "Evacuated")->sum('individuals'));
-        $residentReport   = $this->residentReport->whereRaw('DATE(report_time) <= CURDATE()')->count();
+        $residentReport   = $this->residentReport->whereRaw('DATE(report_time) >= CURDATE()')->count();
         $onGoingDisasters = $disaster->where('status', "On Going");
         $activeEvacuation = $this->evacuationCenter->where('status', "Active")->count();
 
@@ -109,8 +109,9 @@ class MainController extends Controller
     public function evacuationCenterLocator()
     {
         $prefix = request()->route()->getPrefix();
+        $onGoingDisasters = $this->disaster->where('status', 'On Going')->get();
 
-        return view('userpage.evacuationCenter.evacuationCenterLocator', compact('prefix'));
+        return view('userpage.evacuationCenter.evacuationCenterLocator', compact('prefix', 'onGoingDisasters'));
     }
 
     public function evacuationCenter($operation)
@@ -223,10 +224,10 @@ class MainController extends Controller
         return response(['data' => $reportData, 'start_date' => $startDate]);
     }
 
-    public function hotlineNumbers()
+    public function hotlineNumbers($operation)
     {
         $hotlineNumbers = HotlineNumbers::all();
 
-        return view('userpage.hotlineNumbers', compact('hotlineNumbers'));
+        return view('userpage.hotlineNumbers', compact('hotlineNumbers', 'operation'));
     }
 }
