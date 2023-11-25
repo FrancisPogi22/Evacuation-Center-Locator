@@ -14,7 +14,7 @@
                         <div class="form-content">
                             <div class="field-container guideline-field">
                                 <div class="guideline-img">
-                                    <img src="{{ asset('assets/img/E-Ligtas-Logo-Black.png') }}" class="guidelineImage"
+                                    <img src="{{ asset('assets/img/E-LIGTAS-Logo-Black.png') }}" class="guidelineImage"
                                         alt="Picture">
                                     <input type="file" name="guidelineImg" class="guidelineImgInput"
                                         id="guidelineImgInput" hidden>
@@ -33,7 +33,12 @@
                                 <a class="btn-update" id="addGuideInput"><i class="bi bi-plus-lg"></i></a>
                             </div>
                             <div class="form-button-container">
-                                <button id="submitGuidelineBtn"></button>
+                                <button id="submitGuidelineBtn" class="modalBtn">
+                                    <div id="btn-loader">
+                                        <div id="loader-inner"></div>
+                                    </div>
+                                    <span class="btn-text"></span>
+                                </button>
                             </div>
                         </div>
                     </form>

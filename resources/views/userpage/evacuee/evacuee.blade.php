@@ -334,7 +334,7 @@
                     number: true
                 };
                 messages[fieldName] = {
-                    required: `Please enter ${fieldName}.`,
+                    required: `Please enter number of ${fieldName}.`,
                     number: `Please enter a valid number for ${fieldName}.`
                 };
             });
@@ -351,9 +351,15 @@
 
                         let ids = ['infants', 'minors', 'senior_citizen', 'pwd', 'lactating'];
 
+                        $('#btn-loader').addClass('show');
+
                         if (parseFloat($('#male').val()) + parseFloat($('#female').val()) < ids
-                            .reduce((sum, id) => sum + parseFloat($(`#${id}`).val()), 0))
-                            return showWarningMessage("Number of members isn't correct.");
+                            .reduce((sum, id) => sum + parseFloat($(`#${id}`).val()), 0)) {
+                            $('#btn-loader').removeClass('show');
+                            showWarningMessage("Number of members isn't correct.");
+
+                            return;
+                        }
 
                         return operation == 'update' && defaultFormData == formData ?
                             showWarningMessage() :
@@ -366,6 +372,7 @@
                                         evacueeId),
                                 type: operation == 'record' ? "POST" : "PUT",
                                 success(response) {
+                                    $('#btn-loader').removeClass('show');
                                     response.status == 'warning' ? showWarningMessage(response
                                         .message) : (modal.modal('hide'), evacueeTable
                                         .draw(),
@@ -383,7 +390,8 @@
             $(document).on('click', '#recordEvacueeBtn', () => {
                 modalLabelContainer.removeClass('bg-warning');
                 modalLabel.text('Record Evacuee Information');
-                formButton.addClass('btn-submit').removeClass('btn-update').text('Record');
+                formButton.addClass('btn-submit').removeClass('btn-update').find('.btn-text').text(
+                    'Record');
                 operation = "record";
                 modal.modal('show');
             });
@@ -391,7 +399,8 @@
             $(document).on('click', '#updateEvacueeBtn', function() {
                 modalLabelContainer.addClass('bg-warning');
                 modalLabel.text('Update Evacuee Information');
-                formButton.addClass('btn-update').removeClass('btn-submit').text('Update');
+                formButton.addClass('btn-update').removeClass('btn-submit').find('.btn-text').text(
+                    'Update');
                 modalDialog.addClass('modal-lg');
                 fieldContainer.add(submitButtonContainer).prop('hidden', 0);
                 hiddenFieldContainer.add(formButtonContainer).add(fieldContainerSearch).prop('hidden',
@@ -627,7 +636,13 @@
                                 "{{ route('evacuee.info.update', 'evacueeId') }}".replace('evacueeId',
                                     evacueeId),
                             type: operation == 'record' ? "POST" : "PUT",
+                            beforeSend() {
+                                $('#btn-loader').addClass('show');
+                                formButton.prop('disabled', 1);
+                            },
                             success(response) {
+                                $('#btn-loader').removeClass('show');
+                                formButton.prop('disabled', 0);
                                 response.status == 'warning' ? showWarningMessage(response
                                     .message) : ($('#closeModalBtn').click(), evacueeTable.draw(),
                                     showSuccessMessage(

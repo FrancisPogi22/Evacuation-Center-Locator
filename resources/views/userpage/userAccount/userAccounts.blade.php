@@ -233,7 +233,7 @@
             $('#createUserAccount').click(() => {
                 modalLabelContainer.removeClass('bg-warning');
                 modalLabel.text('Create User Account');
-                formButton.addClass('btn-submit').removeClass('btn-update').text('Create');
+                formButton.addClass('btn-submit').removeClass('btn-update').find('.btn-text').text('Create');
                 operation = "create";
                 modal.modal('show');
             });
@@ -253,7 +253,7 @@
             function changeModalProperties(headerText, buttonText) {
                 modalLabelContainer.removeClass('bg-success').addClass('bg-warning');
                 modalLabel.text(headerText);
-                formButton.removeClass('btn-submit').addClass('btn-update').text(buttonText);
+                formButton.removeClass('btn-submit').addClass('btn-update').find('.btn-text').text(buttonText);
             }
 
             function initPositionOption(organization) {
@@ -267,7 +267,13 @@
                         $.ajax({
                             method: "PATCH",
                             url: url,
+                            beforeSend() {
+                                $('#btn-loader').addClass('show');
+                                formButton.prop('disabled', 1);
+                            },
                             success() {
+                                $('#btn-loader').removeClass('show');
+                                formButton.prop('disabled', 0);
                                 showSuccessMessage(
                                     `Successfully ${operation}${operation == "open" ? 'ed' : 'd'} account.`
                                 );

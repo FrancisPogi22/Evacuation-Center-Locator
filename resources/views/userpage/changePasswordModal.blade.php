@@ -37,7 +37,11 @@
                                     data-target="#confirmPassword"></i>
                             </div>
                             <div id="change-button-container">
-                                <button id="resetPasswordBtn" class="btn-update" disabled hidden>Change</button>
+                                <button id="resetPasswordBtn" class="btn-update modalBtn" disabled hidden>
+                                    <div id="btn-loader">
+                                        <div id="loader-inner"></div>
+                                    </div>Change
+                                </button>
                             </div>
                         </div>
                     </form>

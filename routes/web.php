@@ -15,15 +15,14 @@ use App\Http\Controllers\ResidentReportController;
 use App\Http\Controllers\EmergencyReportController;
 use App\Http\Controllers\EvacuationCenterController;
 
-
 Route::controller(AuthenticationController::class)->group(function () {
     Route::middleware('check.login')->group(function () {
         Route::view('/', 'authentication/authUser')->name('home');
     });
 
-    // Route::middleware('check.attempt')->group(function () {
-    Route::post('/', 'authUser')->name('login');
-    // });
+    Route::middleware('check.attempt')->group(function () {
+        Route::post('/', 'authUser')->name('login');
+    });
 
     Route::get('/logout', 'logout')->name('logout.user');
     Route::view('/recoverAccount', 'authentication.forgotPassword')->name('recoverAccount');
@@ -134,8 +133,6 @@ Route::middleware('auth')->group(function () {
             Route::delete('/removeAreaReport/{reportId}', 'removeAreaReport')->name('remove');
             Route::patch('/archiveAreaReport/{reportId}', 'archiveAreaReport')->name('archive');
         });
-
-        Route::get('/getResidentReport/{year}', ResidentReportController::class . '@getResidentReport')->name('resident.report.get');
     });
 
     Route::prefix('eligtasGuideline')->controller(GuidelineController::class)->group(function () {
@@ -158,17 +155,17 @@ Route::middleware('auth')->group(function () {
         Route::get('/searchGuideline', 'searchGuideline')->name('guideline.search');
         Route::get('/guide/{guidelineId}', 'guide')->name('eligtas.guide');
         Route::post('/generateEvacueeData', 'generateExcelEvacueeData')->name('generate.evacuee.data');
-        Route::get('/userAccounts/{operation}', 'userAccounts')->name('display.users.account');
+        Route::get('/userAccounts/{operation}', 'userAccounts')->name('display.users.account')->middleware('check.position');
         Route::get('/userProfile', 'userProfile')->name('display.profile');
         Route::get('/hotlineNumber/{operation}', 'hotlineNumbers')->name('hotline.number');
         Route::get('/fetchBarangayData', 'fetchBarangayData')->name('fetchBarangayData');
         Route::get('/fetchDisasterData', 'fetchDisasterData')->name('fetchDisasterData');
     });
 
-    Route::controller(HotlineNumberController::class)->group(function () {
-        Route::post('/addHotlineNumber', 'addHotlineNumber')->name('hotline.add');
-        Route::post('/updateHotlineNumber/{hotlineId}', 'updateHotlineNumber')->name('hotline.update');
-        Route::delete('/removeHotlineNumber/{hotlineId}', 'removeHotlineNumber')->name('hotline.remove');
+    Route::name('hotline.')->controller(HotlineNumberController::class)->group(function () {
+        Route::post('/addHotlineNumber', 'addHotlineNumber')->name('add');
+        Route::post('/updateHotlineNumber/{hotlineId}', 'updateHotlineNumber')->name('update');
+        Route::delete('/removeHotlineNumber/{hotlineId}', 'removeHotlineNumber')->name('remove');
     });
 
     Route::name('account.')->controller(UserAccountsController::class)->group(function () {

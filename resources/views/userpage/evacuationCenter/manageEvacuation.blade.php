@@ -192,7 +192,7 @@
             $(document).on('click', '#addEvacuationCenter', () => {
                 modalLabelContainer.removeClass('bg-warning');
                 modalLabel.text('Add Evacuation Center');
-                formButton.addClass('btn-submit').removeClass('btn-update').text('Add');
+                formButton.addClass('btn-submit').removeClass('btn-update').find('.btn-text').text('Add');
                 operation = "add";
                 modal.modal('show');
             });
@@ -209,7 +209,7 @@
                 evacuationCenterId = id;
                 modalLabelContainer.addClass('bg-warning');
                 modalLabel.text('Update Evacuation Center');
-                formButton.addClass('btn-update').removeClass('btn-submit').text('Update');
+                formButton.addClass('btn-update').removeClass('btn-submit').find('.btn-text').text('Update');
                 operation = "update";
                 $('#name').val(name);
                 $('#latitude').val(latitude);
@@ -287,7 +287,13 @@
                                 "{{ route('evacuation.center.update', 'evacuationCenterId') }}".
                             replace('evacuationCenterId', evacuationCenterId),
                             method: operation == 'add' ? 'POST' : 'PUT',
+                            beforeSend(){
+                                $('#btn-loader').addClass('show');
+                                formButton.prop('disabled', 1);
+                            },
                             success(response) {
+                                $('#btn-loader').addClass('show');
+                                formButton.prop('disabled', 0);
                                 response.status == "warning" ? showWarningMessage(response
                                     .message) : (showSuccessMessage(
                                     `Successfully ${operation == 'add' ? 'added' : 'updated'} evacuation center.`

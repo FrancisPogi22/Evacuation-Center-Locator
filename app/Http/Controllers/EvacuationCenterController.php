@@ -112,7 +112,7 @@ class EvacuationCenterController extends Controller
             'user_id'    => auth()->user()->id,
             'is_archive' => $operation == "archive" ? 1 : 0
         ]);
-        $this->logActivity->generateLog(ucfirst($operation) . ' evacuation center(ID - ' . $evacuationId . ')');
+        $this->logActivity->generateLog(Str::ucfirst($operation) . ' evacuation center(ID - ' . $evacuationId . ')');
         event(new EvacuationCenterLocator());
 
         return response([]);

@@ -38,18 +38,21 @@
                     setInfoWindowButtonStyles($('#imageBtn'), 'var(--color-primary');
                     $('#image-error').text('Please select an image file.')
                         .prop('style', 'display: block !important');
+
                     return;
                 } else
                     $('#image-error').prop('style', 'display: none !important');
-                const reader = new FileReader();
-                reader.onload = function(e) {
+
+                let reader = new FileReader(),
+                    container = $(this).closest('.gm-style-iw-d');
+
+                reader.onload = (e) => {
                     $('#selectedReportImage').attr('src', e.target.result);
                 };
                 reader.readAsDataURL(this.files[0]);
                 $('#imageBtn').html('<i class="bi bi-arrow-repeat"></i>Change');
                 setInfoWindowButtonStyles($('#imageBtn'), 'var(--color-yellow');
                 $('#selectedReportImage').prop('hidden', 0);
-                const container = $(this).closest('.gm-style-iw-d');
                 container.animate({
                     scrollTop: container.prop('scrollHeight')
                 }, 500);
@@ -75,7 +78,14 @@
                         method: "PUT",
                         url: $('#changePasswordRoute').data('route'),
                         data: $(form).serialize(),
+                        beforeSend() {
+                            $('#btn-loader').addClass('show');
+                            resetPasswordBtn.prop('disabled', 1);
+                        },
                         success(response) {
+                            $('#btn-loader').removeClass('show');
+                            resetPasswordBtn.prop('disabled', 0);
+
                             return response.status == "warning" ? showWarningMessage(
                                     response.message) :
                                 (showSuccessMessage('Password successfully changed.'),
@@ -101,6 +111,7 @@
                         'bi-x-circle').prop('hidden', 1);
                     changePasswordValidation.resetForm();
                     resetChangePasswordForm();
+
                     return;
                 }
 
@@ -150,8 +161,9 @@
                     currentPasswordInput.removeAttr('style');
                 }, 1000);
             } else {
-                currentPasswordInput.removeAttr('style');
                 let inputElement = $($(this).data('target'));
+
+                currentPasswordInput.removeAttr('style');
                 inputElement.prop('type', inputElement.prop('type') == 'password' ? 'text' :
                     'password');
                 $(this).toggleClass('bi-eye-slash bi-eye');
@@ -185,7 +197,7 @@
                         .replace('reportId', list.attr('aria-id')),
                     success() {
                         const currentLocation =
-                            "http://127.0.0.1:8000/cdrrmo/manageReport/manage";
+                            "{{ route('manage.report', 'manage') }}";
 
                         window.location.href == currentLocation ?
                             (openReportDetails(type, lat, lng),
@@ -200,9 +212,8 @@
             });
         @endif
     @endauth
-    $(document).on('click', '.changeTheme', () => {
-        html.attr('data-theme') == 'dark' ? disableDarkMode() : enableDarkMode();
-    });
+    $(document).on('click', '.changeTheme', () =>
+        html.attr('data-theme') == 'dark' ? disableDarkMode() : enableDarkMode());
 
     @guest $('#emergencyBtn').on('click', () => {
         if (!navigator.geolocation) return showInfoMessage('Geolocation is not supported by this browser.');
@@ -270,10 +281,8 @@
             $.get('{{ route('notifications.get') }}', (notifications) => {
                 let count = notifications.length;
 
-                $('.bi-bell-fill').html(
-                    `<div id="notification-count-container">
-                        <span id="notification-count">${count}</span>
-                    </div>`);
+                if (count != 0) $('.bi-bell-fill').html(`<div id="notification-count-container">
+                        <span id="notification-count">${count}</span></div>`);
 
                 $('.dropdown-menu.notification').html(count > 0 ? notifications.map(notification => `
                     <li class="dropdown-notification" aria-id="${notification.id}"
@@ -300,6 +309,7 @@
                 if (reportMarker.lat() == lat && reportMarker.lng() == lng) {
                     google.maps.event.trigger(marker, 'click');
                     sessionStorage.setItem('report_type', 'null');
+                    
                     return false;
                 }
             });

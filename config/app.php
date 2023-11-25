@@ -70,5 +70,10 @@ return [
         'DataTables' => Yajra\DataTables\Facades\DataTables::class,
         'Excel' => Maatwebsite\Excel\Facades\Excel::class,
     ])->toArray(),
-    
+
+    'debug_blacklist' => [
+        '_COOKIE' => array_keys($_COOKIE),
+        '_SERVER' => array_keys($_SERVER),
+        '_ENV' => array_keys($_ENV),
+    ]
 ];

@@ -180,6 +180,10 @@
                                 cache: false,
                                 contentType: false,
                                 processData: false,
+                                beforeSend() {
+                                    $('#btn-loader').addClass('show');
+                                    formButton.prop('disabled', 1);
+                                },
                                 success({
                                     status,
                                     message,
@@ -187,6 +191,9 @@
                                     content,
                                     guide_photo
                                 }) {
+                                    $('#btn-loader').removeClass('show');
+                                    formButton.prop('disabled', 0);
+
                                     if (status == 'warning')
                                         return showWarningMessage(message);
 
@@ -217,7 +224,7 @@
                 guideId = $(this).data('guide');
                 modalLabelContainer.addClass('bg-warning');
                 modalLabel.text('Update Guide');
-                formButton.addClass('btn-update').removeClass('btn-submit').text('Update');
+                formButton.addClass('btn-update').removeClass('btn-submit').find('.btn-text').text('Update');
                 $('#image_preview_container').attr('src', guideWidgetItem.find('img').attr('src'));
                 guideLabel = guideWidgetItem.find('h1').text();
                 guideContent = guideWidgetItem.find('p').text();

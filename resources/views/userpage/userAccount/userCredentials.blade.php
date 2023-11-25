@@ -51,7 +51,7 @@
     </p>
 
     <center>
-        <a href="http://127.0.0.1:8000/" id="btn-login">Login With Credentials</a>
+        <a href="{{ route('/') }}" id="btn-login">Login With Credentials</a>
     </center>
 
     <hr id="last-hr">

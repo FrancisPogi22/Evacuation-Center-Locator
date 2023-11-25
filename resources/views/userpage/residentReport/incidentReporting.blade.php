@@ -47,7 +47,8 @@
     </script>
     @include('partials.toastr')
     <script>
-        let map, reportMarker, reportWindow, btnContainer = $('.page-button-container');
+        let map, reportMarker, reportWindow, isClicked = false,
+            btnContainer = $('.page-button-container');
 
         function initMap(userLocation, zoom) {
             if (map) {
@@ -79,8 +80,9 @@
                     $('[name="latitude"]').val(coordinates.lat());
                     $('[name="longitude"]').val(coordinates.lng());
                 } else {
-                    showInfoMessage('You can drag the marker to adjust the location.');
+                    if (!isClicked) showInfoMessage('You can drag the marker to adjust the location.');
 
+                    isClicked = true;
                     reportWindow = new google.maps.InfoWindow({
                         content: `<form id="reportAreaForm">
                             @csrf
@@ -103,7 +105,12 @@
                                     <span id="image-error" class="error" hidden>Please select an image file.</span>
                                 </div>
                                 <center>
-                                    <button id="submitAreaBtn"><i class="bi bi-send"></i>Submit</button>
+                                    <button id="submitAreaBtn" class="modalBtn">
+                                        <i class="bi bi-send"></i>
+                                        <div id="btn-loader">
+                                            <div id="loader-inner"></div>
+                                        </div>Submit
+                                    </button>
                                 <center>
                             </div>
                         </form>`
@@ -123,15 +130,11 @@
                         }
                     });
 
-                    reportMarker.addListener('click', () => {
-                        reportWindow.open(map, reportMarker);
-                    });
+                    reportMarker.addListener('click', () => reportWindow.open(map, reportMarker));
 
                     reportWindow.open(map, reportMarker);
 
-                    reportMarker.addListener('drag', () => {
-                        reportWindow.close();
-                    });
+                    reportMarker.addListener('drag', () => reportWindow.close());
 
                     reportMarker.addListener('dragend', () => {
                         reportWindow.open(map, reportMarker);
@@ -141,6 +144,8 @@
                 }
             });
         }
+
+        $(document).on('click', '.gm-ui-hover-effect', () => reportMarker.setPosition(null));
 
         function executeInitMap(userLocation, zoom = 13, geoLocation = false) {
             initMap(userLocation, zoom);
@@ -226,11 +231,7 @@
         }
 
         $(document).ready(() => {
-            if (!navigator.geolocation) {
-                executeInitMap();
-            } else {
-                getCurrentPosition();
-            }
+            !navigator.geolocation ? executeInitMap() : getCurrentPosition();
 
             $(document).on('click', '#submitAreaBtn', () => {
                 $('#reportAreaForm').validate({
@@ -241,30 +242,35 @@
                         details: 'Please enter the details of the incident.',
                     },
                     errorElement: 'span',
-                    showErrors: function() {
+                    showErrors() {
                         this.defaultShowErrors();
 
                         $('#image-error').text('Please select an image.')
                             .prop('style', `display: ${$('#areaInputImage').val() == '' ?
                                 'block' : 'none'} !important`);
                     },
-                    submitHandler: function(form) {
+                    submitHandler(form) {
                         if ($('#areaInputImage').val() == '') return;
 
                         confirmModal('Are you sure you want to report this incident?').then((
                             result) => {
                             if (!result.isConfirmed) return;
 
-                            let formData = new FormData(form);
-
                             $.ajax({
                                 type: 'POST',
                                 url: "{{ route('resident.incident.report') }}",
-                                data: formData,
+                                data: new FormData(form),
                                 cache: false,
                                 contentType: false,
                                 processData: false,
+                                beforeSend() {
+                                    $('#btn-loader').addClass('show');
+                                    $('#submitAreaBtn').prop('disabled', 1);
+                                },
                                 success(response) {
+                                    $('#btn-loader').removeClass('show');
+                                    $('#submitAreaBtn').prop('disabled', 0);
+
                                     const status = response.status;
 
                                     status == "warning" || status == "blocked" ?

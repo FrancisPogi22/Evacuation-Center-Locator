@@ -107,7 +107,6 @@
         @include('userpage.changePasswordModal')
     </div>
 
-
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/jquery.validate.min.js"
         integrity="sha512-rstIgDs0xPgmG6RX1Aba4KV5cWJbAMcvRCVmglpam9SoHZiUCyQVDdH2LPlxoHtrv17XWblE/V/PP+Tr04hbtA=="
         crossorigin="anonymous"></script>
@@ -239,20 +238,20 @@
                     <div class="areaReportContainer">
                         ${type == "evacuationCenter" ?
                         `<div class="info-description">
-                            <span>Name:</span> ${data.name}
-                        </div>
-                        <div class="info-description">
-                            <span>Barangay:</span> ${data.barangay_name}
-                        </div>
-                        <div class="info-description">
-                            <span>No. of evacuees:</span> ${data.evacuees}
-                        </div>
-                        <div class="info-description status">
-                            <span>Status:</span>
-                            <span class="status-content bg-${getStatusColor(data.status)}">
-                                ${data.status}
-                            </span>
-                        </div>` :
+                                            <span>Name:</span> ${data.name}
+                                        </div>
+                                        <div class="info-description">
+                                            <span>Barangay:</span> ${data.barangay_name}
+                                        </div>
+                                        <div class="info-description">
+                                            <span>No. of evacuees:</span> ${data.evacuees}
+                                        </div>
+                                        <div class="info-description status">
+                                            <span>Status:</span>
+                                            <span class="status-content bg-${getStatusColor(data.status)}">
+                                                ${data.status}
+                                            </span>
+                                        </div>` :
                         `<div class="info-description">
                             <span>Report Date:</span> ${formatDateTime(data.report_time)}
                         </div>
@@ -898,7 +897,14 @@
                                 data: new FormData(form),
                                 contentType: false,
                                 processData: false,
+                                beforeSend() {
+                                    $('#btn-loader').addClass('show');
+                                    $('#submitAreaBtn').prop('disabled', 1);
+                                },
                                 success(response) {
+                                    $('#btn-loader').addClass('show');
+                                    $('#submitAreaBtn').prop('disabled', 0);
+
                                     const status = response.status
 
                                     status == "warning" || status ==

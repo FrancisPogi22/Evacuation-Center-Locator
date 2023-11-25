@@ -19,62 +19,7 @@
                 <span>DASHBOARD</span>
             </div>
             <hr>
-            <div class="report-container">
-                <p>Current Disaster:
-                    <span>{{ $onGoingDisasters->isEmpty() ? 'No Disaster' : implode(' | ', $onGoingDisasters->pluck('name')->toArray()) }}</span>
-                </p>
-                @if (auth()->user()->position == 'President' || (auth()->user()->position == 'Focal' && !$disaster->isEmpty()))
-                    <div class="generate-button-container">
-                        <button type="button" data-bs-toggle="modal" data-bs-target="#generateReportModal"
-                            class="btn-submit generateBtn">
-                            <i class="bi bi-printer"></i>
-                            Generate Disaster Data
-                        </button>
-                        <div class="modal fade" id="generateReportModal" data-bs-backdrop="static" aria-hidden="true">
-                            <div class="modal-dialog">
-                                <div class="modal-content">
-                                    <div class="modal-label-container">
-                                        <h1 class="modal-label">Generate Excel Report</h1>
-                                        <button type="button" data-bs-dismiss="modal" aria-label="Close"
-                                            id="closeModalBtn">
-                                            <i class="bi bi-x-lg"></i>
-                                        </button>
-                                    </div>
-                                    <div class="modal-body">
-                                        <form method="POST" id="generateReportForm">
-                                            @csrf
-                                            <div class="form-content">
-                                                <div class="field-container">
-                                                    <label for="disaster_year">Disaster Year</label>
-                                                    <select class="form-control form-select" name="disaster_year"
-                                                        id="disaster_year">
-                                                        <option value="" selected hidden disabled>Select year
-                                                        </option>
-                                                        @foreach ($disaster as $disasterYear)
-                                                            <option value="{{ $disasterYear->year }}">
-                                                                {{ $disasterYear->year }}
-                                                            </option>
-                                                        @endforeach
-                                                    </select>
-                                                </div>
-                                                <div class="field-container" id="disaster-list" hidden>
-                                                    <label for="disaster_name">Available Disaster</label>
-                                                    <select class="form-control form-select" name="disaster_id"
-                                                        id="disaster_id">
-                                                    </select>
-                                                </div>
-                                                <div class="form-button-container">
-                                                    <button class="btn-submit" id="btnSubmit">Generate</button>
-                                                </div>
-                                            </div>
-                                        </form>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                @endif
-            </div>
+            @include('userpage.dashboard.generateReportModal')
             <section class="widget-container">
                 <div class="widget">
                     <div class="widget-content">
@@ -117,11 +62,19 @@
                 @endif
             </section>
             @if (auth()->user()->organization == 'CDRRMO')
-                <figure class="chart-container report" hidden>
+                <figure class="chart-container report">
+                    <div id="loader" class="show">
+                        <div id="loading-text">Getting Report Data...</div>
+                        <div id="loader-inner"></div>
+                    </div>
                     <div id="report-chart" class="bar-graph"></div>
                 </figure>
             @else
                 <div class="dasboard-content">
+                    <div id="loader" class="show">
+                        <div id="loading-text">Getting Evacuees Data...</div>
+                        <div id="loader-inner"></div>
+                    </div>
                     <div class="pie-container" hidden>
                         <div class="pie-label"><span>Barangay Data Chart</span></div>
                         <div class="pie-content">
@@ -155,6 +108,7 @@
             let validator, modal = $("#generateReportModal"),
                 form = $('#generateReportForm'),
                 disasterList = $('#disaster-list'),
+                generateBtn = $("#btnSubmit"),
                 searchResults = $('#disaster_id');
 
             $('#disaster_year').change(function() {
@@ -182,10 +136,34 @@
                 errorElement: 'span'
             });
 
-            $("#btnSubmit").click(() => {
+            generateBtn.click(() => {
                 if (validator.form()) {
-                    form.attr('action', '{{ route('generate.evacuee.data') }}').off('submit').submit();
-                    modal.modal('hide');
+                    generateBtn.prop("disabled", 1);
+                    $.ajax({
+                        type: "POST",
+                        url: '{{ route('generate.evacuee.data') }}',
+                        data: form.serialize(),
+                        xhrFields: {
+                            responseType: 'blob'
+                        },
+                        beforeSend() {
+                            $('#btn-loader').addClass('show');
+                        },
+                        success(response, xhr) {
+                            let blob = new Blob([response], {
+                                    type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+                                }),
+                                link = document.createElement('a');
+
+                            link.href = window.URL.createObjectURL(blob);
+                            link.download = 'evacuee-data.xlsx';
+                            link.click();
+                            $('#btn-loader').removeClass('show');
+                            generateBtn.prop("disabled", 0);
+                            modal.modal('hide');
+                        },
+                        error: showErrorMessage
+                    });
                 }
             });
 
@@ -193,6 +171,7 @@
                 validator && validator.resetForm();
                 searchResults.empty();
                 disasterList.prop('hidden', 1);
+                generateBtn.prop("disabled", 0);
                 form[0].reset();
             });
 
@@ -204,7 +183,7 @@
                 });
 
                 Echo.channel('notification').listen('Notification', (e) => {
-                    reportData();
+                    reportData(false);
                 });
             @else
                 initializePieChart();
@@ -213,18 +192,18 @@
 
                 Echo.channel('active-evacuees').listen('ActiveEvacuees', (e) => {
                     $("#totalEvacuee").text(e.activeEvacuees);
-                    initializePieChart();
-                    initializeBarGraph();
+                    initializePieChart(false);
+                    initializeBarGraph(false);
                 });
             @endif
         });
 
         @if (auth()->user()->organization == 'CDRRMO')
-            function reportData() {
+            function reportData(loader = true) {
                 $.get("{{ route('fetchReportData') }}").done(response => {
-                    if (response['data'].length > 0) {
-                        $('.chart-container.report').prop('hidden', 0);
+                    if (loader) $('#loader').remove();
 
+                    if (response['data'].length > 0) {
                         const color = {
                             'Emergency': '#ef4444',
                             'Incident': '#ffcb2f',
@@ -232,6 +211,7 @@
                             'Roadblocked': '#000000'
                         };
 
+                        $('.chart-container.report').prop('hidden', 0);
                         Highcharts.chart('report-chart', {
                             title: {
                                 text: 'Resident Report Count',
@@ -280,92 +260,92 @@
                 });
             }
         @else
-            function initializeBarGraph() {
+            function initializeBarGraph(loader = true) {
                 $('.bar-chart').remove();
                 $.get("{{ route('fetchDisasterData') }}")
-                    .done(disasterData => disasterData.forEach((disaster, count) => {
-                        $('.bar-figure').append(`<div id="evacueeGraph${count + 1}" class="bar-graph"></div>`);
-                        Highcharts.chart(`evacueeGraph${count + 1}`, {
-                            chart: {
-                                type: 'bar'
-                            },
-                            title: {
-                                text: `${disaster.disasterName}`
-                            },
-                            xAxis: {
-                                categories: ['SENIOR CITIZEN', 'MINORS', 'INFANTS', 'PWD', 'PREGNANT',
-                                    'LACTATING'
-                                ]
-                            },
-                            yAxis: {
-                                allowDecimals: false,
+                    .done(disasterData => {
+                        let categories = ['SENIORCITIZEN', 'MINORS', 'INFANTS', 'PWD', 'PREGNANT',
+                            'LACTATING'
+                        ];
+
+                        if (loader) $('#loader').remove();
+
+                        disasterData.forEach((disaster, count) => {
+                            $('.bar-figure').append(
+                                `<div id="evacueeGraph${count + 1}" class="bar-graph"></div>`);
+                            Highcharts.chart(`evacueeGraph${count + 1}`, {
+                                chart: {
+                                    type: 'bar'
+                                },
                                 title: {
-                                    text: 'Estimated Numbers'
-                                }
-                            },
-                            legend: {
-                                reversed: true
-                            },
-                            plotOptions: {
-                                bar: {
-                                    dataLabels: {
-                                        enabled: true,
-                                        style: {
-                                            textOutline: 'none'
-                                        }
+                                    text: `${disaster.disasterName}`
+                                },
+                                xAxis: {
+                                    categories: ['SENIOR CITIZEN', 'MINORS', 'INFANTS', 'PWD',
+                                        'PREGNANT', 'LACTATING'
+                                    ]
+                                },
+                                yAxis: {
+                                    allowDecimals: false,
+                                    title: {
+                                        text: 'Estimated Numbers'
                                     }
                                 },
-                                series: {
-                                    stacking: 'normal',
-                                    dataLabels: {
-                                        enabled: true,
-                                        formatter: function() {
-                                            if (this.y != 0) {
-                                                return this.y;
-                                            } else {
-                                                return null;
+                                legend: {
+                                    reversed: true
+                                },
+                                plotOptions: {
+                                    bar: {
+                                        dataLabels: {
+                                            enabled: true,
+                                            style: {
+                                                textOutline: 'none'
+                                            }
+                                        }
+                                    },
+                                    series: {
+                                        stacking: 'normal',
+                                        dataLabels: {
+                                            enabled: true,
+                                            formatter: function() {
+                                                if (this.y != 0) {
+                                                    return this.y;
+                                                } else {
+                                                    return null;
+                                                }
                                             }
                                         }
                                     }
-                                }
-                            },
-                            series: [{
-                                name: 'SENIOR CITIZEN',
-                                data: [parseInt(disaster.senior_citizen), '', '', '', '', ''],
-                                color: '#e74c3c'
-                            }, {
-                                name: 'MINORS',
-                                data: ['', parseInt(disaster.minors), '', '', '', ''],
-                                color: '#3498db'
-                            }, {
-                                name: 'INFANTS',
-                                data: ['', '', parseInt(disaster.infants), '', '', ''],
-                                color: '#2ecc71'
-                            }, {
-                                name: 'PWD',
-                                data: ['', '', '', parseInt(disaster.pwd), '', ''],
-                                color: '#1abc9c'
-                            }, {
-                                name: 'PREGNANT',
-                                data: ['', '', '', '', parseInt(disaster.pregnant), ''],
-                                color: '#e67e22'
-                            }, {
-                                name: 'LACTATING',
-                                data: ['', '', '', '', '', parseInt(disaster.lactating)],
-                                color: '#9b59b6'
-                            }],
-                            exporting: false,
-                            credits: {
-                                enabled: false
-                            },
+                                },
+                                series: categories.map((category) => ({
+                                    name: category,
+                                    data: categories.map((cat) => (cat == category ?
+                                        parseInt(disaster[cat.toLowerCase()]) : ''
+                                    )),
+                                    color: {
+                                        'SENIOR CITIZEN': '#e74c3c',
+                                        'MINORS': '#3498db',
+                                        'INFANTS': '#2ecc71',
+                                        'PWD': '#1abc9c',
+                                        'PREGNANT': '#e67e22',
+                                        'LACTATING': '#9b59b6',
+                                    } [category],
+                                })),
+                                exporting: false,
+                                credits: {
+                                    enabled: false
+                                },
+                            })
                         })
-                    }))
+                    })
                     .fail(() => showErrorMessage("Unable to fetch data."));
             }
 
-            function initializePieChart() {
+            function initializePieChart(loader = true) {
                 $.get("{{ route('fetchBarangayData') }}")
                     .done(barangayData => {
+                        if (loader) $('#loader').remove();
+
                         if (barangayData.length > 0) {
                             $('.pie-container').prop('hidden', 0);
                             $('.pie-chart').remove();

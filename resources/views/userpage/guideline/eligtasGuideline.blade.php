@@ -136,7 +136,13 @@
                                 cache: false,
                                 contentType: false,
                                 processData: false,
+                                beforeSend() {
+                                    $('#btn-loader').addClass('show');
+                                },
                                 success(response) {
+                                    $('#btn-loader').removeClass('show');
+                                    formBtn.prop('disabled', 1);
+
                                     if (response.status == 'warning')
                                         return showWarningMessage(response.message)
 
@@ -153,7 +159,7 @@
 
                                         guideline_img = guideline_img ?
                                             `guideline_image/${guideline_img}` :
-                                            'assets/img/Empty-Data.svg';
+                                            'assets/img/Empty-Guideline.svg';
                                         guidelineContainer.append(initGuidelineItem(
                                             guideline_id, guideline_img, type));
                                     } else {
@@ -181,8 +187,8 @@
                 operation = "create";
                 modalLabelContainer.removeClass('bg-warning');
                 modalLabel.text('Create Guideline');
-                formBtn.text('Create').add(addGuideInput).addClass('btn-submit').removeClass(
-                    'btn-update');
+                formBtn.add(addGuideInput).addClass('btn-submit').removeClass(
+                    'btn-update').find('.btn-text').text('Create');
                 changeImageColor();
                 modal.modal('show');
             });
@@ -196,8 +202,8 @@
 
                 modalLabelContainer.addClass('bg-warning');
                 modalLabel.text('Update Guideline');
-                formBtn.text('Update').add(addGuideInput).addClass('btn-update').removeClass(
-                    'btn-submit');
+                formBtn.add(addGuideInput).addClass('btn-update').removeClass('btn-submit').find(
+                    '.btn-text').text('Update');
                 $('#guidelineType').val(guidelineLabel);
                 guidelineImg.attr('src', guidelineWidget.querySelector('.guideline-content img')
                     .getAttribute('src'));
@@ -252,7 +258,7 @@
                                     <div class="image-preview">
                                         <a href="javascript:void(0)" class="btn-remove removeImage" id="removeImage${guideField}"
                                             hidden><i class="bi bi-trash3"></i></a>
-                                        <img src="{{ asset('assets/img/E-Ligtas-Logo-${checkThemeColor()}.png') }}" alt="Image"
+                                        <img src="{{ asset('assets/img/E-LIGTAS-Logo-${checkThemeColor()}.png') }}" alt="Image"
                                             class="guideImage" id="image_preview_container${guideField}">
                                     </div>
                                     <input type="file" name="guidePhoto[]" id="guidePhoto${guideField}"
@@ -299,7 +305,7 @@
 
                 $(`#guidePhoto${guideFieldId}`).val('');
                 $(`#image_preview_container${guideFieldId}`).attr('src',
-                    `{{ asset('assets/img/E-Ligtas-Logo-${checkThemeColor()}.png') }}`);
+                    `{{ asset('assets/img/E-LIGTAS-Logo-${checkThemeColor()}.png') }}`);
                 $(this).prop('hidden', 1);
                 $(`#selectImage${guideFieldId}`).removeClass('bg-primary').html(
                     '<i class="bi bi-image"></i>Choose Image');
@@ -368,7 +374,7 @@
 
             function changeImageColor() {
                 guidelineImg.attr('src',
-                    `{{ asset('assets/img/E-Ligtas-Logo-${checkThemeColor()}.png') }}`);
+                    `{{ asset('assets/img/E-LIGTAS-Logo-${checkThemeColor()}.png') }}`);
             }
 
             function changeImageBtn(action) {

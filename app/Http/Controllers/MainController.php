@@ -12,7 +12,6 @@ use App\Models\ActivityUserLog;
 use App\Models\EvacuationCenter;
 use Illuminate\Http\Request;
 use App\Exports\EvacueeDataExport;
-use Maatwebsite\Excel\Facades\Excel;
 use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Support\Facades\Validator;
 use Maatwebsite\Excel\Excel as FileFormat;
@@ -39,7 +38,7 @@ class MainController extends Controller
         $onGoingDisasters = $disaster->where('status', "On Going");
         $activeEvacuation = $this->evacuationCenter->where('status', "Active")->count();
 
-        return view('userpage.dashboard', compact('activeEvacuation', 'totalEvacuee', 'onGoingDisasters', 'disaster', 'residentReport'));
+        return view('userpage.dashboard.dashboard', compact('activeEvacuation', 'totalEvacuee', 'onGoingDisasters', 'disaster', 'residentReport'));
     }
 
     public function searchDisaster($year)
@@ -51,9 +50,14 @@ class MainController extends Controller
     {
         $generateReportValidation = Validator::make($request->all(), ['disaster_id' => 'required']);
 
-        if ($generateReportValidation->fails()) return back()->with('warning', "Disaster is not exist.");
+        if ($generateReportValidation->fails()) {
+            return response(['status' => 'warning', 'message' => 'Disaster is not exist.']);
+        }
 
-        return Excel::download(new EvacueeDataExport($request->disaster_id), 'evacuee-data.xlsx', FileFormat::XLSX);
+        return (new EvacueeDataExport($request->disaster_id))
+            ->download('evacuee-data.xlsx', FileFormat::XLSX, [
+                'Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+            ]);
     }
 
     public function eligtasGuideline()
@@ -108,7 +112,7 @@ class MainController extends Controller
 
     public function evacuationCenterLocator()
     {
-        $prefix = request()->route()->getPrefix();
+        $prefix = basename(trim(request()->route()->getPrefix(), '/'));
         $onGoingDisasters = $this->disaster->where('status', 'On Going')->get();
 
         return view('userpage.evacuationCenter.evacuationCenterLocator', compact('prefix', 'onGoingDisasters'));
@@ -126,7 +130,7 @@ class MainController extends Controller
 
     public function userActivityLog()
     {
-        if (!request()->ajax()) return view('userpage.activityLog');
+        if (!request()->ajax()) return view('userpage.userAccount.activityLog');
 
         $name = '';
 
@@ -165,7 +169,7 @@ class MainController extends Controller
     public function manageReport($operation)
     {
         $yearList   = [];
-        $prefix     = request()->route()->getPrefix();
+        $prefix     = basename(trim(request()->route()->getPrefix(), '/'));
         $reportType = ['All', 'Emergency', 'Incident', 'Flooded', 'Roadblocked'];
         if ($operation == "archived")
             $yearList = $this->residentReport->selectRaw('YEAR(report_time) as year')->where('is_archive', 1)->distinct()->orderBy('year', 'desc')->get();
@@ -186,7 +190,7 @@ class MainController extends Controller
             ->selectRaw('disaster.name as disasterName,
                 SUM(evacuee.male) as male,
                 SUM(evacuee.female) as female,
-                SUM(evacuee.senior_citizen) as senior_citizen,
+                SUM(evacuee.senior_citizen) as seniorcitizen,
                 SUM(evacuee.minors) as minors,
                 SUM(evacuee.infants) as infants,
                 SUM(evacuee.pwd) as pwd,
@@ -228,6 +232,6 @@ class MainController extends Controller
     {
         $hotlineNumbers = HotlineNumbers::all();
 
-        return view('userpage.hotlineNumbers', compact('hotlineNumbers', 'operation'));
+        return view('userpage.hotlineNumber.hotlineNumbers', compact('hotlineNumbers', 'operation'));
     }
 }
