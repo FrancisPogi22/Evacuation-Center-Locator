@@ -225,8 +225,11 @@ textarea::placeholder {
 .page-button-container button i,
 .generate-button-container button i,
 .locateEvacuationCenter i,
-#stopLocatingBtn i,
+#imageBtn i,
 #reportAreaBtn i,
+#submitAreaBtn i,
+#toggleImageBtn i,
+#stopLocatingBtn i,
 .guideline-header button i,
 .selectImage i,
 .guideImgBtn i,
@@ -884,7 +887,7 @@ button.changeTheme:hover {
 }
 
 .field-container #imageBtn,
-.hotline-container #imageBtn {
+.hotline-form-container #imageBtn {
     font-size: 14px;
 }
 
@@ -1558,6 +1561,11 @@ text {
     max-width: 400px;
 }
 
+.report-marker-label {
+    margin-top: 55px;
+    font-weight: bold;
+}
+
 .info-description {
     padding: 6px;
 }
@@ -1768,10 +1776,8 @@ html[data-theme="dark"] .gmnoprint button span {
     font-size: 15px;
 }
 
-#user-marker span.fw-bold,
-#flood-marker span.fw-bold,
-#roadblocked-marker span.fw-bold {
-    margin-left: 6px;
+#user-marker span.fw-bold {
+    margin-left: 3px;
 }
 
 .markers img {
@@ -1912,12 +1918,21 @@ html[data-theme="dark"] .gmnoprint button span {
     transform: scale(1.05);
 }
 
-.hotline-container {
-    display: flex;
+.hotline-container,
+.hotline-form-container {
     margin: 10px 0;
     background: var(--color-text);
     border-radius: 4px;
     filter: drop-shadow(0 20px 13px rgb(0 0 0 / 0.03)) drop-shadow(0 8px 5px rgb(0 0 0 / 0.08));
+}
+
+.hotline-container .id-container {
+    padding: 10px 10px 0 10px;
+}
+
+.hotline-form-container,
+.hotline-data-parent-container {
+    display: flex;
 }
 
 .hotline-logo-container {
@@ -1996,7 +2011,7 @@ html[data-theme="dark"] .gmnoprint button span {
     text-align: center;
 }
 
-.hotline-form-button-container-list a,
+.hotline-form-button-container-list .btn-update,
 .hotline-form-button-container .btn-remove,
 .hotline-form-button-container-list .btn-remove {
     padding: 8px 16px;
@@ -2011,7 +2026,8 @@ html[data-theme="dark"] .gmnoprint button span {
     padding: 4px 8px;
 }
 
-.hotline-container i {
+.hotline-container i,
+.hotline-form-container i {
     font-size: 14px !important;
     margin-right: 8px !important;
 }
@@ -2664,7 +2680,8 @@ html[data-theme="dark"] .markers-header {
 html[data-theme="dark"] .location-section,
 html[data-theme="dark"] .social-section,
 html[data-theme="dark"] .telephone-section,
-html[data-theme="dark"] .hotline-container {
+html[data-theme="dark"] .hotline-container,
+html[data-theme="dark"] .hotline-form-container {
     background: var(--color-d-bg-container) !important;
 }
 
@@ -2775,10 +2792,11 @@ html[data-theme="dark"] .logout:active {
 }
 
 html[data-theme="dark"] .label-container span,
+html[data-theme="dark"] .report-marker-label,
 html[data-theme="dark"] .report-container p,
 html[data-theme="dark"] .wigdet-header p,
 html[data-theme="dark"] #loading-text {
-    color: var(--color-d-text);
+    color: var(--color-d-text) !important;
 }
 
 html[data-theme="dark"] .report-container span {
@@ -3565,6 +3583,7 @@ html[data-theme="dark"] button.changeTheme {
         margin: 13.5px 0 15px 0;
     }
 
+    table td,
     .btn-table-primary,
     .btn-table-submit,
     .btn-table-update,
@@ -3610,7 +3629,7 @@ html[data-theme="dark"] button.changeTheme {
         text-align: center;
         font-size: 16px;
     }
-    
+
     .location-detail i {
         margin-right: 6px;
     }
@@ -3702,6 +3721,10 @@ html[data-theme="dark"] button.changeTheme {
     .hotline-container button,
     .hotline-container a,
     #submitAreaBtn,
+    .hotline-container i,
+    .hotline-form-container i,
+    .hotline-form-container button,
+    .hotline-container button
     table td {
         font-size: 11px !important;
     }
@@ -3762,17 +3785,21 @@ html[data-theme="dark"] button.changeTheme {
     }
 
     #createGuidelineBtn i,
-    .modal-content label,
-    .marker-container span.fw-bold {
+    .modal-content label {
         font-size: 14px !important;
     }
 
     .modal-content input,
     .modal-content select,
     .modal-content textarea,
-    .hotline-form-content input {
+    .hotline-form-content input,
+    .marker-container span.fw-bold {
         font-size: 12px !important;
         height: fit-content !important;
+    }
+
+    .marker-container span.fw-bold {
+        margin-top: 6px;
     }
 
     #changePasswordModal .toggle-password {
@@ -3877,6 +3904,10 @@ html[data-theme="dark"] button.changeTheme {
         font-size: 16px !important;
     }
 
+    .hotline-container .id-container {
+        font-size: 15px;
+    }
+
     .empty-data-container {
         margin: 50px 0 !important;
     }
@@ -3890,7 +3921,8 @@ html[data-theme="dark"] button.changeTheme {
         font-size: 12px;
     }
 
-    .hotline-container {
+    .hotline-form-container,
+    .hotline-data-parent-container {
         flex-direction: column;
     }
 
@@ -3954,7 +3986,7 @@ html[data-theme="dark"] button.changeTheme {
         margin-top: 10px;
     }
 
-    .hotline-form-button-container-list a,
+    .hotline-form-button-container-list .btn-update,
     .hotline-form-button-container .btn-remove,
     .hotline-form-button-container-list .btn-remove {
         margin-left: 0;
