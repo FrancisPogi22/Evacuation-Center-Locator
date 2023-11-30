@@ -48,12 +48,14 @@
                                     {{ $hotlineNumber->number }}
                                 </div>
                                 <div class="hotline-form-button-container-list">
-                                    @if (auth()->user()->organization == 'CDRRMO')
-                                        <button class="btn-update updateNumber" data-id="{{ $hotlineNumber->id }}">
-                                            <i class="bi bi-pencil-square"></i>Update</button>
-                                        <button class="btn-remove removeNumber" data-id="{{ $hotlineNumber->id }}">
-                                            <i class="bi bi-trash3"></i>Remove</button>
-                                    @endif
+                                    @auth
+                                        @if (auth()->user()->organization == 'CDRRMO')
+                                            <button class="btn-update updateNumber" data-id="{{ $hotlineNumber->id }}">
+                                                <i class="bi bi-pencil-square"></i>Update</button>
+                                            <button class="btn-remove removeNumber" data-id="{{ $hotlineNumber->id }}">
+                                                <i class="bi bi-trash3"></i>Remove</button>
+                                        @endif
+                                    @endauth
                                     @guest
                                         <a href="tel:+{{ preg_replace('/\D/', '', $hotlineNumber->number) }}"
                                             class="btn-submit">
