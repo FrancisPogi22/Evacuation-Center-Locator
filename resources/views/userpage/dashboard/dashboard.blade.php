@@ -149,7 +149,7 @@
                         beforeSend() {
                             $('#btn-loader').addClass('show');
                         },
-                        success(response, xhr) {
+                        success(response) {
                             let blob = new Blob([response], {
                                     type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
                                 }),
