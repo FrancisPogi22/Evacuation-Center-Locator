@@ -63,6 +63,9 @@
                                     Record Evacuees Info
                                 </button>
                                 <button id="changeEvacueeStatusBtn" class="btn-submit"></button>
+                                <button class="btn-submit" id="printRecord" hidden>
+                                    <i class="bi bi-printer"></i>Print Record
+                                </button>
                             </div>
                         @endif
                     </div>
@@ -326,6 +329,44 @@
                         visible: '{{ $operation }}' == 'archived' ? false : true
                     }
                 ]
+            });
+
+            $(document).on('keyup', '#evacueeTable_filter input', function() {
+                clearTimeout($(this).data('checkingDelay'));
+                $(this).data('checkingDelay', setTimeout(() => {
+                    $('#printRecord').prop('hidden', evacueeTable.column('barangay:name').data()
+                        .unique().toArray().includes($(this).val().trim()) ? 0 : 1
+                    );
+                }, 500));
+            });
+
+            $(document).on('click', '#printRecord', function() {
+                let rowData = evacueeTable.rows({
+                    search: 'applied'
+                }).data();
+
+                $.ajax({
+                    type: "POST",
+                    url: '{{ route('evacuee.info.print') }}',
+                    data: {
+                        disaster_id: rowData[0].disaster_id,
+                        barangay: rowData[0].barangay
+                    },
+                    xhrFields: {
+                        responseType: 'blob'
+                    },
+                    success(response) {
+                        let blob = new Blob([response], {
+                                type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+                            }),
+                            link = document.createElement('a');
+
+                        link.href = window.URL.createObjectURL(blob);
+                        link.download = 'evacuee-data.xlsx';
+                        link.click();
+                    },
+                    error: showErrorMessage
+                });
             });
 
             fieldNames.forEach(fieldName => {

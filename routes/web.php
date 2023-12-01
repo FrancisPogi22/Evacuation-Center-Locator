@@ -74,6 +74,7 @@ Route::middleware('auth')->group(function () {
         });
 
         Route::prefix('evacuee')->name('evacuee.info.')->controller(EvacueeController::class)->group(function () {
+            Route::post('/printEvacueeData', 'printEvacueeData')->name('print');
             Route::get('/getEvacueeInfo/{operation}/{disasterId}/{status}', 'getEvacueeData')->name('get');
             Route::get('/getArchivedEvacueeInfo/{disasterInfo}', 'getArchivedEvacueeInfo')->name('get.archived');
             Route::post('/recordEvacueeInfo', 'recordEvacueeInfo')->name('record');
