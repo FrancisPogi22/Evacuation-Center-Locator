@@ -41,12 +41,12 @@
                                 @auth
                                     <div class="guide-btn-container">
                                         <div class="guide-update-btn">
-                                            <button class="btn-update updateGuideBtn" data-guide="{{ $guide->id }}">
+                                            <button class="btn-update updateGuideBtn" data-guide="{{ $guide->id }}" title="Update">
                                                 <i class="bi bi-pencil-square"></i> Update
                                             </button>
                                         </div>
                                         <div class="guide-remove-btn">
-                                            <button class="btn-remove removeGuideBtn" data-guide="{{ $guide->id }}">
+                                            <button class="btn-remove removeGuideBtn" data-guide="{{ $guide->id }}" title="Remove">
                                                 <i class="bi bi-trash3-fill"></i> Remove
                                             </button>
                                         </div>

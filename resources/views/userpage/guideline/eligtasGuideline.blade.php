@@ -39,12 +39,13 @@
                         <div class="guideline-widget">
                             @auth
                                 <button id="updateGuidelineBtn">
-                                    <i class="btn-update bi bi-pencil-square"></i>
+                                    <i class="btn-update bi bi-pencil-square" title="Update"></i>
                                 </button>
-                                <button id="removeGuidelineBtn">
+                                <button id="removeGuidelineBtn" title="Remove">
                                     <i class="btn-remove bi bi-x-lg"></i>
                                 </button>
-                                <a class="guidelines-item" href="{{ route('eligtas.guide', $guidelineItem->id) }}">
+                                <a class="guidelines-item" href="{{ route('eligtas.guide', $guidelineItem->id) }}"
+                                    title="View {{ $guidelineItem->type }}">
                                     <div class="guideline-content">
                                         <img
                                             src="{{ $guidelineItem->guideline_img ? asset('guideline_image/' . $guidelineItem->guideline_img) : asset('assets/img/Empty-Guideline.svg') }}">
@@ -55,7 +56,8 @@
                                 </a>
                             @endauth
                             @guest
-                                <a class="guidelines-item" href="{{ route('resident.eligtas.guide', $guidelineItem->id) }}">
+                                <a class="guidelines-item" href="{{ route('resident.eligtas.guide', $guidelineItem->id) }}"
+                                    title="View {{ $guidelineItem->type }}">
                                     <div class="guideline-content">
                                         <img
                                             src="{{ $guidelineItem->guideline_img ? asset('guideline_image/' . $guidelineItem->guideline_img) : asset('assets/img/Empty-Guideline.svg') }}">
@@ -130,8 +132,7 @@
                                 url: operation == 'create' ?
                                     "{{ route('guideline.create') }}" :
                                     "{{ route('guideline.update', 'guidelineId') }}"
-                                    .replace(
-                                        'guidelineId', guidelineId),
+                                    .replace('guidelineId', guidelineId),
                                 method: "POST",
                                 cache: false,
                                 contentType: false,
@@ -143,8 +144,10 @@
                                     $('#btn-loader').removeClass('show');
                                     formBtn.prop('disabled', 1);
 
-                                    if (response.status == 'warning')
-                                        return showWarningMessage(response.message)
+                                    if (response.status == 'warning') {
+                                        formBtn.prop('disabled', 0);
+                                        return showWarningMessage(response.message);
+                                    }
 
                                     let emptyGuideline = $('.empty-data-container'),
                                         {
@@ -251,37 +254,45 @@
             });
 
             $(document).on('click', '#addGuideInput', () => {
-                guideContentFields.append(`
-                        <div class="guide-field">
-                            <div class="image-container">
-                                <div class="guide-image">
-                                    <div class="image-preview">
-                                        <a href="javascript:void(0)" class="btn-remove removeImage" id="removeImage${guideField}"
-                                            hidden><i class="bi bi-trash3"></i></a>
-                                        <img src="{{ asset('assets/img/E-LIGTAS-Logo-${checkThemeColor()}.png') }}" alt="Image"
-                                            class="guideImage" id="image_preview_container${guideField}">
-                                    </div>
-                                    <input type="file" name="guidePhoto[]" id="guidePhoto${guideField}"
-                                        class="form-control guidePhoto" hidden>
-                                    <a href="javascript:void(0)" class="btn-submit selectImage" id="selectImage${guideField}"><i
+                $('.guide-forms').append(`
+                    <div class="modal-dialog modal-xl">
+                        <div class="modal-guide-image">
+                            <div class="modal-body">
+                                <div class="field-container guide-field">
+                                    <div class="guide-image">
+                                        <div class="image-preview">
+                                            <a href="javascript:void(0)" class="btn-remove removeImage" id="removeImage${guideField}"
+                                                hidden><i class="bi bi-trash3"></i></a>
+                                            <img src="{{ asset('assets/img/E-LIGTAS-Logo-${checkThemeColor()}.png') }}" alt="Image"
+                                                class="guideImage" id="image_preview_container${guideField}">
+                                        </div>
+                                        <input type="file" name="guidePhoto[]" id="guidePhoto${guideField}"
+                                            class="form-control guidePhoto" hidden>
+                                        <a href="javascript:void(0)" class="btn-submit selectImage" id="selectImage${guideField}"><i
                                             class="bi bi-image"></i>Choose Image</a>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="guide-field-container">
-                                <div class="field-container">
-                                    <label>Guide Label</label>
-                                    <input type="text" name="label[]" class="form-control" autocomplete="off"
-                                        placeholder="Enter Guide Label">
+                        </div>
+                        <div class="modal-content">
+                            <div class="modal-body">
+                                <div class="guide-field">
+                                    <div class="guide-field-container">
+                                        <div class="field-container">
+                                            <label>Guide Label</label>
+                                            <input type="text" name="label[]" class="form-control" autocomplete="off"
+                                                placeholder="Enter Guide Label">
+                                        </div>
+                                        <div class="field-container">
+                                            <label>Guide Content</label>
+                                            <textarea name="content[]" class="form-control" autocomplete="off" placeholder="Enter Guide Content" rows="4"></textarea>
+                                        </div>
+                                        <button class="btn-remove" id="removeGuideField"><i class="bi bi-trash3-fill"></i>Remove</button>
+                                    </div>
                                 </div>
-                                <div class="field-container">
-                                    <label>Guide Content</label>
-                                    <textarea name="content[]" class="form-control" autocomplete="off" placeholder="Enter Guide Content" rows="7"></textarea>
-                                </div>
-                                <button class="btn-remove" id="removeGuideField"><i class="bi bi-trash3-fill"></i>Remove</button>
                             </div>
                         </div>
                     </div>`);
-                changeModalSize('change');
                 guideField++;
             });
 
@@ -324,9 +335,9 @@
             });
 
             $(document).on('click', '#removeGuideField', function() {
-                $(this).closest('.guide-field').remove();
+                $(this).closest('.modal-dialog').remove();
 
-                if (checkGuideFields()) changeModalSize('remove');
+                // if (checkGuideFields()) changeModalSize('remove');
             });
 
             modal.on('hidden.bs.modal', () => {
@@ -335,7 +346,6 @@
                 guidelineImgChanged = false;
                 removeGuidelinebtn.prop('hidden', 1);
                 changeImageBtn('remove');
-                changeModalSize('remove');
                 validator.resetForm();
                 guideField = 0;
                 guideContentFields.html("");
@@ -383,11 +393,11 @@
                     guidelineBtn.addClass('bg-primary').html('<i class="bi bi-arrow-repeat"></i>Change Image');
             }
 
-            function changeModalSize(action) {
-                action == 'remove' ?
-                    modalDialog.removeClass('modal-xl').addClass('modal-lg') :
-                    modalDialog.removeClass('modal-lg').addClass('modal-xl');
-            }
+            // function changeModalSize(action) {
+            //     action == 'remove' ?
+            //         modalDialog.removeClass('modal-xl').addClass('modal-lg') :
+            //         modalDialog.removeClass('modal-lg').addClass('modal-xl');
+            // }
         @endauth
 
         $('#searchGuidelineForm').on('submit', (e) => {
