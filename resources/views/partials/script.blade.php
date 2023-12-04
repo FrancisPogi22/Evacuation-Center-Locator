@@ -103,12 +103,13 @@
             clearTimeout($(this).data('checkingDelay'));
 
             $(this).data('checkingDelay', setTimeout(() => {
-                let checkPasswordRoute = $('#checkPasswordRoute').data('route');
+                let checkPasswordRoute = $('#checkPasswordRoute').data('route'),
+                    newPass = $('.new-pass'),
+                    confirmPass = $('.confirm-pass');
 
                 if (current_password == "") {
-                    resetPasswordBtn.prop('hidden', 1);
-                    checkPasswordIcon.removeClass('bi-check2-circle').addClass(
-                        'bi-x-circle').prop('hidden', 1);
+                    resetPasswordBtn.add(checkPasswordIcon.removeClass('bi-check2-circle')
+                        .addClass('bi-x-circle')).prop('hidden', 1);
                     changePasswordValidation.resetForm();
                     resetChangePasswordForm();
 
@@ -133,12 +134,16 @@
                             eyeIcon.removeClass('bi-eye').addClass('bi-eye-slash');
                             password.add(confirmPassword).val("").prop('type',
                                 'password').prop('disabled', 1);
+                            newPass.add(confirmPass).add(resetPasswordBtn).prop(
+                                'hidden', 1);
                         } else {
-                            checkPasswordIcon.removeClass('bi-x-circle error')
-                                .addClass('bi-check2-circle success').prop('hidden',
-                                    0);
                             password.add(confirmPassword).add(resetPasswordBtn.prop(
                                 'hidden', 0)).prop('disabled', 0);
+                            newPass.add(confirmPass).add(resetPasswordBtn).add(
+                                checkPasswordIcon.removeClass(
+                                    'bi-x-circle error')
+                                .addClass('bi-check2-circle success')).prop(
+                                'hidden', 0);
                         }
                     }
                 });
@@ -310,7 +315,7 @@
                 if (reportMarker.lat() == lat && reportMarker.lng() == lng) {
                     google.maps.event.trigger(marker, 'click');
                     sessionStorage.setItem('report_type', 'null');
-                    
+
                     return false;
                 }
             });

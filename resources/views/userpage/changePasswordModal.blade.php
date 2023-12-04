@@ -22,13 +22,13 @@
                                     autocomplete="off" placeholder="Enter Current Password">
                                 <i class="bi bi-x-circle checkPassword" hidden></i>
                             </div>
-                            <div class="field-container">
+                            <div class="field-container new-pass" hidden>
                                 <label for="password">New Password</label>
                                 <input type="password" name="password" id="password" class="form-control"
                                     autocomplete="off" placeholder="Enter New Password" disabled>
                                 <i class="bi bi-eye-slash toggle-password" id="showPassword" data-target="#password"></i>
                             </div>
-                            <div class="field-container">
+                            <div class="field-container confirm-pass" hidden>
                                 <label for="confirmPassword">Confirm Password</label>
                                 <input type="password" name="confirmPassword" id="confirmPassword" class="form-control"
                                     autocomplete="off" placeholder="Enter Confirm Password" onpaste="return false;"

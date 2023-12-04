@@ -137,7 +137,6 @@
                 },
                 errorElement: 'span',
                 submitHandler(form) {
-
                     confirmModal(`Do you want to ${operation} this user details?`).then((result) => {
                         if (!result.isConfirmed) return;
 
