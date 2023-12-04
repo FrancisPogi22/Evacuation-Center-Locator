@@ -51,7 +51,7 @@
     </p>
 
     <center>
-        <a href="{{ route('/') }}" id="btn-login">Login With Credentials</a>
+        <a href="{{ route('login') }}" id="btn-login">Login With Credentials</a>
     </center>
 
     <hr id="last-hr">
