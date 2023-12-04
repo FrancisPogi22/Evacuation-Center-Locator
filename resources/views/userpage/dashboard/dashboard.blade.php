@@ -347,55 +347,44 @@
                         if (loader) $('#loader').remove();
 
                         if (barangayData.length > 0) {
-                            $('.pie-container').prop('hidden', 0);
                             $('.pie-chart').remove();
-                            barangayData.forEach((barangay, count) => {
-                                $('.pie-figure').append(
-                                    `<div id="evacueePie${count + 1}" class="pie-chart"></div>`);
-                                Highcharts.chart(`evacueePie${count + 1}`, {
-                                    chart: {
-                                        type: 'pie'
-                                    },
-                                    title: false,
-                                    subtitle: {
-                                        text: barangay.barangay,
-                                        align: 'center',
-                                        verticalAlign: 'bottom'
-                                    },
-                                    tooltip: {
-                                        pointFormat: '{series.name}: <b>{point.y}</b>'
-                                    },
-                                    plotOptions: {
-                                        pie: {
-                                            dataLabels: {
-                                                enabled: true,
-                                                style: {
-                                                    textOutline: 'none'
-                                                }
-                                            },
-                                            center: ['50%', '50%'],
-                                            size: '80%'
-                                        }
-                                    },
-                                    series: [{
-                                        name: 'Evacuee',
-                                        colorByPoint: true,
-                                        data: [{
-                                            name: 'Male',
-                                            y: parseInt(barangay.male),
-                                            color: '#0284c7'
-                                        }, {
-                                            name: 'Female',
-                                            y: parseInt(barangay.female),
-                                            color: '#f43f5e'
-                                        }]
-                                    }],
-                                    exporting: false,
-                                    credits: {
-                                        enabled: false
+                            $('.pie-container').prop('hidden', 0);
+                            $('.pie-figure').append(
+                                `<div id="evacueePie" class="pie-chart"></div>`);
+                            Highcharts.chart(`evacueePie`, {
+                                chart: {
+                                    type: 'pie'
+                                },
+                                title: false,
+                                tooltip: {
+                                    pointFormat: '{series.name}: <b>{point.y}</b>'
+                                },
+                                plotOptions: {
+                                    pie: {
+                                        dataLabels: {
+                                            enabled: true,
+                                            style: {
+                                                textOutline: 'none'
+                                            }
+                                        },
+                                        center: ['50%', '50%'],
+                                        size: '80%'
                                     }
-                                })
-                            });
+                                },
+                                series: [{
+                                    name: 'Evacuee',
+                                    colorByPoint: true,
+                                    data: barangayData.map((barangay, count) => ({
+                                        name: barangay.barangay,
+                                        y: parseInt(barangay.individuals),
+                                        color: `hsl(${(count / barangayData.length) * 360}, 20%, 70%)`
+                                    }))
+                                }],
+                                exporting: false,
+                                credits: {
+                                    enabled: false
+                                }
+                            })
                         } else {
                             $('.pie-container').prop('hidden', 1);
                         }
