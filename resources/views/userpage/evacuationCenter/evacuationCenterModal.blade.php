@@ -41,6 +41,11 @@
                             </select>
                         </div>
                         <div class="field-container">
+                            <label>Search Place</label>
+                            <input type="text" id="searchPlace" class="form-control"
+                            placeholder="Enter Place">
+                        </div>
+                        <div class="field-container">
                             <label>Location</label>
                             <div class="map-border">
                                 <div class="form-map" id="map"></div>
@@ -51,10 +56,10 @@
                         </div>
                         <div class="form-button-container">
                             <button id="createEvacuationCenterBtn" class="modalBtn">
-                                <div id="btn-loader">
+                                <div id="btn-loader" hidden>
                                     <div id="loader-inner"></div>
                                 </div>
-                                <span class="btn-text"></span>
+                                <span id="btn-text"></span>
                             </button>
                         </div>
                     </div>

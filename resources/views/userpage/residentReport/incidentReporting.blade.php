@@ -43,24 +43,36 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/jquery.validate.min.js"
         integrity="sha512-rstIgDs0xPgmG6RX1Aba4KV5cWJbAMcvRCVmglpam9SoHZiUCyQVDdH2LPlxoHtrv17XWblE/V/PP+Tr04hbtA=="
         crossorigin="anonymous"></script>
-    <script src="https://maps.googleapis.com/maps/api/js?key={{ config('services.googleMap.key') }}&v=weekly" defer>
-    </script>
+    <script src="https://maps.googleapis.com/maps/api/js?key={{ config('services.googleMap.key') }}&callback=&v=weekly"
+        defer></script>
     @include('partials.toastr')
     <script>
-        let map, reportMarker, reportWindow, isClicked = false,
+        let map, reportMarker, reportWindow, userMarker,
+            isClicked = false,
+            reportSubmitting = false,
             btnContainer = $('.page-button-container');
 
-        function initMap(userLocation, zoom) {
+        function initMap(coords, zoom) {
             if (map) {
                 map = null;
                 reportMarker = null;
                 reportWindow = null;
             }
 
+            const loader = document.createElement('div'),
+                stopBtnContainer = document.createElement('div');
+
+            loader.id = 'loader';
+            loader.innerHTML = '<div id="loader-inner"></div><div id="loading-text">Getting your location...</div>';
+
+            stopBtnContainer.className = 'stop-btn-container';
+            stopBtnContainer.innerHTML =
+                '<button id="cancelReportingBtn" class="btn-remove"><i class="bi bi-stop-circle"></i>Cancel Report</button>';
+
             map = new google.maps.Map(document.getElementById("map"), {
                 center: {
-                    lat: userLocation ? userLocation.lat : 14.246261,
-                    lng: userLocation ? userLocation.lng : 121.12772
+                    lat: coords ? coords.lat : 14.246261,
+                    lng: coords ? coords.lng : 121.12772
                 },
                 zoom: zoom,
                 clickableIcons: false,
@@ -71,7 +83,13 @@
                 styles: localStorage.getItem('theme') == 'dark' ? mapDarkModeStyle : mapLightModeStyle
             });
 
+            map.controls[google.maps.ControlPosition.TOP_RIGHT].push(stopBtnContainer);
+            map.controls[google.maps.ControlPosition.CENTER].push(loader);
+
             map.addListener("click", (event) => {
+                if (reportSubmitting) return;
+
+                $('.stop-btn-container').show();
                 let coordinates = event.latLng;
 
                 if (reportMarker) {
@@ -95,7 +113,7 @@
                                 </div>
                                 <div class="mt-2">
                                     <label>Image</label>
-                                    <input type="file" name="image" class="form-control" id="areaInputImage" accept=".jpeg, .jpg, .png" hidden>
+                                    <input type="file" name="image" class="form-control" id="inputImage" accept=".jpeg, .jpg, .png" hidden>
                                     <div class="info-window-action-container report-area">
                                         <button class="btn btn-sm btn-primary" id="imageBtn">
                                             <i class="bi bi-image"></i>Select
@@ -105,17 +123,22 @@
                                     <span id="image-error" class="error" hidden>Please select an image file.</span>
                                 </div>
                                 <center>
-                                    <button id="submitAreaBtn" class="modalBtn">
-                                        <i class="bi bi-send"></i>
-                                        <div id="btn-loader">
-                                            <div id="loader-inner"></div>
-                                        </div>Submit
+                                    <button id="submitReportBtn" class="modalBtn">
+                                        <div id="defaultBtnText">
+                                            <i class="bi bi-send"></i>
+                                            Submit
+                                        </div>
+                                        <div id="loadingBtnText" hidden>
+                                            <div id="btn-loader">
+                                                <div id="loader-inner"></div>
+                                            </div>
+                                            Submitting
+                                        </div>
                                     </button>
                                 <center>
                             </div>
                         </form>`
                     });
-
                     reportMarker = new google.maps.Marker({
                         position: coordinates,
                         map: map,
@@ -129,13 +152,9 @@
                             className: 'report-marker-label'
                         }
                     });
-
                     reportMarker.addListener('click', () => reportWindow.open(map, reportMarker));
-
                     reportWindow.open(map, reportMarker);
-
                     reportMarker.addListener('drag', () => reportWindow.close());
-
                     reportMarker.addListener('dragend', () => {
                         reportWindow.open(map, reportMarker);
                         $('[name="latitude"]').val(reportMarker.getPosition().lat());
@@ -145,19 +164,25 @@
             });
         }
 
-        $(document).on('click', '.gm-ui-hover-effect', () => reportMarker.setPosition(null));
-
-        function executeInitMap(userLocation, zoom = 13, geoLocation = false) {
-            initMap(userLocation, zoom);
+        function setReportingMap(coords, zoom, success, error) {
+            initMap(coords, zoom);
             $('#loader').removeClass('show');
-            geoLocation && showInfoMessage('Click on the map to pinpoint the location of the incident.');
+            success && btnContainer.prop('hidden', error ? 0 : 1);
+            error && $('#retryGeolocation').prop('disabled', 0);
+        }
+
+        function resetMapView() {
+            map.setCenter({
+                lat: userMarker ? userMarker.getPosition().lat() : 14.246261,
+                lng: userMarker ? userMarker.getPosition().lng() : 121.12772
+            });
+            map.setZoom(userMarker ? 18 : 13);
         }
 
         function getCurrentPosition() {
             if (!navigator.geolocation) {
-                executeInitMap();
-                showInfoMessage('Geolocation is not supported by this browser.');
-                return;
+                setReportingMap(null, 13, null, null);
+                return showInfoMessage('Geolocation is not supported by this browser.');
             }
 
             let currentWatchID;
@@ -165,18 +190,15 @@
             currentWatchID = navigator.geolocation.watchPosition(
                 (position) => {
                     if (position.coords.accuracy <= 500) {
-                        console.log('succ')
-                        status = true;
-                        navigator.geolocation.clearWatch(currentWatchID);
-
                         const coords = {
                             lat: position.coords.latitude,
                             lng: position.coords.longitude
                         };
 
-                        executeInitMap(coords, 18, true)
+                        setReportingMap(coords, 18, true, null);
+                        showInfoMessage('Click on the map to pinpoint the location of the incident.');
 
-                        const userMarker = new google.maps.Marker({
+                        userMarker = new google.maps.Marker({
                             position: coords,
                             map,
                             icon: {
@@ -190,19 +212,15 @@
                             map.setZoom(19);
                         });
 
-                        btnContainer.prop('hidden', 1);
+
                     } else {
                         setTimeout(() => {
-                            if (map == null) {
-                                navigator.geolocation.clearWatch(currentWatchID);
-                                btnContainer.prop('hidden', 0);
-                                showWarningMessage('Cannot get your current location.');
-                                $('#retryGeolocation').prop('disabled', 0);
-                                executeInitMap();
-                                console.log('err')
-                            }
+                            setReportingMap(null, 13, true, true);
+                            showWarningMessage('Cannot get your current location.');
                         }, 5000);
                     }
+
+                    navigator.geolocation.clearWatch(currentWatchID);
                 },
                 (error) => {
                     let message;
@@ -217,11 +235,10 @@
                             message = 'Cannot get your current location.';
                             break;
                     }
+
+                    setReportingMap(null, 13, null, true);
                     showWarningMessage(message);
                     navigator.geolocation.clearWatch(currentWatchID);
-                    $('#retryGeolocation').prop('disabled', 0);
-                    executeInitMap();
-                    console.log('red err')
                 }, {
                     enableHighAccuracy: true,
                     timeout: 5000,
@@ -231,9 +248,9 @@
         }
 
         $(document).ready(() => {
-            !navigator.geolocation ? executeInitMap() : getCurrentPosition();
+            getCurrentPosition();
 
-            $(document).on('click', '#submitAreaBtn', () => {
+            $(document).on('click', '#submitReportBtn', () => {
                 $('#reportAreaForm').validate({
                     rules: {
                         details: 'required',
@@ -246,11 +263,11 @@
                         this.defaultShowErrors();
 
                         $('#image-error').text('Please select an image.')
-                            .prop('style', `display: ${$('#areaInputImage').val() == '' ?
+                            .prop('style', `display: ${$('#inputImage').val() == '' ?
                                 'block' : 'none'} !important`);
                     },
                     submitHandler(form) {
-                        if ($('#areaInputImage').val() == '') return;
+                        if ($('#inputImage').val() == '') return;
 
                         confirmModal('Are you sure you want to report this incident?').then((
                             result) => {
@@ -264,13 +281,13 @@
                                 contentType: false,
                                 processData: false,
                                 beforeSend() {
-                                    $('#btn-loader').addClass('show');
-                                    $('#submitAreaBtn').prop('disabled', 1);
+                                    reportSubmitting = true;
+                                    $('#defaultBtnText').hide();
+                                    $('#loadingBtnText').prop('hidden', 0);
+                                    $('textarea, #submitReportBtn, #imageBtn, #cancelReportingBtn')
+                                        .prop('disabled', 1);
                                 },
                                 success(response) {
-                                    $('#btn-loader').removeClass('show');
-                                    $('#submitAreaBtn').prop('disabled', 0);
-
                                     const status = response.status;
 
                                     status == "warning" || status == "blocked" ?
@@ -278,21 +295,39 @@
                                         showSuccessMessage(
                                             'Report submitted successfully.');
 
-                                    status != "warning" && (reportMarker.setMap(
-                                            null), reportMarker = null,
-                                        reportWindow = null);
+                                    status != "blocked" && (
+                                        $('#cancelReportingBtn').click(),
+                                        $('.stop-btn-container').hide());
                                 },
-                                error: showErrorMessage
+                                error: showErrorMessage,
+                                complete() {
+                                    reportSubmitting = false;
+                                    $('#defaultBtnText').show();
+                                    $('#loadingBtnText').prop('hidden', 1);
+                                    $('textarea, #submitReportBtn, #imageBtn, #cancelReportingBtn')
+                                        .prop('disabled', 0);
+                                }
                             });
                         });
                     }
                 });
             });
 
-            $(document).on('click', '#retryGeolocation', () => {
-                $(this).prop('disabled', 1);
+            $(document).on('click', '#retryGeolocation', function() {
+                $('.stop-btn-container').hide();
                 $('#loader').addClass('show');
+                resetMapView();
+                reportMarker?.setMap(null);
                 getCurrentPosition();
+                $(this).prop('disabled', 1);
+            });
+
+            $(document).on('click', '#cancelReportingBtn', function() {
+                resetMapView();
+                reportMarker.setMap(null);
+                reportMarker = null;
+                reportWindow = null;
+                $('.stop-btn-container').hide();
             });
         });
     </script>

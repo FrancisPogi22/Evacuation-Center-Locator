@@ -38,9 +38,10 @@
                             </div>
                             <div id="change-button-container">
                                 <button id="resetPasswordBtn" class="btn-update modalBtn" disabled hidden>
-                                    <div id="btn-loader">
+                                    <div id="btn-loader" hidden>
                                         <div id="loader-inner"></div>
-                                    </div>Change
+                                    </div>
+                                    <span id="btn-text">Change</span>
                                 </button>
                             </div>
                         </div>

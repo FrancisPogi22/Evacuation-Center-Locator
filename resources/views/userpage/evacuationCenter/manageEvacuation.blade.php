@@ -56,9 +56,9 @@
     @include('partials.script')
     <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/responsive/2.4.1/js/dataTables.responsive.min.js"></script>
-    <script defer
-        src="https://maps.googleapis.com/maps/api/js?key={{ config('services.googleMap.key') }}&callback=initMap&v=weekly">
-    </script>
+    <script
+        src="https://maps.googleapis.com/maps/api/js?key={{ config('services.googleMap.key') }}&libraries=places&callback=initMap&v=weekly"
+        defer></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous">
     </script>
@@ -108,12 +108,12 @@
                 }
             ],
             columnDefs: [{
-                    targets: 5,
-                    render: function(data) {
-                        let color = data == 'Active' ? 'success' : data == 'Inactive' ? 'danger' :
-                            'warning';
+                targets: 5,
+                render: function(data) {
+                    let color = data == 'Active' ? 'success' : data == 'Inactive' ? 'danger' :
+                        'warning';
 
-                        return `
+                    return `
                         <div class="status-container">
                             <div class="status-content bg-${color}">
                                 ${data}
@@ -140,25 +140,43 @@
             });
 
             map.addListener("click", (event) => {
-                let location = event.latLng;
+                if (reportSubmitting) return;
 
-                if (marker) {
-                    marker.setPosition(location);
-                } else {
-                    marker = new google.maps.Marker({
-                        position: location,
-                        map: map,
-                        icon: {
-                            url: "{{ asset('assets/img/Default.png') }}",
-                            scaledSize: new google.maps.Size(35, 35)
-                        }
-                    });
-                }
-
-                $('#latitude').val(location.lat());
-                $('#longitude').val(location.lng());
-                $('#location-error').text('').prop('style', 'display: none');
+                setMarker(event.latLng)
             });
+
+            const autocomplete = new google.maps.places.Autocomplete(document.getElementById('searchPlace'));
+
+            autocomplete.addListener('place_changed', function() {
+                const selectedPlace = autocomplete.getPlace();
+
+                if (selectedPlace.geometry)
+                    setMarker({
+                        lat: selectedPlace.geometry.location.lat(),
+                        lng: selectedPlace.geometry.location.lng()
+                    });
+            });
+        }
+
+        function setMarker(coordinates) {
+            if (marker)
+                marker.setPosition(coordinates);
+            else {
+                marker = new google.maps.Marker({
+                    position: coordinates,
+                    map: map,
+                    icon: {
+                        url: "{{ asset('assets/img/Default.png') }}",
+                        scaledSize: new google.maps.Size(35, 35)
+                    }
+                });
+            }
+
+            map.setZoom(18);
+            map.panTo(coordinates);
+            $('#latitude').val(coordinates.lat);
+            $('#longitude').val(coordinates.lng);
+            $('#location-error').text('').prop('style', 'display: none');
         }
 
         $(document).ready(() => {
@@ -167,6 +185,9 @@
                 modalLabel = $('.modal-label'),
                 formButton = $('#createEvacuationCenterBtn'),
                 modal = $('#evacuationCenterModal'),
+                btnLoader = $('#btn-loader'),
+                btnText = $('#btn-text'),
+                reportSubmitting = false,
                 saveBtnClicked = false;
 
             validator = $("#evacuationCenterForm").validate({
@@ -186,13 +207,60 @@
                     prop('style', 'display: block !important');
                 },
                 errorElement: 'span',
-                submitHandler: formSubmitHandler
+                submitHandler(form) {
+                    if (!marker || $('#searchPlace').is(':focus')) return;
+
+                    confirmModal(`Do you want to ${operation} this evacuation center?`).then((result) => {
+                        if (!result.isConfirmed) return;
+
+                        let formData = $(form).serialize();
+
+                        return operation == 'update' && defaultFormData == formData ?
+                            showWarningMessage() :
+                            $.ajax({
+                                data: formData,
+                                url: operation == 'add' ?
+                                    "{{ route('evacuation.center.create') }}" :
+                                    "{{ route('evacuation.center.update', 'evacuationCenterId') }}"
+                                    .replace('evacuationCenterId', evacuationCenterId),
+                                method: operation == 'add' ? 'POST' : 'PUT',
+                                beforeSend() {
+                                    reportSubmitting = true;
+                                    btnLoader.prop('hidden', 0);
+                                    btnText.text(operation == 'add' ?
+                                        'Adding' : 'Updating');
+                                    $('input, select, #createEvacuationCenterBtn, #closeModalBtn')
+                                        .prop('disabled', 1);
+                                },
+                                success(response) {
+                                    $('#btn-loader').addClass('show');
+                                    formButton.prop('disabled', 0);
+                                    response.status == "warning" ? showWarningMessage(response
+                                        .message) : (showSuccessMessage(
+                                        `Successfully ${operation == 'add' ? 'added' : 'updated'} evacuation center.`
+                                    ), evacuationCenterTable.draw(), modal.modal(
+                                        'hide'));
+                                },
+                                error: showErrorMessage,
+                                complete() {
+                                    reportSubmitting = false;
+                                    btnLoader.prop('hidden', 1);
+                                    btnText.text(
+                                        `${operation[0].toUpperCase()}${operation.slice(1)}`
+                                    );
+                                    $('input, select, #createEvacuationCenterBtn, #closeModalBtn')
+                                        .prop('disabled', 0);
+                                }
+                            });
+                    });
+                }
             });
 
             $(document).on('click', '#addEvacuationCenter', () => {
                 modalLabelContainer.removeClass('bg-warning');
                 modalLabel.text('Add Evacuation Center');
-                formButton.addClass('btn-submit').removeClass('btn-update').find('.btn-text').text('Add');
+                formButton.addClass('btn-submit').removeClass('btn-update');
+                btnText.text('Add');
                 operation = "add";
                 modal.modal('show');
             });
@@ -209,7 +277,8 @@
                 evacuationCenterId = id;
                 modalLabelContainer.addClass('bg-warning');
                 modalLabel.text('Update Evacuation Center');
-                formButton.addClass('btn-update').removeClass('btn-submit').find('.btn-text').text('Update');
+                formButton.addClass('btn-update').removeClass('btn-submit');
+                btnText.text('Update');
                 operation = "update";
                 $('#name').val(name);
                 $('#latitude').val(latitude);
@@ -270,39 +339,6 @@
             });
 
             formButton.click(() => saveBtnClicked = true);
-
-            function formSubmitHandler(form) {
-                if (!marker) return;
-
-                confirmModal(`Do you want to ${operation} this evacuation center?`).then((result) => {
-                    if (!result.isConfirmed) return;
-
-                    let formData = $(form).serialize();
-
-                    return operation == 'update' && defaultFormData == formData ?
-                        showWarningMessage() :
-                        $.ajax({
-                            data: formData,
-                            url: operation == 'add' ? "{{ route('evacuation.center.create') }}" :
-                                "{{ route('evacuation.center.update', 'evacuationCenterId') }}".
-                            replace('evacuationCenterId', evacuationCenterId),
-                            method: operation == 'add' ? 'POST' : 'PUT',
-                            beforeSend(){
-                                $('#btn-loader').addClass('show');
-                                formButton.prop('disabled', 1);
-                            },
-                            success(response) {
-                                $('#btn-loader').addClass('show');
-                                formButton.prop('disabled', 0);
-                                response.status == "warning" ? showWarningMessage(response
-                                    .message) : (showSuccessMessage(
-                                    `Successfully ${operation == 'add' ? 'added' : 'updated'} evacuation center.`
-                                ), evacuationCenterTable.draw(), modal.modal('hide'));
-                            },
-                            error: showErrorMessage
-                        });
-                });
-            }
 
             function alterEvacuationCenter(url, type, operation) {
                 confirmModal(

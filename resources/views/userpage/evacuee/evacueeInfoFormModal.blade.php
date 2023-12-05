@@ -132,10 +132,10 @@
                         </div>
                         <div class="form-button-container" hidden>
                             <button id="recordEvacueeInfoBtn" class="modalBtn">
-                                <div id="btn-loader">
+                                <div id="btn-loader" hidden>
                                     <div id="loader-inner"></div>
                                 </div>
-                                <span class="btn-text"></span>
+                                <span id="btn-text"></span>
                             </button>
                         </div>
                     </div>

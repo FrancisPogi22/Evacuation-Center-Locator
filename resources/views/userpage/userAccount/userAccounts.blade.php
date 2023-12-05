@@ -120,7 +120,9 @@
                 positionInput = $('#position'),
                 modalLabelContainer = $('.modal-label-container'),
                 modalLabel = $('.modal-label'),
-                formButton = $('#saveProfileDetails');
+                formButton = $('#saveProfileDetails'),
+                btnLoader = $('#btn-loader'),
+                btnText = $('#btn-text');
 
             validator = form.validate({
                 rules: {
@@ -136,6 +138,7 @@
                     email: 'Please enter an email address.'
                 },
                 errorElement: 'span',
+
                 submitHandler(form) {
 
                     confirmModal(`Do you want to ${operation} this user details?`).then((result) => {
@@ -152,13 +155,26 @@
                                     "{{ route('account.update', 'userId') }}".replace(
                                         'userId', userId),
                                 method: operation == 'create' ? "POST" : "PUT",
+                                beforeSend() {
+                                    btnLoader.prop('hidden', 0);
+                                    btnText.text(operation == 'create' ?
+                                        'Creating' : 'Updating');
+                                    $('select, input, #saveProfileDetails, #closeModalBtn')
+                                        .prop('disabled', 1);
+                                },
                                 success(response) {
                                     response.status == "warning" ? showWarningMessage(
                                         response.message) : (showSuccessMessage(
                                         `Successfully ${operation}d user account.`
-                                    ), modal.modal('hide'), accountTable.draw())
+                                    ), modal.modal('hide'), accountTable.draw());
                                 },
-                                error: showErrorMessage
+                                error: showErrorMessage,
+                                complete() {
+                                    btnLoader.prop('hidden', 1);
+                                    btnText.text(`${operation[0].toUpperCase()}${operation.slice(1)}`);
+                                    $('select, input, #saveProfileDetails, #closeModalBtn')
+                                        .prop('disabled', 0);
+                                }
                             });
                     });
                 }
@@ -197,7 +213,10 @@
                         break;
 
                     case 'updateAccount':
-                        changeModalProperties('Update User Account', 'Update');
+                        btnText.text('Update');
+                        modalLabel.text('Update User Account');
+                        formButton.removeClass('btn-submit').addClass('btn-update');
+                        modalLabelContainer.removeClass('bg-success').addClass('bg-warning');
                         positionContainer.add(nameContainer).add(emailContainer).prop('hidden',
                             0);
                         initPositionOption(organization);
@@ -231,9 +250,10 @@
             });
 
             $('#createUserAccount').click(() => {
-                modalLabelContainer.removeClass('bg-warning');
+                btnText.text('Create');
                 modalLabel.text('Create User Account');
-                formButton.addClass('btn-submit').removeClass('btn-update').find('.btn-text').text('Create');
+                modalLabelContainer.removeClass('bg-warning');
+                formButton.addClass('btn-submit').removeClass('btn-update');
                 operation = "create";
                 modal.modal('show');
             });
@@ -250,12 +270,6 @@
                     '<option value="President">President</option><option value="Vice President">Vice President</option>';
             }
 
-            function changeModalProperties(headerText, buttonText) {
-                modalLabelContainer.removeClass('bg-success').addClass('bg-warning');
-                modalLabel.text(headerText);
-                formButton.removeClass('btn-submit').addClass('btn-update').find('.btn-text').text(buttonText);
-            }
-
             function initPositionOption(organization) {
                 positionInput.empty();
                 positionInput.append(checkPosition(organization));
@@ -267,13 +281,7 @@
                         $.ajax({
                             method: "PATCH",
                             url: url,
-                            beforeSend() {
-                                $('#btn-loader').addClass('show');
-                                formButton.prop('disabled', 1);
-                            },
                             success() {
-                                $('#btn-loader').removeClass('show');
-                                formButton.prop('disabled', 0);
                                 showSuccessMessage(
                                     `Successfully ${operation}${operation == "open" ? 'ed' : 'd'} account.`
                                 );

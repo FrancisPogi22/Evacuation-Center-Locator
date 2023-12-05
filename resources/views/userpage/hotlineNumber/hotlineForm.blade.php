@@ -24,7 +24,12 @@
                         placeholder="Enter Number" autocomplete="off">
                 </div>
                 <div class="hotline-form-button-container">
-                    <button class="btn-submit" id="addNumberBtn"></button>
+                    <button class="btn-submit modalBtn" id="addNumberBtn">
+                        <div id="btn-loader" hidden>
+                            <div id="loader-inner"></div>
+                        </div>
+                        <div id="btnText">Add</div>
+                    </button>
                     <button class="btn-remove" id="closeFormBtn">Cancel</button>
                 </div>
             </div>

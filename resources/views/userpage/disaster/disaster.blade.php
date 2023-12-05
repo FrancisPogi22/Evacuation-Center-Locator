@@ -134,8 +134,11 @@
                                         'disasterId', disasterId),
                                 method: operation == 'add' ? "POST" : "PATCH",
                                 beforeSend() {
-                                    $('#btn-loader').addClass('show');
-                                    formButton.prop('disabled', 1);
+                                    $('#btn-loader').prop('hidden', 0);
+                                    $('#btn-text').text(operation == 'add' ?
+                                        'Adding' : 'Updating');
+                                    $('input, #submitDisasterBtn, #closeModalBtn')
+                                        .prop('disabled', 1);
                                 },
                                 success(response) {
                                     $('#btn-loader').removeClass('show');
@@ -148,7 +151,13 @@
                                             `Disaster successfully ${operation == "add" ? "added" : "updated"}.`
                                         ), modal.modal('hide'), disasterTable.draw());
                                 },
-                                error: showErrorMessage
+                                error: showErrorMessage,
+                                complete() {
+                                    $('#btn-loader').prop('hidden', 1);
+                                    $('#btn-text').text(`${operation[0].toUpperCase()}${operation.slice(1)}`);
+                                    $('input, #submitDisasterBtn, #closeModalBtn')
+                                        .prop('disabled', 0);
+                                }
                             });
                     });
                 }
@@ -157,7 +166,7 @@
             $('#addDisasterData').click(() => {
                 modalLabelContainer.removeClass('bg-warning');
                 modalLabel.text('Add Disaster');
-                formButton.addClass('btn-submit').removeClass('btn-update').find('.btn-text').text('Add');
+                formButton.addClass('btn-submit').removeClass('btn-update').find('#btn-text').text('Add');
                 operation = "add";
                 modal.modal('show');
             });
@@ -171,8 +180,8 @@
                 $('#disasterName').val(name);
                 modalLabelContainer.addClass('bg-warning');
                 modalLabel.text('Update Disaster');
-                formButton.addClass('btn-update').removeClass('btn-submit').find('.btn-text').text(
-                    'Update');
+                formButton.addClass('btn-update').removeClass('btn-submit')
+                    .find('#btn-text').text('Update');
                 operation = "update";
                 modal.modal('show');
                 defaultFormData = form.serialize();

@@ -109,7 +109,9 @@
                 form = $('#generateReportForm'),
                 disasterList = $('#disaster-list'),
                 generateBtn = $("#btnSubmit"),
-                searchResults = $('#disaster_id');
+                searchResults = $('#disaster_id'),
+                btnLoader = $('#btn-loader'),
+                btnText = $('#btn-text');
 
             $('#disaster_year').change(function() {
                 $.get(`{{ route('searchDisaster', 'disasterYear') }}`
@@ -147,7 +149,10 @@
                             responseType: 'blob'
                         },
                         beforeSend() {
-                            $('#btn-loader').addClass('show');
+                            btnLoader.prop('hidden', 0);
+                            btnText.text('Generating');
+                            $('select, #btnSubmit, #closeModalBtn')
+                                .prop('disabled', 1);
                         },
                         success(response, xhr) {
                             let blob = new Blob([response], {
@@ -158,11 +163,15 @@
                             link.href = window.URL.createObjectURL(blob);
                             link.download = 'evacuee-data.xlsx';
                             link.click();
-                            $('#btn-loader').removeClass('show');
-                            generateBtn.prop("disabled", 0);
                             modal.modal('hide');
                         },
-                        error: showErrorMessage
+                        error: showErrorMessage,
+                        complete() {
+                            btnLoader.prop('hidden', 1);
+                            btnText.text('Generate');
+                            $('select, #btnSubmit, #closeModalBtn')
+                                .prop('disabled', 0);
+                        }
                     });
                 }
             });

@@ -80,6 +80,8 @@
                 name = $('#name'),
                 email = $('#email'),
                 form = $('#accountForm'),
+                btnText = $('#btn-text'),
+                btnLoader = $('#btn-loader'),
                 modalLabel = $('.modal-label'),
                 formButton = $('#saveProfileDetails'),
                 accountId = '{{ auth()->user()->id }}';
@@ -112,8 +114,10 @@
                                 method: 'PUT',
                                 data: formData,
                                 beforeSend() {
-                                    $('#btn-loader').addClass('show');
-                                    formButton.prop('disabled', 1);
+                                    btnLoader.prop('hidden', 0);
+                                    btnText.text('Updating');
+                                    $('input, select, #saveProfileDetails, #closeModalBtn')
+                                        .prop('disabled', 1);
                                 },
                                 success(response) {
                                     $('#btn-loader').removeClass('show');

@@ -197,8 +197,8 @@
                                     counts[type] = counts[type] + 1;
 
                                     approveBtn = `<button class="btn btn-sm btn-success approveBtn" aria-report-type="${ariaType}">
-                                        <i class="bi bi-${ condition != 2 ? (isPending ? 'bookmark-plus' : 'bookmark-check') : 'check-circle' }"></i>
-                                            ${condition != 2 ? `Set as ${condition == 1 ? 'Rescu' : 'Resolv'}${isPending ? 'ing' : 'ed'}` : "Approve"}
+                                        <i class="bi bi-${ condition != 2 ? (isPending ? 'bookmark-plus' : 'bookmark-check') : 'check-circle' }
+                                            "></i>${condition != 2 ? `Set as ${condition == 1 ? 'Rescu' : 'Resolv'}${isPending ? 'ing' : 'ed'}` : "Approve"}
                                         </button>`;
 
                                     action = `<div class="info-description">
@@ -210,18 +210,18 @@
                                                 </div>
                                                 ${isPending ? `${approveBtn}
                                                 <button class="btn btn-sm btn-danger removeBtn" aria-report-type="${ariaType}">
-                                                    <i class="bi bi-x-circle"></i> Remove
+                                                    <i class="bi bi-x-circle"></i>Remove
                                                 </button>` :
                                                 `${condition != 2 ? (status == "Resolved" || status == "Rescued") ?
                                                 "" : approveBtn :
                                                 `<button class="btn btn-sm btn-primary updateBtn">
-                                                    <i class="bi bi-chat-square-text"></i> Update
+                                                    <i class="bi bi-chat-square-text"></i>Update
                                                 </button>`}
                                                 ${(status == "Approved" || status == "Resolved" || status == "Rescued") ?
                                                 `<button class="btn btn-sm btn-danger
                                                     archive${condition == 1 && status == "Rescued" ? "Emergency" : ""}Btn"
                                                     aria-report-type="${ariaType}">
-                                                    <i class="bi bi-box-arrow-in-down-right"></i> Archive
+                                                    <i class="bi bi-box-arrow-in-down-right"></i>Archive
                                                 </button>` : ''}`}
                                             </div>
                                         </div>`;
@@ -539,11 +539,11 @@
                             this.defaultShowErrors();
 
                             $('#image-error').text('Please select an image.')
-                                .prop('style', `display: ${$('#areaInputImage').val() == '' ?
+                                .prop('style', `display: ${$('#inputImage').val() == '' ?
                                         'block' : 'none'} !important`);
                         },
                         submitHandler() {
-                            if ($('#areaInputImage').val() == '') return;
+                            if ($('#inputImage').val() == '') return;
 
                             confirmModal('Are you sure about the info you added?').then((
                                 result) => {

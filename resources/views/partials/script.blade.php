@@ -19,6 +19,8 @@
         changePasswordForm = $('#changePasswordForm'),
         eyeIcon = $('.toggle-password'),
         checkPasswordIcon = $('.checkPassword'),
+        btnLoader = $('#resetPasswordBtn #btn-loader'),
+        btnText = $('#resetPasswordBtn #btn-text'),
         current_password = "";
     @endauth
     $(document).ready(() => {
@@ -26,13 +28,13 @@
 
         $(document).on('click', '#imageBtn', () => {
             event.preventDefault();
-            $('#areaInputImage').click();
+            $('#inputImage').click();
         });
 
-        $(document).on('change', '#areaInputImage', function() {
+        $(document).on('change', '#inputImage', function() {
             if (this.files[0]) {
                 if (!['image/jpeg', 'image/jpg', 'image/png'].includes(this.files[0].type)) {
-                    $('#areaInputImage').val('');
+                    $(this).val('');
                     $('#selectedReportImage').attr('src', '').prop('hidden', 1);
                     $('#imageBtn').html('<i class="bi bi-image"></i>Select');
                     setInfoWindowButtonStyles($('#imageBtn'), 'var(--color-primary');
@@ -56,6 +58,10 @@
                 container.animate({
                     scrollTop: container.prop('scrollHeight')
                 }, 500);
+            } else {
+                $('#selectedReportImage').attr('src', '').prop('hidden', 1);
+                $('#imageBtn').html('<i class="bi bi-image"></i>Select');
+                setInfoWindowButtonStyles($('#imageBtn'), 'var(--color-primary');
             }
         });
 
@@ -79,20 +85,25 @@
                         url: $('#changePasswordRoute').data('route'),
                         data: $(form).serialize(),
                         beforeSend() {
-                            $('#btn-loader').addClass('show');
-                            resetPasswordBtn.prop('disabled', 1);
+                            btnLoader.prop('hidden', 0);
+                            btnText.text('Changing');
+                            $('#changePasswordForm input, #resetPasswordBtn, #closeChangePasswordBtn')
+                                .prop('disabled', 1);
                         },
                         success(response) {
-                            $('#btn-loader').removeClass('show');
-                            resetPasswordBtn.prop('disabled', 0);
-
                             return response.status == "warning" ? showWarningMessage(
                                     response.message) :
                                 (showSuccessMessage('Password successfully changed.'),
                                     $(form)[0].reset(), currentPassword.text(""), modal
                                     .modal('hide'));
                         },
-                        error: showErrorMessage
+                        error: showErrorMessage,
+                        complete() {
+                            btnLoader.prop('hidden', 1);
+                            btnText.text('Change');
+                            $('#changePasswordForm input, #resetPasswordBtn, #closeChangePasswordBtn')
+                                .prop('disabled', 0);
+                        }
                     });
                 });
             }
@@ -309,37 +320,12 @@
                 if (reportMarker.lat() == lat && reportMarker.lng() == lng) {
                     google.maps.event.trigger(marker, 'click');
                     sessionStorage.setItem('report_type', 'null');
-                    
+
                     return false;
                 }
             });
         }
     @endif
-
-    function datePicker(id, enableTime = true) {
-        const dateFormat = enableTime ? "F j, Y h:i K" : "F j, Y";
-
-        return flatpickr(id, {
-            enableTime,
-            allowInput: true,
-            static: false,
-            timeFormat: "h:i K",
-            dateFormat,
-            minuteIncrement: 1,
-            secondIncrement: 1,
-            position: "below center",
-            theme: "light",
-            onClose(selectedDates, dateStr, instance) {
-                const selectedDate = selectedDates[0];
-
-                if (selectedDate instanceof Date)
-                    if (selectedDate < new Date().setHours(0, 0, 0, 0)) {
-                        showWarningMessage("Selected date is in the past.");
-                        instance.input.value = "";
-                    }
-            }
-        });
-    }
 
     function resetChangePasswordForm() {
         current_password = "";
@@ -380,8 +366,8 @@
         });
 
         const isView = button.text().includes('View');
-        const icon = isView ? '<i class="bi bi-chevron-contract"></i> Hide' :
-            '<i class="bi bi-chevron-expand"></i> View';
+        const icon = isView ? '<i class="bi bi-chevron-contract"></i>Hide' :
+            '<i class="bi bi-chevron-expand"></i>View';
         const bgColor = isView ? 'var(--color-red' : 'var(--color-primary';
 
         button.html(icon);

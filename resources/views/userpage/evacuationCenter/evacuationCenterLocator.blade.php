@@ -127,6 +127,7 @@
             locating = false,
             pinClicked = false,
             routeDisplayed = false,
+            reportSubmitting = false,
             geolocationBlocked = false,
             reportButtonClicked = false,
             hasActiveEvacuationCenter = false,
@@ -238,20 +239,20 @@
                     <div class="areaReportContainer">
                         ${type == "evacuationCenter" ?
                         `<div class="info-description">
-                                            <span>Name:</span> ${data.name}
-                                        </div>
-                                        <div class="info-description">
-                                            <span>Barangay:</span> ${data.barangay_name}
-                                        </div>
-                                        <div class="info-description">
-                                            <span>No. of evacuees:</span> ${data.evacuees}
-                                        </div>
-                                        <div class="info-description status">
-                                            <span>Status:</span>
-                                            <span class="status-content bg-${getStatusColor(data.status)}">
-                                                ${data.status}
-                                            </span>
-                                        </div>` :
+                            <span>Name:</span> ${data.name}
+                        </div>
+                        <div class="info-description">
+                            <span>Barangay:</span> ${data.barangay_name}
+                        </div>
+                        <div class="info-description">
+                            <span>No. of evacuees:</span> ${data.evacuees}
+                        </div>
+                        <div class="info-description status">
+                            <span>Status:</span>
+                            <span class="status-content bg-${getStatusColor(data.status)}">
+                                ${data.status}
+                            </span>
+                        </div>` :
                         `<div class="info-description">
                             <span>Report Date:</span> ${formatDateTime(data.report_time)}
                         </div>
@@ -437,7 +438,6 @@
         }
 
         async function getEvacuationCentersDistance() {
-            console.log('execute')
             $('#locateNearestBtn').attr('disabled', 1);
             evacuationCenterJson.length = 0;
             activeEvacuationCenters.length = 0;
@@ -515,7 +515,6 @@
 
                     if (findNearestActive && evacuationCenterJson.length == 0) {
                         await getEvacuationCentersDistance();
-                        console.log(findNearestActive + ' ' + evacuationCenterJson.length);
                         if (!hasActiveEvacuationCenter || evacuationCenterJson.length == 0) {
                             $('#stopLocatingBtn').click();
                             navigator.geolocation.clearWatch(watchId);
@@ -791,6 +790,8 @@
                         '<i class="bi bi-stop-circle"></i>Cancel Reporting'
                     ).addClass('btn-remove');
                     google.maps.event.addListener(map, 'click', function(event) {
+                        if (reportSubmitting) return;
+
                         const coordinates = event.latLng;
 
                         if (reportMarker) {
@@ -821,7 +822,7 @@
                                         </div>
                                         <div class="mt-2">
                                             <label>Image</label>
-                                            <input type="file" name="image" class="form-control" id="areaInputImage" accept=".jpeg, .jpg, .png" hidden>
+                                            <input type="file" name="image" class="form-control" id="inputImage" accept=".jpeg, .jpg, .png" hidden>
                                             <div class="info-window-action-container report-area">
                                                 <button class="btn btn-sm btn-primary" id="imageBtn">
                                                     <i class="bi bi-image"></i>Select
@@ -831,15 +832,24 @@
                                             <span id="image-error" class="error" hidden>Please select an image file.</span>
                                         </div>
                                         <center>
-                                            <button id="submitAreaBtn"><i class="bi bi-send"></i>Submit</button>
+                                            <button id="submitAreaBtn" class="modalBtn">
+                                                <div id="defaultBtnText">
+                                                    <i class="bi bi-send"></i>
+                                                    Submit
+                                                </div>
+                                                <div id="loadingBtnText" hidden>
+                                                    <div id="btn-loader">
+                                                        <div id="loader-inner"></div>
+                                                    </div>
+                                                    Submitting
+                                                </div>
+                                            </button>
                                         <center>
                                     </div>
                                 </form>`
                             );
 
-                            reportMarker.addListener('drag', () => {
-                                reportWindow.close();
-                            });
+                            reportMarker.addListener('drag', () => reportWindow.close());
 
                             reportMarker.addListener('dragend', () => {
                                 openInfoWindow(reportWindow, reportMarker);
@@ -881,11 +891,11 @@
                         this.defaultShowErrors();
 
                         $('#image-error').text('Please select an image.')
-                            .prop('style', `display: ${$('#areaInputImage').val() == '' ?
+                            .prop('style', `display: ${$('#inputImage').val() == '' ?
                                 'block' : 'none'} !important`);
                     },
                     submitHandler(form) {
-                        if ($('#areaInputImage').val() == '') return;
+                        if ($('#inputImage').val() == '') return;
 
                         confirmModal('Are you sure you want to report this area?').then((
                             result) => {
@@ -898,13 +908,13 @@
                                 contentType: false,
                                 processData: false,
                                 beforeSend() {
-                                    $('#btn-loader').addClass('show');
-                                    $('#submitAreaBtn').prop('disabled', 1);
+                                    reportSubmitting = true;
+                                    $('#defaultBtnText').hide();
+                                    $('#loadingBtnText').prop('hidden', 0);
+                                    $('select, textarea, #submitAreaBtn, #imageBtn, #reportAreaBtn')
+                                        .prop('disabled', 1);
                                 },
                                 success(response) {
-                                    $('#btn-loader').addClass('show');
-                                    $('#submitAreaBtn').prop('disabled', 0);
-
                                     const status = response.status
 
                                     status == "warning" || status ==
@@ -917,7 +927,14 @@
                                     status != "warning" &&
                                         $('#reportAreaBtn').click();
                                 },
-                                error: showErrorMessage
+                                error: showErrorMessage,
+                                complete() {
+                                    reportSubmitting = false;
+                                    $('#defaultBtnText').show();
+                                    $('#loadingBtnText').prop('hidden', 1);
+                                    $('select, textarea, #submitAreaBtn, #imageBtn, #reportAreaBtn')
+                                        .prop('disabled', 0);
+                                }
                             });
                         });
                     }

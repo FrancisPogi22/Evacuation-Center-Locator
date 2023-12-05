@@ -17,7 +17,7 @@
                         </div>
                         <div class="field-container">
                             <label>Image</label>
-                            <input type="file" class="form-control" id="areaInputImage" name="image"
+                            <input type="file" class="form-control" id="inputImage" name="image"
                                 accept=".jpeg, .jpg, .png" hidden>
                             <button class="btn btn-sm btn-primary" id="imageBtn">
                                 <i class="bi bi-image"></i>Select

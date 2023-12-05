@@ -165,10 +165,20 @@
 
             let url, evacueeId, operation, defaultFormData, validator, evacueeTable,
                 modal = $('#evacueeInfoFormModal'),
-                birthDateInput = datePicker("#birth_date", false),
+                birthDateInput = flatpickr("#birth_date", {
+                    enableTime: false,
+                    allowInput: true,
+                    static: true,
+                    disableMobile: true,
+                    dateFormat: "F j, Y",
+                    position: "below center",
+                    theme: "light",
+                }),
                 modalLabelContainer = $('.modal-label-container'),
                 modalLabel = $('.modal-label'),
                 formButton = $('#recordEvacueeInfoBtn'),
+                btnLoader = $('#btn-loader'),
+                btnText = $('#btn-text'),
                 selectAllCheckBox = $('#selectAllCheckBox'),
                 evacueeInfoForm = $('#evacueeInfoForm'),
                 modalDialog = $('.modal-dialog'),
@@ -351,15 +361,9 @@
 
                         let ids = ['infants', 'minors', 'senior_citizen', 'pwd', 'lactating'];
 
-                        $('#btn-loader').addClass('show');
-
                         if (parseFloat($('#male').val()) + parseFloat($('#female').val()) < ids
-                            .reduce((sum, id) => sum + parseFloat($(`#${id}`).val()), 0)) {
-                            $('#btn-loader').removeClass('show');
-                            showWarningMessage("Number of members isn't correct.");
-
-                            return;
-                        }
+                            .reduce((sum, id) => sum + parseFloat($(`#${id}`).val()), 0))
+                            return showWarningMessage("Number of members isn't correct.");
 
                         return operation == 'update' && defaultFormData == formData ?
                             showWarningMessage() :
@@ -367,21 +371,32 @@
                                 data: formData,
                                 url: operation == 'record' ?
                                     "{{ route('evacuee.info.record') }}" :
-                                    "{{ route('evacuee.info.update', 'evacueeId') }}".replace(
-                                        'evacueeId',
-                                        evacueeId),
+                                    "{{ route('evacuee.info.update', 'evacueeId') }}"
+                                        .replace('evacueeId', evacueeId),
                                 type: operation == 'record' ? "POST" : "PUT",
+                                beforeSend() {
+                                    btnLoader.prop('hidden', 0);
+                                    btnText.text(operation == 'record' ?
+                                        'Recording' : 'Updating');
+                                    $('select, input, #recordEvacueeInfoBtn, #newRecordBtn, #existingRecordBtn, #closeModalBtn')
+                                        .prop('disabled', 1);
+                                },
                                 success(response) {
-                                    $('#btn-loader').removeClass('show');
-                                    response.status == 'warning' ? showWarningMessage(response
-                                        .message) : (modal.modal('hide'), evacueeTable
-                                        .draw(),
-                                        showSuccessMessage(
-                                            `Successfully ${operation == 'record' ? 'recorded new' : 'updated the'} evacuee info.`
-                                        ));
+                                    response.status == 'warning' ?
+                                        showWarningMessage(response.message) :
+                                        (modal.modal('hide'), evacueeTable.draw(),
+                                            showSuccessMessage(
+                                                `Successfully ${operation == 'record' ? 'recorded new' : 'updated the'} evacuee info.`
+                                            ));
                                     initializeDataTable(url);
                                 },
-                                error: showErrorMessage
+                                error: showErrorMessage,
+                                complete() {
+                                    btnLoader.prop('hidden', 1);
+                                    btnText.text(`${operation[0].toUpperCase()}${operation.slice(1)}`);
+                                    $('select, input, #recordEvacueeInfoBtn, #newRecordBtn, #existingRecordBtn, #closeModalBtn')
+                                        .prop('disabled', 0);
+                                }
                             });
                     });
                 }
@@ -390,8 +405,8 @@
             $(document).on('click', '#recordEvacueeBtn', () => {
                 modalLabelContainer.removeClass('bg-warning');
                 modalLabel.text('Record Evacuee Information');
-                formButton.addClass('btn-submit').removeClass('btn-update').find('.btn-text').text(
-                    'Record');
+                formButton.addClass('btn-submit').removeClass('btn-update');
+                btnText.text('Record');
                 operation = "record";
                 modal.modal('show');
             });
@@ -399,8 +414,8 @@
             $(document).on('click', '#updateEvacueeBtn', function() {
                 modalLabelContainer.addClass('bg-warning');
                 modalLabel.text('Update Evacuee Information');
-                formButton.addClass('btn-update').removeClass('btn-submit').find('.btn-text').text(
-                    'Update');
+                formButton.addClass('btn-update').removeClass('btn-submit');
+                btnText.text('Update');
                 modalDialog.addClass('modal-lg');
                 fieldContainer.add(submitButtonContainer).prop('hidden', 0);
                 hiddenFieldContainer.add(formButtonContainer).add(fieldContainerSearch).prop('hidden',
@@ -419,6 +434,8 @@
                 operation = "update";
                 modal.modal('show');
                 defaultFormData = $('#evacueeInfoForm').serialize();
+
+                console.log(defaultFormData)
             });
 
             modal.on('hidden.bs.modal', () => {
@@ -619,41 +636,6 @@
                     error: showErrorMessage
                 });
             });
-
-            function formSubmitHandler(form) {
-                let formData = $(form).serialize();
-
-                if (!$('#recordEvacueeInfoBtn').is(':visible')) return;
-
-                confirmModal(`Do you want to ${operation} this evacuee info?`).then((result) => {
-                    if (!result.isConfirmed) return;
-
-                    return operation == 'update' && defaultFormData == formData ?
-                        showWarningMessage() :
-                        $.ajax({
-                            data: formData,
-                            url: operation == 'record' ? "{{ route('evacuee.info.record') }}" :
-                                "{{ route('evacuee.info.update', 'evacueeId') }}".replace('evacueeId',
-                                    evacueeId),
-                            type: operation == 'record' ? "POST" : "PUT",
-                            beforeSend() {
-                                $('#btn-loader').addClass('show');
-                                formButton.prop('disabled', 1);
-                            },
-                            success(response) {
-                                $('#btn-loader').removeClass('show');
-                                formButton.prop('disabled', 0);
-                                response.status == 'warning' ? showWarningMessage(response
-                                    .message) : ($('#closeModalBtn').click(), evacueeTable.draw(),
-                                    showSuccessMessage(
-                                        `Successfully ${operation == 'record' ? 'recorded new' : 'updated the'} evacuee info.`
-                                    ));
-                                initializeDataTable(url);
-                            },
-                            error: showErrorMessage
-                        });
-                });
-            }
 
             function showForm(formTypeValue, fieldContainerVisible,
                 formButtonVisible, fieldContainerSearchVisible) {

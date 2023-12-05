@@ -42,10 +42,10 @@
                                     </div>
                                     <div class="form-button-container">
                                         <button class="btn-submit modalBtn" id="btnSubmit">
-                                            <div id="btn-loader">
+                                            <div id="btn-loader" hidden>
                                                 <div id="loader-inner"></div>
                                             </div>
-                                            Generate
+                                            <span id="btn-text">Generate</span>
                                         </button>
                                     </div>
                                 </div>

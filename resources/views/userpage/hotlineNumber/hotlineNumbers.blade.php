@@ -95,11 +95,13 @@
                     let operation, hotlineLabel, hotlineNumber, hotlineId, validator,
                         hotlineItem = "",
                         hotlineLogoChanged = false,
+                        btntext = $('#btnText'),
+                        btnLoader = $('#btn-loader'),
                         formBtn = $('#addNumberBtn'),
                         logoError = $('#image-error'),
                         changeLogoBtn = $('#imageBtn'),
                         hotlineLogo = $('.hotlineLogo'),
-                        hotlineForm = $($('#hotlineForm')),
+                        hotlineForm = $('#hotlineForm'),
                         previewLogo = $('#hotline-preview-image');
 
                     $.ajaxSetup({
@@ -136,6 +138,12 @@
                                         cache: false,
                                         contentType: false,
                                         processData: false,
+                                        beforeSend() {
+                                            btntext.text(operation == 'add' ? 'Adding' : 'Updating');
+                                            btnLoader.prop('hidden', 0);
+                                            $('input, #closeFormBtn, .hotline-content button')
+                                                .prop('disabled', 1);
+                                        },
                                         success(response) {
                                             if (response.status == 'warning')
                                                 return showWarningMessage(response.message);
@@ -150,7 +158,9 @@
                                             if (operation == "update") {
                                                 if (hotlineLogoChanged)
                                                     hotlineItem.find('.hotline-preview-image-list')
-                                                    .attr('src', previewLogo.attr('src'));
+                                                    .attr('src', hotlineLogo == '' ?
+                                                        'assets/img/Empty-Data.svg' : previewLogo.attr(
+                                                            'src'));
                                                 hotlineItem.find('.hotline-data-container:first b')
                                                     .text(label);
                                                 hotlineItem.find('.hotline-data-container:last')
@@ -180,7 +190,7 @@
                                                                     ${number}
                                                                 </div>
                                                                 <div class="hotline-form-button-container-list">
-                                                                    <a href="tel:+${number.replace(/\D/g, '')}" class="btn-submit">
+                                                                    <a href="tel:${number.replace(/\D/g, '')}" class="btn-submit">
                                                                         <i class="bi bi-telephone-outbound"></i>Call
                                                                     </a>
                                                                     @if ($operation == 'manage')
@@ -201,10 +211,16 @@
                                             );
                                             resetHotlineForm();
                                             hotlineItem = "";
-                                            operation = "";
                                             $('.btn-remove.removeNumber').prop('hidden', 0);
                                         },
-                                        error: showErrorMessage
+                                        error: showErrorMessage,
+                                        complete(jqXHR) {
+                                            btntext.text(`${operation[0].toUpperCase()}${operation.slice(1)}`);
+                                            btnLoader.prop('hidden', 1);
+                                            $('input, #closeFormBtn, .hotline-content button')
+                                                .prop('disabled', 0);
+                                            if (jqXHR.responseJSON.status != 'warning') operation = "";
+                                        }
                                     });
                             });
                         }
@@ -222,7 +238,8 @@
                             operation = "add";
                             validator.resetForm();
                             hotlineForm.prop('hidden', 0);
-                            formBtn.removeClass('bg-warning').text('Add');
+                            formBtn.removeClass('bg-warning');
+                            btntext.text('Add');
                             scrollToElement('#hotlineForm');
                             $('.btn-remove.removeNumber').prop('hidden', 0);
                         }
@@ -240,7 +257,8 @@
                         previewLogo.attr('src', hotlineItem.find('.hotline-preview-image-list').attr('src'));
                         $('#hotlineLabel').val(hotlineLabel);
                         $('#hotlineNumber').val(hotlineNumber);
-                        formBtn.addClass('bg-warning').text('Update');
+                        btntext.text('Update');
+                        formBtn.addClass('bg-warning');
                         operation = "update";
                         hotlineLogoChanged = false;
                         scrollToElement('#hotlineForm');
@@ -300,6 +318,10 @@
                             hotlineLogoChanged = true;
                             logoError.prop('style', 'display: none !important');
                             changeButton();
+                        } else {
+                            previewLogo.attr('src', operation == 'add' ? '/assets/img/Select-Image.svg' :
+                                hotlineItem.find('.hotline-preview-image-list').attr('src'));
+                            operation == 'add' && changeButton(true);
                         }
                     });
 
