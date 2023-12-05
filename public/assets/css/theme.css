@@ -964,20 +964,16 @@ div.flatpickr-rContainer::-webkit-scrollbar,
     padding: 0 8px;
 }
 
-.dasboard-content {
-    display: flex;
-    gap: 20px;
+.pie-container {
+    width: 100%;
 }
 
-.pie-container {
-    margin: 20px 0;
-    width: 300px;
-    overflow: hidden;
+.pie-figure {
+    height: 100%;
 }
 
 .pie-chart {
-    width: 100%;
-    height: 350px;
+    height: 600px;
     padding: 10px 10px 20px;
     filter: drop-shadow(0 10px 8px rgb(0 0 0 / 0.04)) drop-shadow(0 4px 3px rgb(0 0 0 / 0.1));
 }
@@ -995,26 +991,15 @@ div.flatpickr-rContainer::-webkit-scrollbar,
     cursor: pointer;
 }
 
-.pie-container {
-    flex: 1;
-}
-
-.bar-container {
-    flex: 2.5;
-}
-
 .pie-content {
-    display: flex;
-    flex-direction: column;
+    overflow: hidden;
     background: var(--color-d-sub-text);
     height: 0;
-    overflow: hidden;
-    overflow-y: auto;
     transition: 0.2s all ease;
 }
 
 .pie-container.active .pie-content {
-    height: 690px;
+    height: 100%;
 }
 
 .highcharts-background {
@@ -1169,17 +1154,71 @@ text {
 .guideline-content,
 .guide-content {
     overflow: hidden;
-    z-index: -50;
     position: relative;
     background: var(--color-text);
     filter: drop-shadow(0 20px 13px rgb(0 0 0 / 0.03)) drop-shadow(0 8px 5px rgb(0 0 0 / 0.08));
     border-radius: 4px;
 }
 
-.guideline-img {
+.guideline-content {
+    z-index: -50;
+}
+
+.guideline-header .modal-dialog {
+    display: flex;
+    gap: 10px;
+}
+
+.modal-guideline-image,
+.modal-guide-image {
+    border: var(--bs-modal-border-width) solid var(--bs-modal-border-color);
+    border-color: var(--color-background);
+    border-radius: 10px;
+    background: var(--color-text);
+    pointer-events: visible;
+}
+
+html[data-theme="dark"] .modal-guideline-image,
+html[data-theme="dark"] .modal-guide-image {
+    background: var(--color-d-background);
+}
+
+html[data-theme="dark"] .modal-guideline-image h1 {
+    color: var(--color-d-text);
+}
+
+.modal-guideline-image .guideline-img,
+.modal-guide-image .guide-image {
     position: relative;
-    padding-right: 15px;
     width: 300px;
+    height: 100%;
+    justify-content: space-evenly;
+}
+
+.modal-guideline-image h1 {
+    color: var(--color-text);
+    padding: 4px;
+    font-weight: 800;
+    font-size: 19.2px;
+}
+
+.modal-guideline-image .modal-body {
+    height: calc(100% - 55px);
+}
+
+.modal-guide-image .modal-body {
+    height: 100%
+}
+
+.modal-guideline-image .field-container,
+.modal-guide-image .field-container {
+    height: 100%;
+    padding: 0;
+    margin: 0;
+}
+
+.modal-guideline-image .form-content {
+    height: calc(100% - 49px);
 }
 
 .image-container {
@@ -1234,7 +1273,13 @@ text {
 }
 
 .guide-field {
-    padding: 20px 0;
+    padding: 10px 0;
+}
+
+.guide-forms .guide-field-container {
+    background: var(--color-background);
+    padding: 10px 0 10px;
+    border-radius: 4px;
 }
 
 .guide-field-container {
@@ -2243,7 +2288,7 @@ input::-webkit-inner-spin-button {
     color: var(--color-text);
     padding: 4px;
     font-weight: 800;
-    font-size: larger;
+    font-size: 19.2px;
 }
 
 #closeModalBtn,
@@ -3009,7 +3054,8 @@ html[data-theme="dark"] .modal-content {
     border-color: var(--color-background);
 }
 
-html[data-theme="dark"] .form-content {
+html[data-theme="dark"] .form-content,
+html[data-theme="dark"] .guide-field-container {
     background: var(--color-d-bg-container);
 }
 
@@ -3033,7 +3079,8 @@ html[data-theme="dark"] #changeArchiveEvacueeDataSelect,
 html[data-theme="dark"] .field-container select,
 html[data-theme="dark"] #reportAreaForm select,
 html[data-theme="dark"] #search_guideline,
-html[data-theme="dark"] .guideline-header .search-container .search-icon {
+html[data-theme="dark"] .guideline-header .search-container .search-icon,
+html[data-theme="dark"] .guide-field-container textarea {
     background: var(--color-d-bg-container);
     color: var(--color-d-text);
 }
@@ -3048,7 +3095,9 @@ html[data-theme="dark"] .guideline-header .search-container .search-icon {
 }
 
 html[data-theme="dark"] .weather-section,
-html[data-theme="dark"] .guides-container {
+html[data-theme="dark"] .guides-container,
+html[data-theme="dark"] .guideline-content,
+html[data-theme="dark"] .guide-content {
     background: var(--color-d-bg-container);
 }
 
@@ -3162,60 +3211,12 @@ html[data-theme="dark"] button.changeTheme {
         margin-top: 16px;
     }
 
-    .pie-container {
-        flex: none;
-        width: 40px;
-        position: relative;
-        overflow: auto;
-    }
-
-    .pie-label {
-        height: 100%;
-        width: 40px;
-        position: absolute;
-        display: flex;
-        justify-content: center;
-        align-items: center
-    }
-
-    .pie-container .pie-label::before {
-        content: ">";
-    }
-
-    .pie-container.active .pie-label::before {
-        content: "";
-    }
-
-    .pie-container.active .pie-label::after {
-        content: "<";
-    }
-
-    .pie-label span {
-        display: none;
-    }
-
-    .pie-content {
-        display: flex;
-        flex-direction: row;
-    }
-
-    .pie-figure {
-        margin-left: 40px;
-        height: 100%;
-        width: 100%;
-        overflow: auto;
-    }
-
     .dasboard-content {
         overflow: hidden;
     }
 
-    .pie-container.active {
-        width: 100%;
-    }
-
     .pie-container.active .pie-content {
-        height: 400px;
+        height: 100%;
         overflow: auto;
     }
 }

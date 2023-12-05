@@ -56,7 +56,7 @@ class UserAccountsController extends Controller
             'name'         => 'required',
             'email'        => 'required|email|unique:user,email',
             'position'     => 'required',
-            'organization' => 'required',
+            'organization' => 'required'
         ]);
 
         if ($createAccountValidation->fails())
@@ -77,7 +77,7 @@ class UserAccountsController extends Controller
             'email'        => trim($request->email),
             'position'     => Str::upper($request->position),
             'password'     => $defaultPassword,
-            'organization' => $request->organization,
+            'organization' => $request->organization
         ]));
         $this->logActivity->generateLog('Created a new account(ID - ' . $userAccountData->id . ')');
 

@@ -179,7 +179,7 @@ class MainController extends Controller
 
     public function fetchBarangayData()
     {
-        return response()->json($this->evacuee->where('status', 'Evacuated')->selectRaw('barangay, SUM(male) as male, SUM(female) as female')->groupBy('barangay')->get());
+        return response()->json($this->evacuee->join('disaster', 'disaster.id', '=', 'disaster_id')->selectRaw('barangay, SUM(individuals) as individuals')->groupBy('barangay')->get());
     }
 
     public function fetchDisasterData()

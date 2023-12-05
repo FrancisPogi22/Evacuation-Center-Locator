@@ -10,6 +10,8 @@ use App\Models\ActivityUserLog;
 use App\Models\FamilyRecord;
 use Yajra\DataTables\DataTables;
 use Illuminate\Support\Facades\Validator;
+use Maatwebsite\Excel\Excel as FileFormat;
+use App\Exports\PrintEvacueeData;
 use App\Http\Controllers\FamilyRecordController;
 
 class EvacueeController extends Controller
@@ -41,6 +43,14 @@ class EvacueeController extends Controller
                 return $operation == 'archived' ? '' :
                     '<div class="action-container"><button class="btn-table-update" id="updateEvacueeBtn"><i class="bi bi-pencil-square"></i>Update</button></div>';
             })->rawColumns(['select', 'action'])->make(true);
+    }
+
+    public function printEvacueeData(Request $request)
+    {
+        return (new PrintEvacueeData($request->disaster_id, $request->barangay))
+            ->download('evacuee-data.xlsx', FileFormat::XLSX, [
+                'Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+            ]);
     }
 
     public function recordEvacueeInfo(Request $request)

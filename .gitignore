@@ -1,6 +1,5 @@
 /.phpunit.cache
 /node_modules
-/public/build
 /public/hot
 /public/storage
 /public/reports_image
@@ -9,8 +8,6 @@
 /public/guide_photo
 /storage/*.key
 /vendor
-.env.backup
-.env.production
 .phpunit.result.cache
 Homestead.json
 Homestead.yaml
@@ -21,4 +18,4 @@ yarn-error.log
 /.idea
 /.vscode
 /storage/debugbar/
-.env
+.env.example
