@@ -225,8 +225,8 @@ textarea::placeholder {
 .locator-button-container button i,
 .page-button-container button i,
 .generate-button-container button i,
-.sendUpdateBtn i,
 .toggleImageBtn i,
+.field-container #imageBtn i,
 .locateEvacuationCenter i,
 .info-window-action-container i,
 #reportAreaBtn i,
@@ -1578,7 +1578,7 @@ html[data-theme="dark"] .modal-guideline-image h1 {
     height: 100%;
     border-radius: 4px;
     background: transparent;
-    transition: visibility 0.3s ease;
+    transition: 0.3s ease;
 }
 
 .modalBtn,
@@ -1607,7 +1607,8 @@ html[data-theme="dark"] .modal-guideline-image h1 {
 }
 
 #submitReportBtn #btn-loader #loader-inner,
-#submitAreaBtn #btn-loader #loader-inner {
+#submitAreaBtn #btn-loader #loader-inner,
+.sendUpdateBtn #btn-loader #loader-inner {
     width: 15px;
     height: 15px;
 }
@@ -2035,12 +2036,6 @@ html[data-theme="dark"] .gmnoprint button span {
     text-align: center;
 }
 
-.hotline-logo-container-list {
-    width: 80px;
-    margin: 10px;
-    text-align: center;
-}
-
 #hotline-preview-image {
     max-width: 140px;
     height: 145px;
@@ -2052,9 +2047,15 @@ html[data-theme="dark"] .gmnoprint button span {
     width: 140px;
 }
 
+.hotline-logo-container-list {
+    width: 100px;
+    margin: 10px;
+    text-align: center;
+}
+
 .hotline-preview-image-list {
-    max-width: 80px;
-    height: 80px;
+    max-width: 100px;
+    height: 100px;
     border-radius: 4px;
 }
 
@@ -3588,6 +3589,13 @@ html[data-theme="dark"] button.changeTheme {
         height: 15px;
     }
 
+    #submitReportBtn #btn-loader #loader-inner,
+    #submitAreaBtn #btn-loader #loader-inner,
+    .sendUpdateBtn #btn-loader #loader-inner {
+        width: 12px;
+        height: 12px;
+    }
+
     .res-header-container,
     .res-header-container h1 {
         font-size: 16px;
@@ -3778,8 +3786,13 @@ html[data-theme="dark"] button.changeTheme {
         height: 100%;
     }
 
+    .acc-image-container {
+        margin: 0 10px;
+    }
+
     .profile-section p {
         font-size: 20px;
+        margin: 10px
     }
 
     .edit-profile-btn button {
