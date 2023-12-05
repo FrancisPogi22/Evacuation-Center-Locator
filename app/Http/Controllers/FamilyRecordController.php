@@ -77,6 +77,7 @@ class FamilyRecordController extends Controller
         $familyRecord['user_id']     = auth()->user()->id;
         $familyId                    = $request->family_id;
         $this->familyRecord->find($familyId)->update($familyRecord);
+        $this->logActivity->generateLog('Updated a family record(ID - ' . $familyId . ') in ' . $request->barangay);
 
         return $familyId;
     }

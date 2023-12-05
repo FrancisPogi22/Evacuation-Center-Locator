@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Validator;
 use App\Events\Notification;
 use App\Events\AreaReport;
 use App\Http\Controllers\ResidentReportController;
+use Illuminate\Support\Facades\Log;
 
 class AreaReportController extends Controller
 {
@@ -126,7 +127,7 @@ class AreaReportController extends Controller
     public function updateAreaReport(Request $request, $reportId)
     {
         $areaReportValidation = Validator::make($request->all(), ['update' => 'required']);
-        
+
         if ($areaReportValidation->fails()) return response(['status' => 'warning', 'message' =>  $areaReportValidation->errors()->first()]);
 
         $this->reportUpdate->addUpdate($reportId, $request->update);

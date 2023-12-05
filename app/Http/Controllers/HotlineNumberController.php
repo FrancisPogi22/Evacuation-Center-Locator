@@ -23,7 +23,7 @@ class HotlineNumberController extends Controller
         $hotlineNumberValidation = Validator::make($request->all(), [
             'logo'   => 'nullable|image|mimes:jpeg,png,jpg',
             'label'  => 'required',
-            'number' => 'required|numeric'
+            'number' => 'required'
         ]);
 
         if ($hotlineNumberValidation->fails()) return response(['status' => 'warning', 'message' => implode('<br>', $hotlineNumberValidation->errors()->all())]);
@@ -54,7 +54,7 @@ class HotlineNumberController extends Controller
         $hotlineNumberValidation = Validator::make($request->all(), [
             'logo'   => 'nullable|image|mimes:jpeg,png,jpg',
             'label'  => 'required',
-            'number' => 'required|numeric'
+            'number' => 'required'
         ]);
 
         if ($hotlineNumberValidation->fails()) return response(['status' => 'warning', 'message' => implode('<br>', $hotlineNumberValidation->errors()->all())]);

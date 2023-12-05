@@ -119,10 +119,10 @@ class EvacueeController extends Controller
         ]);
         $evacueeInfo['individuals'] = $evacueeInfo['male'] + $evacueeInfo['female'];
         $evacueeInfo['updated_at']  = date('Y-m-d H:i:s');
-        $evacueeInfo['family_id']   = $this->familyRecord->latest('updated_at')->first()->id;
+        $evacueeInfo['family_id']   = $request->family_id;
         $evacueeInfo['user_id']     = auth()->user()->id;
         $evacueeInfo                = $this->evacuee->find($evacueeId)->update($evacueeInfo);
-        $this->logActivity->generateLog('Updated a evacuee(ID - ' . $evacueeId . ') information in ' . lcfirst($evacueeInfo->barangay));
+        $this->logActivity->generateLog('Updated a evacuee(ID - ' . $evacueeId . ') information in ' . lcfirst($request->barangay));
         event(new ActiveEvacuees());
 
         return response([]);

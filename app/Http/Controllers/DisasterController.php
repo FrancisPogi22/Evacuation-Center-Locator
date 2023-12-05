@@ -51,7 +51,7 @@ class DisasterController extends Controller
 
     public function createDisasterData(Request $request)
     {
-        $validatedDisasterValidation = Validator::make($request->all(), ['name' => 'required|alpha']);
+        $validatedDisasterValidation = Validator::make($request->all(), ['name' => 'required']);
 
         if ($validatedDisasterValidation->fails()) return response(['status' => 'warning', 'message' => $validatedDisasterValidation->errors()->first()]);
 
@@ -67,8 +67,8 @@ class DisasterController extends Controller
 
     public function updateDisasterData(Request $request, $disasterId)
     {
-        $validatedDisasterValidation = Validator::make($request->all(), ['name' => 'required|alpha']);
-        
+        $validatedDisasterValidation = Validator::make($request->all(), ['name' => 'required']);
+
         if ($validatedDisasterValidation->fails()) return response(['status' => 'warning', 'message' => $validatedDisasterValidation->errors()->first()]);
 
         $this->disaster->find($disasterId)->update([
