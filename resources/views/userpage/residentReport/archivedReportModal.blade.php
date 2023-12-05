@@ -26,7 +26,12 @@
                             <span id="image-error" class="error" hidden>Please select an image file.</span>
                         </div>
                         <div class="form-button-container">
-                            <button id="archiveReportBtn" class="btn-submit">Archive</button>
+                            <button id="archiveReportBtn" class="btn-submit modalBtn">
+                                <div id="btn-loader" hidden>
+                                    <div id="loader-inner"></div>
+                                </div>
+                                <span id="btn-text">Archive</span>
+                            </button>
                         </div>
                     </div>
                 </form>

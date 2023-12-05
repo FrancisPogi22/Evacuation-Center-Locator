@@ -152,7 +152,9 @@
                 modalLabelContainer = $('.modal-label-container'),
                 guideBtn = $('.guideImgBtn'),
                 guideImgInput = $('.guidePhoto'),
-                formButton = $('#submitGuideBtn');
+                formButton = $('#submitGuideBtn'),
+                btnLoader = $('#btn-loader'),
+                btnText = $('#btn-text');
 
             validator = form.validate({
                 rules: {
@@ -181,8 +183,10 @@
                                 contentType: false,
                                 processData: false,
                                 beforeSend() {
-                                    $('#btn-loader').addClass('show');
-                                    formButton.prop('disabled', 1);
+                                    btnLoader.prop('hidden', 0);
+                                    btnText.text('Updating');
+                                    $('input, textarea, .guideImgBtn, #submitGuideBtn, #closeModalBtn')
+                                        .prop('disabled', 1);
                                 },
                                 success({
                                     status,
@@ -211,7 +215,13 @@
                                     showSuccessMessage(`Guide successfully updated.`);
                                     modal.modal('hide');
                                 },
-                                error: showErrorMessage
+                                error: showErrorMessage,
+                                complete() {
+                                    btnLoader.prop('hidden', 1);
+                                    btnText.text('Update');
+                                    $('input, textarea, .guideImgBtn, #submitGuideBtn, #closeModalBtn')
+                                        .prop('disabled', 0);
+                                }
                             });
                     });
                 }
@@ -224,7 +234,8 @@
                 guideId = $(this).data('guide');
                 modalLabelContainer.addClass('bg-warning');
                 modalLabel.text('Update Guide');
-                formButton.addClass('btn-update').removeClass('btn-submit').find('.btn-text').text('Update');
+                formButton.addClass('btn-update').removeClass('btn-submit')
+                btnText.text('Update');
                 $('#image_preview_container').attr('src', guideWidgetItem.find('img').attr('src'));
                 guideLabel = guideWidgetItem.find('h1').text();
                 guideContent = guideWidgetItem.find('p').text();

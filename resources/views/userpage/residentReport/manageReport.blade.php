@@ -282,7 +282,18 @@
                                                     <textarea type="text" name="update" class="form-control" cols="50" rows="10"></textarea>
                                                 </div>
                                                 <center>
-                                                    <button class="sendUpdateBtn"><i class="bi bi-send"></i>Submit</button>
+                                                    <button class="sendUpdateBtn">
+                                                        <div id="defaultBtnText">
+                                                            <i class="bi bi-send"></i>
+                                                            Add
+                                                        </div>
+                                                        <div id="loadingBtnText" hidden>
+                                                            <div id="btn-loader">
+                                                                <div id="loader-inner"></div>
+                                                            </div>
+                                                            Adding
+                                                        </div>
+                                                    </button>
                                                 </center>
                                             </form>` : '';
 
@@ -413,6 +424,8 @@
                         ajaxRequest("Area")
                     ],
                     modal = $('#archivedReportModal'),
+                    btnLoader = $('#btn-loader'),
+                    btnText = $('#btn-text'),
                     archiveFormValidator;
 
                 Promise.all(requestPromises)
@@ -580,13 +593,43 @@
                         data: data,
                         contentType: contentType,
                         processData: processData,
+                        beforeSend() {
+                            if (reportType == "Area" && operation == "update") {
+                                $('#defaultBtnText').hide();
+                                $('#loadingBtnText').prop('hidden', 0);
+                                $('textarea, .sendUpdateBtn, .updateBtn, .archiveBtn')
+                                    .prop('disabled', 1);
+                            }
+
+                            if (reportType == "Emergency" && operation == "archive") {
+                                btnLoader.prop('hidden', 0);
+                                btnText.text('Archiving');
+                                $('textarea, #imageBtn, #archiveReportBtn, #closeModalBtn')
+                                    .prop('disabled', 1);
+                            }
+                        },
                         success(response) {
                             response.status == "warning" ?
                                 showWarningMessage(response.message) : (showSuccessMessage(
                                     `Successfully ${(operation == "approve" && reportType != "Area") ? "change the status of" : `${operation}d`} the report.`
                                 ), modal.modal('hide'));
                         },
-                        error: showErrorMessage
+                        error: showErrorMessage,
+                        complete() {
+                            if (reportType == "Area" && operation == "update") {
+                                $('#defaultBtnText').show();
+                                $('#loadingBtnText').prop('hidden', 1);
+                                $('textarea, .sendUpdateBtn, .updateBtn, .archiveBtn')
+                                    .prop('disabled', 0);
+                            }
+
+                            if (reportType == "Emergency" && operation == "archive") {
+                                btnLoader.prop('hidden', 1);
+                                btnText.text('Archive');
+                                $('textarea, #imageBtn, #archiveReportBtn, #closeModalBtn')
+                                    .prop('disabled', 0);
+                            }
+                        }
                     });
                 }
 

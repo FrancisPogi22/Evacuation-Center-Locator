@@ -164,6 +164,7 @@
         modal.on('hidden.bs.modal', () => {
             resetChangePasswordForm();
             resetPasswordBtn.prop('hidden', 1);
+            $('.new-pass, .confirm-pass').prop('hidden', 1);
             checkPasswordIcon.removeClass('success').removeClass('error').prop('hidden', 1);
             changePasswordValidation.resetForm();
         });

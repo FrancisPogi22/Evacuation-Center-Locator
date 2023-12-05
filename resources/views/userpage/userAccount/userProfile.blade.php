@@ -21,14 +21,16 @@
             <hr>
             <section class="user-profile-container">
                 <div class="profile-section">
-                    <div class="profile-img">
-                        <img src="{{ asset('assets/img/Profile.png') }}" alt="Profile" id="profile">
+                    <div class="acc-image-container">
+                        <div class="profile-img">
+                            <img src="{{ asset('assets/img/Profile.png') }}" alt="Profile" id="profile">
+                        </div>
                     </div>
                     <p id="user-name">{{ auth()->user()->name }}</p>
                 </div>
                 <div class="edit-profile-btn">
                     <button class="btn-update" id="updateProfileBtn">
-                        <i class="bi bi-pencil-square"></i>Edit Profile
+                        <i class="bi bi-pencil-square"></i>Edit Acc Details
                     </button>
                 </div>
                 <hr>
@@ -138,7 +140,13 @@
                                         'Successfully updated the account details.');
                                     modal.modal('hide');
                                 },
-                                error: showErrorMessage
+                                error: showErrorMessage,
+                                complete() {
+                                    btnLoader.prop('hidden', 1);
+                                    btnText.text('Update');
+                                    $('input, select, #saveProfileDetails, #closeModalBtn')
+                                        .prop('disabled', 0);
+                                }
                             });
                     });
                 }
@@ -147,7 +155,8 @@
             $(document).on('click', '#updateProfileBtn', () => {
                 modalLabelContainer.removeClass('bg-success').addClass('bg-warning');
                 modalLabel.text('Update Profile Account');
-                formButton.removeClass('btn-submit').addClass('btn-update').append('Update');
+                formButton.removeClass('btn-submit').addClass('btn-update');
+                btnText.text('Update');
                 operation = "update";
                 organization.val($('#user-organization').find('p').data('organization'));
                 name.val($('#user-name').text());

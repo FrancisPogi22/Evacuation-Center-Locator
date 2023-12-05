@@ -296,6 +296,7 @@
                                             'Report submitted successfully.');
 
                                     status != "blocked" && (
+                                        $('#cancelReportingBtn').prop('disabled', 0),
                                         $('#cancelReportingBtn').click(),
                                         $('.stop-btn-container').hide());
                                 },

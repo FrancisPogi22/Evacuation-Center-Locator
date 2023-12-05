@@ -38,10 +38,10 @@
                             </div>
                             <div class="form-button-container">
                                 <button id="submitGuideBtn" class="modalBtn">
-                                    <div id="btn-loader">
+                                    <div id="btn-loader" hidden>
                                         <div id="loader-inner"></div>
                                     </div>
-                                    <span class="btn-text"></span>
+                                    <span id="btn-text">Update</span>
                                 </button>
                             </div>
                         </div>

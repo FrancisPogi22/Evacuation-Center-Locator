@@ -108,6 +108,8 @@
                 modalLabelContainer = $('.modal-label-container'),
                 guidelineForm = $("#guidelineForm"),
                 formBtn = $('#submitGuidelineBtn'),
+                btnLoader = $('#btn-loader'),
+                btnText = $('#btn-text'),
                 guideContentFields = $("#guideContentFields");
 
             validator = guidelineForm.validate({
@@ -138,12 +140,13 @@
                                 contentType: false,
                                 processData: false,
                                 beforeSend() {
-                                    $('#btn-loader').addClass('show');
+                                    btnLoader.prop('hidden', 0);
+                                    btnText.text(operation == 'create' ?
+                                        'Creating' : 'Updating');
+                                    $('input, textarea, .guidelineImgBtn, #addGuideInput, #removeGuideField, #submitGuidelineBtn, #closeModalBtn')
+                                        .prop('disabled', 1);
                                 },
                                 success(response) {
-                                    $('#btn-loader').removeClass('show');
-                                    formBtn.prop('disabled', 1);
-
                                     if (response.status == 'warning') {
                                         formBtn.prop('disabled', 0);
                                         return showWarningMessage(response.message);
@@ -180,7 +183,15 @@
                                     showSuccessMessage(
                                         `Guideline successfully ${operation}d.`);
                                 },
-                                error: showErrorMessage
+                                error: showErrorMessage,
+                                complete() {
+                                    btnLoader.prop('hidden', 1);
+                                    btnText.text(
+                                        `${operation[0].toUpperCase()}${operation.slice(1)}`
+                                    );
+                                    $('input, textarea, .guidelineImgBtn, #addGuideInput, #removeGuideField, #submitGuidelineBtn, #closeModalBtn')
+                                        .prop('disabled', 0);
+                                }
                             });
                     });
                 }
@@ -190,8 +201,8 @@
                 operation = "create";
                 modalLabelContainer.removeClass('bg-warning');
                 modalLabel.text('Create Guideline');
-                formBtn.add(addGuideInput).addClass('btn-submit').removeClass(
-                    'btn-update').find('.btn-text').text('Create');
+                formBtn.add(addGuideInput).addClass('btn-submit').removeClass('btn-update');
+                btnText.text('Create');
                 changeImageColor();
                 modal.modal('show');
             });
@@ -205,8 +216,8 @@
 
                 modalLabelContainer.addClass('bg-warning');
                 modalLabel.text('Update Guideline');
-                formBtn.add(addGuideInput).addClass('btn-update').removeClass('btn-submit').find(
-                    '.btn-text').text('Update');
+                formBtn.add(addGuideInput).addClass('btn-update').removeClass('btn-submit');
+                btnText.text('Update');
                 $('#guidelineType').val(guidelineLabel);
                 guidelineImg.attr('src', guidelineWidget.querySelector('.guideline-content img')
                     .getAttribute('src'));

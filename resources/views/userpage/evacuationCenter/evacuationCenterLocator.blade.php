@@ -330,7 +330,7 @@
             }
         }
 
-        function generateMarker(position, icon, draggable = false) {
+        function generateMarker(position, icon, draggable = false, reportLabel = null) {
             return new google.maps.Marker({
                 position,
                 map,
@@ -338,7 +338,8 @@
                 icon: {
                     url: icon,
                     scaledSize: new google.maps.Size(35, 35),
-                }
+                },
+                label: reportLabel
             });
         }
 
@@ -803,7 +804,11 @@
                             generateInfoWindow(
                                 generateMarker(
                                     coordinates,
-                                    "{{ asset('assets/img/Reporting.png') }}", true
+                                    "{{ asset('assets/img/Reporting.png') }}", true,
+                                    {
+                                        text: 'Report Location',
+                                        className: 'report-marker-label'
+                                    }
                                 ),
                                 `<form id="reportAreaForm">
                                     @csrf
@@ -924,8 +929,8 @@
                                         showSuccessMessage(
                                             'Report submitted successfully');
 
-                                    status != "warning" &&
-                                        $('#reportAreaBtn').click();
+                                    status != "warning" && ($('#reportAreaBtn').prop('disabled', 0),
+                                        $('#reportAreaBtn').click());
                                 },
                                 error: showErrorMessage,
                                 complete() {
