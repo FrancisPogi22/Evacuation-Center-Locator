@@ -475,8 +475,6 @@
                 operation = "update";
                 modal.modal('show');
                 defaultFormData = $('#evacueeInfoForm').serialize();
-
-                console.log(defaultFormData)
             });
 
             modal.on('hidden.bs.modal', () => {
