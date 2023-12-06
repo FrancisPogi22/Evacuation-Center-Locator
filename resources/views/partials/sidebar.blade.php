@@ -31,6 +31,12 @@
                                 <span class="links_name">E-LIGTAS Guideline</span>
                             </a>
                         </div>
+                        <div class="navigation-item">
+                            <a href="{{ route('cdrrmo.evacuation.center.locator') }}" class="menu-link">
+                                <i class="bi bi-search"></i>
+                                <span class="links_name">Evacuation Center Locator</span>
+                            </a>
+                        </div>
                         @if (auth()->user()->position == 'President')
                             <div class="navigation-item">
                                 <a class="sub-btn">
@@ -138,7 +144,7 @@
                             </div>
                         </div>
                         <div class="navigation-item">
-                            <a href="{{ route('evacuation.center.locator') }}" class="menu-link">
+                            <a href="{{ route('cswd.evacuation.center.locator') }}" class="menu-link">
                                 <i class="bi bi-search"></i>
                                 <span class="links_name">Evacuation Center Locator</span>
                             </a>

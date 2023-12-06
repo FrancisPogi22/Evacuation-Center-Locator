@@ -34,10 +34,16 @@ class AreaReportController extends Controller
 
         if ($operation != "archived") {
             $prefix = basename(trim(request()->route()->getPrefix(), '/'));
-            $areaReport = $areaReport->whereIn('type', ['Flooded', 'Roadblocked'])->when($prefix == "resident", fn ($query) => $query->where('status', 'Approved'))->get();
+            $areaReport = $areaReport->whereIn('type', ['Flooded', 'Roadblocked'])->when(
+                $prefix == "resident" || ($prefix == 'cdrrmo' && $operation == 'locator'),
+                fn ($query) => $query->where('status', 'Approved')
+            )->get();
             foreach ($areaReport as $report) {
                 $report->update = $this->reportUpdate->where('report_id', $report->id)
-                    ->when($prefix != "cdrrmo", fn ($query) => $query->where('update_time', '>=', Date::now()->subHours(24)))
+                    ->when(
+                        $prefix != "cdrrmo" || ($prefix == 'cdrrmo' && $operation == 'locator'),
+                        fn ($query) => $query->where('update_time', '>=', Date::now()->subHours(24))
+                    )
                     ->OrderBy('update_time', 'desc')->get();
             }
 

@@ -59,7 +59,7 @@ Route::middleware('auth')->group(function () {
             Route::get('/dashboard', 'dashboard')->name('dashboard.cswd');
             Route::get('/evacuee/{operation}', 'manageEvacueeInformation')->name('manage.evacuee.record');
             Route::get('/evacuationCenter/{operation}', 'evacuationCenter')->name('evacuation.center');
-            Route::get('/evacuationCenterLocator', 'evacuationCenterLocator')->name('evacuation.center.locator');
+            Route::get('/evacuationCenterLocator', 'evacuationCenterLocator')->name('cswd.evacuation.center.locator');
             Route::get('/dangerAreaReport/{operation}', 'dangerAreaReport')->name('danger.area.report');
             Route::get('/userActivityLog', 'userActivityLog')->name('activity.log');
             Route::get('/disasterInformation/{operation}', 'disasterInformation')->name('disaster.information');
@@ -105,6 +105,7 @@ Route::middleware('auth')->group(function () {
             Route::get('/dashboard', 'dashboard')->name('dashboard.cdrrmo');
             Route::get('/fetchReportData', 'fetchReportData')->name('fetchReportData');
             Route::get('/manageReport/{operation}', 'manageReport')->name('manage.report');
+            Route::get('/evacuationCenterLocator', 'evacuationCenterLocator')->name('cdrrmo.evacuation.center.locator');
         });
 
         Route::controller(ResidentReportController::class)->group(function () {
@@ -134,6 +135,8 @@ Route::middleware('auth')->group(function () {
             Route::delete('/removeAreaReport/{reportId}', 'removeAreaReport')->name('remove');
             Route::patch('/archiveAreaReport/{reportId}', 'archiveAreaReport')->name('archive');
         });
+
+        Route::get('/viewEvacuationCenter/{operation}/{type}', EvacuationCenterController::class . '@getEvacuationData')->name('cdrrmo.evacuation.center.get');
     });
 
     Route::prefix('eligtasGuideline')->controller(GuidelineController::class)->group(function () {
