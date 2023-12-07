@@ -25,6 +25,13 @@
             </div>
             <hr>
             @if ($operation == 'manage')
+                <div id="report-marker-info" hidden>
+                    <i class="bi bi-info-circle"></i>
+                    <div id="report-marker-info-text">
+                        <div>Bouncing marker is a pending report.</div>
+                        <div id="pending-count"></div>
+                    </div>
+                </div>
                 <div class="map-border">
                     <div class="reporting-map" id="map"></div>
                 </div>
@@ -155,6 +162,11 @@
                     false,
                     false
                 ],
+                pendingCount = [
+                    0,
+                    0,
+                    0
+                ],
                 reportMarkers = [
                     [],
                     [],
@@ -185,6 +197,7 @@
                                     "Roadblocked": 0
                                 };
 
+                            pendingCount[condition] = 0;
                             while (reportMarkers[condition].length)
                                 reportMarkers[condition].pop().setMap(null);
 
@@ -247,6 +260,8 @@
                                             map.panTo(reportMarker.getPosition());
                                         }
                                     });
+
+                                    reportMarker.getAnimation() != null && pendingCount[condition]++;
 
                                     reportMarkers[condition].push(reportMarker);
 
@@ -430,6 +445,7 @@
 
                 Promise.all(requestPromises)
                     .then(() => {
+                        displayPendingReportCount();
                         checkNoReports('All');
 
                         let type = sessionStorage.getItem('report_type'),
@@ -570,6 +586,13 @@
                     });
                 });
 
+                function displayPendingReportCount() {
+                    let count = pendingCount[0] + pendingCount[1] + pendingCount[2];
+
+                    $('#pending-count').text(`${count > 0 ? `Pending - ${count}` : ''}`);
+                    $('#report-marker-info').prop('hidden', !(count > 0));
+                }
+
                 function submitHandler(element, type, operation, url, reportType) {
                     let data = element.serialize(),
                         processData = true,
@@ -642,17 +665,26 @@
                     archiveFormValidator && archiveFormValidator.resetForm();
                 });
 
-                Echo.channel('incident-report').listen('IncidentReport', (e) => {
-                    ajaxRequest("Incident").then(() => checkNoReports("Incident"));
-                });
+                Echo.channel('incident-report').listen('IncidentReport', (e) =>
+                    ajaxRequest("Incident").then(() => {
+                        displayPendingReportCount();
+                        checkNoReports("Incident");
+                    })
+                );
 
-                Echo.channel('emergency-report').listen('EmergencyReport', (e) => {
-                    ajaxRequest("Emergency").then(() => checkNoReports("Emergency"));
-                });
+                Echo.channel('emergency-report').listen('EmergencyReport', (e) =>
+                    ajaxRequest("Emergency").then(() => {
+                        displayPendingReportCount();
+                        checkNoReports("Emergency");
+                    })
+                );
 
-                Echo.channel('area-report').listen('AreaReport', (e) => {
-                    ajaxRequest("Area").then(() => checkNoReports("Area"));
-                });
+                Echo.channel('area-report').listen('AreaReport', (e) =>
+                    ajaxRequest("Area").then(() => {
+                        displayPendingReportCount();
+                        checkNoReports("Area");
+                    })
+                );
             @else
                 if ('{{ $yearList->isEmpty() }}')
                     showInfoMessage('There is no archived report.');

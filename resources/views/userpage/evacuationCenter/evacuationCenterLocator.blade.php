@@ -406,7 +406,7 @@
                     return;
                 }
 
-                let currentWatchID;
+                let currentWatchID, attempt = 0;
 
                 currentWatchID = navigator.geolocation.watchPosition((position) => {
                     if (position.coords.accuracy <= 500) {
@@ -414,14 +414,22 @@
                         geolocationBlocked = false;
                         resolve(position);
                     } else {
-                        setTimeout(() => {
-                            pinClicked = false;
-                            $('#loader').removeClass('show');
-                            $('#reportAreaBtn').prop('hidden', 0);
-                            navigator.geolocation.clearWatch(currentWatchID);
-                            showWarningMessage('Cannot get your current location.');
-                            resolve(-1);
-                        }, 5000);
+
+                        console.log('before ' + attempt);
+
+                        attempt = attempt + 1;
+
+                        console.log('after ' + attempt);
+
+                        if (attempt == 2 )
+                            setTimeout(() => {
+                                pinClicked = false;
+                                $('#loader').removeClass('show');
+                                $('#reportAreaBtn').prop('hidden', 0);
+                                navigator.geolocation.clearWatch(currentWatchID);
+                                showWarningMessage('Cannot get your current location.');
+                                resolve(-1);
+                            }, 5000);
                     }
                 }, (error) => (errorCallback(currentWatchID, error), resolve(-1)), options(5000));
             });
@@ -453,6 +461,8 @@
                 hasActiveEvacuationCenter = false;
                 if (locating && findNearestActive) {
                     $('#stopLocatingBtn').click();
+                    $('#loader').removeClass('show');
+                    $('#reportAreaBtn').prop('hidden', 0);
                     showWarningMessage('There are currently no active evacuation centers.');
                 }
             } else {
@@ -507,7 +517,7 @@
         }
 
         function locateEvacuationCenter() {
-            let status = false;
+            let status = false, attempt = 0;
 
             watchId = navigator.geolocation.watchPosition(async (position) => {
                 if (position.coords.accuracy <= 500) {
@@ -583,16 +593,24 @@
                 } else {
                     if (!routeDisplayed) {
                         status = false;
-                        setTimeout(() => {
-                            if (!status) {
-                                if (!routeDisplayed) {
-                                    showWarningMessage('Cannot get your current location.');
-                                    navigator.geolocation.clearWatch(watchId);
+
+                        console.log('before ' + attempt);
+
+                        attempt = attempt + 1;
+
+                        console.log('after ' + attempt);
+
+                        if (attempt == 2)
+                            setTimeout(() => {
+                                if (!status) {
+                                    if (!routeDisplayed) {
+                                        showWarningMessage('Cannot get your current location.');
+                                        navigator.geolocation.clearWatch(watchId);
+                                    }
+                                    $('#loader').removeClass('show');
+                                    $('#stopLocatingBtn').click();
                                 }
-                                $('#loader').removeClass('show');
-                                $('#stopLocatingBtn').click();
-                            }
-                        }, 5000);
+                            }, 5000);
                     }
                 }
             }, (error) => errorCallback(null, error), options());

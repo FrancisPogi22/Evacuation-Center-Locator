@@ -67,64 +67,62 @@
         crossorigin="anonymous"></script>
     @include('partials.toastr')
     <script type="text/javascript">
-        let evacuationCenterTable = $('#evacuationCenterTable').DataTable({
-            ordering: false,
-            responsive: true,
-            processing: false,
-            serverSide: true,
-            ajax: "{{ route('evacuation.center.get', ['manage', $operation]) }}",
-            columns: [{
-                    data: 'id',
-                    name: 'id'
-                }, {
-                    data: 'name',
-                    name: 'name'
-                },
-                {
-                    data: 'barangay_name',
-                    name: 'barangay_name'
-                },
-                {
-                    data: 'latitude',
-                    name: 'latitude',
-                    visible: false
-                },
-                {
-                    data: 'longitude',
-                    name: 'longitude',
-                    visible: false
-                },
-                {
-                    data: 'status',
-                    name: 'status',
-                    width: '10%'
-                },
-                {
-                    data: 'action',
-                    name: 'action',
-                    width: '1rem',
-                    orderable: false,
-                    searchable: false
-                }
-            ],
-            columnDefs: [{
-                targets: 5,
-                render: function(data) {
-                    let color = data == 'Active' ? 'success' : data == 'Inactive' ? 'danger' :
-                        'warning';
+        let map, marker, reportSubmitting = false,
+            evacuationCenterTable = $('#evacuationCenterTable').DataTable({
+                ordering: false,
+                responsive: true,
+                processing: false,
+                serverSide: true,
+                ajax: "{{ route('evacuation.center.get', ['manage', $operation]) }}",
+                columns: [{
+                        data: 'id',
+                        name: 'id'
+                    }, {
+                        data: 'name',
+                        name: 'name'
+                    },
+                    {
+                        data: 'barangay_name',
+                        name: 'barangay_name'
+                    },
+                    {
+                        data: 'latitude',
+                        name: 'latitude',
+                        visible: false
+                    },
+                    {
+                        data: 'longitude',
+                        name: 'longitude',
+                        visible: false
+                    },
+                    {
+                        data: 'status',
+                        name: 'status',
+                        width: '10%'
+                    },
+                    {
+                        data: 'action',
+                        name: 'action',
+                        width: '1rem',
+                        orderable: false,
+                        searchable: false
+                    }
+                ],
+                columnDefs: [{
+                    targets: 5,
+                    render: function(data) {
+                        let color = data == 'Active' ? 'success' : data == 'Inactive' ? 'danger' :
+                            'warning';
 
-                    return `
-                        <div class="status-container">
-                            <div class="status-content bg-${color}">
-                                ${data}
-                            </div>
-                        </div>
-                    `;
-                }
-            }]
-        });
-
-        let map, marker;
+                        return `<div class="status-container">
+                                    <div class="status-content bg-${color}">
+                                        ${data}
+                                    </div>
+                                </div>
+                            `;
+                    }
+                }]
+            });
 
         function initMap() {
             map = new google.maps.Map(document.getElementById("map"), {
@@ -134,6 +132,7 @@
                 },
                 zoom: 13,
                 clickableIcons: false,
+                draggableCursor: 'pointer',
                 mapTypeControlOptions: {
                     style: google.maps.MapTypeControlStyle.DROPDOWN_MENU
                 }
@@ -142,7 +141,7 @@
             map.addListener("click", (event) => {
                 if (reportSubmitting) return;
 
-                setMarker(event.latLng)
+                setMarker(event.latLng);
             });
 
             const autocomplete = new google.maps.places.Autocomplete(document.getElementById('searchPlace'));
@@ -172,7 +171,7 @@
                 });
             }
 
-            map.setZoom(18);
+            map.setZoom(16);
             map.panTo(coordinates);
             $('#latitude').val(coordinates.lat);
             $('#longitude').val(coordinates.lng);
@@ -187,7 +186,6 @@
                 modal = $('#evacuationCenterModal'),
                 btnLoader = $('#btn-loader'),
                 btnText = $('#btn-text'),
-                reportSubmitting = false,
                 saveBtnClicked = false;
 
             validator = $("#evacuationCenterForm").validate({
@@ -316,7 +314,7 @@
                 alterEvacuationCenter(url, 'PATCH', 'unarchive');
             })
 
-            $(document).on('change', '#changeEvacuationStatus', function() {
+            $(document).on('change', '.changeEvacuationStatus', function() {
                 status = $(this).val();
                 let url = "{{ route('evacuation.center.change.status', 'evacuationCenterId') }}"
                     .replace('evacuationCenterId', getRowData(this, evacuationCenterTable).id);
@@ -344,7 +342,7 @@
                 confirmModal(
                     `Do you want to ${operation == "change" ? "change the status of" : operation} this evacuation center?`
                 ).then((result) => {
-                    return !result.isConfirmed ? $('#changeEvacuationStatus').val('') :
+                    !result.isConfirmed ? $('.changeEvacuationStatus').val('') :
                         $.ajax({
                             headers: {
                                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')

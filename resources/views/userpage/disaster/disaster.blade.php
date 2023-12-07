@@ -197,7 +197,7 @@
                     "{{ route('disaster.archive', ['disasterId', 'unarchive']) }}", this);
             });
 
-            $(document).on('change', '#changeDisasterStatus', function() {
+            $(document).on('change', '.changeDisasterStatus', function() {
                 alterDisasterData('change',
                     "{{ route('disaster.change.status', 'disasterId') }}", this, $(this).val());
             });
@@ -212,7 +212,7 @@
                         `Do you want to ${operation == 'change' ? 'change the status of' : operation} this disaster?`
                     )
                     .then((result) => {
-                        return !result.isConfirmed ? $('#changeDisasterStatus').val('') :
+                        !result.isConfirmed ? $('.changeDisasterStatus').val('') :
                             $.ajax({
                                 method: 'PATCH',
                                 data: {

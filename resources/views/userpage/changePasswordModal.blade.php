@@ -36,8 +36,8 @@
                                 <i class="bi bi-eye-slash toggle-password" id="showConfirmPassword"
                                     data-target="#confirmPassword"></i>
                             </div>
-                            <div id="change-button-container">
-                                <button id="resetPasswordBtn" class="btn-update modalBtn" disabled hidden>
+                            <div id="change-button-container" hidden>
+                                <button id="resetPasswordBtn" class="btn-update modalBtn" disabled>
                                     <div id="btn-loader" hidden>
                                         <div id="loader-inner"></div>
                                     </div>

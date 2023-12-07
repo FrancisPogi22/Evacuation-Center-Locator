@@ -13,7 +13,7 @@
         password = $('#password'),
         modal = $('#changePasswordModal'),
         confirmPassword = $('#confirmPassword'),
-        resetPasswordBtn = $('#resetPasswordBtn'),
+        btnContainer = $('#change-button-container'),
         passwordShowIcon = $('#showPassword'),
         confirmPasswordShowIcon = $('#showConfirmPassword'),
         changePasswordForm = $('#changePasswordForm'),
@@ -119,7 +119,7 @@
                     confirmPass = $('.confirm-pass');
 
                 if (current_password == "") {
-                    resetPasswordBtn.add(checkPasswordIcon.removeClass('bi-check2-circle')
+                    btnContainer.add(checkPasswordIcon.removeClass('bi-check2-circle')
                         .addClass('bi-x-circle')).prop('hidden', 1);
                     changePasswordValidation.resetForm();
                     resetChangePasswordForm();
@@ -145,12 +145,12 @@
                             eyeIcon.removeClass('bi-eye').addClass('bi-eye-slash');
                             password.add(confirmPassword).val("").prop('type',
                                 'password').prop('disabled', 1);
-                            newPass.add(confirmPass).add(resetPasswordBtn).prop(
+                            newPass.add(confirmPass).add(btnContainer).prop(
                                 'hidden', 1);
                         } else {
-                            password.add(confirmPassword).add(resetPasswordBtn.prop(
+                            password.add(confirmPassword).add(btnContainer.prop(
                                 'hidden', 0)).prop('disabled', 0);
-                            newPass.add(confirmPass).add(resetPasswordBtn).add(
+                            newPass.add(confirmPass).add(btnContainer).add(
                                 checkPasswordIcon.removeClass(
                                     'bi-x-circle error')
                                 .addClass('bi-check2-circle success')).prop(
@@ -163,7 +163,7 @@
 
         modal.on('hidden.bs.modal', () => {
             resetChangePasswordForm();
-            resetPasswordBtn.prop('hidden', 1);
+            btnContainer.prop('hidden', 1);
             $('.new-pass, .confirm-pass').prop('hidden', 1);
             checkPasswordIcon.removeClass('success').removeClass('error').prop('hidden', 1);
             changePasswordValidation.resetForm();
@@ -298,7 +298,7 @@
             $.get('{{ route('notifications.get') }}', (notifications) => {
                 let count = notifications.length;
 
-                if (count != 0) $('.bi-bell-fill').html(`<div id="notification-count-container">
+                $('.bi-bell-fill').html(`<div id="notification-count-container" ${count == 0 ? 'hidden' : ''}>
                         <span id="notification-count">${count}</span></div>`);
 
                 $('.dropdown-menu.notification').html(count > 0 ? notifications.map(notification => `

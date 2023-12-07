@@ -664,7 +664,7 @@
                         familyId.val(data.id);
 
                         for (const key in data) {
-                            if (['id', 'individuals', 'disaster_id', 'evacuation_id', 'user_id']
+                            if (['id', 'individuals', 'disaster_id', 'evacuation_id']
                                 .includes(key)) continue;
 
                             let targetElement = key == 'barangay' ?
