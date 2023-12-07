@@ -232,7 +232,7 @@ textarea::placeholder {
 #reportAreaBtn i,
 #stopLocatingBtn i,
 #cancelReportingBtn i,
-.guideline-header button i,
+#createGuidelineBtn i,
 .selectImage i,
 .guideImgBtn i,
 .guidelineImgBtn i,
@@ -993,7 +993,7 @@ div.flatpickr-rContainer::-webkit-scrollbar,
 
 .pie-content {
     overflow: hidden;
-    background: var(--color-d-sub-text);
+    background: var(--color-text);
     height: 0;
     transition: 0.2s all ease;
 }
@@ -1086,13 +1086,16 @@ text {
     clip-path: circle();
 }
 
-.guideline-header .search-container input {
+#search_guideline {
     width: 250px;
+    height: 38px;
+    font-size: 15px;
     border-radius: 5px 0 0 5px;
 }
 
 .guideline-header .search-container .search-icon {
-    padding: 3px 20px;
+    padding: 3px 15px;
+    height: 38px;
     background-color: var(--color-light-gray);
     color: var(--color-black);
     border-top-right-radius: 5px;
@@ -1723,6 +1726,10 @@ html[data-theme="dark"] .modal-guideline-image h1 {
 
 div.gm-style-iw.gm-style-iw-c {
     padding: 12px !important;
+}
+
+.ssQIHO-checkbox-menu-item li {
+    display: flex;
 }
 
 .ssQIHO-checkbox-menu-item label {
@@ -2523,23 +2530,56 @@ input::-ms-clear {
 .area-map,
 .reporting-map {
     height: 600px;
-    border: 2px solid var(--color-light-gray);
     border-radius: 6px;
     margin-bottom: 10px;
+    border: 2px solid var(--color-light-gray);
+}
+
+#report-marker-info {
+    padding: 10px;
+    display: flex;
+    font-size: 14px;
+    font-weight: bold;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    background: var(--color-yellow);
+}
+
+#report-marker-info i {
+    font-size: 20px;
+    margin-right: 8px;
+    color: var(--color-black);
+}
+
+#report-marker-info-text {
+    width: 100%;
+    display: flex;
+    text-align: center;
+    word-break: normal;
+    align-items: center;
+    justify-content: space-between;
+}
+
+#report-marker-info-text div {
+    color: var(--color-black);
+}
+
+#report-marker-info-text #pending-count {
+    margin-left: 10px;
 }
 
 .count-container {
-    background: var(--color-red);
-    color: var(--color-black);
     padding: 4px;
-    border-radius: 5px;
+    display: flex;
     font-size: 12px;
     font-weight: 700;
+    overflow: visible;
+    border-radius: 5px;
     width: fit-content;
     align-items: center;
-    display: flex;
     justify-content: center;
-    overflow: visible;
+    color: var(--color-black);
+    background: var(--color-red);
 }
 
 .count-container img {
@@ -2601,7 +2641,7 @@ input::-ms-clear {
 
 #change-button-container {
     width: 100%;
-    padding: 13px 18px 20px;
+    padding: 8px 15px 21px 8px;
 }
 
 .form-button-container {
@@ -3286,6 +3326,13 @@ html[data-theme="dark"] button.changeTheme {
     }
 }
 
+@media only screen and (max-width: 860px) {
+    .profile-details-container {
+        display: block;
+    }
+
+}
+
 @media only screen and (max-width: 767px) {
     .main-content {
         margin: 85px 0 20px;
@@ -3325,8 +3372,7 @@ html[data-theme="dark"] button.changeTheme {
 
     .sidebar.active #logo,
     #btn-sidebar-mobile,
-    .sidebar.active #btn-sidebar-close,
-    .profile-details-container {
+    .sidebar.active #btn-sidebar-close {
         display: block;
     }
 
@@ -3397,6 +3443,12 @@ html[data-theme="dark"] button.changeTheme {
 
     button.changeTheme {
         margin-right: 0;
+    }
+}
+
+@media only screen and (max-width: 530px) {
+    .guideline-header {
+        flex-direction: column;
     }
 }
 
@@ -3609,7 +3661,8 @@ html[data-theme="dark"] button.changeTheme {
         width: 280px;
     }
 
-    .sidebar ul li {
+    .sidebar ul li,
+    #report-marker-info i {
         font-size: 16px !important;
     }
 
@@ -3682,7 +3735,8 @@ html[data-theme="dark"] button.changeTheme {
         font-size: 15px;
     }
 
-    .page-button-container {
+    .page-button-container,
+    .guideline-header {
         margin: 13.5px 0 15px 0;
     }
 
@@ -3698,15 +3752,17 @@ html[data-theme="dark"] button.changeTheme {
     #locateNearestBtn,
     #changeEvacueeDataBtn,
     #pinpointCurrentLocationBtn,
+    .guideline-header button,
     .page-button-container button,
+
     .generate-button-container button {
-        font-size: 11px;
+        font-size: 11px !important;
     }
 
     .actionSelect,
     .table-container select option,
-    #changeDisasterStatus,
-    #changeEvacuationStatus {
+    .action-container .changeDisasterStatus,
+    .action-container .changeEvacuationStatus {
         font-size: 11px;
         width: 140px;
     }
@@ -3901,7 +3957,8 @@ html[data-theme="dark"] button.changeTheme {
     #changeArchivedReportType,
     #changeEvacueeDataSelect,
     #changeArchiveEvacueeDataSelect,
-    .modal-content button {
+    .modal-content button,
+    #report-marker-info {
         font-size: 12px !important;
     }
 
@@ -3921,12 +3978,9 @@ html[data-theme="dark"] button.changeTheme {
     }
 
     .modal-content header {
-        padding: 10px;
-        border-top-right-radius: 8px;
-        border-top-left-radius: 8px;
+        padding: 7px 10px;
     }
 
-    #createGuidelineBtn i,
     .modal-content label {
         font-size: 14px !important;
     }
@@ -4076,7 +4130,8 @@ html[data-theme="dark"] button.changeTheme {
         height: fit-content;
     }
 
-    .empty-data-container p {
+    .empty-data-container p,
+    .guideline-header #search_guideline {
         font-size: 12px;
     }
 
@@ -4148,6 +4203,40 @@ html[data-theme="dark"] button.changeTheme {
     .hotline-form-button-container-list .btn-update,
     .hotline-form-button-container .btn-remove,
     .hotline-form-button-container-list .btn-remove {
+        margin-left: 0;
+    }
+
+    .navigation-item .sub-btn,
+    .navigation-item .menu-link {
+        height: 45px;
+    }
+
+    .guideline-header .search-icon,
+    .guideline-header #search_guideline {
+        height: 32px !important;
+    }
+
+    .guideline-header #search_guideline {
+        width: 100%;
+    }
+
+    .guideline-header .search-icon {
+        padding: 4px 10px !important;
+    }
+
+    .guideline-header .search-icon i {
+        font-size: 14px !important;
+    }
+
+    #report-marker-info-text {
+        flex-direction: column;
+    }
+
+    #report-marker-info-text div {
+        padding: 2px;
+    }
+
+    #report-marker-info-text #pending-count {
         margin-left: 0;
     }
 }
