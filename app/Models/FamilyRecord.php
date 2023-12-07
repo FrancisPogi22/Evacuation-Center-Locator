@@ -26,8 +26,7 @@ class FamilyRecord extends Model
         'family_head',
         'birth_date',
         'barangay',
-        'user_id',
-        'created_at',
-        'updated_at'
     ];
+
+    public $timestamps = false;
 }

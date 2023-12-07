@@ -29,7 +29,6 @@ class Evacuee extends Model
         'family_id',
         'disaster_id',
         'evacuation_id',
-        'user_id',
         'status',
         'is_archive',
         'updated_at'

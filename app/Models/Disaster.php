@@ -17,7 +17,6 @@ class Disaster extends Model
         'name',
         'year',
         'status',
-        'user_id',
         'is_archive'
     ];
 

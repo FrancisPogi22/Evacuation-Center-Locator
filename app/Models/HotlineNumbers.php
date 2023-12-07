@@ -17,7 +17,6 @@ class HotlineNumbers extends Model
         'label',
         'number',
         'logo',
-        'user_id'
     ];
 
     public $timestamps = false;
