@@ -74,7 +74,7 @@ class AuthenticationController extends Controller
 
         $this->user->where('email', $request->email)->update(['password' => Hash::make($request->password)]);
         DB::table('password_resets')->where('email', $request->email)->delete();
-
+        
         return redirect('/')->with('success', 'Your password has been changed.');
     }
 
@@ -83,7 +83,7 @@ class AuthenticationController extends Controller
         $this->logActivity->generateLog('Logged out account');
         auth()->logout();
         session()->flush();
-        return redirect('/')->with('success', 'Successfully Logged out.');
+        return redirect('/login')->with('success', 'Successfully Logged out.');
     }
 
     private function checkUserAccount()

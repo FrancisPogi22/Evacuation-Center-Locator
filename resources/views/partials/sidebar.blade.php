@@ -206,7 +206,7 @@
                         </a>
                     </div>
                     <div class="navigation-item">
-                        <a href="{{ route('login') }}" id="loginLink">
+                        <a href="{{ route('login.page') }}" id="loginLink">
                             <i class="bi bi-box-arrow-in-right"></i>
                             <span class="links_name">Login</span>
                         </a>

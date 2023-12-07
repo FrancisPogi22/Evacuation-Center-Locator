@@ -16,14 +16,9 @@ use App\Http\Controllers\EmergencyReportController;
 use App\Http\Controllers\EvacuationCenterController;
 
 Route::controller(AuthenticationController::class)->group(function () {
-    Route::middleware('check.login')->group(function () {
-        Route::view('/', 'authentication/authUser')->name('home');
-    });
-
-    Route::middleware('check.attempt')->group(function () {
-        Route::post('/', 'authUser')->name('login');
-    });
-
+    Route::get('/', MainController::class . '@eligtasGuideline')->name('home')->middleware('check.login');
+    Route::post('/', 'authUser')->name('login')->middleware('check.attempt');
+    Route::view('/login', 'authentication/authUser')->name('login.page');
     Route::get('/logout', 'logout')->name('logout.user');
     Route::view('/recoverAccount', 'authentication.forgotPassword')->name('recoverAccount');
     Route::post('/findAccount', 'findAccount')->name('findAccount');
@@ -53,7 +48,7 @@ Route::prefix('resident')->middleware('guest')->group(function () {
     });
 });
 
-Route::middleware('auth')->group(function () {
+Route::middleware(['auth', 'check.credential'])->group(function () {
     Route::prefix('cswd')->middleware('check.cswd')->group(function () {
         Route::controller(MainController::class)->group(function () {
             Route::get('/dashboard', 'dashboard')->name('dashboard.cswd');
