@@ -40,7 +40,7 @@ class DisasterController extends Controller
                 $evacuees      = $this->evacuee->where('disaster_id', $disaster->id)->where('status', 'Evacuated')->count();
                 $updateButton  = $operation == "manage" ? '<button class="btn-table-update" id="updateDisaster"><i class="bi bi-pencil-square"></i>Update</button>' : '';
                 $statusOptions = $disaster->status == 'On Going' ? '<option value="Inactive">Inactive</option>' : '<option value="On Going">On Going</option>';
-                $selectStatus  = $operation == "manage" ? '<select class="form-select" id="changeDisasterStatus"><option value="" disabled selected hidden>Change Status</option>' . $statusOptions . '</select>' : '';
+                $selectStatus  = $operation == "manage" ? '<select class="form-select changeDisasterStatus"><option value="" disabled selected hidden>Change Status</option>' . $statusOptions . '</select>' : '';
                 $archiveButton = $operation == "manage" ?
                     ($evacuees == 0 ? '<button class="btn-table-remove" id="archiveDisaster"><i class="bi bi-box-arrow-in-down-right"></i>Archive</button>' : '') :
                     '<button class="btn-table-remove" id="unArchiveDisaster"><i class="bi bi-box-arrow-up-left"></i>Unarchive</button>';
@@ -57,8 +57,7 @@ class DisasterController extends Controller
 
         $disasterData = $this->disaster->create([
             'name'    => Str::title(trim($request->name)),
-            'year'    => date('Y'),
-            'user_id' => auth()->user()->id
+            'year'    => date('Y')
         ]);
         $this->logActivity->generateLog('Added a new disaster(ID - ' . $disasterData->id . ')');
 
@@ -72,8 +71,7 @@ class DisasterController extends Controller
         if ($validatedDisasterValidation->fails()) return response(['status' => 'warning', 'message' => $validatedDisasterValidation->errors()->first()]);
 
         $this->disaster->find($disasterId)->update([
-            'name'    => Str::title(trim($request->name)),
-            'user_id' => auth()->user()->id
+            'name'    => Str::title(trim($request->name))
         ]);
         $this->logActivity->generateLog('Updated info of disaster(ID - ' . $disasterId . ')');
 
@@ -84,7 +82,6 @@ class DisasterController extends Controller
     {
         $archiveValue = $operation == 'archive' ? 1 : 0;
         $this->disaster->find($disasterId)->update([
-            'user_id'    => auth()->user()->id,
             'status'     => 'Inactive',
             'is_archive' => $archiveValue
         ]);
@@ -97,8 +94,7 @@ class DisasterController extends Controller
     public function changeDisasterStatus(Request $request, $disasterId)
     {
         $this->disaster->find($disasterId)->update([
-            'status'  => $request->status,
-            'user_id' => auth()->user()->id
+            'status'  => $request->status
         ]);
         $this->logActivity->generateLog('Changed a disaster(ID - ' . $disasterId . ') status to ' . $request->status);
 

@@ -94,7 +94,6 @@ class EvacueeController extends Controller
         $evacueeInfo['individuals'] = $evacueeInfo['male'] + $evacueeInfo['female'];
         $evacueeInfo['updated_at']  = date('Y-m-d H:i:s');
         $evacueeInfo['family_id']   = $latestRecordId;
-        $evacueeInfo['user_id']     = auth()->user()->id;
         $evacueeInfo                = $this->evacuee->create($evacueeInfo);
         $this->logActivity->generateLog('Recorded a new evacuee(ID - ' . $evacueeInfo->id . ') in ' . lcfirst($evacueeInfo->barangay));
         event(new ActiveEvacuees());
@@ -130,7 +129,6 @@ class EvacueeController extends Controller
         $evacueeInfo['individuals'] = $evacueeInfo['male'] + $evacueeInfo['female'];
         $evacueeInfo['updated_at']  = date('Y-m-d H:i:s');
         $evacueeInfo['family_id']   = $request->family_id;
-        $evacueeInfo['user_id']     = auth()->user()->id;
         $evacueeInfo                = $this->evacuee->find($evacueeId)->update($evacueeInfo);
         $this->logActivity->generateLog('Updated a evacuee(ID - ' . $evacueeId . ') information in ' . lcfirst($request->barangay));
         event(new ActiveEvacuees());

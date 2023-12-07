@@ -47,7 +47,6 @@ class GuidelineController extends Controller
 
         $guideline = $this->guideline->create([
             'type'          => Str::upper(trim($request->type)),
-            'user_id'       => $userId,
             'organization'  => auth()->user()->organization,
             'guideline_img' => $guidelineImagePath
         ]);
@@ -62,7 +61,6 @@ class GuidelineController extends Controller
                 $guideData = [
                     'label'        => Str::upper(trim($label)),
                     'content'      => $contents[$count],
-                    'user_id'      => $userId,
                     'guideline_id' => $guideline->id
                 ];
 
@@ -101,7 +99,6 @@ class GuidelineController extends Controller
         $guidelineImg    = $request->file('guidelineImg');
         $guidelineData   = [
             'type'    => Str::upper(trim($request->type)),
-            'user_id' => $userId
         ];
 
         if ($guidelineImg) {
@@ -130,7 +127,6 @@ class GuidelineController extends Controller
                     'label'        => Str::upper(trim($label)),
                     'content'      => $contents[$count],
                     'guideline_id' => $guideline->id,
-                    'user_id'      => $userId
                 ];
 
                 if (isset($guidePhotos[$count])) {
@@ -184,7 +180,6 @@ class GuidelineController extends Controller
         $guideData = [
             'label'   => Str::upper(trim($request->label)),
             'content' => Str::ucfirst(trim($request->content)),
-            'user_id' => auth()->user()->id
         ];
 
         if ($guideImg) {

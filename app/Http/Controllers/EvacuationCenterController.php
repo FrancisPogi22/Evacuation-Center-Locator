@@ -46,7 +46,7 @@ class EvacuationCenterController extends Controller
                     }, $optionsArray));
                     $updateBtn = $operation == "manage" ? '<button class="btn-table-update" id="updateEvacuationCenter"><i class="bi bi-pencil-square"></i>Update</button>' : '';
                     $archiveBtn =  $evacuees == 0 ? '<button class="btn-table-remove" id="archiveEvacuationCenter"><i class="bi bi-box-arrow-in-down-right"></i>Archive</button>' : '';
-                    $selectOption =  '<select class="form-select" id="changeEvacuationStatus">' .
+                    $selectOption =  '<select class="form-select changeEvacuationStatus">' .
                         '<option value="" disabled selected hidden>Change Status</option>' . $statusOptions . '</select>';
                 } else {
                     $updateBtn = '';
@@ -70,7 +70,6 @@ class EvacuationCenterController extends Controller
 
         $evacuationCenter =  $this->evacuationCenter->create([
             'name'          => Str::title(trim($request->name)),
-            'user_id'       => auth()->user()->id,
             'latitude'      => $request->latitude,
             'longitude'     => $request->longitude,
             'barangay_name' => $request->barangayName
@@ -94,7 +93,6 @@ class EvacuationCenterController extends Controller
 
         $this->evacuationCenter->find($evacuationId)->update([
             'name'          => Str::title(trim($request->name)),
-            'user_id'       => auth()->user()->id,
             'latitude'      => $request->latitude,
             'longitude'     => $request->longitude,
             'barangay_name' => $request->barangayName
@@ -109,7 +107,6 @@ class EvacuationCenterController extends Controller
     {
         $this->evacuationCenter->find($evacuationId)->update([
             'status'     => $operation == "archive" ? "Inactive" : "Active",
-            'user_id'    => auth()->user()->id,
             'is_archive' => $operation == "archive" ? 1 : 0
         ]);
         $this->logActivity->generateLog(Str::ucfirst($operation) . ' evacuation center(ID - ' . $evacuationId . ')');
@@ -122,7 +119,6 @@ class EvacuationCenterController extends Controller
     {
         $this->evacuationCenter->find($evacuationId)->update([
             'status'  => $request->status,
-            'user_id' => auth()->user()->id
         ]);
         $this->logActivity->generateLog('Changed a evacuation center(ID - ' . $evacuationId . ') status to ' . $request->status);
         event(new EvacuationCenterLocator());

@@ -40,7 +40,6 @@ class HotlineNumberController extends Controller
             'logo'    => $hotlineLogoPath,
             'label'   => Str::upper(trim($request->label)),
             'number'  => trim($request->number),
-            'user_id' => auth()->user()->id
         ]);
 
         $hotlineId = $hotlineNumber->id;
@@ -64,7 +63,6 @@ class HotlineNumberController extends Controller
         $hotlineNumberData = [
             'label'   => Str::upper(trim($request->label)),
             'number'  => trim($request->number),
-            'user_id' => auth()->user()->id
         ];
 
         if ($hotlineLogo) {
