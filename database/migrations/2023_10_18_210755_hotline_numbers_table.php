@@ -13,7 +13,6 @@ return new class extends Migration
             $table->string('label');
             $table->string('number');
             $table->string('logo')->nullable();
-            $table->foreignId('user_id')->references('id')->on('user')->cascadeOnUpdate();
         });
     }
 

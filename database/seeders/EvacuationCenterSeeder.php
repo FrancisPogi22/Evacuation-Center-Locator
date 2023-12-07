@@ -10,7 +10,6 @@ class EvacuationCenterSeeder extends Seeder
     public function run(): void
     {
         EvacuationCenter::insert([
-            'user_id' => 2,
             'name' => 'Niugan Elementary School',
             'barangay_name' => 'Niugan',
             'latitude' => '14.2626',
@@ -20,7 +19,6 @@ class EvacuationCenterSeeder extends Seeder
         ]);
 
         EvacuationCenter::insert([
-            'user_id' => 2,
             'name' => 'Butong Elementary School',
             'barangay_name' => 'Butong',
             'latitude' => '14.2862',
@@ -30,7 +28,6 @@ class EvacuationCenterSeeder extends Seeder
         ]);
 
         EvacuationCenter::insert([
-            'user_id' => 2,
             'name' => 'Southville 1 Elementary School',
             'barangay_name' => 'Banay-Banay',
             'latitude' => '14.2677',
@@ -40,7 +37,6 @@ class EvacuationCenterSeeder extends Seeder
         ]);
 
         EvacuationCenter::insert([
-            'user_id' => 2,
             'name' => 'Southville 1 Integrated National High School',
             'barangay_name' => 'Banay-Banay',
             'latitude' => '14.2660',
@@ -50,7 +46,6 @@ class EvacuationCenterSeeder extends Seeder
         ]);
 
         EvacuationCenter::insert([
-            'user_id' => 2,
             'name' => 'Banay-Banay Elementary School',
             'barangay_name' => 'Banay-Banay',
             'latitude' => '14.2546',
@@ -60,7 +55,6 @@ class EvacuationCenterSeeder extends Seeder
         ]);
 
         EvacuationCenter::insert([
-            'user_id' => 2,
             'name' => 'Marinig Elementary School',
             'barangay_name' => 'Marinig',
             'latitude' => '14.2704',
@@ -70,7 +64,6 @@ class EvacuationCenterSeeder extends Seeder
         ]);
 
         EvacuationCenter::insert([
-            'user_id' => 2,
             'name' => 'Bigaa Elementary School',
             'barangay_name' => 'Bigaa',
             'latitude' => '14.2878',
@@ -80,7 +73,6 @@ class EvacuationCenterSeeder extends Seeder
         ]);
 
         EvacuationCenter::insert([
-            'user_id' => 2,
             'name' => 'Cabuyao Athletes Basic School',
             'barangay_name' => 'Banay-Banay',
             'latitude' => '14.2597',
@@ -90,7 +82,6 @@ class EvacuationCenterSeeder extends Seeder
         ]);
 
         EvacuationCenter::insert([
-            'user_id' => 2,
             'name' => 'Gulod Elementary School',
             'barangay_name' => 'Gulod',
             'latitude' => '14.2556',

@@ -9,7 +9,6 @@ return new class extends Migration
     {
         Schema::create('evacuation_center', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->references('id')->on('user')->cascadeOnUpdate();
             $table->string('name');
             $table->string('barangay_name');
             $table->string('latitude');

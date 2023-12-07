@@ -22,9 +22,6 @@ return new class extends Migration
             $table->string('barangay');
             $table->string('family_head');
             $table->string('birth_date');
-            $table->foreignId('user_id')->references('id')->on('user')->cascadeOnUpdate();
-            $table->timestamp('created_at')->nullable();
-            $table->timestamp('updated_at')->default(date('Y-m-d H:i:s'));
         });
     }
 

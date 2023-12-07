@@ -14,7 +14,6 @@ class DisasterSeeder extends Seeder
             'year' => ('2021'),
             'status' => "On Going",
             'is_archive' => 0,
-            'user_id' => 2
         ]);
 
         Disaster::insert([
@@ -22,7 +21,6 @@ class DisasterSeeder extends Seeder
             'year' => ('2022'),
             'status' => "Inactive",
             'is_archive' => 0,
-            'user_id' => 2
         ]);
     }
 }

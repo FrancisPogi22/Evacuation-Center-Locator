@@ -24,10 +24,9 @@ return new class extends Migration
             $table->foreignId('family_id')->references('id')->on('family_record')->cascadeOnUpdate();
             $table->foreignId('disaster_id')->references('id')->on('disaster')->cascadeOnUpdate();
             $table->foreignId('evacuation_id')->references('id')->on('evacuation_center')->cascadeOnUpdate();
-            $table->foreignId('user_id')->references('id')->on('user')->cascadeOnUpdate();
             $table->string('status')->default('Evacuated');
             $table->boolean('is_archive')->default(0);
-            $table->timestamp('updated_at')->default(date('Y-m-d H:i:s'));
+            $table->timestamp('updated_at');
         });
     }
 
