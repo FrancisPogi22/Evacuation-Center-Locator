@@ -25,7 +25,7 @@
                         @csrf
                         <input type="text" name="guideline_name" id="search_guideline" class="form-control"
                             placeholder="Search Guideline" autocomplete="off" required>
-                        <button type="submit" class="search-icon"><i class="bi bi-search"></i></button>
+                        <button type="submit" class="search-icon" title="Search"><i class="bi bi-search"></i></button>
                     </form>
                     @auth
                         <button class="btn-submit" id="createGuidelineBtn">
