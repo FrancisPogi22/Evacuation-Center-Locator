@@ -739,6 +739,11 @@
                 });
             });
 
+            $('.marker-count.active, .marker-count.inactive, .marker-count.full, .marker-count.flooded, .marker-count.roadblocked')
+                .hover(function() {
+                    $(this).attr('title', `Total of ${$(this).text()}`);
+                });
+
             $(document).on("click", "#pinpointCurrentLocationBtn", function() {
                 if (!locating && !pinClicked && (userMarker == null || !userMarker.getMap())) {
                     if (!geolocationBlocked) {
