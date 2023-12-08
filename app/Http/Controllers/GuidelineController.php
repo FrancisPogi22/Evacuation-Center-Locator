@@ -47,6 +47,7 @@ class GuidelineController extends Controller
 
         $guideline = $this->guideline->create([
             'type'          => Str::upper(trim($request->type)),
+            'user_id'       => $userId,
             'organization'  => auth()->user()->organization,
             'guideline_img' => $guidelineImagePath
         ]);
@@ -61,6 +62,7 @@ class GuidelineController extends Controller
                 $guideData = [
                     'label'        => Str::upper(trim($label)),
                     'content'      => $contents[$count],
+                    'user_id'      => $userId,
                     'guideline_id' => $guideline->id
                 ];
 

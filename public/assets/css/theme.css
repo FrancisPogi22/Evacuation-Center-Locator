@@ -1824,6 +1824,7 @@ html[data-theme="dark"] .gmnoprint button span {
     display: flex;
     justify-content: center;
     align-items: center;
+    cursor: pointer;
 }
 
 .marker-count-container.active {
@@ -1884,12 +1885,6 @@ html[data-theme="dark"] .gmnoprint button span {
 
 .markers img {
     width: 30px;
-    cursor: pointer;
-    transition: 0.1s all ease-in-out;
-}
-
-.markers img:hover {
-    transform: scale(1.1);
 }
 
 .report-button {
