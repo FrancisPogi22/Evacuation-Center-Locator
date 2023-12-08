@@ -32,7 +32,7 @@
             @endif
             <section class="table-container">
                 <div class="table-content">
-                    <header class="table-label">Disaster Information Table</header>
+                    <header class="table-label">List of Disasters</header>
                     <table class="table" id="disasterTable" width="100%">
                         <thead>
                             <tr>

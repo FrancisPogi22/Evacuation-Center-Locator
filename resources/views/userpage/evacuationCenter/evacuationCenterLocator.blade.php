@@ -86,7 +86,7 @@
             </div>
             <div class="table-container">
                 <div class="table-content">
-                    <header class="table-label">Evacuation Centers Table</header>
+                    <header class="table-label">List of Evacuation Centers</header>
                     <table class="table" id="evacuationCenterTable" width="100%">
                         <thead>
                             <tr>
