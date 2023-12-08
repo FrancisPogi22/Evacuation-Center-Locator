@@ -10,7 +10,8 @@ use Yajra\DataTables\DataTables;
 use App\Mail\UserCredentialsMail;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
-use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Validator;
 
 class UserAccountsController extends Controller
@@ -109,6 +110,10 @@ class UserAccountsController extends Controller
     public function toggleAccountStatus($userId, $operation)
     {
         $account = $this->user->find($userId);
+
+        if ($operation == "Inactive")
+            Auth::logoutOtherDevices(Crypt::decrypt($account->password));
+
         $account->update([
             'status'     => $operation == "active" ? "Active" : "Inactive",
             'is_disable' => $operation == "active" ? 0 : 1
@@ -147,7 +152,7 @@ class UserAccountsController extends Controller
 
             $this->user->find($userId)->update(['password' => Hash::make(trim($request->password))]);
             $this->logActivity->generateLog('changed a password(ID - ' . $userId . ')');
-            
+
             return response([]);
         }
 
