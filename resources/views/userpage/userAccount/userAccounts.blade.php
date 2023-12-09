@@ -33,8 +33,8 @@
             @endif
             <section class="table-container">
                 <div class="table-content">
-                    <header class="table-label">{{ auth()->user()->organization == 'CDRRMO' ? 'CDRRMO' : 'User' }}
-                        Accounts Table</header>
+                    <header class="table-label">List of {{ auth()->user()->organization == 'CDRRMO' ? 'CDRRMO' : 'Users' }}
+                        Account</header>
                     <table class="table" id="accountTable" width="100%">
                         <thead>
                             <tr>

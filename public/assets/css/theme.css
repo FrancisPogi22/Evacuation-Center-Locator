@@ -3,7 +3,7 @@
 
 :root {
     --color-gray: #2d3b50;
-    --color-light-gray: #b3b3b3;
+    --color-light-gray: #dad9da;
     --color-green: #28a745;
     --color-primary: #2682fa;
     --color-yellow: #ffcb2f;
@@ -16,7 +16,7 @@
     --color-primary-hover: #1d4ed8;
 
     --color-text: #ffffff;
-    --color-background: #f0f2f5;
+    --color-background: #f4f5ff;
 
     --color-d-background: #182130;
     --color-d-text: #e2e8f0;
@@ -34,6 +34,10 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     user-select: none;
+}
+
+body {
+    background: var(--color-background) !important;
 }
 
 html[data-theme="dark"] body {
@@ -83,7 +87,7 @@ textarea::placeholder {
     font-weight: 600;
     border-radius: 4px;
     padding: 8px 16px;
-    filter: drop-shadow(0 4px 3px rgb(0 0 0 / 0.07)) drop-shadow(0 2px 2px rgb(0 0 0 / 0.06));
+    filter: drop-shadow(0 1px 2px rgb(0 0 0 / 0.1)) drop-shadow(0 1px 1px rgb(0 0 0 / 0.06));
     border: none;
 }
 
@@ -159,6 +163,7 @@ textarea::placeholder {
     padding: 10px 16px;
     width: max-content;
     border: none;
+    filter: drop-shadow(0 1px 2px rgb(0 0 0 / 0.1)) drop-shadow(0 1px 1px rgb(0 0 0 / 0.06));
 }
 
 .btn-table-primary:hover,
@@ -172,9 +177,8 @@ textarea::placeholder {
 
 .btn-primary,
 .btn-update,
-.btn-remove,
-#pinpointCurrentLocationBtn {
-    filter: drop-shadow(0 4px 3px rgb(0 0 0 / 0.07)) drop-shadow(0 2px 2px rgb(0 0 0 / 0.06));
+.btn-remove {
+    filter: drop-shadow(0 1px 2px rgb(0 0 0 / 0.1)) drop-shadow(0 1px 1px rgb(0 0 0 / 0.06));
 }
 
 .sendUpdateBtn,
@@ -209,7 +213,7 @@ textarea::placeholder {
 .page-button-container {
     display: flex;
     justify-content: end;
-    margin-bottom: 20px;
+    margin-bottom: 17px;
     align-items: flex-end;
     gap: 15px;
 }
@@ -246,9 +250,9 @@ textarea::placeholder {
     top: 0;
     left: 0;
     height: 60px;
-    background: var(--color-light-gray);
+    background: var(--color-text);
     z-index: 1;
-    filter: drop-shadow(0 10px 8px rgb(0 0 0 / 0.04)) drop-shadow(0 4px 3px rgb(0 0 0 / 0.1));
+    filter: drop-shadow(0 1px 2px rgb(0 0 0 / 0.1)) drop-shadow(0 1px 1px rgb(0 0 0 / 0.06));
 }
 
 .header-section .container-fluid {
@@ -283,6 +287,10 @@ textarea::placeholder {
 .dropdown-menu {
     padding: 7px 0 !important;
     border-radius: 6px !important;
+}
+
+button.changeTheme {
+    background: rgb(221, 221, 221);
 }
 
 #emergencyBtn,
@@ -429,7 +437,7 @@ button.changeTheme:hover {
 }
 
 .main-content hr {
-    margin: 24px 0 20px;
+    margin: 24px 0 17px;
 }
 
 .label-container {
@@ -445,17 +453,18 @@ button.changeTheme:hover {
 
 .icon-content {
     color: var(--color-black);
-    font-size: 24px;
+    font-size: 20px;
 }
 
 .icon-content i {
-    padding: 8px;
+    padding: 10px;
     border-radius: 4px;
-    background-color: var(--color-light-gray);
+    background-color: var(--color-text);
+    filter: drop-shadow(0 1px 2px rgb(0 0 0 / 0.1)) drop-shadow(0 1px 1px rgb(0 0 0 / 0.06));
 }
 
 .label-container span {
-    font-size: 20px;
+    font-size: 18px;
     font-weight: 700;
 }
 
@@ -466,7 +475,7 @@ button.changeTheme:hover {
     z-index: 100;
     left: 0;
     top: 0;
-    filter: drop-shadow(0 10px 8px rgb(0 0 0 / 0.04)) drop-shadow(0 4px 3px rgb(0 0 0 / 0.1));
+    filter: drop-shadow(0 1px 2px rgb(0 0 0 / 0.1)) drop-shadow(0 1px 1px rgb(0 0 0 / 0.06));
     overflow: hidden;
     transition: 0.2s all ease;
 }
@@ -580,12 +589,12 @@ div.flatpickr-rContainer::-webkit-scrollbar,
 }
 
 .sidebar ul .navigation-item a:not(.active-link):hover {
-    background: #dadadaea;
+    background: rgb(222, 223, 236);
     color: var(--color-black);
 }
 
 .active-link {
-    background: var(--color-light-gray);
+    background: rgb(222, 223, 236);
     color: var(--color-black);
 }
 
@@ -614,7 +623,9 @@ div.flatpickr-rContainer::-webkit-scrollbar,
 .user-details {
     display: none;
     padding: 8px 0;
-    background: var(--color-light-gray);
+    border-top: 1px solid rgb(200, 200, 200);
+    border-bottom: 1px solid rgb(200, 200, 200);
+    background: var(--color-background);
 }
 
 .details-content {
@@ -926,8 +937,9 @@ div.flatpickr-rContainer::-webkit-scrollbar,
     background: var(--color-text);
     position: relative;
     overflow: hidden;
-    border-radius: 15px;
-    filter: drop-shadow(0 10px 8px rgb(0 0 0 / 0.04)) drop-shadow(0 4px 3px rgb(0 0 0 / 0.1));
+    border-radius: 8px;
+    border: 1px solid var(--color-light-gray);
+    filter: drop-shadow(0 1px 2px rgb(0 0 0 / 0.1)) drop-shadow(0 1px 1px rgb(0 0 0 / 0.06));
     -webkit-animation: scaleIn 0.5s;
     animation: scaleIn 0.5s;
 }
@@ -947,6 +959,10 @@ div.flatpickr-rContainer::-webkit-scrollbar,
     color: var(--color-black);
     font-size: 16px;
     font-weight: 600;
+}
+
+.content-description span {
+    color: var(--color-d-sub-text);
 }
 
 .content-description p {
@@ -969,13 +985,15 @@ div.flatpickr-rContainer::-webkit-scrollbar,
 }
 
 .pie-figure {
+    border: 1px solid var(--color-light-gray);
+    filter: drop-shadow(0 1px 2px rgb(0 0 0 / 0.1)) drop-shadow(0 1px 1px rgb(0 0 0 / 0.06));
     height: 100%;
 }
 
 .pie-chart {
     height: 600px;
     padding: 10px 10px 20px;
-    filter: drop-shadow(0 10px 8px rgb(0 0 0 / 0.04)) drop-shadow(0 4px 3px rgb(0 0 0 / 0.1));
+    filter: drop-shadow(0 1px 2px rgb(0 0 0 / 0.1)) drop-shadow(0 1px 1px rgb(0 0 0 / 0.06));
 }
 
 .pie-container .highcharts-background {
@@ -985,8 +1003,11 @@ div.flatpickr-rContainer::-webkit-scrollbar,
 .pie-label {
     text-align: center;
     padding: 10px;
-    background: var(--color-light-gray);
-    color: var(--color-text);
+    font-size: 16px;
+    background: var(--color-text);
+    border-radius: 8px;
+    border: 1px solid var(--color-light-gray);
+    filter: drop-shadow(0 1px 2px rgb(0 0 0 / 0.1)) drop-shadow(0 1px 1px rgb(0 0 0 / 0.06));
     font-weight: 700;
     cursor: pointer;
 }
@@ -1002,6 +1023,14 @@ div.flatpickr-rContainer::-webkit-scrollbar,
     height: 100%;
 }
 
+.pie-container.active .pie-label {
+    border-radius: 8px 8px 0 0;
+}
+
+.pie-container.active .pie-figure {
+    border-radius: 0 0 8px 8px;
+}
+
 .highcharts-background {
     fill: var(--color-text);
 }
@@ -1009,8 +1038,9 @@ div.flatpickr-rContainer::-webkit-scrollbar,
 .bar-graph {
     margin: 20px 0;
     height: 400px;
-    border-radius: 15px;
-    filter: drop-shadow(0 10px 8px rgb(0 0 0 / 0.04)) drop-shadow(0 4px 3px rgb(0 0 0 / 0.1));
+    border-radius: 8px;
+    border: 1px solid var(--color-light-gray);
+    filter: drop-shadow(0 1px 2px rgb(0 0 0 / 0.1)) drop-shadow(0 1px 1px rgb(0 0 0 / 0.06));
 }
 
 .highcharts-label path {
@@ -1028,7 +1058,7 @@ text {
 }
 
 .highcharts-title {
-    font-size: 1.2em !important;
+    font-size: 16px !important;
 }
 
 .highcharts-axis-labels,
@@ -1051,7 +1081,7 @@ text {
     justify-content: end;
     align-items: flex-end;
     gap: 15px;
-    margin: 20px 0;
+    margin: 17px 0;
 }
 
 .guideline-header .search-container {
@@ -1089,24 +1119,31 @@ text {
 #search_guideline {
     width: 250px;
     height: 38px;
-    font-size: 15px;
+    font-size: 14px;
+    border: 1px solid rgb(192, 192, 192) !important;
     border-radius: 5px 0 0 5px;
+    filter: drop-shadow(0 1px 1px rgb(0 0 0 / 0.05));
+}
+
+#search_guideline:placeholder-shown {
+    font-size: 14px;
 }
 
 .guideline-header .search-container .search-icon {
-    padding: 3px 15px;
+    padding: 3px 22px 3px 20px;
     height: 38px;
-    background-color: var(--color-light-gray);
+    background-color: rgb(221, 221, 221);
     color: var(--color-black);
     border-top-right-radius: 5px;
     border-bottom-right-radius: 5px;
     cursor: pointer;
-    border: 1px solid var(--color-black);
+    border: 1px solid rgb(192, 192, 192);
     border-left: 0;
+    filter: drop-shadow(0 1px 1px rgb(0 0 0 / 0.05));
 }
 
 .guideline-header .search-container .search-icon i {
-    font-size: 20px;
+    font-size: 18px;
 }
 
 .horizontal-line {
@@ -1328,7 +1365,7 @@ html[data-theme="dark"] .modal-guideline-image h1 {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    margin: 100px 50px;
+    margin: 50px;
     text-align: center;
 }
 
@@ -1338,8 +1375,7 @@ html[data-theme="dark"] .modal-guideline-image h1 {
 }
 
 .empty-data-container p {
-    margin: 25px 0 0 30px;
-    font-size: 20px;
+    font-size: 18px;
     font-weight: 700;
 }
 
@@ -1529,7 +1565,7 @@ html[data-theme="dark"] .modal-guideline-image h1 {
 }
 
 .locator-content {
-    border-top: 0.375rem;
+    filter: drop-shadow(0 1px 2px rgb(0 0 0 / 0.1)) drop-shadow(0 1px 1px rgb(0 0 0 / 0.06));
 }
 
 .locator-header {
@@ -1540,11 +1576,14 @@ html[data-theme="dark"] .modal-guideline-image h1 {
 }
 
 .header-title {
-    font-size: 1.5rem;
+    font-size: 17px;
     line-height: 2rem;
-    padding: 1rem;
+    padding: 10px;
     color: var(--color-black);
-    background: var(--color-light-gray);
+    background: var(--color-text);
+    border-top: 1px solid var(--color-light-gray);
+    border-left: 1px solid var(--color-light-gray);
+    border-right: 1px solid var(--color-light-gray);
     border-radius: 0.375rem 0.375rem 0 0;
 }
 
@@ -1553,13 +1592,15 @@ html[data-theme="dark"] .modal-guideline-image h1 {
 }
 
 .map-section {
-    border: 2px solid var(--color-light-gray);
-    border-radius: 0 0 0.375rem 0.375rem;
+    border: 1px solid var(--color-light-gray);
+    border-bottom-left-radius: 4px;
+    border-bottom-right-radius: 4px;
 }
 
 .locator-map {
     width: 100%;
-    border-radius: 0 0 0.375rem 0.375rem;
+    border-bottom-left-radius: 4px;
+    border-bottom-right-radius: 4px;
     height: 600px;
 }
 
@@ -1572,7 +1613,7 @@ html[data-theme="dark"] .modal-guideline-image h1 {
     align-items: center;
     justify-content: center;
     transition: visibility 0.3s ease;
-    background-color: rgba(110, 110, 110, 0.7);
+    background-color: var(--color-light-gray);
     flex-direction: column;
 }
 
@@ -1749,8 +1790,8 @@ div.gm-style-iw.gm-style-iw-c {
     display: flex;
     align-items: center;
     border-radius: 4px;
-    border: 2px solid var(--color-light-gray);
-    filter: drop-shadow(0 4px 3px rgb(0 0 0 / 0.07)) drop-shadow(0 2px 2px rgb(0 0 0 / 0.06));
+    border: 1px solid var(--color-light-gray);
+    filter: drop-shadow(0 1px 2px rgb(0 0 0 / 0.1)) drop-shadow(0 1px 1px rgb(0 0 0 / 0.06));
     white-space: nowrap;
     -ms-overflow-style: none;
     scrollbar-width: none;
@@ -1802,7 +1843,7 @@ html[data-theme="dark"] .gmnoprint button span {
 .markers-header {
     position: relative;
     height: 100%;
-    background: var(--color-light-gray);
+    background: rgb(221, 221, 221);
     color: var(--color-black);
 }
 
@@ -2099,7 +2140,7 @@ html[data-theme="dark"] .gmnoprint button span {
     border-radius: 5px;
     font-weight: 400;
     font-size: 0.875rem;
-    border: 2px solid var(--color-d-sub-text);
+    border: 1.5px solid var(--color-light-gray) !important;
     height: 40px;
 }
 
@@ -2412,7 +2453,7 @@ input::-ms-clear {
     border-radius: 5px;
     font-weight: 400;
     font-size: 0.875rem;
-    border: 2px solid var(--color-d-sub-text);
+    border: 1px solid var(--color-light-gray);
     height: 40px;
 }
 
@@ -2452,7 +2493,8 @@ input::-ms-clear {
 #changeArchiveEvacueeDataSelect {
     width: 262px;
     height: 38px;
-    border: solid var(--color-d-sub-text) 2px;
+    border: 1px solid var(--color-light-gray) !important;
+    filter: drop-shadow(0 1px 2px rgb(0 0 0 / 0.1)) drop-shadow(0 1px 1px rgb(0 0 0 / 0.06));
 }
 
 #guideForm textarea,
@@ -2464,7 +2506,7 @@ input::-ms-clear {
     border-radius: 5px;
     font-weight: 400;
     font-size: 0.875rem;
-    border: 2px solid var(--color-d-sub-text);
+    border: 1px solid var(--color-light-gray) !important;
 }
 
 #reportAreaForm input,
@@ -2525,9 +2567,9 @@ input::-ms-clear {
 .area-map,
 .reporting-map {
     height: 600px;
-    border-radius: 6px;
+    border-radius: 4px;
     margin-bottom: 10px;
-    border: 2px solid var(--color-light-gray);
+    border: 1px solid var(--color-light-gray);
 }
 
 #report-marker-info {
@@ -2606,16 +2648,6 @@ input::-ms-clear {
     z-index: 10000 !important;
 }
 
-.header-title {
-    font-size: 1.5rem;
-    line-height: 2rem;
-    padding: 1rem;
-}
-
-.header-title span {
-    font-weight: 800;
-}
-
 .checkPassword {
     position: absolute;
     font-size: 18px;
@@ -2665,8 +2697,9 @@ span.error {
 .table-container {
     padding: 12px;
     background: var(--color-text);
-    filter: drop-shadow(0 10px 8px rgb(0 0 0 / 0.04)) drop-shadow(0 4px 3px rgb(0 0 0 / 0.1));
-    border-radius: 8px;
+    border: 1px solid var(--color-light-gray);
+    filter: drop-shadow(0 1px 2px rgb(0 0 0 / 0.1)) drop-shadow(0 1px 1px rgb(0 0 0 / 0.06));
+    border-radius: 4px;
     overflow: hidden;
 }
 
@@ -2768,6 +2801,14 @@ select.form-select option {
     color: var(--color-red);
     font-weight: 600;
     font-size: 15px;
+}
+
+.dataTables_info {
+    visibility: hidden;
+}
+
+.dataTables_wrapper .dataTables_filter input {
+    border-color: var(--color-light-gray) !important;
 }
 
 html[data-theme="dark"] {
@@ -3895,8 +3936,7 @@ html[data-theme="dark"] button.changeTheme {
     .hotline-container i,
     .hotline-form-container i,
     .hotline-form-container button,
-    .hotline-container button
-    table td {
+    .hotline-container button table td {
         font-size: 11px !important;
     }
 
@@ -3969,7 +4009,7 @@ html[data-theme="dark"] button.changeTheme {
     }
 
     .checkPassword {
-        margin-top: -2px ;
+        margin-top: -2px;
     }
 
     .modal-content header {
@@ -4040,6 +4080,7 @@ html[data-theme="dark"] button.changeTheme {
     div.flatpickr-rContainer {
         overflow: scroll;
     }
+
     div.flatpickr-weekdays {
         width: 307px !important;
     }
@@ -4237,6 +4278,7 @@ html[data-theme="dark"] button.changeTheme {
 }
 
 @media only screen and (max-width: 300px) {
+
     .flatpickr-months,
     .flatpickr-month {
         height: 70px !important;
