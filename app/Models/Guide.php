@@ -16,7 +16,6 @@ class Guide extends Model
     protected $fillable = [
         'label',
         'content',
-        'user_id',
         'guideline_id',
         'guide_photo'
     ];

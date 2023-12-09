@@ -62,7 +62,7 @@ class HotlineNumberController extends Controller
         $hotlineNumber     = $this->hotlineNumbers->find($hotlineId);
         $hotlineNumberData = [
             'label'   => Str::upper(trim($request->label)),
-            'number'  => trim($request->number),
+            'number'  => trim($request->number)
         ];
 
         if ($hotlineLogo) {

@@ -16,7 +16,6 @@ class Guideline extends Model
     protected $fillable = [
         'type',
         'organization',
-        'user_id',
         'guideline_img'
     ];
 

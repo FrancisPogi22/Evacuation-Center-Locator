@@ -71,7 +71,7 @@ class DisasterController extends Controller
         if ($validatedDisasterValidation->fails()) return response(['status' => 'warning', 'message' => $validatedDisasterValidation->errors()->first()]);
 
         $this->disaster->find($disasterId)->update([
-            'name'    => Str::title(trim($request->name))
+            'name' => Str::title(trim($request->name))
         ]);
         $this->logActivity->generateLog('Updated info of disaster(ID - ' . $disasterId . ')');
 

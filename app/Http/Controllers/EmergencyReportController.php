@@ -89,7 +89,7 @@ class EmergencyReportController extends Controller
             'user_ip'     => $userIp,
             'latitude'    => $request->latitude,
             'longitude'   => $request->longitude,
-            'report_time' => Date::now(),
+            'report_time' => Date::now()
         ]);
         event(new EmergencyReport());
         event(new Notification());

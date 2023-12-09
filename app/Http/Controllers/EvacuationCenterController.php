@@ -118,7 +118,7 @@ class EvacuationCenterController extends Controller
     public function changeEvacuationStatus(Request $request, $evacuationId)
     {
         $this->evacuationCenter->find($evacuationId)->update([
-            'status'  => $request->status,
+            'status'  => $request->status
         ]);
         $this->logActivity->generateLog('Changed a evacuation center(ID - ' . $evacuationId . ') status to ' . $request->status);
         event(new EvacuationCenterLocator());

@@ -36,7 +36,6 @@ class GuidelineController extends Controller
 
         if ($guideValidation->fails()) return response(['status' => 'warning', 'message' => "All guide fields are required, fill them out."]);
 
-        $userId             = auth()->user()->id;
         $guidelineImg       = $request->file('guidelineImg');
         $guidelineImagePath = $guidelineImg;
 
@@ -47,7 +46,6 @@ class GuidelineController extends Controller
 
         $guideline = $this->guideline->create([
             'type'          => Str::upper(trim($request->type)),
-            'user_id'       => $userId,
             'organization'  => auth()->user()->organization,
             'guideline_img' => $guidelineImagePath
         ]);
@@ -61,8 +59,7 @@ class GuidelineController extends Controller
             foreach ($labels as $count => $label) {
                 $guideData = [
                     'label'        => Str::upper(trim($label)),
-                    'content'      => $contents[$count],
-                    'user_id'      => $userId,
+                    'content'      => trim($contents[$count]),
                     'guideline_id' => $guideline->id
                 ];
 
@@ -96,7 +93,6 @@ class GuidelineController extends Controller
 
         if ($guideValidation->fails()) return response(['status' => 'warning', 'message' => "All guide fields are required, fill them out."]);
 
-        $userId          = auth()->user()->id;
         $guideline       = $this->guideline->find($guidelineId);
         $guidelineImg    = $request->file('guidelineImg');
         $guidelineData   = [
@@ -128,7 +124,7 @@ class GuidelineController extends Controller
                 $guideData = [
                     'label'        => Str::upper(trim($label)),
                     'content'      => $contents[$count],
-                    'guideline_id' => $guideline->id,
+                    'guideline_id' => $guideline->id
                 ];
 
                 if (isset($guidePhotos[$count])) {
