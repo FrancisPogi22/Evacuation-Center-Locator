@@ -13,7 +13,6 @@ use Illuminate\Support\Facades\Validator;
 use App\Events\Notification;
 use App\Events\AreaReport;
 use App\Http\Controllers\ResidentReportController;
-use Illuminate\Support\Facades\Log;
 
 class AreaReportController extends Controller
 {
@@ -113,7 +112,6 @@ class AreaReportController extends Controller
             'longitude'   => $request->longitude,
             'report_time' => Date::now()
         ]);
-
         event(new AreaReport());
         event(new Notification());
 

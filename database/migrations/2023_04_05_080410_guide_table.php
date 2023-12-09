@@ -12,6 +12,7 @@ return new class extends Migration
             $table->id();
             $table->string('label');
             $table->longText('content');
+            $table->foreignId('guideline_id')->references('id')->on('guideline')->cascadeOnUpdate()->cascadeOnDelete();
             $table->string('guide_photo')->nullable();
         });
     }

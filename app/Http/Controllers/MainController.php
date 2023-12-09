@@ -56,7 +56,7 @@ class MainController extends Controller
 
         return (new EvacueeDataExport($request->disaster_id))
             ->download('evacuee-data.xlsx', FileFormat::XLSX, [
-                'Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                'Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
             ]);
     }
 
@@ -218,7 +218,7 @@ class MainController extends Controller
                     'data' => $typeData->map(function ($data) {
                         return [
                             'report_date' => $data->report_date,
-                            'report_count' => $data->report_count,
+                            'report_count' => $data->report_count
                         ];
                     })->values(),
                 ];

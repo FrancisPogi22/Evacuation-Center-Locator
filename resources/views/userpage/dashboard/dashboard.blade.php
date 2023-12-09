@@ -337,8 +337,8 @@
                                         'INFANTS': '#2ecc71',
                                         'PWD': '#1abc9c',
                                         'PREGNANT': '#e67e22',
-                                        'LACTATING': '#9b59b6',
-                                    } [category],
+                                        'LACTATING': '#9b59b6'
+                                    } [category]
                                 })),
                                 exporting: false,
                                 credits: {
