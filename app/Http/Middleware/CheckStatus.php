@@ -5,7 +5,7 @@ namespace App\Http\Middleware;
 use Closure;
 use Illuminate\Http\Request;
 
-class CheckCredential
+class CheckStatus
 {
     public function handle(Request $request, Closure $next)
     {

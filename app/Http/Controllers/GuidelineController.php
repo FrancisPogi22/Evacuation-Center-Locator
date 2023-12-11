@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\Guideline;
-use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Models\ActivityUserLog;
 use Illuminate\Support\Facades\Validator;
@@ -118,7 +117,7 @@ class GuidelineController extends Controller
             if (file_exists($coverImagePath)) unlink($coverImagePath);
         }
 
-        $this->logActivity->generateLog('Removed ' . lcfirst($guideline->type) . ' guideline(ID - ' . $guidelineId . ')');
+        $this->logActivity->generateLog('Removed ' . lcfirst($guideline->type) . " guideline(ID - $guidelineId)");
         $guideline->delete();
 
         return response([]);

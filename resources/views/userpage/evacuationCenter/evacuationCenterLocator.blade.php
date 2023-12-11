@@ -86,7 +86,7 @@
             </div>
             <div class="table-container">
                 <div class="table-content">
-                    <header class="table-label">Evacuation Centers Table</header>
+                    <header class="table-label">List of Evacuation Centers</header>
                     <table class="table" id="evacuationCenterTable" width="100%">
                         <thead>
                             <tr>
@@ -729,6 +729,11 @@
                 });
             });
 
+            $('.marker-count.active, .marker-count.inactive, .marker-count.full, .marker-count.flooded, .marker-count.roadblocked')
+                .hover(function() {
+                    $(this).attr('title', `Total of ${$(this).text()}`);
+                });
+
             $(document).on("click", "#pinpointCurrentLocationBtn", function() {
                 if (!locating && !pinClicked && (userMarker == null || !userMarker.getMap())) {
                     if (!geolocationBlocked) {
@@ -966,7 +971,7 @@
                 ajaxRequest('reportArea');
             });
 
-            Echo.channel('evacuation-center-locator').listen('EvacuationCenterLocator', (e) => {
+            Echo.channel('evacuation-center').listen('EvacuationCenter', (e) => {
                 ajaxRequest().then(() => {
                     if (locating && (rowData != null || prevNearestEvacuationCenter != null)) {
                         const {

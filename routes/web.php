@@ -48,7 +48,7 @@ Route::prefix('resident')->middleware('guest')->group(function () {
     });
 });
 
-Route::middleware(['auth', 'check.credential'])->group(function () {
+Route::middleware(['auth', 'check.status'])->group(function () {
     Route::prefix('cswd')->middleware('check.cswd')->group(function () {
         Route::controller(MainController::class)->group(function () {
             Route::get('/dashboard', 'dashboard')->name('dashboard.cswd');
@@ -166,7 +166,7 @@ Route::middleware(['auth', 'check.credential'])->group(function () {
         Route::put('/updateAccount/{userId}', 'updateAccount')->name('update');
         Route::get('/displayUserAccount/{operation}', 'userAccounts')->name('display.users');
         Route::patch('/toggleAccountStatus/{userId}/{operation}', 'toggleAccountStatus')->name('toggle.status');
-        Route::put('/resetPassword/{userId}', 'resetPassword')->name('reset.password');
+        Route::put('/changePassword/{userId}', 'changePassword')->name('change.password');
         Route::post('/checkPassword', 'checkPassword')->name('check.password');
         Route::patch('/archiveAccount/{userId}/{operation}', 'archiveAccount')->name('archive');
     });

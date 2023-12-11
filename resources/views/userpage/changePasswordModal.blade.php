@@ -15,7 +15,7 @@
                             <input type="hidden" id="checkPasswordRoute"
                                 data-route="{{ route('account.check.password') }}">
                             <input type="hidden" id="changePasswordRoute"
-                                data-route="{{ route('account.reset.password', auth()->user()->id) }}">
+                                data-route="{{ route('account.change.password', auth()->user()->id) }}">
                             <div class="field-container">
                                 <label for="current_password">Current Password</label>
                                 <input type="text" name="current_password" class="form-control" id="current_password"

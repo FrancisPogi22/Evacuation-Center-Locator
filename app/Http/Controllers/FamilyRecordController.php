@@ -48,7 +48,7 @@ class FamilyRecordController extends Controller
 
         $familyRecord['individuals'] = $familyRecord['male'] + $familyRecord['female'];
         $familyRecord                = $this->familyRecord->create($familyRecord);
-        $this->logActivity->generateLog('Recorded a new family record(ID - ' . $familyRecord->id . ') in ' . $familyRecord->barangay);
+        $this->logActivity->generateLog("Recorded a new family record(ID - $familyRecord->id) in $familyRecord->barangay");
 
         return $familyRecord->id;
     }
@@ -75,7 +75,7 @@ class FamilyRecordController extends Controller
         $familyRecord['individuals'] = $familyRecord['male'] + $familyRecord['female'];
         $familyId                    = $request->family_id;
         $this->familyRecord->find($familyId)->update($familyRecord);
-        $this->logActivity->generateLog('Updated a family record(ID - ' . $familyId . ') in ' . $request->barangay);
+        $this->logActivity->generateLog("Updated a family record(ID - $familyId) in $request->barangay");
 
         return $familyId;
     }

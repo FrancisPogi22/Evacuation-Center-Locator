@@ -5,24 +5,22 @@ namespace App\Http\Controllers;
 
 use App\Models\Evacuee;
 use Illuminate\Http\Request;
-use App\Events\ActiveEvacuees;
+use App\Events\Evacuees;
 use App\Models\ActivityUserLog;
-use App\Models\FamilyRecord;
 use Yajra\DataTables\DataTables;
+use App\Exports\PrintEvacueeData;
 use Illuminate\Support\Facades\Validator;
 use Maatwebsite\Excel\Excel as FileFormat;
-use App\Exports\PrintEvacueeData;
 use App\Http\Controllers\FamilyRecordController;
 
 class EvacueeController extends Controller
 {
-    private $evacuee, $logActivity, $familyRecord, $familyController;
+    private $evacuee, $logActivity, $familyController;
 
     function __construct()
     {
         $this->evacuee          = new Evacuee;
         $this->logActivity      = new ActivityUserLog;
-        $this->familyRecord     = new FamilyRecord;
         $this->familyController = new FamilyRecordController;
     }
 
@@ -48,9 +46,7 @@ class EvacueeController extends Controller
     public function printEvacueeData(Request $request)
     {
         return (new PrintEvacueeData($request->disaster_id, $request->barangay))
-            ->download('evacuee-data.xlsx', FileFormat::XLSX, [
-                'Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-            ]);
+            ->download('evacuee-data.xlsx', FileFormat::XLSX, ['Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet']);
     }
 
     public function recordEvacueeInfo(Request $request)
@@ -78,7 +74,7 @@ class EvacueeController extends Controller
             ->where([
                 'family_head' => $request->family_head,
                 'birth_date' => $request->birth_date,
-                'disaster_id' => $request->disaster_id,
+                'disaster_id' => $request->disaster_id
             ])
             ->exists()
         ) return response(['status' => 'warning', 'message' => 'Evacuee is already recorded']);
@@ -95,8 +91,8 @@ class EvacueeController extends Controller
         $evacueeInfo['updated_at']  = date('Y-m-d H:i:s');
         $evacueeInfo['family_id']   = $latestRecordId;
         $evacueeInfo                = $this->evacuee->create($evacueeInfo);
-        $this->logActivity->generateLog('Recorded a new evacuee(ID - ' . $evacueeInfo->id . ') in ' . lcfirst($evacueeInfo->barangay));
-        event(new ActiveEvacuees());
+        $this->logActivity->generateLog("Recorded a new evacuee(ID - $evacueeInfo->id) in " . lcfirst($evacueeInfo->barangay));
+        event(new Evacuees());
 
         return response([]);
     }
@@ -130,8 +126,8 @@ class EvacueeController extends Controller
         $evacueeInfo['updated_at']  = date('Y-m-d H:i:s');
         $evacueeInfo['family_id']   = $request->family_id;
         $evacueeInfo                = $this->evacuee->find($evacueeId)->update($evacueeInfo);
-        $this->logActivity->generateLog('Updated a evacuee(ID - ' . $evacueeId . ') information in ' . lcfirst($request->barangay));
-        event(new ActiveEvacuees());
+        $this->logActivity->generateLog("Updated a evacuee(ID - $evacueeId) information in " . lcfirst($request->barangay));
+        event(new Evacuees());
 
         return response([]);
     }
@@ -146,7 +142,8 @@ class EvacueeController extends Controller
         }
 
         $this->logActivity->generateLog('Updated evacuee(ID - ' . implode(', ', $familyIds) . ') status to return home');
-
+        event(new Evacuees());
+        
         return response([]);
     }
 }

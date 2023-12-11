@@ -54,7 +54,7 @@
             <section class="table-container">
                 <div class="table-content">
                     <div class="evacuee-table-header">
-                        <header class="table-label">Evacuees Informations Table</header>
+                        <header class="table-label">List of Evacuees</header>
                         @if ($operation == 'manage' && !$disasterList->isEmpty())
                             <div class="page-button-container manage-evacuee-table">
                                 <button id="recordEvacueeBtn" data-toggle="modal" data-target="#evacueeInfoFormModal"

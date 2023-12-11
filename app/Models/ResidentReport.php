@@ -27,4 +27,13 @@ class ResidentReport extends Model
     ];
 
     public $timestamps = false;
+
+    public function getReportCount()
+    {
+        return [
+            'todayReport'     => $this->whereRaw('DATE(report_time) >= CURDATE()')->count(),
+            'resolvingReport' => $this->where('status', 'Resolving')->whereRaw('DATE(report_time) >= CURDATE()')->count(),
+            'resolvedReport'  => $this->where('status', 'Resolved')->whereRaw('DATE(report_time) >= CURDATE()')->count()
+        ];
+    }
 }

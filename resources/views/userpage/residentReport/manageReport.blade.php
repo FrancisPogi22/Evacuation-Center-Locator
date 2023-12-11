@@ -78,7 +78,7 @@
                 @endif
                 <section class="table-container">
                     <div class="table-content">
-                        <header class="table-label">Archived Report Table</header>
+                        <header class="table-label">List of Archived Reports</header>
                         <table class="table" id="reportTable" width="100%">
                             <thead>
                                 <tr>

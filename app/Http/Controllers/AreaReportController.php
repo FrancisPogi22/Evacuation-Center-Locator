@@ -3,17 +3,16 @@
 namespace App\Http\Controllers;
 
 use App\Models\ReportLog;
+use App\Events\AreaReport;
+use Illuminate\Http\Request;
 use App\Models\ReportUpdate;
+use App\Events\Notification;
 use App\Models\ResidentReport;
 use App\Models\ActivityUserLog;
 use Yajra\DataTables\DataTables;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\Validator;
-use App\Events\Notification;
-use App\Events\AreaReport;
 use App\Http\Controllers\ResidentReportController;
-use Illuminate\Support\Facades\Log;
 
 class AreaReportController extends Controller
 {
@@ -30,7 +29,7 @@ class AreaReportController extends Controller
 
     public function getAreaReport($operation, $year, $type)
     {
-        $areaReport = $this->areaReport->where('is_archive', $operation == "archived" ? 1 : 0);
+        $areaReport = $this->areaReport->where('is_archive', $operation === 'archived');
 
         if ($operation != "archived") {
             $prefix = basename(trim(request()->route()->getPrefix(), '/'));
@@ -38,6 +37,7 @@ class AreaReportController extends Controller
                 $prefix == "resident" || ($prefix == 'cdrrmo' && $operation == 'locator'),
                 fn ($query) => $query->where('status', 'Approved')
             )->get();
+
             foreach ($areaReport as $report) {
                 $report->update = $this->reportUpdate->where('report_id', $report->id)
                     ->when(
@@ -81,20 +81,17 @@ class AreaReportController extends Controller
         $request->image->move(public_path('reports_image'), $reportPhotoPath);
 
         if ($resident) {
-            $reportTime      = $resident->report_time;
-            $residentAttempt = $resident->attempt;
+            $resident->increment('attempt');
 
-            if ($residentAttempt == 3) {
-                $isBlock = $this->residentReport->isBlocked($reportTime);
+            if ($resident->attempt == 3) {
+                $isBlock = $this->residentReport->isBlocked($resident->report_time);
 
-                if (!$isBlock) {
+                if (!$isBlock)
                     $resident->update(['attempt' => 0, 'report_time' => null]);
-                    $residentAttempt = 0;
-                } else
+                else
                     return response(['status' => 'blocked', 'message' => "You can report again after " . $isBlock . "."]);
             }
 
-            $resident->update(['attempt' => $residentAttempt + 1]);
             if ($resident->attempt == 3) $resident->update(['report_time' => Date::now()->addHour()]);
         } else {
             $this->reportLog->create([
@@ -113,7 +110,6 @@ class AreaReportController extends Controller
             'longitude'   => $request->longitude,
             'report_time' => Date::now()
         ]);
-
         event(new AreaReport());
         event(new Notification());
 
@@ -123,7 +119,7 @@ class AreaReportController extends Controller
     public function approveAreaReport($reportId)
     {
         $this->areaReport->find($reportId)->update(['status' => 'Approved']);
-        $this->logActivity->generateLog('Approved area report(ID - ' . $reportId . ')');
+        $this->logActivity->generateLog("Approved area report(ID - $reportId)");
         event(new AreaReport());
         event(new Notification());
 
@@ -137,7 +133,7 @@ class AreaReportController extends Controller
         if ($areaReportValidation->fails()) return response(['status' => 'warning', 'message' =>  $areaReportValidation->errors()->first()]);
 
         $this->reportUpdate->addUpdate($reportId, $request->update);
-        $this->logActivity->generateLog('Added update to area report(ID - ' . $reportId . ')');
+        $this->logActivity->generateLog("Added update to area report(ID - $reportId)");
         event(new AreaReport());
         event(new Notification());
 
@@ -149,7 +145,7 @@ class AreaReportController extends Controller
         $report = $this->areaReport->find($reportId);
         $report->delete();
         unlink(public_path('reports_image/' . $report->photo));
-        $this->logActivity->generateLog('Removed area report(ID - ' . $reportId . ')');
+        $this->logActivity->generateLog("Removed area report(ID - $reportId)");
         event(new AreaReport());
         event(new Notification());
 
@@ -159,7 +155,7 @@ class AreaReportController extends Controller
     public function archiveAreaReport($reportId)
     {
         $this->areaReport->find($reportId)->update(['is_archive' => 1]);
-        $this->logActivity->generateLog('Archived area report(ID - ' . $reportId . ')');
+        $this->logActivity->generateLog("Archived area report(ID - $reportId)");
         event(new AreaReport());
 
         return response([]);

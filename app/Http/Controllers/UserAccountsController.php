@@ -10,8 +10,6 @@ use Yajra\DataTables\DataTables;
 use App\Mail\UserCredentialsMail;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Validator;
 
 class UserAccountsController extends Controller
@@ -63,24 +61,27 @@ class UserAccountsController extends Controller
         if ($createAccountValidation->fails())
             return response(['status' => 'warning', 'message' => implode('<br>', $createAccountValidation->errors()->all())]);
 
+        $email             = $request->email;
         $defaultPassword   = Str::password(15);
+        $position          = $request->position;
+        $organization      = $request->organization;
         $userAccountData   = $this->user->create([
-            'name'         => Str::title(trim($request->name)),
-            'email'        => trim($request->email),
+            'name'         => ucwords(trim($request->name)),
+            'email'        => trim($email),
             'status'       => "Active",
-            'position'     => $request->position,
+            'position'     => $position,
             'password'     => Hash::make($defaultPassword),
             'is_disable'   => 0,
             'is_archive'   => 0,
-            'organization' => $request->organization
+            'organization' => $organization
         ]);
-        Mail::to(trim($request->email))->send(new UserCredentialsMail([
-            'email'        => trim($request->email),
-            'position'     => Str::upper($request->position),
+        Mail::to(trim($email))->send(new UserCredentialsMail([
+            'email'        => trim($email),
+            'position'     => strtoupper($position),
             'password'     => $defaultPassword,
-            'organization' => $request->organization
+            'organization' => $organization
         ]));
-        $this->logActivity->generateLog('Created a new account(ID - ' . $userAccountData->id . ')');
+        $this->logActivity->generateLog("Created a new account(ID - $userAccountData->id)");
 
         return response([]);
     }
@@ -97,12 +98,12 @@ class UserAccountsController extends Controller
         if ($updateAccountValidation->fails()) return response(['status' => 'warning', 'message' => implode('<br>', $updateAccountValidation->errors()->all())]);
 
         $this->user->find($userId)->update([
-            'name'         => Str::title(trim($request->name)),
+            'name'         => ucwords(trim($request->name)),
             'email'        => trim($request->email),
             'position'     => $request->position,
             'organization' => $request->organization
         ]);
-        $this->logActivity->generateLog('Updated a account(ID - ' . $userId . ')');
+        $this->logActivity->generateLog("Updated a account(ID - $userId)");
 
         return response([]);
     }
@@ -110,15 +111,11 @@ class UserAccountsController extends Controller
     public function toggleAccountStatus($userId, $operation)
     {
         $account = $this->user->find($userId);
-
-        if ($operation == "Inactive")
-            Auth::logoutOtherDevices(Crypt::decrypt($account->password));
-
         $account->update([
             'status'     => $operation == "active" ? "Active" : "Inactive",
             'is_disable' => $operation == "active" ? 0 : 1
         ]);
-        $this->logActivity->generateLog('Disabled a account(ID - ' . $userId . ')');
+        $this->logActivity->generateLog("Disabled a account(ID - $userId)");
 
         return response([]);
     }
@@ -129,7 +126,7 @@ class UserAccountsController extends Controller
             'status'     => 'Active',
             'is_disable' => 0
         ]);
-        $this->logActivity->generateLog('Enabled a account(ID - ' . $userId . ')');
+        $this->logActivity->generateLog("Enabled a account(ID - $userId)");
 
         return response([]);
     }
@@ -139,7 +136,7 @@ class UserAccountsController extends Controller
         return Hash::check($request->current_password, auth()->user()->password) ? response([]) : response(['status' => 'warning']);
     }
 
-    public function resetPassword(Request $request, $userId)
+    public function changePassword(Request $request, $userId)
     {
         if (Hash::check($request->current_password, auth()->user()->password)) {
             $changePasswordValidation = Validator::make($request->all(), [
@@ -151,7 +148,7 @@ class UserAccountsController extends Controller
             if ($changePasswordValidation->fails()) return response(['status' => 'warning', 'message' => implode('<br>', $changePasswordValidation->errors()->all())]);
 
             $this->user->find($userId)->update(['password' => Hash::make(trim($request->password))]);
-            $this->logActivity->generateLog('changed a password(ID - ' . $userId . ')');
+            $this->logActivity->generateLog("changed a password(ID - $userId)");
 
             return response([]);
         }
@@ -166,7 +163,7 @@ class UserAccountsController extends Controller
             'status'     => $operation == 'archive' ? 'Archived' : ($userAccount->is_disable == 0 ? 'Active' : 'Inactive'),
             'is_archive' => $operation == 'archive' ? 1 : 0
         ]);
-        $this->logActivity->generateLog(ucfirst($operation) . 'd a account(ID - ' . $userId . ')');
+        $this->logActivity->generateLog(ucfirst($operation) . "d a account(ID - $userId)");
 
         return response([]);
     }

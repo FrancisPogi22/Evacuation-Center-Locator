@@ -25,7 +25,7 @@
             <hr>
             <section class="table-container">
                 <div class="table-content">
-                    <header class="table-label">User Activity Log Table</header>
+                    <header class="table-label">List of Users Activity Log</header>
                     <table class="table" id="activityTable" width="100%">
                         <thead>
                             <tr>

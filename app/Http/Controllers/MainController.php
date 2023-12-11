@@ -5,11 +5,11 @@ namespace App\Http\Controllers;
 use App\Models\Evacuee;
 use App\Models\Disaster;
 use App\Models\Guideline;
+use Illuminate\Http\Request;
 use App\Models\HotlineNumbers;
 use App\Models\ResidentReport;
 use App\Models\ActivityUserLog;
 use App\Models\EvacuationCenter;
-use Illuminate\Http\Request;
 use App\Exports\EvacueeDataExport;
 use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Support\Facades\Validator;
@@ -31,12 +31,34 @@ class MainController extends Controller
     public function dashboard()
     {
         $disaster         = $this->disaster->all();
-        $totalEvacuee     = strval($this->evacuee->where('status', "Evacuated")->sum('individuals'));
-        $residentReport   = $this->residentReport->whereRaw('DATE(report_time) >= CURDATE()')->count();
+        $evacuees         = $this->evacuee->countEvacueesByStatus();
+        $evacuated        = $evacuees['evacuated'];
         $onGoingDisasters = $disaster->where('status', "On Going");
-        $activeEvacuation = $this->evacuationCenter->where('status', "Active")->count();
 
-        return view('userpage.dashboard.dashboard', compact('activeEvacuation', 'totalEvacuee', 'onGoingDisasters', 'disaster', 'residentReport'));
+        if (auth()->user()->organization == "CSWD") {
+            $evacuationCenter = $this->evacuationCenter->getEvacuationCount();
+
+            return view('userpage.dashboard.dashboard', [
+                'activeEvacuation' => $evacuationCenter->activeEvacuation,
+                'inactiveEvacuation' => $evacuationCenter->inactiveEvacuation,
+                'fullEvacuation' => $evacuationCenter->fullEvacuation,
+                'evacuated' => $evacuated,
+                'onGoingDisasters' => $onGoingDisasters,
+                'disaster' => $disaster,
+                'returnedHome' => $evacuees['returnedHome'],
+            ]);
+        } else {
+            $residentReport = $this->residentReport->getReportCount();
+
+            return view('userpage.dashboard.dashboard', [
+                'evacuated' => $evacuated,
+                'onGoingDisasters' => $onGoingDisasters,
+                'disaster' => $disaster,
+                'todayReport' => $residentReport['todayReport'],
+                'resolvingReport' => $residentReport['resolvingReport'],
+                'resolvedReport' => $residentReport['resolvedReport'],
+            ]);
+        }
     }
 
     public function searchDisaster($year)
@@ -54,7 +76,7 @@ class MainController extends Controller
 
         return (new EvacueeDataExport($request->disaster_id))
             ->download('evacuee-data.xlsx', FileFormat::XLSX, [
-                'Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                'Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
             ]);
     }
 
@@ -177,7 +199,7 @@ class MainController extends Controller
 
     public function fetchBarangayData()
     {
-        return response()->json($this->evacuee->join('disaster', 'disaster.id', '=', 'disaster_id')->selectRaw('barangay, SUM(individuals) as individuals')->groupBy('barangay')->get());
+        return response()->json($this->evacuee->selectRaw('barangay, SUM(individuals) as individuals')->where('evacuee.status', "Evacuated")->join('disaster', 'disaster.id', '=', 'disaster_id')->groupBy('barangay')->get());
     }
 
     public function fetchDisasterData()
@@ -216,7 +238,7 @@ class MainController extends Controller
                     'data' => $typeData->map(function ($data) {
                         return [
                             'report_date' => $data->report_date,
-                            'report_count' => $data->report_count,
+                            'report_count' => $data->report_count
                         ];
                     })->values(),
                 ];
