@@ -23,4 +23,13 @@ class EvacuationCenter extends Model
     ];
 
     public $timestamps = false;
+
+    public function getEvacuationCount()
+    {
+        return EvacuationCenter::select(
+            EvacuationCenter::raw('SUM(CASE WHEN `status` = "Active" THEN 1 ELSE 0 END) AS activeEvacuation'),
+            EvacuationCenter::raw('SUM(CASE WHEN `status` = "Inactive" THEN 1 ELSE 0 END) AS inactiveEvacuation'),
+            EvacuationCenter::raw('SUM(CASE WHEN `status` = "Full" THEN 1 ELSE 0 END) AS fullEvacuation')
+        )->first();
+    }
 }
