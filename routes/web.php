@@ -140,12 +140,6 @@ Route::middleware(['auth', 'check.credential'])->group(function () {
             Route::post('/guideline/updateGuideline/{guidelineId}', 'updateGuideline')->name('update');
             Route::delete('/guideline/removeGuideline/{guidelineId}', 'removeGuideline')->name('remove');
         });
-
-        Route::name('guide.')->group(function () {
-            Route::post('/guide/addGuide{guidelineId}', 'createGuide')->name('create');
-            Route::post('/guide/updateGuide/{guideId}', 'updateGuide')->name('update');
-            Route::delete('/guide/removeGuide/{guideId}', 'removeGuide')->name('remove');
-        });
     });
 
     Route::controller(MainController::class)->group(function () {
