@@ -5,7 +5,7 @@
 /public/reports_image
 /public/guideline_image
 /public/hotline_logo
-/public/guide_photo
+/public/guide_image
 /storage/*.key
 /vendor
 .phpunit.result.cache
