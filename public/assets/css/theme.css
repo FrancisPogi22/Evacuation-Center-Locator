@@ -967,13 +967,12 @@ div.flatpickr-rContainer::-webkit-scrollbar,
 
 .content-description p {
     margin: 0;
-    color: var(--color-green);
     font-size: 34px;
     font-weight: 700;
 }
 
-.wigdet-header i {
-    font-size: 30px;
+.wigdet-header img {
+    width: 35px;
 }
 
 .content-description {
@@ -2856,10 +2855,6 @@ html[data-theme="dark"] .user-details {
     border: none;
 }
 
-html[data-theme=dark] .content-description p {
-    color: var(--color-green);
-}
-
 html[data-theme="dark"] .guideline-type {
     background: var(--color-gray);
 }
@@ -3114,6 +3109,7 @@ html[data-theme="dark"] .pie-container .highcharts-background {
 
 html[data-theme="dark"] .pie-label {
     background: var(--color-d-bg-container);
+    border: none;
 }
 
 html[data-theme="dark"] .pie-content {
