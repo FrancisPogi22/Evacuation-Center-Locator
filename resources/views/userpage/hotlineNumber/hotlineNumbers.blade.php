@@ -251,7 +251,7 @@
                         hotlineItem = $(this).closest('.hotline-container');
                         hotlineId = $(this).data('id');
                         replaceHotlineItem(false);
-                        changeButton();
+                        changeButton(changeLogoBtn, 'Logo');
                         hotlineLabel = hotlineItem.find('.hotline-data-container:first').text().trim();
                         hotlineNumber = hotlineItem.find('.hotline-data-container.last-data').text().trim();
                         previewLogo.attr('src', hotlineItem.find('.hotline-preview-image-list').attr('src'));
@@ -307,7 +307,7 @@
                                 }
                                 logoError.text('Please select an image file.')
                                     .prop('style', 'display: block !important');
-                                changeButton(operation !== 'update');
+                                changeButton(changeLogoBtn, 'Logo', operation !== 'update');
                                 return;
                             }
                             const reader = new FileReader();
@@ -317,11 +317,11 @@
                             reader.readAsDataURL(this.files[0]);
                             hotlineLogoChanged = true;
                             logoError.prop('style', 'display: none !important');
-                            changeButton();
+                            changeButton(changeLogoBtn, 'Logo');
                         } else {
                             previewLogo.attr('src', operation == 'add' ? '/assets/img/Select-Image.svg' :
                                 hotlineItem.find('.hotline-preview-image-list').attr('src'));
-                            operation == 'add' && changeButton(true);
+                            operation == 'add' && changeButton(changeLogoBtn, 'Logo', true);
                         }
                     });
 
@@ -340,17 +340,12 @@
                         hotlineForm[0].reset();
                         hotlineLogoChanged = false;
                         previewLogo.attr('src', '/assets/img/Select-Image.svg');
-                        changeButton(true);
+                        changeButton(changeLogoBtn, 'Logo', true);
                     }
 
                     function replaceHotlineItem(bool = true) {
                         hotlineForm.prop('hidden', bool);
                         hotlineItem.prop('hidden', !bool);
-                    }
-
-                    function changeButton(primary = false) {
-                        changeLogoBtn.html(`<i class="bi bi-image"></i>${primary ? 'Select' : 'Change'} Logo`);
-                        setInfoWindowButtonStyles(changeLogoBtn, `var(--color-${primary ? 'primary' : 'yellow'}`);
                     }
                 });
             </script>

@@ -19,7 +19,7 @@
                             <label>Image</label>
                             <input type="file" class="form-control" id="inputImage" name="image"
                                 accept=".jpeg, .jpg, .png" hidden>
-                            <button class="btn btn-sm btn-primary" id="imageBtn">
+                            <button class="btn-primary" id="imageBtn">
                                 <i class="bi bi-image"></i>Select
                             </button>
                             <img id="selectedReportImage" src="" class="form-control" hidden>

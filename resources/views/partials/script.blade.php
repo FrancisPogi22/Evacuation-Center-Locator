@@ -150,6 +150,7 @@
                         } else {
                             password.add(confirmPassword).add(btnContainer.prop(
                                 'hidden', 0)).prop('disabled', 0);
+                            $('#resetPasswordBtn').prop('disabled', 0);
                             newPass.add(confirmPass).add(btnContainer).add(
                                 checkPasswordIcon.removeClass(
                                     'bi-x-circle error')
@@ -238,7 +239,8 @@
         confirmModal('Are you in need of help or rescue?').then((result) => {
             if (!result.isConfirmed) return;
 
-            let emergencyWatchID;
+            let emergencyWatchID, attempt = 0,
+                requestSuccess = 0;
 
             emergencyWatchID = navigator.geolocation.watchPosition(
                 (position) => {
@@ -251,7 +253,9 @@
                         }, function(response) {
                             if (response.status == "blocked")
                                 showWarningMessage(response.message);
-                            else
+                            else {
+                                requestSuccess = 1;
+
                                 Swal.fire({
                                     title: 'Message',
                                     text: response.status == "duplicate" ?
@@ -264,7 +268,18 @@
                                     confirmButtonColor: '#2682fa',
                                     allowOutsideClick: false
                                 });
+                            }
                         });
+                    } else {
+                        attempt = attempt + 1;
+
+                        if (attempt == 2)
+                            setTimeout(() => {
+                                if (requestSuccess == 0) {
+                                    showWarningMessage('Cannot get your current location.');
+                                    navigator.geolocation.clearWatch(emergencyWatchID);
+                                }
+                            }, 5000);
                     }
                 },
                 (error) => {
@@ -339,6 +354,12 @@
         changePasswordForm[0].reset();
         eyeIcon.removeClass('bi-eye').addClass('bi-eye-slash');
         password.add(confirmPassword).prop('type', 'password').prop('disabled', 1);
+    }
+
+    function changeButton(button, text, primary = false) {
+        button.html(
+            `<i class="bi bi-${primary ? 'image' : 'arrow-repeat'}"></i>${primary ? 'Select' : 'Change'} ${text}`);
+        setInfoWindowButtonStyles(button, `var(--color-${primary ? 'primary' : 'yellow'}`);
     }
     @endauth
 

@@ -20,7 +20,50 @@
                 <span>REPORT INCIDENT</span>
             </div>
             <hr>
-            <div class="page-button-container" hidden>
+            <div class="map-info-container reporting" hidden>
+                <div class="map-info">
+                    <i class="bi bi-info-circle"></i>
+                    <div class="map-info-text reporting">
+                        <b>How to Report?</b>
+                    </div>
+                </div>
+                <div id="map-info-list-container">
+                    <div class="map-info-list">
+                        <i class="bi bi-dot"></i> Click the map to pin the location of your report.
+                    </div>
+                    <div class="map-info-list">
+                        <i class="bi bi-dot"></i> Fill up the report details and upload image.
+                    </div>
+                    <div class="map-info-list">
+                        <i class="bi bi-dot"></i> You can drag the marker to adjust the location.
+                    </div>
+                    <div class="map-info-list">
+                        <i class="bi bi-dot"></i> Click the submit button.
+                    </div>
+                </div>
+            </div>
+
+            <div class="map-info-container retry-location" hidden>
+                <div class="map-info">
+                    <i class="bi bi-exclamation-circle"></i>
+                    <div class="map-info-text reporting">
+                        <b>Cannot get your exact location.</b>
+                    </div>
+                </div>
+                <div id="map-info-list-container">
+                    <div class="map-info-list">
+                        <i class="bi bi-dot"></i> Click the retry geolocation button below to pin your current location
+                        again.
+                    </div>
+                    <div class="map-info-list">
+                        <i class="bi bi-dot"></i> If attempting to retry geolocation is unsuccessful, utilize the nearby
+                        place search functionality. Enter a nearby place or establishment, and upon selection, the map
+                        will navigate to it.
+                    </div>
+                </div>
+            </div>
+            <div id="incident-report-header" hidden>
+                <input type="text" id="searchPlace" class="form-control" placeholder="Search Nearby Place">
                 <button class="btn-table-primary" id="retryGeolocation">
                     <i class="bi bi-geo"></i>Get Current Location Again
                 </button>
@@ -43,14 +86,15 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/jquery.validate.min.js"
         integrity="sha512-rstIgDs0xPgmG6RX1Aba4KV5cWJbAMcvRCVmglpam9SoHZiUCyQVDdH2LPlxoHtrv17XWblE/V/PP+Tr04hbtA=="
         crossorigin="anonymous"></script>
-    <script src="https://maps.googleapis.com/maps/api/js?key={{ config('services.googleMap.key') }}&callback=&v=weekly"
+    <script
+        src="https://maps.googleapis.com/maps/api/js?key={{ config('services.googleMap.key') }}&libraries=places&callback=&v=weekly"
         defer></script>
     @include('partials.toastr')
     <script>
-        let map, reportMarker, reportWindow, userMarker,
+        let map, reportMarker, reportWindow, userMarker, userBounds,
             isClicked = false,
             reportSubmitting = false,
-            btnContainer = $('.page-button-container');
+            btnContainer = $('#incident-report-header');
 
         function initMap(coords, zoom) {
             if (map) {
@@ -162,6 +206,22 @@
                     });
                 }
             });
+
+            const autocomplete = new google.maps.places.Autocomplete(document.getElementById('searchPlace'));
+
+            autocomplete.addListener('place_changed', function() {
+                const selectedPlace = autocomplete.getPlace();
+
+                if (selectedPlace.geometry) {
+                    map.panTo({
+                        lat: selectedPlace.geometry.location.lat(),
+                        lng: selectedPlace.geometry.location.lng()
+                    });
+                    map.setZoom(16);
+
+                    $('#searchPlace').val('');
+                }
+            });
         }
 
         function setReportingMap(coords, zoom, success, error) {
@@ -169,6 +229,9 @@
             $('#loader').removeClass('show');
             success && btnContainer.prop('hidden', error ? 0 : 1);
             error && $('#retryGeolocation').prop('disabled', 0);
+            $('.map-info-container.retry-location').prop('hidden', error ? 0 : 1)
+            $('.map-info-container.reporting').prop('hidden', error ? 1 : 0)
+            scrollToElement(success ? '.map-info-container.reporting' : '.map-info-container.retry-location');
         }
 
         function resetMapView() {
@@ -207,12 +270,32 @@
                             }
                         });
 
+                        let infoWindow = new google.maps.InfoWindow({
+                            content: `<div class="info-window-container">
+                                    <center>You are here.</center>
+                                </div>`
+                        });
+
                         userMarker.addListener('click', () => {
+                            infoWindow.open(map, userMarker);
                             map.panTo(userMarker.getPosition());
                             map.setZoom(19);
                         });
 
+                        infoWindow.open(map, userMarker);
 
+                        let color = localStorage.getItem('theme') == 'dark' ? "#ffffff" : "#557ed8";
+
+                        userBounds = new google.maps.Circle({
+                            map,
+                            center: userMarker.getPosition(),
+                            radius: 14,
+                            fillColor: color,
+                            fillOpacity: 0.3,
+                            strokeColor: color,
+                            strokeOpacity: 0.8,
+                            strokeWeight: 2
+                        });
                     } else {
                         setTimeout(() => {
                             setReportingMap(null, 13, true, true);
@@ -296,7 +379,8 @@
                                             'Report submitted successfully.');
 
                                     status != "blocked" && (
-                                        $('#cancelReportingBtn').prop('disabled', 0),
+                                        $('#cancelReportingBtn').prop(
+                                            'disabled', 0),
                                         $('#cancelReportingBtn').click(),
                                         $('.stop-btn-container').hide());
                                 },

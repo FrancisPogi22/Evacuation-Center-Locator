@@ -25,9 +25,9 @@
             </div>
             <hr>
             @if ($operation == 'manage')
-                <div id="report-marker-info" hidden>
+                <div class="map-info pending">
                     <i class="bi bi-info-circle"></i>
-                    <div id="report-marker-info-text">
+                    <div class="map-info-text pending">
                         <div>Bouncing marker is a pending report.</div>
                         <div id="pending-count"></div>
                     </div>
@@ -590,7 +590,7 @@
                     let count = pendingCount[0] + pendingCount[1] + pendingCount[2];
 
                     $('#pending-count').text(`${count > 0 ? `Pending - ${count}` : ''}`);
-                    $('#report-marker-info').prop('hidden', !(count > 0));
+                    $('.map-info.pending').prop('hidden', !(count > 0));
                 }
 
                 function submitHandler(element, type, operation, url, reportType) {

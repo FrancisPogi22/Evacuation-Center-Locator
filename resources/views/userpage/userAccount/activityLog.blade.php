@@ -29,7 +29,8 @@
                     <table class="table" id="activityTable" width="100%">
                         <thead>
                             <tr>
-                                <th colspan="2">User</th>
+                                <th>ID</th>
+                                <th>User</th>
                                 <th>Account Status</th>
                                 <th>Activity</th>
                                 <th>Log Time</th>
@@ -76,8 +77,6 @@
                     columns: [{
                             data: 'user_id',
                             name: 'user_id',
-                            visible: false,
-                            searchable: false
                         },
                         {
                             data: 'name',

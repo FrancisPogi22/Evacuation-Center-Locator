@@ -414,12 +414,7 @@
                         geolocationBlocked = false;
                         resolve(position);
                     } else {
-
-                        console.log('before ' + attempt);
-
                         attempt = attempt + 1;
-
-                        console.log('after ' + attempt);
 
                         if (attempt == 2 )
                             setTimeout(() => {
@@ -593,12 +588,7 @@
                 } else {
                     if (!routeDisplayed) {
                         status = false;
-
-                        console.log('before ' + attempt);
-
                         attempt = attempt + 1;
-
-                        console.log('after ' + attempt);
 
                         if (attempt == 2)
                             setTimeout(() => {
