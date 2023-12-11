@@ -53,6 +53,22 @@ html[data-theme="dark"] .toast-message {
     color: var(--color-text);
 }
 
+.toast-success {
+    background: var(--color-green);
+}
+
+.toast-error {
+    background: var(--color-red);
+}
+
+.toast-info {
+    background: var(--color-primary);
+}
+
+.toast-warning {
+    background: var(--color-yellow-hover);
+}
+
 ::-webkit-scrollbar {
     width: 0.5vw;
 }
@@ -83,7 +99,8 @@ textarea::placeholder {
     font-weight: 600;
     border-radius: 4px;
     padding: 8px 16px;
-    filter: drop-shadow(0 4px 3px rgb(0 0 0 / 0.07)) drop-shadow(0 2px 2px rgb(0 0 0 / 0.06));
+    filter: drop-shadow(0 4px 3px rgb(0 0 0 / 0.07))
+        drop-shadow(0 2px 2px rgb(0 0 0 / 0.06));
     border: none;
 }
 
@@ -150,17 +167,21 @@ textarea::placeholder {
 }
 
 .btn-table-primary,
+.viewGuidelineBtn,
+#downloadGuideBtn,
 #pinpointCurrentLocationBtn {
     background: var(--color-primary);
     font-size: 14px;
     font-weight: 600;
     color: var(--color-text);
     border-radius: 4px;
-    padding: 10px 16px;
+    padding: 8px 16px;
     width: max-content;
     border: none;
 }
 
+#downloadGuideBtn:hover,
+.viewGuidelineBtn:hover,
 .btn-table-primary:hover,
 #existingRecordBtn:hover,
 #changeEvacueeStatusBtn:hover,
@@ -170,11 +191,14 @@ textarea::placeholder {
     transform: scale(1.05);
 }
 
+#downloadGuideBtn:hover,
+.viewGuidelineBtn:hover,
 .btn-primary,
 .btn-update,
 .btn-remove,
 #pinpointCurrentLocationBtn {
-    filter: drop-shadow(0 4px 3px rgb(0 0 0 / 0.07)) drop-shadow(0 2px 2px rgb(0 0 0 / 0.06));
+    filter: drop-shadow(0 4px 3px rgb(0 0 0 / 0.07))
+        drop-shadow(0 2px 2px rgb(0 0 0 / 0.06));
 }
 
 .sendUpdateBtn,
@@ -206,12 +230,17 @@ textarea::placeholder {
     margin: auto 0;
 }
 
-.page-button-container {
+.page-button-container,
+#download-guide-container {
     display: flex;
     justify-content: end;
     margin-bottom: 20px;
     align-items: flex-end;
     gap: 15px;
+}
+
+#download-guide-container {
+    margin: 15px 0 0 15px;
 }
 
 .page-button-container.manage-evacuee-table {
@@ -222,11 +251,94 @@ textarea::placeholder {
     align-items: center;
 }
 
+#guidelineForm {
+    text-align: start;
+}
+
+#guideline-img-container {
+    display: flex;
+    width: 100%;
+}
+
+#cover-img-container,
+#content-img-container {
+    width: 50%;
+    display: flex;
+    flex-direction: column;
+    margin: 0 15px 15px 15px;
+}
+
+.type-img {
+    border: solid 2px;
+    border-radius: 5px;
+    width: 100%;
+    height: 351.33px;
+}
+
+#guideline-img-container button {
+    margin-top: 15px;
+    width: fit-content;
+}
+
+.guideline-box {
+    width: 20rem;
+    border-radius: 8px;
+    height: max-content;
+    background: inherit;
+    transition: 0.1s all ease-in-out;
+    filter: drop-shadow(0 10px 8px rgb(0 0 0 / 0.04))
+        drop-shadow(0 4px 3px rgb(0 0 0 / 0.1));
+}
+
+.guideline-box:hover {
+    transform: scale(1.05);
+}
+
+.cover-image {
+    width: 100%;
+    height: 250px;
+    object-fit: cover;
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+    background: var(--color-text);
+}
+
+.guideline-body {
+    padding: 15px;
+    border-bottom-left-radius: 8px;
+    border-bottom-right-radius: 8px;
+    background: var(--color-light-gray);
+}
+
+.guideline-id {
+    text-align: start;
+    font-weight: bold;
+    margin-bottom: 15px;
+    color: var(--color-black);
+}
+
+.guideline-title {
+    font-size: 17px;
+    font-weight: bold;
+    color: var(--color-black);
+}
+
+.guideline-action-container {
+    gap: 10px;
+    display: flex;
+    align-items: center;
+    padding: 15px 0 0 0;
+    justify-content: space-around;
+    background: var(--color-light-gray);
+}
+
 .locator-button-container button i,
 .page-button-container button i,
+#download-guide-container button i,
 .generate-button-container button i,
 .toggleImageBtn i,
 .field-container #imageBtn i,
+#guidelineForm button i,
 .locateEvacuationCenter i,
 .info-window-action-container i,
 #reportAreaBtn i,
@@ -234,9 +346,9 @@ textarea::placeholder {
 #cancelReportingBtn i,
 #createGuidelineBtn i,
 .selectImage i,
-.guideImgBtn i,
-.guidelineImgBtn i,
-.guide-header a i {
+.guide-header a i,
+.guideline-box button i,
+.guideline-box a i {
     padding-right: 8px;
 }
 
@@ -248,7 +360,8 @@ textarea::placeholder {
     height: 60px;
     background: var(--color-light-gray);
     z-index: 1;
-    filter: drop-shadow(0 10px 8px rgb(0 0 0 / 0.04)) drop-shadow(0 4px 3px rgb(0 0 0 / 0.1));
+    filter: drop-shadow(0 10px 8px rgb(0 0 0 / 0.04))
+        drop-shadow(0 4px 3px rgb(0 0 0 / 0.1));
 }
 
 .header-section .container-fluid {
@@ -466,7 +579,8 @@ button.changeTheme:hover {
     z-index: 100;
     left: 0;
     top: 0;
-    filter: drop-shadow(0 10px 8px rgb(0 0 0 / 0.04)) drop-shadow(0 4px 3px rgb(0 0 0 / 0.1));
+    filter: drop-shadow(0 10px 8px rgb(0 0 0 / 0.04))
+        drop-shadow(0 4px 3px rgb(0 0 0 / 0.1));
     overflow: hidden;
     transition: 0.2s all ease;
 }
@@ -697,7 +811,8 @@ div.flatpickr-rContainer::-webkit-scrollbar,
     width: 100%;
     max-width: 430px;
     border-radius: 6px;
-    filter: drop-shadow(0 10px 8px rgb(0 0 0 / 0.04)) drop-shadow(0 4px 3px rgb(0 0 0 / 0.1));
+    filter: drop-shadow(0 10px 8px rgb(0 0 0 / 0.04))
+        drop-shadow(0 4px 3px rgb(0 0 0 / 0.1));
 }
 
 .auth-form-section form {
@@ -796,7 +911,8 @@ div.flatpickr-rContainer::-webkit-scrollbar,
     width: 100%;
     max-width: 500px;
     border-radius: 6px;
-    filter: drop-shadow(0 10px 8px rgb(0 0 0 / 0.04)) drop-shadow(0 4px 3px rgb(0 0 0 / 0.1));
+    filter: drop-shadow(0 10px 8px rgb(0 0 0 / 0.04))
+        drop-shadow(0 4px 3px rgb(0 0 0 / 0.1));
 }
 
 .recover-form form label,
@@ -890,6 +1006,16 @@ div.flatpickr-rContainer::-webkit-scrollbar,
 }
 
 .field-container #imageBtn,
+#guidelineForm button,
+.guideline-box button,
+.guideline-box a {
+    padding: 8px 16px;
+}
+
+.field-container #imageBtn,
+#guidelineForm button,
+.guideline-box button,
+.guideline-box a,
 .hotline-form-container #imageBtn {
     font-size: 14px;
 }
@@ -927,7 +1053,8 @@ div.flatpickr-rContainer::-webkit-scrollbar,
     position: relative;
     overflow: hidden;
     border-radius: 15px;
-    filter: drop-shadow(0 10px 8px rgb(0 0 0 / 0.04)) drop-shadow(0 4px 3px rgb(0 0 0 / 0.1));
+    filter: drop-shadow(0 10px 8px rgb(0 0 0 / 0.04))
+        drop-shadow(0 4px 3px rgb(0 0 0 / 0.1));
     -webkit-animation: scaleIn 0.5s;
     animation: scaleIn 0.5s;
 }
@@ -975,7 +1102,8 @@ div.flatpickr-rContainer::-webkit-scrollbar,
 .pie-chart {
     height: 600px;
     padding: 10px 10px 20px;
-    filter: drop-shadow(0 10px 8px rgb(0 0 0 / 0.04)) drop-shadow(0 4px 3px rgb(0 0 0 / 0.1));
+    filter: drop-shadow(0 10px 8px rgb(0 0 0 / 0.04))
+        drop-shadow(0 4px 3px rgb(0 0 0 / 0.1));
 }
 
 .pie-container .highcharts-background {
@@ -1010,7 +1138,8 @@ div.flatpickr-rContainer::-webkit-scrollbar,
     margin: 20px 0;
     height: 400px;
     border-radius: 15px;
-    filter: drop-shadow(0 10px 8px rgb(0 0 0 / 0.04)) drop-shadow(0 4px 3px rgb(0 0 0 / 0.1));
+    filter: drop-shadow(0 10px 8px rgb(0 0 0 / 0.04))
+        drop-shadow(0 4px 3px rgb(0 0 0 / 0.1));
 }
 
 .highcharts-label path {
@@ -1037,6 +1166,7 @@ text {
     font-size: 1rem !important;
 }
 
+#map-info-list-container,
 .guideline-container,
 .guide-container {
     display: flex;
@@ -1044,8 +1174,40 @@ text {
     justify-content: center;
     grid-row-gap: 15px;
     grid-column-gap: 15px;
+    border-radius: 8px;
 }
 
+#map-info-list-container {
+    margin-left: 38px;
+    padding-bottom: 15px;
+    margin-right: 15px;
+    grid-row-gap: 10px;
+}
+
+#map-info-list-container .map-info-list {
+    font-size: 13px;
+    font-weight: bold;
+    justify-content: flex-start;
+}
+
+.guide-container {
+    background: var(--color-text);
+    filter: drop-shadow(0 10px 8px rgb(0 0 0 / 0.04))
+        drop-shadow(0 4px 3px rgb(0 0 0 / 0.1));
+}
+
+.guide-image-container {
+    margin: 15px;
+    width: 100%;
+    height: 100%;
+}
+
+#guide-image {
+    width: 100%;
+    border-radius: 4px;
+}
+
+#incident-report-header,
 .guideline-header {
     display: flex;
     justify-content: end;
@@ -1059,38 +1221,18 @@ text {
     align-items: center;
 }
 
-.guideImgBtn {
-    text-align: center;
-}
-
-.guideline-input {
-    flex: 1;
-    margin: auto 0;
-}
-
-.guide-image,
-.guideline-img {
-    display: flex;
-    flex-direction: column;
-}
-
-.image-preview {
-    position: relative;
-}
-
-.removeImage {
-    position: absolute;
-    top: 0;
-    right: 0;
-    padding: 8px;
-    clip-path: circle();
-}
-
+#incident-report-header #searchPlace,
 #search_guideline {
     width: 250px;
     height: 38px;
     font-size: 15px;
+    border: solid 2px;
     border-radius: 5px 0 0 5px;
+}
+
+#incident-report-header #searchPlace {
+    border-radius: 5px;
+    width: 300px;
 }
 
 .guideline-header .search-container .search-icon {
@@ -1101,7 +1243,7 @@ text {
     border-top-right-radius: 5px;
     border-bottom-right-radius: 5px;
     cursor: pointer;
-    border: 1px solid var(--color-black);
+    border: 2px solid;
     border-left: 0;
 }
 
@@ -1109,218 +1251,8 @@ text {
     font-size: 20px;
 }
 
-.horizontal-line {
-    margin-top: 20px;
-}
-
 .content-item {
     text-align: center;
-}
-
-.guideline-widget,
-.guide-widget {
-    position: relative;
-    width: 300px;
-    transition: 0.1s all ease-in-out;
-    filter: drop-shadow(0 10px 8px rgb(0 0 0 / 0.04)) drop-shadow(0 4px 3px rgb(0 0 0 / 0.1));
-}
-
-.guideline-widget:hover {
-    transform: scale(1.05);
-}
-
-#updateGuidelineBtn {
-    position: absolute;
-    left: 8px;
-    top: 12px;
-    border: none;
-}
-
-#updateGuidelineBtn i,
-#removeGuidelineBtn i {
-    padding: 8px;
-}
-
-#removeGuidelineBtn {
-    position: absolute;
-    right: 8px;
-    top: 12px;
-    border: none;
-}
-
-#updateGuidelineBtn:hover,
-#removeGuidelineBtn:hover,
-#createGuidelineBtn:hover {
-    transform: scale(1.05);
-}
-
-.guideline-content,
-.guide-content {
-    overflow: hidden;
-    position: relative;
-    background: var(--color-text);
-    filter: drop-shadow(0 20px 13px rgb(0 0 0 / 0.03)) drop-shadow(0 8px 5px rgb(0 0 0 / 0.08));
-    border-radius: 4px;
-}
-
-.guideline-content {
-    z-index: -50;
-}
-
-.guideline-header .modal-dialog {
-    display: flex;
-    gap: 10px;
-}
-
-.modal-guideline-image,
-.modal-guide-image {
-    border: var(--bs-modal-border-width) solid var(--bs-modal-border-color);
-    border-color: var(--color-background);
-    border-radius: 10px;
-    background: var(--color-text);
-    pointer-events: visible;
-}
-
-html[data-theme="dark"] .modal-guideline-image,
-html[data-theme="dark"] .modal-guide-image {
-    background: var(--color-d-background);
-}
-
-html[data-theme="dark"] .modal-guideline-image h1 {
-    color: var(--color-d-text);
-}
-
-.modal-guideline-image .guideline-img,
-.modal-guide-image .guide-image {
-    position: relative;
-    width: 300px;
-    height: 100%;
-    justify-content: space-evenly;
-}
-
-.modal-guideline-image h1 {
-    color: var(--color-text);
-    padding: 4px;
-    font-weight: 800;
-    font-size: 19.2px;
-}
-
-.modal-guideline-image .modal-body {
-    height: calc(100% - 55px);
-}
-
-.modal-guide-image .modal-body {
-    height: 100%
-}
-
-.modal-guideline-image .field-container,
-.modal-guide-image .field-container {
-    height: 100%;
-    padding: 0;
-    margin: 0;
-}
-
-.modal-guideline-image .form-content {
-    height: calc(100% - 49px);
-}
-
-.image-container {
-    padding: 26px 0;
-    width: 400px;
-}
-
-.guide-img-field {
-    padding: 10px 0;
-    width: 400px;
-    display: flex;
-    flex-direction: column;
-}
-
-.guidelineImage {
-    margin: 0 auto;
-    object-fit: contain;
-    width: 200px;
-    height: 100px;
-}
-
-.guideImage {
-    margin: 0 auto;
-    object-fit: contain;
-    width: 200px;
-    height: 200px;
-}
-
-#guidelineForm .field-container .guide-field,
-#guideForm .field-container .guide-field {
-    display: flex;
-}
-
-#guideForm #image_preview_container {
-    margin-bottom: 15px;
-    width: 100%;
-}
-
-#guideForm input[type="file"],
-#guidelineForm input[type="file"] {
-    margin: 4px 0;
-    height: 37px;
-}
-
-#guidelineForm .guideline-field {
-    display: flex;
-}
-
-#removeGuideField {
-    padding: 10px 0;
-    margin: 0 14px;
-}
-
-.guide-field {
-    padding: 10px 0;
-}
-
-.guide-forms .guide-field-container {
-    background: var(--color-background);
-    padding: 10px 0 10px;
-    border-radius: 4px;
-}
-
-.guide-field-container {
-    display: flex;
-    flex-direction: column;
-    flex: 1;
-}
-
-.appendInput {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 100%;
-}
-
-.appendInput a {
-    width: 100px;
-    padding: 5px;
-    cursor: pointer;
-}
-
-.appendInput a i {
-    color: var(--color-text);
-    font-size: 16px;
-}
-
-.profile-container .field-container label {
-    text-align: center;
-}
-
-.profile-container .field-container {
-    margin: auto 0;
-}
-
-.guideline-content img {
-    width: 100%;
-    height: 300px;
-    object-fit: cover;
 }
 
 .empty-data-container {
@@ -1343,53 +1275,12 @@ html[data-theme="dark"] .modal-guideline-image h1 {
     font-weight: 700;
 }
 
-.guideline-type {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    position: absolute;
-    width: 100%;
-    height: 50%;
-    top: 50%;
-    color: var(--color-black);
-    background: #b3b3b3;
-}
-
-.guideline-btn {
-    width: 288px;
-}
-
-.guideline-btn .btn-container button {
-    margin: 112px 0;
-    border: none;
-}
-
-.guideline-btn .btn-container button i {
-    padding: 8px;
-    font-size: 18px;
-    filter: drop-shadow(0 20px 13px rgb(0 0 0 / 0.03)) drop-shadow(0 8px 5px rgb(0 0 0 / 0.08));
-}
-
-.guideline-btn div {
-    display: flex;
-    width: 100%;
-    height: 100%;
-    justify-content: center;
-    align-items: center;
-}
-
-.guide-btn {
-    display: flex;
-    justify-content: end;
-    margin: 12px 0;
-}
-
-.guide-items-section {
+.guide-item-section {
     display: flex;
     gap: 10px;
 }
 
-.guides-container {
+.guide-container {
     flex: 1;
     height: 100%;
 }
@@ -1405,7 +1296,8 @@ html[data-theme="dark"] .modal-guideline-image h1 {
     text-align: center;
     background: var(--color-text);
     border-radius: 10px;
-    filter: drop-shadow(0 20px 13px rgb(0 0 0 / 0.03)) drop-shadow(0 8px 5px rgb(0 0 0 / 0.08));
+    filter: drop-shadow(0 20px 13px rgb(0 0 0 / 0.03))
+        drop-shadow(0 8px 5px rgb(0 0 0 / 0.08));
 }
 
 .weather-section h4 {
@@ -1454,78 +1346,14 @@ html[data-theme="dark"] .modal-guideline-image h1 {
     margin: auto;
 }
 
-.guide-label {
-    position: relative;
-    padding: 10px;
-    background: var(--color-light-gray);
-    color: var(--color-black);
-    font-weight: 700;
-    cursor: pointer;
-}
-
-.guide-label::before {
-    content: "+";
-    position: absolute;
-    top: 50%;
-    right: 20px;
-    transform: translateY(-50%);
-    font-size: 1.5em;
-}
-
-.guide-content {
-    margin: 20px 0;
-}
-
-.guide-content.active .guide-label::before {
-    content: "-";
-}
-
-.guide-item {
-    display: flex;
-    flex-direction: column;
-    position: relative;
-    background: var(--color-text);
-    height: 0;
-    overflow: hidden;
-    overflow-y: auto;
-}
-
-.guide-content.active .guide-item {
-    height: 320px;
-    padding: 10px;
-}
-
-.guide-img {
-    margin: 20px auto;
-}
-
-.guide-img img {
-    width: 300px;
-    height: 200px;
-    object-fit: contain;
-}
-
-.guide-details h1 {
-    padding: 15px 0;
-}
-
 .guide-header {
     display: flex;
     justify-content: flex-end;
     margin-bottom: 20px;
 }
 
-.guide-btn-container {
-    padding: 10px;
-    width: 100%;
-    display: flex;
-    justify-content: end;
-    gap: 10px;
-}
-
-.updateGuideBtn,
-.removeGuideBtn {
-    padding: 8px 16px;
+.guide-header a {
+    text-align: center;
 }
 
 .locator-content {
@@ -1750,7 +1578,8 @@ div.gm-style-iw.gm-style-iw-c {
     align-items: center;
     border-radius: 4px;
     border: 2px solid var(--color-light-gray);
-    filter: drop-shadow(0 4px 3px rgb(0 0 0 / 0.07)) drop-shadow(0 2px 2px rgb(0 0 0 / 0.06));
+    filter: drop-shadow(0 4px 3px rgb(0 0 0 / 0.07))
+        drop-shadow(0 2px 2px rgb(0 0 0 / 0.06));
     white-space: nowrap;
     -ms-overflow-style: none;
     scrollbar-width: none;
@@ -1899,62 +1728,9 @@ html[data-theme="dark"] .gmnoprint button span {
     right: 0;
 }
 
-.report-form a {
-    background: var(--color-gray);
-    padding: 16px;
-    font-size: 24px;
-    clip-path: circle();
-}
-
-.report-form a:hover {
-    background: var(--color-d-background);
-}
-
 .report-img {
     width: 100px;
     height: 80px;
-}
-
-.report-photo {
-    width: 250px;
-    height: 100%;
-}
-
-.incident-report {
-    padding: 16px 0;
-    border-radius: 4px;
-    margin: 12px 0;
-    filter: drop-shadow(0 10px 8px rgb(0 0 0 / 0.04)) drop-shadow(0 4px 3px rgb(0 0 0 / 0.1));
-}
-
-.incidentReportTable {
-    display: grid;
-    gap: 16px;
-}
-
-.incident-report-container {
-    background: var(--color-text);
-    border-radius: 4px;
-    filter: drop-shadow(0 4px 3px rgb(0 0 0 / 0.07)) drop-shadow(0 2px 2px rgb(0 0 0 / 0.06));
-}
-
-.incident-report-content {
-    display: flex;
-    padding: 16px;
-    border-radius: 4px;
-}
-
-.report-photo-container {
-    filter: drop-shadow(0 4px 3px rgb(0 0 0 / 0.07)) drop-shadow(0 2px 2px rgb(0 0 0 / 0.06));
-}
-
-.incident-report-details {
-    padding: 16px;
-    flex: 1;
-}
-
-.incident-report p {
-    margin: 0;
 }
 
 .overlay {
@@ -2025,7 +1801,8 @@ html[data-theme="dark"] .gmnoprint button span {
     margin: 10px 0;
     background: var(--color-text);
     border-radius: 4px;
-    filter: drop-shadow(0 20px 13px rgb(0 0 0 / 0.03)) drop-shadow(0 8px 5px rgb(0 0 0 / 0.08));
+    filter: drop-shadow(0 20px 13px rgb(0 0 0 / 0.03))
+        drop-shadow(0 8px 5px rgb(0 0 0 / 0.08));
 }
 
 .hotline-container .id-container {
@@ -2157,7 +1934,8 @@ html[data-theme="dark"] .gmnoprint button span {
     margin-top: 18px;
     margin-bottom: 10px;
     border-radius: 4px;
-    filter: drop-shadow(0 10px 8px rgb(0 0 0 / 0.04)) drop-shadow(0 4px 3px rgb(0 0 0 / 0.1));
+    filter: drop-shadow(0 10px 8px rgb(0 0 0 / 0.04))
+        drop-shadow(0 4px 3px rgb(0 0 0 / 0.1));
 }
 
 .user-profile-container hr {
@@ -2230,7 +2008,8 @@ html[data-theme="dark"] .gmnoprint button span {
     height: max-content;
     padding: 10px;
     font-weight: 700;
-    filter: drop-shadow(0 10px 8px rgb(0 0 0 / 0.04)) drop-shadow(0 4px 3px rgb(0 0 0 / 0.1));
+    filter: drop-shadow(0 10px 8px rgb(0 0 0 / 0.04))
+        drop-shadow(0 4px 3px rgb(0 0 0 / 0.1));
     border-bottom-right-radius: 0.25rem;
     border-bottom-left-radius: 0.25rem;
 }
@@ -2406,7 +2185,7 @@ input::-ms-clear {
 #disasterForm input,
 #changePasswordForm input,
 #reportForm input,
-#guideForm input,
+#guidelineForm input,
 #reportAreaForm input,
 #evacuationCenterForm select,
 #evacueeInfoForm select,
@@ -2460,8 +2239,6 @@ input::-ms-clear {
     border: solid var(--color-d-sub-text) 2px;
 }
 
-#guideForm textarea,
-#guidelineForm textarea,
 #reportForm textarea,
 #reportAreaForm textarea,
 #archivedReportForm textarea,
@@ -2535,37 +2312,60 @@ input::-ms-clear {
     border: 2px solid var(--color-light-gray);
 }
 
-#report-marker-info {
+.map-info {
     padding: 10px;
     display: flex;
+    align-items: center;
     font-size: 14px;
     font-weight: bold;
-    margin-bottom: 10px;
-    border-radius: 5px;
-    background: var(--color-yellow);
 }
 
-#report-marker-info i {
+.map-info i {
     font-size: 20px;
     margin-right: 8px;
     color: var(--color-black);
 }
 
-#report-marker-info-text {
-    width: 100%;
-    display: flex;
+.map-info.pending {
+    background: var(--color-yellow);
+    border-radius: 4px;
+    margin-bottom: 10px;
     text-align: center;
-    word-break: normal;
-    align-items: center;
-    justify-content: space-between;
 }
 
-#report-marker-info-text div {
+.map-info.pending div,
+.map-info.pending i {
     color: var(--color-black);
 }
 
-#report-marker-info-text #pending-count {
+.map-info-text,
+.map-info-list {
+    width: 100%;
+    display: flex;
+    word-break: normal;
+    justify-content: space-between;
+}
+
+.map-info-text #pending-count {
     margin-left: 10px;
+}
+
+.map-info-container {
+    margin-bottom: 10px;
+    border-radius: 5px;
+    background: var(--color-yellow);
+}
+
+.map-info-container.reporting,
+.map-info-container.reporting .map-info i {
+    background: var(--color-primary);
+    color: var(--color-text);
+}
+
+.map-info-container.retry-location,
+.map-info-container.retry-location .map-info i {
+    background: var(--color-red);
+    color: var(--color-text);
 }
 
 .count-container {
@@ -2670,7 +2470,8 @@ span.error {
 .table-container {
     padding: 12px;
     background: var(--color-text);
-    filter: drop-shadow(0 10px 8px rgb(0 0 0 / 0.04)) drop-shadow(0 4px 3px rgb(0 0 0 / 0.1));
+    filter: drop-shadow(0 10px 8px rgb(0 0 0 / 0.04))
+        drop-shadow(0 4px 3px rgb(0 0 0 / 0.1));
     border-radius: 8px;
     overflow: hidden;
 }
@@ -2819,12 +2620,8 @@ html[data-theme="dark"] .user-details {
     color: var(--color-d-text);
 }
 
-html[data-theme=dark] .content-description p {
+html[data-theme="dark"] .content-description p {
     color: var(--color-green);
-}
-
-html[data-theme="dark"] .guideline-type {
-    background: var(--color-gray);
 }
 
 html[data-theme="dark"] .header-title {
@@ -2851,7 +2648,8 @@ html[data-theme="dark"] .social-section,
 html[data-theme="dark"] .telephone-section,
 html[data-theme="dark"] .hotline-container,
 html[data-theme="dark"] .hotline-form-container,
-html[data-theme="dark"] .pac-container {
+html[data-theme="dark"] .pac-container,
+html[data-theme="dark"] .widget {
     background: var(--color-d-bg-container) !important;
 }
 
@@ -2862,6 +2660,7 @@ html[data-theme="dark"] .telephone-section p {
 
 html[data-theme="dark"] .info-description.photo img,
 html[data-theme="dark"] #selectedReportImage,
+html[data-theme="dark"] .type-img,
 html[data-theme="dark"] select,
 html[data-theme="dark"] input,
 html[data-theme="dark"] textarea,
@@ -2908,8 +2707,14 @@ html[data-theme="dark"] .dropdown-menu .dropdown-item.changeTheme:active {
 }
 
 html[data-theme="dark"] .flatpickr-day:hover,
-html[data-theme="dark"] .dropdown-menu .dropdown-item.changeTheme:active #themeText,
-html[data-theme="dark"] .dropdown-menu .dropdown-item.changeTheme:active #themeIcon {
+html[data-theme="dark"]
+    .dropdown-menu
+    .dropdown-item.changeTheme:active
+    #themeText,
+html[data-theme="dark"]
+    .dropdown-menu
+    .dropdown-item.changeTheme:active
+    #themeIcon {
     color: var(--color-black);
 }
 
@@ -2974,8 +2779,13 @@ html[data-theme="dark"] .report-container span {
     color: #f87171;
 }
 
-html[data-theme="dark"] .widget {
-    background: var(--color-d-bg-container);
+html[data-theme="dark"] .cover-image {
+    background: var(--color-d-sub-text);
+}
+
+html[data-theme="dark"] .guideline-action-container,
+html[data-theme="dark"] .guideline-body {
+    background: var(--color-gray);
 }
 
 html[data-theme="dark"] .content-description span {
@@ -3038,7 +2848,7 @@ html[data-theme="dark"] #report-chart .highcharts-tick {
     stroke: var(--color-d-text);
 }
 
-html[data-theme="dark"] .highcharts-bar-series highcharts-tracker-line html[data-theme="dark"] .guideline-content {
+html[data-theme="dark"] .highcharts-bar-series highcharts-tracker-line {
     background: var(--color-d-bg-container);
 }
 
@@ -3084,9 +2894,18 @@ html[data-theme="dark"] .table-container select option {
     color: var(--color-black);
 }
 
-html[data-theme="dark"] .dataTables_wrapper .dataTables_paginate .paginate_button.disabled,
-html[data-theme="dark"] .dataTables_wrapper .dataTables_paginate .paginate_button.disabled:hover,
-html[data-theme="dark"] .dataTables_wrapper .dataTables_paginate .paginate_button.disabled:active {
+html[data-theme="dark"]
+    .dataTables_wrapper
+    .dataTables_paginate
+    .paginate_button.disabled,
+html[data-theme="dark"]
+    .dataTables_wrapper
+    .dataTables_paginate
+    .paginate_button.disabled:hover,
+html[data-theme="dark"]
+    .dataTables_wrapper
+    .dataTables_paginate
+    .paginate_button.disabled:active {
     color: var(--color-d-sub-text) !important;
 }
 
@@ -3095,8 +2914,7 @@ html[data-theme="dark"] .modal-content {
     border-color: var(--color-background);
 }
 
-html[data-theme="dark"] .form-content,
-html[data-theme="dark"] .guide-field-container {
+html[data-theme="dark"] .form-content {
     background: var(--color-d-bg-container);
 }
 
@@ -3120,34 +2938,22 @@ html[data-theme="dark"] #changeArchiveEvacueeDataSelect,
 html[data-theme="dark"] .field-container select,
 html[data-theme="dark"] #reportAreaForm select,
 html[data-theme="dark"] #search_guideline,
-html[data-theme="dark"] .guideline-header .search-container .search-icon,
-html[data-theme="dark"] .guide-field-container textarea {
+html[data-theme="dark"] #incident-report-header #searchPlace {
     background: var(--color-d-bg-container);
     color: var(--color-d-text);
 }
 
-html[data-theme="dark"] #guidelineForm textarea,
-html[data-theme="dark"] #guideForm textarea {
-    border: 2px solid var(--color-d-sub-text) !important;
-}
-
 html[data-theme="dark"] .guideline-header .search-container .search-icon {
-    border: 1px solid var(--color-d-sub-text);
+    border-color: var(--color-d-sub-text);
 }
 
 html[data-theme="dark"] .weather-section,
-html[data-theme="dark"] .guides-container,
-html[data-theme="dark"] .guideline-content,
-html[data-theme="dark"] .guide-content {
+html[data-theme="dark"] .guide-container {
     background: var(--color-d-bg-container);
 }
 
-html[data-theme="dark"] .guide-label {
-    background: var(--color-d-background);
-}
-
-html[data-theme="dark"] .guide-item,
-html[data-theme="dark"] .dropdown-notification:hover {
+html[data-theme="dark"] .dropdown-notification:hover,
+html[data-theme="dark"] .guideline-header .search-container .search-icon {
     background: var(--color-gray);
 }
 
@@ -3227,10 +3033,6 @@ html[data-theme="dark"] .profile-details-label {
     color: var(--color-d-text) !important;
 }
 
-html[data-theme="dark"] .guideline-widget button {
-    background: var(--color-d-bg-container);
-}
-
 html[data-theme="dark"] button.gm-ui-hover-effect span {
     background-color: var(--color-yellow-hover) !important;
 }
@@ -3263,7 +3065,6 @@ html[data-theme="dark"] button.changeTheme {
 }
 
 @media only screen and (max-width: 1150px) {
-
     .auth-container,
     .recover-content,
     .res-password-content {
@@ -3317,12 +3118,24 @@ html[data-theme="dark"] button.changeTheme {
         margin: 20px 0;
     }
 
-    .guide-items-section {
-        display: contents;
-    }
-
     .weather-section {
         margin-top: 20px;
+    }
+
+    .guide-item-section {
+        display: contents;
+    }
+}
+
+@media only screen and (max-width: 995px) {
+    #guideline-img-container {
+        flex-direction: column;
+    }
+
+    #cover-img-container,
+    #content-img-container {
+        width: 100%;
+        padding-right: 30px;
     }
 }
 
@@ -3330,7 +3143,6 @@ html[data-theme="dark"] button.changeTheme {
     .profile-details-container {
         display: block;
     }
-
 }
 
 @media only screen and (max-width: 767px) {
@@ -3398,22 +3210,6 @@ html[data-theme="dark"] button.changeTheme {
         padding: 8px 10px;
     }
 
-    .guide-header img {
-        width: 250px;
-    }
-
-    .guide-details h1 {
-        font-size: 25px;
-    }
-
-    .guide-details p {
-        font-size: 15px;
-    }
-
-    .guide-btn-container button {
-        font-size: 12px;
-    }
-
     .marker-container.reports {
         padding: 0 8px 0 8px;
         height: 100%;
@@ -3443,6 +3239,17 @@ html[data-theme="dark"] button.changeTheme {
 
     button.changeTheme {
         margin-right: 0;
+    }
+
+    .type-img {
+        width: 100%;
+        height: 100%;
+    }
+}
+
+@media only screen and (max-width: 594px) {
+    #incident-report-header {
+        flex-direction: column;
     }
 }
 
@@ -3518,7 +3325,7 @@ html[data-theme="dark"] button.changeTheme {
         word-wrap: break-word;
     }
 
-    #toast-container>.toast-warning {
+    #toast-container > .toast-warning {
         width: 15em;
         background-size: 20px;
     }
@@ -3598,7 +3405,15 @@ html[data-theme="dark"] button.changeTheme {
     .sidebar .navigation-item i,
     .toast,
     .report-markers,
-    .evacuation-markers {
+    .evacuation-markers,
+    .location-detail i,
+    .hotline-data-container,
+    .current-time,
+    .feels-like,
+    .sunset-header,
+    .sunrise-header,
+    .location-description,
+    .field-container i {
         font-size: 14px;
     }
 
@@ -3622,7 +3437,6 @@ html[data-theme="dark"] button.changeTheme {
 
     .button-container .btn-remove,
     .res-button-container button,
-    .guide-details p,
     .table-container,
     .location-detail p {
         font-size: 12px;
@@ -3662,7 +3476,7 @@ html[data-theme="dark"] button.changeTheme {
     }
 
     .sidebar ul li,
-    #report-marker-info i {
+    .map-info i {
         font-size: 16px !important;
     }
 
@@ -3698,20 +3512,6 @@ html[data-theme="dark"] button.changeTheme {
         width: 25px;
     }
 
-    .guide-header img {
-        width: 200px;
-    }
-
-    .guide-details h1 {
-        font-size: 20px;
-    }
-
-    .guide-btn-container {
-        display: flex;
-        justify-content: center;
-    }
-
-    .guide-btn-container button,
     .dataTables_empty {
         font-size: 10px;
     }
@@ -3727,17 +3527,22 @@ html[data-theme="dark"] button.changeTheme {
         font-size: 18px;
     }
 
-    .location-detail i {
-        font-size: 14px;
-    }
-
     .location-detail span {
         font-size: 15px;
     }
 
     .page-button-container,
-    .guideline-header {
+    .guideline-header,
+    .guide-header {
         margin: 13.5px 0 15px 0;
+    }
+
+    .guide-image-container {
+        margin: 10px;
+    }
+
+    #download-guide-container {
+        margin: 10px 0 0 10px;
     }
 
     table td,
@@ -3752,10 +3557,12 @@ html[data-theme="dark"] button.changeTheme {
     #locateNearestBtn,
     #changeEvacueeDataBtn,
     #pinpointCurrentLocationBtn,
+    #download-guide-container button,
     .guideline-header button,
+    .guide-header a,
     .page-button-container button,
-
-    .generate-button-container button {
+    .generate-button-container button,
+    #map-info-list-container .map-info-list {
         font-size: 11px !important;
     }
 
@@ -3848,7 +3655,7 @@ html[data-theme="dark"] button.changeTheme {
 
     .profile-section p {
         font-size: 20px;
-        margin: 10px
+        margin: 10px;
     }
 
     .edit-profile-btn button {
@@ -3900,7 +3707,8 @@ html[data-theme="dark"] button.changeTheme {
     .hotline-container i,
     .hotline-form-container i,
     .hotline-form-container button,
-    .hotline-container button
+    .hotline-container button,
+    .guideline-action-container button,
     table td {
         font-size: 11px !important;
     }
@@ -3941,7 +3749,8 @@ html[data-theme="dark"] button.changeTheme {
     #changeYearSelect,
     #changeArchivedReportType,
     #changeEvacueeDataSelect,
-    #changeArchiveEvacueeDataSelect {
+    #changeArchiveEvacueeDataSelect,
+    #incident-report-header #searchPlace {
         width: 100%;
     }
 
@@ -3958,7 +3767,7 @@ html[data-theme="dark"] button.changeTheme {
     #changeEvacueeDataSelect,
     #changeArchiveEvacueeDataSelect,
     .modal-content button,
-    #report-marker-info {
+    .map-info {
         font-size: 12px !important;
     }
 
@@ -3969,16 +3778,12 @@ html[data-theme="dark"] button.changeTheme {
         font-size: 16px;
     }
 
-    .field-container i {
-        font-size: 14px;
-    }
-
     .checkPassword {
-        margin-top: -2px ;
+        margin-top: -2px;
     }
 
-    .modal-content header {
-        padding: 7px 10px;
+    .change-modal-label-container {
+        padding: 9px 10px;
     }
 
     .modal-content label {
@@ -3989,7 +3794,8 @@ html[data-theme="dark"] button.changeTheme {
     .modal-content select,
     .modal-content textarea,
     .hotline-form-content input,
-    .marker-container span.fw-bold {
+    .marker-container span.fw-bold,
+    #incident-report-header #searchPlace {
         font-size: 12px !important;
         height: fit-content !important;
     }
@@ -4024,7 +3830,8 @@ html[data-theme="dark"] button.changeTheme {
         font-size: 20px !important;
     }
 
-    .swal2-html-container {
+    .swal2-html-container,
+    .guideline-title {
         font-size: 14px !important;
     }
 
@@ -4055,14 +3862,8 @@ html[data-theme="dark"] button.changeTheme {
         font-size: 10px !important;
     }
 
-    .guideline-type,
-    .guideline-widget button i,
     .form-select.actionSelect {
         font-size: 12px !important;
-    }
-
-    .guideline-widget button i {
-        padding: 6px !important;
     }
 
     #changeYearSelect,
@@ -4090,7 +3891,7 @@ html[data-theme="dark"] button.changeTheme {
     }
 
     div.gm-style-iw.gm-style-iw-c {
-        padding: 6px !important;
+        padding: 10px !important;
     }
 
     .dataTables_filter input {
@@ -4117,7 +3918,8 @@ html[data-theme="dark"] button.changeTheme {
         font-size: 16px !important;
     }
 
-    .hotline-container .id-container {
+    .hotline-container .id-container,
+    .guideline-id {
         font-size: 15px;
     }
 
@@ -4179,10 +3981,6 @@ html[data-theme="dark"] button.changeTheme {
         margin-top: 0;
     }
 
-    .hotline-data-container {
-        font-size: 14px;
-    }
-
     .hotline-data-container:first-child {
         padding-top: 0;
     }
@@ -4228,16 +4026,50 @@ html[data-theme="dark"] button.changeTheme {
         font-size: 14px !important;
     }
 
-    #report-marker-info-text {
-        flex-direction: column;
+    .guideline-box {
+        width: 100%;
     }
 
-    #report-marker-info-text div {
+    .cover-image {
+        height: 200px;
+    }
+
+    .map-info-text {
+        flex-direction: column;
+        justify-content: center;
+    }
+
+    .map-info-text div {
         padding: 2px;
     }
 
-    #report-marker-info-text #pending-count {
+    .map-info-text #pending-count {
         margin-left: 0;
+    }
+
+    .weather-header {
+        flex-direction: column;
+    }
+
+    .weather-section h4 {
+        font-size: 18px;
+    }
+
+    .current-temp {
+        font-size: 35px;
+    }
+
+    .weather-header {
+        padding: 0;
+    }
+
+    .weather-day {
+        padding-top: 0;
+    }
+
+    #sunrise,
+    #sunset {
+        font-size: 20px;
     }
 }
 
@@ -4245,6 +4077,14 @@ html[data-theme="dark"] button.changeTheme {
     .flatpickr-months,
     .flatpickr-month {
         height: 70px !important;
+    }
+
+    .guideline-action-container {
+        flex-direction: column;
+    }
+
+    #retryGeolocation {
+        width: 100%;
     }
 }
 
