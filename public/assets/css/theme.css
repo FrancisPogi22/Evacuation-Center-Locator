@@ -274,7 +274,7 @@ textarea::placeholder {
 }
 
 .type-img {
-    border: solid 2px;
+    border: solid 1px;
     border-radius: 5px;
     width: 100%;
     height: 351.33px;
@@ -1118,7 +1118,7 @@ div.flatpickr-rContainer::-webkit-scrollbar,
 
 .pie-chart {
     height: 600px;
-    padding: 10px 10px 20px;
+    padding: 15px 10px 20px;
     filter: drop-shadow(0 10px 8px rgb(0 0 0 / 0.04))
         drop-shadow(0 4px 3px rgb(0 0 0 / 0.1));
 }
@@ -1143,6 +1143,8 @@ div.flatpickr-rContainer::-webkit-scrollbar,
     overflow: hidden;
     background: var(--color-text);
     height: 0;
+    border-bottom-left-radius: 8px;
+    border-bottom-right-radius: 8px;
     transition: 0.2s all ease;
 }
 
@@ -1254,7 +1256,7 @@ text {
     width: 250px;
     height: 38px;
     font-size: 15px;
-    border: solid 2px;
+    border: solid 1px var(--color-light-gray);
     border-radius: 5px 0 0 5px;
     filter: drop-shadow(0 1px 1px rgb(0 0 0 / 0.05));
 }
@@ -1281,7 +1283,7 @@ text {
     border-top-right-radius: 5px;
     border-bottom-right-radius: 5px;
     cursor: pointer;
-    border: 2px solid;
+    border: 1px solid;
     border-left: 0;
     filter: drop-shadow(0 1px 1px rgb(0 0 0 / 0.05));
 }
@@ -1406,7 +1408,7 @@ text {
 }
 
 .header-title {
-    font-size: 17px;
+    font-size: 20px;
     line-height: 2rem;
     padding: 10px;
     color: var(--color-black);
@@ -2724,8 +2726,12 @@ html[data-theme="dark"] ::-webkit-scrollbar-thumb {
     background: #55657e !important;
 }
 
+html[data-theme="dark"] #loader {
+    background: var(--color-d-bg-container);
+}
+
 html[data-theme="dark"] #loader-inner {
-    border-top-color: var(--color-gray);
+    border-top-color: var(--color-light-gray);
 }
 
 html[data-theme="dark"] #btn-sidebar-close {
