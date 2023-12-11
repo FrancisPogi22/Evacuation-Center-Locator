@@ -12,7 +12,8 @@ return new class extends Migration
             $table->id();
             $table->string('type')->unique();
             $table->string('organization');
-            $table->string('guideline_img')->nullable();
+            $table->string('cover_image')->nullable();
+            $table->string('content_image');
         });
     }
 

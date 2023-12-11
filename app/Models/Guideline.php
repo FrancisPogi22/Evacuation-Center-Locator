@@ -16,7 +16,8 @@ class Guideline extends Model
     protected $fillable = [
         'type',
         'organization',
-        'guideline_img'
+        'cover_image',
+        'content_image'
     ];
 
     public $timestamps = false;
