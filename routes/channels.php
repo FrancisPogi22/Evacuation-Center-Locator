@@ -2,7 +2,7 @@
 
 use Illuminate\Support\Facades\Broadcast;
 
-Broadcast::channel('active-evacuees', function () {
+Broadcast::channel('evacuees', function () {
     return true;
 });
 
@@ -18,10 +18,11 @@ Broadcast::channel('area-report', function () {
     return true;
 });
 
-Broadcast::channel('evacuation-center-locator', function () {
-    return true;
-});
-
 Broadcast::channel('notification', function () {
     return true;
 });
+
+Broadcast::channel('evacuation-center', function () {
+    return true;
+});
+
