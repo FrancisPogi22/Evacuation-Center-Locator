@@ -49,7 +49,7 @@ class IncidentReportController extends Controller
     public function createIncidentReport(Request $request)
     {
         $incidentReportValidation = Validator::make($request->all(), [
-            'image'     => 'required|image|mimes:jpeg,png,jpg',
+            'image'     => 'required|image|mimes:jpeg,png,jpg|max:2048',
             'details'   => 'required',
             'latitude'  => 'required',
             'longitude' => 'required'

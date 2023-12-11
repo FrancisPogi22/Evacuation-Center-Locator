@@ -67,7 +67,7 @@ class AreaReportController extends Controller
     {
         $areaReportValidation = Validator::make($request->all(), [
             'type'      => 'required',
-            'image'     => 'required|image|mimes:jpeg,png,jpg',
+            'image'     => 'required|image|mimes:jpeg,png,jpg|max:2048',
             'details'   => 'required',
             'latitude'  => 'required',
             'longitude' => 'required'

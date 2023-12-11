@@ -122,7 +122,7 @@ class EmergencyReportController extends Controller
     public function archiveEmergencyReport(Request $request, $reportId)
     {
         $emergencyReportValidation = Validator::make($request->all(), [
-            'image'   => 'required|image|mimes:jpeg,png,jpg',
+            'image'   => 'required|image|mimes:jpeg,png,jpg|max:2048',
             'details' => 'required'
         ]);
 

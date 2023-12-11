@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Guide;
 use App\Models\Evacuee;
 use App\Models\Disaster;
 use App\Models\Guideline;
@@ -22,7 +21,6 @@ class MainController extends Controller
 
     public function __construct()
     {
-        $this->guide            = new Guide;
         $this->evacuee          = new Evacuee;
         $this->disaster         = new Disaster;
         $this->guideline        = new Guideline;
@@ -62,9 +60,10 @@ class MainController extends Controller
 
     public function eligtasGuideline()
     {
+        $prefix = basename(trim(request()->route()->getPrefix(), '/'));
         $guidelineData = !auth()->check() ? $this->guideline->all() : $this->guideline->where('organization', auth()->user()->organization)->get();
 
-        return view('userpage.guideline.eligtasGuideline', compact('guidelineData'));
+        return view('userpage.guideline.eligtasGuideline', compact('guidelineData', 'prefix'));
     }
 
     public function searchGuideline(Request $request)
@@ -74,7 +73,7 @@ class MainController extends Controller
         if ($searchGuidelineValdation->fails()) return response(['warning' => $searchGuidelineValdation->errors()->first()]);
 
         $guidelineData = $this->guideline
-            ->select('id', 'type', 'guideline_img')
+            ->select('*')
             ->when(auth()->check(), function ($query) {
                 $query->where('organization', auth()->user()->organization);
             })
@@ -88,10 +87,9 @@ class MainController extends Controller
 
     public function guide($guidelineId)
     {
-        $guide          = $this->guide->where('guideline_id', $guidelineId)->get();
-        $guidelineLabel = $this->guideline->find($guidelineId)->value('type');
+        $guideline = $this->guideline->find($guidelineId);
 
-        return view('userpage.guideline.guide', compact('guide', 'guidelineId', 'guidelineLabel'));
+        return view('userpage.guideline.guide', compact('guideline'));
     }
 
     public function manageEvacueeInformation($operation)

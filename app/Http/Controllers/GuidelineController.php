@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Guide;
 use App\Models\Guideline;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
@@ -11,11 +10,10 @@ use Illuminate\Support\Facades\Validator;
 
 class GuidelineController extends Controller
 {
-    private $guide, $guideline, $logActivity;
+    private $guideline, $logActivity;
 
     function __construct()
     {
-        $this->guide       = new Guide;
         $this->guideline   = new Guideline;
         $this->logActivity = new ActivityUserLog;
     }
@@ -24,200 +22,105 @@ class GuidelineController extends Controller
     {
         $guidelineValidation = Validator::make($request->all(), [
             'type'         => 'required|unique:guideline,type',
-            'guidelineImg' => 'image|mimes:jpeg|max:2048'
-        ]);
-
-        $guideValidation = Validator::make($request->all(), [
-            'label.*'   => 'required',
-            'content.*' => 'required'
+            'coverImage'   => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'contentImage' => 'required|image|mimes:jpeg,png,jpg|max:2048'
         ]);
 
         if ($guidelineValidation->fails()) return response(['status' => 'warning', 'message' => implode('<br>', $guidelineValidation->errors()->all())]);
 
-        if ($guideValidation->fails()) return response(['status' => 'warning', 'message' => "All guide fields are required, fill them out."]);
+        $guidelineContentImage = $request->file('contentImage');
+        $guidelineCoverImage   = $request->file('coverImage');
+        $contentImagePath      = $guidelineContentImage;
+        $coverImagePath        = $guidelineCoverImage;
 
-        $userId             = auth()->user()->id;
-        $guidelineImg       = $request->file('guidelineImg');
-        $guidelineImagePath = $guidelineImg;
-
-        if ($guidelineImagePath) {
-            $guidelineImagePath = $guidelineImg->store();
-            $guidelineImg->move(public_path('guideline_image'), $guidelineImagePath);
+        if ($coverImagePath) {
+            $coverImagePath = $guidelineCoverImage->store();
+            $guidelineCoverImage->move(public_path('guideline_image'), $coverImagePath);
         }
+
+        $contentImagePath = $guidelineContentImage->store();
+        $guidelineContentImage->move(public_path('guide_image'), $contentImagePath);
 
         $guideline = $this->guideline->create([
-            'type'          => Str::upper(trim($request->type)),
+            'type'          => strtoupper(trim($request->type)),
+            'cover_image'   => $coverImagePath,
             'organization'  => auth()->user()->organization,
-            'guideline_img' => $guidelineImagePath
+            'content_image' => $contentImagePath
         ]);
+
         $this->logActivity->generateLog('Created a new guideline(ID - ' . $guideline->id . ')');
-        $labels   = $request->label;
-        $contents = $request->content;
 
-        if ($labels && $contents) {
-            $guideImages = $request->file('guidePhoto');
-
-            foreach ($labels as $count => $label) {
-                $guideData = [
-                    'label'        => Str::upper(trim($label)),
-                    'content'      => $contents[$count],
-                    'guideline_id' => $guideline->id
-                ];
-
-                if (isset($guideImages[$count])) {
-                    $guideImagePath     =  $guideImages[$count]->store();
-                    $guideImages[$count]->move(public_path('guideline_image'), $guideImagePath);
-                    $guideData['guide_photo'] = $guideImagePath;
-                }
-
-                $guide = $this->guide->create($guideData);
-                $this->logActivity->generateLog('Created a new guide(ID - ' . $guide->id . ')');
-            }
-        }
-
-        return response(['guideline_id' =>  $guideline->id, 'type' => $guideline->type, 'guideline_img' => $guideline->guideline_img]);
+        return response(['id' =>  $guideline->id, 'type' => $guideline->type, 'cover' => $guideline->cover_image, 'content' => $guideline->content_image]);
     }
 
     public function updateGuideline(Request $request, $guidelineId)
     {
         $guidelineValidation = Validator::make($request->all(), [
-            'type'         => 'required',
-            'guidelineImg' => 'image|mimes:jpeg|max:2048'
-        ]);
-
-        $guideValidation = Validator::make($request->all(), [
-            'label.*'   => 'required',
-            'content.*' => 'required'
+            'type'         => 'required|unique:guideline,type',
+            'coverImage'   => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'contentImage' => 'required|image|mimes:jpeg,png,jpg|max:2048'
         ]);
 
         if ($guidelineValidation->fails()) return response(['status' => 'warning', 'message' => implode('<br>', $guidelineValidation->errors()->all())]);
 
-        if ($guideValidation->fails()) return response(['status' => 'warning', 'message' => "All guide fields are required, fill them out."]);
+        $guidelineContentImage = $request->file('contentImage');
+        $guidelineCoverImage   = $request->file('coverImage');
+        $contentImagePath      = $guidelineContentImage;
+        $coverImagePath        = $guidelineCoverImage;
+        $guideline             = $this->guideline->find($guidelineId);
 
-        $userId          = auth()->user()->id;
-        $guideline       = $this->guideline->find($guidelineId);
-        $guidelineImg    = $request->file('guidelineImg');
-        $guidelineData   = [
-            'type'    => Str::upper(trim($request->type)),
+        if ($coverImagePath) {
+            $oldCoverImage = $guideline->cover_image;
+            $coverImagePath    = $guidelineCoverImage->store();
+            $guidelineCoverImage->move(public_path('guideline_image'), $coverImagePath);
+
+            if ($oldCoverImage) {
+                $oldCoverPath = public_path('guideline_image/' . $oldCoverImage);
+
+                if (file_exists($oldCoverPath)) unlink($oldCoverPath);
+            }
+        }
+
+        if ($contentImagePath) {
+            $oldContentImage = $guideline->content_image;
+            $contentImagePath = $guidelineContentImage->store();
+            $guidelineContentImage->move(public_path('guide_image'), $contentImagePath);
+
+            if ($oldContentImage) {
+                $oldContentPath = public_path('guideline_image/' . $oldContentImage);
+
+                if (file_exists($oldContentPath)) unlink($oldContentPath);
+            }
+        }
+
+        $this->logActivity->generateLog('Updated ' . lcfirst($guideline->type) . ' guideline(ID - ' . $guideline->id . ')');
+        $newData = [
+            'type'          => strtoupper(trim($request->type)),
+            'cover_image'   => $coverImagePath,
+            'content_image' => $contentImagePath
         ];
 
-        if ($guidelineImg) {
-            $guidelineImgOld                = $guideline->guideline_img;
-            $guidelineImg                   = $guidelineImg->store();
-            $guidelineData['guideline_img'] = $guidelineImg;
-            $request->guidelineImg->move(public_path('guideline_image'), $guidelineImg);
+        $guideline->update($newData);
 
-            if ($guidelineImgOld) {
-                $guidelineImgOldPath = public_path('guideline_image/' . $guidelineImgOld);
-
-                if (file_exists($guidelineImgOldPath)) unlink($guidelineImgOldPath);
-            }
-        }
-
-        $guideline->update($guidelineData);
-        $this->logActivity->generateLog('Updated ' . lcfirst($guideline->type) . ' guideline(ID - ' . $guideline->id . ')');
-        $labels   = $request->label;
-        $contents = $request->content;
-
-        if ($labels && $contents) {
-            $guidePhotos = $request->file('guidePhoto');
-
-            foreach ($labels as $count => $label) {
-                $guideData = [
-                    'label'        => Str::upper(trim($label)),
-                    'content'      => $contents[$count],
-                    'guideline_id' => $guideline->id,
-                ];
-
-                if (isset($guidePhotos[$count])) {
-                    $guidePhotoPath     =  $guidePhotos[$count]->store();
-                    $guidePhotos[$count]->move(public_path('guideline_image'), $guidePhotoPath);
-                    $guideData['guide_photo'] =  $guidePhotoPath;
-                }
-
-                $guide = $this->guide->create($guideData);
-                $this->logActivity->generateLog('Updated a guide(ID - ' . $guide->id . ')');
-            }
-        }
-
-        return response(['type' => $guideline->type, 'guideline_img' => $guideline->guideline_img]);
+        return response(['type' => $newData['type'], 'cover' => $newData['cover_image'], 'content' => $newData['content_image']]);
     }
 
     public function removeGuideline($guidelineId)
     {
         $guideline    = $this->guideline->find($guidelineId);
-        $guidelineImg = $guideline->guideline_img;
-        $guide        = $this->guide->where('guideline_id', $guidelineId)->get();
+        $guidelineCoverImage = $guideline->cover_image;
 
-        foreach ($guide as $guide) {
-            $this->removeGuideImage($guide->guide_photo);
-        }
+        unlink(public_path('guide_image/' . $guideline->content_image));
 
-        if ($guidelineImg) {
-            $guidelineImgPath = public_path('guideline_image/' . $guidelineImg);
+        if ($guidelineCoverImage) {
+            $coverImagePath = public_path('guideline_image/' . $guidelineCoverImage);
 
-            if (file_exists($guidelineImgPath)) unlink($guidelineImgPath);
+            if (file_exists($coverImagePath)) unlink($coverImagePath);
         }
 
         $this->logActivity->generateLog('Removed ' . lcfirst($guideline->type) . ' guideline(ID - ' . $guidelineId . ')');
         $guideline->delete();
 
         return response([]);
-    }
-
-    public function updateGuide(Request $request, $guideId)
-    {
-        $guideValidation = Validator::make($request->all(), [
-            'label'      => 'required',
-            'content'    => 'required',
-            'guidePhoto' => 'image|mimes:jpeg|max:2048'
-        ]);
-
-        if ($guideValidation->fails()) return response(['status' => 'warning', 'message' => implode('<br>', $guideValidation->errors()->all())]);
-
-        $guide     = $this->guide->find($guideId);
-        $guideImg  = $request->file('guidePhoto');
-        $guideData = [
-            'label'   => Str::upper(trim($request->label)),
-            'content' => Str::ucfirst(trim($request->content)),
-        ];
-
-        if ($guideImg) {
-            $guideImgOld              = $guide->guide_photo;
-            $guideImg                 = $guideImg->store();
-            $guideData['guide_photo'] = $guideImg;
-            $request->guidePhoto->move(public_path('guideline_image'), $guideImg);
-
-            if ($guideImgOld) {
-                $guideImgOldPath = public_path('guideline_image/' . $guideImgOld);
-
-                if (file_exists($guideImgOldPath)) unlink($guideImgOldPath);
-            }
-        }
-
-        $guide->update($guideData);
-        $this->logActivity->generateLog('Updated a guide(ID - ' . $guideId . ')');
-
-        return response(['label' => $guide->label, 'content' => $guide->content, 'guide_photo' => $guide->guide_photo]);
-    }
-
-    public function removeGuide($guideId)
-    {
-        $guide      = $this->guide->find($guideId);
-        $guideImage = $guide->guide_photo;
-        $this->removeGuideImage($guideImage);
-        $this->logActivity->generateLog('Removed a guide(ID - ' . $guideId . ')');
-        $guide->delete();
-
-        return response([]);
-    }
-
-    private function removeGuideImage($guideImage)
-    {
-        if ($guideImage) {
-            $guideImgPath = public_path('guideline_image/' . $guideImage);
-
-            if (file_exists($guideImgPath)) unlink($guideImgPath);
-        }
     }
 }
