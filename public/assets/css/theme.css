@@ -2853,6 +2853,7 @@ html[data-theme="dark"] .sidebar .active-link {
 html[data-theme="dark"] .user-details {
     background: var(--color-gray);
     color: var(--color-d-text);
+    border: none;
 }
 
 html[data-theme=dark] .content-description p {
@@ -2866,6 +2867,7 @@ html[data-theme="dark"] .guideline-type {
 html[data-theme="dark"] .header-title {
     color: var(--color-d-text);
     background: var(--color-gray);
+    border: none;
 }
 
 html[data-theme="dark"] .map-section,
@@ -3012,6 +3014,7 @@ html[data-theme="dark"] .report-container span {
 
 html[data-theme="dark"] .widget {
     background: var(--color-d-bg-container);
+    border: none;
 }
 
 html[data-theme="dark"] .content-description span {
@@ -3088,6 +3091,11 @@ html[data-theme="dark"] .profile-details {
 
 html[data-theme="dark"] .table-container {
     background: var(--color-d-bg-container);
+    border: none;
+}
+
+html[data-theme="dark"] .bar-graph {
+    border: none;
 }
 
 html[data-theme="dark"] th {
