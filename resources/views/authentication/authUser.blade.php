@@ -7,8 +7,9 @@
             <div class="auth-container">
                 <div class="auth-header-desc">
                     <h1>{{ config('app.name') }}</h1>
-                    <p>E-LIGTAS can help you to locate an evacuation centers in Cabuyao, Laguna, as well as provide
-                        disaster preparedness information.</p>
+                    <p>"E-Ligtas, the Disaster Preparedness Web App that effortlessly guides you to safety. Empower
+                        yourself and your community – because safety isn't just a decision; it's a shared journey we
+                        undertake together."</p>
                 </div>
                 <div class="auth-form-section">
                     <form action="{{ route('login') }}" method="POST">
