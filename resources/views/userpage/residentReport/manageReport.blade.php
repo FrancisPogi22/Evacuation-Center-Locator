@@ -25,7 +25,7 @@
             </div>
             <hr>
             @if ($operation == 'manage')
-                <div class="map-info pending">
+                <div class="map-info pending" hidden>
                     <i class="bi bi-info-circle"></i>
                     <div class="map-info-text pending">
                         <div>Bouncing marker is a pending report.</div>

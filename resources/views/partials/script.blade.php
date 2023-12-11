@@ -441,7 +441,7 @@
 
     function enableDarkMode() {
         html.attr('data-theme', "dark");
-        logo.attr('src', '{{ asset('assets/img/E-LIGTAS-Logo-White.png') }}');
+        logo.attr('src', "{{ asset('assets/img/E-LIGTAS-Logo-White.png') }}");
         themeIcon.removeClass('bi-moon').addClass('bi-sun');
         themeIconResident.removeClass('bi-sun-fill').addClass('bi-moon-fill');
         themeText.text('Light Mode');
@@ -477,7 +477,7 @@
     }
 
     function disableDarkMode() {
-        logo.attr('src', '{{ asset('assets/img/E-LIGTAS-Logo-Black.png') }}');
+        logo.attr('src', "{{ asset('assets/img/E-LIGTAS-Logo-Black.png') }}");
         html.attr('data-theme', "light");
         themeIcon.removeClass('bi-sun').addClass('bi-moon');
         themeIconResident.removeClass('bi-moon-fill').addClass('bi-sun-fill');

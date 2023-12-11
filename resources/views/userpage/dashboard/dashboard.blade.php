@@ -26,9 +26,21 @@
                         <div class="content-description">
                             <div class="wigdet-header">
                                 <p>Evacuee (On Evacuation)</p>
-                                <i class="bi bi-people"></i>
+                                <img src="{{ asset('assets/img/On-Evacuation.png') }}" alt="icon">
                             </div>
                             <p id="evacuated">{{ $evacuated }}</p>
+                            <span>Total</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="widget">
+                    <div class="widget-content">
+                        <div class="content-description">
+                            <div class="wigdet-header">
+                                <p>Evacuee (Returned Home)</p>
+                                <img src="{{ asset('assets/img/Return-Home.png') }}" alt="icon">
+                            </div>
+                            <p id="returnedHome">{{ $returnedHome }}</p>
                             <span>Total</span>
                         </div>
                     </div>
@@ -39,7 +51,7 @@
                             <div class="content-description">
                                 <div class="wigdet-header">
                                     <p>Evacuation Center (Active)</p>
-                                    <img src="{{ asset('assets/img/Active.png') }}" alt="icon">
+                                    <img src="{{ asset('assets/img/Active-Logo.png') }}" alt="icon">
                                 </div>
                                 <p id="activeEvacuation">{{ $activeEvacuation }}</p>
                                 <span>Total</span>
@@ -51,7 +63,7 @@
                             <div class="content-description">
                                 <div class="wigdet-header">
                                     <p>Evacuation Center (Inactive)</p>
-                                    <img src="{{ asset('assets/img/Inactive.png') }}" alt="icon">
+                                    <img src="{{ asset('assets/img/Inactive-Logo.png') }}" alt="icon">
                                 </div>
                                 <p id="inactiveEvacuation">{{ $inactiveEvacuation }}</p>
                                 <span>Total</span>
@@ -63,21 +75,9 @@
                             <div class="content-description">
                                 <div class="wigdet-header">
                                     <p>Evacuation Center (Full)</p>
-                                    <img src="{{ asset('assets/img/Full.png') }}" alt="icon">
+                                    <img src="{{ asset('assets/img/Full-Logo.png') }}" alt="icon">
                                 </div>
                                 <p id="fullEvacuation">{{ $fullEvacuation }}</p>
-                                <span>Total</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="widget">
-                        <div class="widget-content">
-                            <div class="content-description">
-                                <div class="wigdet-header">
-                                    <p>Evacuee (Returned Home)</p>
-                                    <i class="bi bi-house-heart"></i>
-                                </div>
-                                <p id="returnedHome">{{ $returnedHome }}</p>
                                 <span>Total</span>
                             </div>
                         </div>
@@ -88,7 +88,7 @@
                             <div class="content-description">
                                 <div class="wigdet-header">
                                     <p>Today's Reports</p>
-                                    <img src="{{ asset('assets/img/Reporting.png') }}" alt="icon">
+                                    <img src="{{ asset('assets/img/Todays-Report.png') }}" alt="icon">
                                 </div>
                                 <p id="todayReport">{{ $todayReport }}</p>
                                 <span>Total</span>
@@ -100,7 +100,7 @@
                             <div class="content-description">
                                 <div class="wigdet-header">
                                     <p>Resolving Reports</p>
-                                    <i class="bi bi-megaphone"></i>
+                                    <img src="{{ asset('assets/img/Resolving-Report.png') }}" alt="icon">
                                 </div>
                                 <p id="resolvingReport">{{ $resolvingReport }}</p>
                                 <span>Total</span>
@@ -112,7 +112,7 @@
                             <div class="content-description">
                                 <div class="wigdet-header">
                                     <p>Resolved Reports</p>
-                                    <i class="bi bi-megaphone"></i>
+                                    <img src="{{ asset('assets/img/Resolved-Report.png') }}" alt="icon">
                                 </div>
                                 <p id="resolvedReport">{{ $resolvedReport }}</p>
                                 <span>Total</span>
@@ -136,7 +136,7 @@
                         <div id="loader-inner"></div>
                     </div>
                     <div class="pie-container" hidden>
-                        <div class="pie-label"><span>Barangay Data Chart</span></div>
+                        <div class="pie-label"><span>Total of Evacuees per Barangay</span></div>
                         <div class="pie-content">
                             <div class="pie-figure"></div>
                         </div>
