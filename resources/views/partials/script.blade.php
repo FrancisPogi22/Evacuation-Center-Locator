@@ -80,31 +80,32 @@
                 confirmModal('Do you want to change your password?').then((result) => {
                     if (!result.isConfirmed) return;
 
-                    $.ajax({
-                        method: "PUT",
-                        url: $('#changePasswordRoute').data('route'),
-                        data: $(form).serialize(),
-                        beforeSend() {
-                            btnLoader.prop('hidden', 0);
-                            btnText.text('Changing');
-                            $('#changePasswordForm input, #resetPasswordBtn, #closeChangePasswordBtn')
-                                .prop('disabled', 1);
-                        },
-                        success(response) {
-                            return response.status == "warning" ? showWarningMessage(
-                                    response.message) :
-                                (showSuccessMessage('Password successfully changed.'),
-                                    $(form)[0].reset(), currentPassword.text(""), modal
-                                    .modal('hide'));
-                        },
-                        error: showErrorMessage,
-                        complete() {
-                            btnLoader.prop('hidden', 1);
-                            btnText.text('Change');
-                            $('#changePasswordForm input, #resetPasswordBtn, #closeChangePasswordBtn')
-                                .prop('disabled', 0);
-                        }
-                    });
+                    return currentPassword.val() == password.val() ? showWarningMessage() :
+                        $.ajax({
+                            method: "PUT",
+                            url: $('#changePasswordRoute').data('route'),
+                            data: $(form).serialize(),
+                            beforeSend() {
+                                btnLoader.prop('hidden', 0);
+                                btnText.text('Changing');
+                                $('#changePasswordForm input, #resetPasswordBtn, #closeChangePasswordBtn')
+                                    .prop('disabled', 1);
+                            },
+                            success(response) {
+                                return response.status == "warning" ? showWarningMessage(
+                                        response.message) :
+                                    (showSuccessMessage('Password successfully changed.'),
+                                        $(form)[0].reset(), currentPassword.text(""), modal
+                                        .modal('hide'));
+                            },
+                            error: showErrorMessage,
+                            complete() {
+                                btnLoader.prop('hidden', 1);
+                                btnText.text('Change');
+                                $('#changePasswordForm input, #resetPasswordBtn, #closeChangePasswordBtn')
+                                    .prop('disabled', 0);
+                            }
+                        });
                 });
             }
         });
@@ -112,7 +113,6 @@
         $(document).on('keyup', '#current_password', function() {
             current_password = $('#current_password').val();
             clearTimeout($(this).data('checkingDelay'));
-
             $(this).data('checkingDelay', setTimeout(() => {
                 let checkPasswordRoute = $('#checkPasswordRoute').data('route'),
                     newPass = $('.new-pass'),
@@ -150,11 +150,12 @@
                         } else {
                             password.add(confirmPassword).add(btnContainer.prop(
                                 'hidden', 0)).prop('disabled', 0);
+                            $('#resetPasswordBtn').prop('disabled', 0);
                             newPass.add(confirmPass).add(btnContainer).add(
                                 checkPasswordIcon.removeClass(
-                                    'bi-x-circle error')
-                                .addClass('bi-check2-circle success')).prop(
-                                'hidden', 0);
+                                    'bi-x-circle error').addClass(
+                                    'bi-check2-circle success')).prop('hidden',
+                                0);
                         }
                     }
                 });
