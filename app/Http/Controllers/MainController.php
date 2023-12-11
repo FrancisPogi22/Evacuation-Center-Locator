@@ -43,15 +43,16 @@ class MainController extends Controller
                 'inactiveEvacuation' => $evacuationCenter->inactiveEvacuation,
                 'fullEvacuation' => $evacuationCenter->fullEvacuation,
                 'evacuated' => $evacuated,
+                'returnedHome' => $evacuees['returnedHome'],
                 'onGoingDisasters' => $onGoingDisasters,
                 'disaster' => $disaster,
-                'returnedHome' => $evacuees['returnedHome'],
             ]);
         } else {
             $residentReport = $this->residentReport->getReportCount();
 
             return view('userpage.dashboard.dashboard', [
                 'evacuated' => $evacuated,
+                'returnedHome' => $evacuees['returnedHome'],
                 'onGoingDisasters' => $onGoingDisasters,
                 'disaster' => $disaster,
                 'todayReport' => $residentReport['todayReport'],
