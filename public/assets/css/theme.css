@@ -344,6 +344,7 @@ textarea::placeholder {
 .toggleImageBtn i,
 .field-container #imageBtn i,
 #guidelineForm button i,
+#retryGeolocation i,
 .locateEvacuationCenter i,
 .info-window-action-container i,
 #reportAreaBtn i,
@@ -4127,7 +4128,6 @@ html[data-theme="dark"] button.changeTheme {
 }
 
 @media only screen and (max-width: 300px) {
-
     .flatpickr-months,
     .flatpickr-month {
         height: 70px !important;
