@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Models\HotlineNumbers;
 use App\Models\ActivityUserLog;
@@ -38,12 +37,12 @@ class HotlineNumberController extends Controller
 
         $hotlineNumber = $this->hotlineNumbers->create([
             'logo'    => $hotlineLogoPath,
-            'label'   => Str::upper(trim($request->label)),
-            'number'  => trim($request->number),
+            'label'   => strtoupper(trim($request->label)),
+            'number'  => trim($request->number)
         ]);
 
         $hotlineId = $hotlineNumber->id;
-        $this->logActivity->generateLog('Added a new hotline number(ID - ' . $hotlineId . ')');
+        $this->logActivity->generateLog("Added a new hotline number(ID - $hotlineId)");
 
         return response(['hotlineId' => $hotlineId, 'hotlineLogo' => $hotlineLogoPath, 'label' => $hotlineNumber->label, 'number' => $hotlineNumber->number]);
     }
@@ -61,7 +60,7 @@ class HotlineNumberController extends Controller
         $hotlineLogo       = $request->file('logo');
         $hotlineNumber     = $this->hotlineNumbers->find($hotlineId);
         $hotlineNumberData = [
-            'label'   => Str::upper(trim($request->label)),
+            'label'   => strtoupper(trim($request->label)),
             'number'  => trim($request->number)
         ];
 
@@ -79,7 +78,7 @@ class HotlineNumberController extends Controller
         }
 
         $hotlineNumber->update($hotlineNumberData);
-        $this->logActivity->generateLog('Updated a hotline number(ID - ' . $hotlineId . ')');
+        $this->logActivity->generateLog("Updated a hotline number(ID - $hotlineId)");
 
         return response(['hotlineId' => $hotlineId, 'label' => $hotlineNumber->label, 'number' => $hotlineNumber->number]);
     }
@@ -95,7 +94,7 @@ class HotlineNumberController extends Controller
             if (file_exists($hotlineLogoPath)) unlink($hotlineLogoPath);
         }
 
-        $this->logActivity->generateLog('Removed a hotline number(ID - ' . $hotlineId . ')');
+        $this->logActivity->generateLog("Removed a hotline number(ID - $hotlineId)");
         $hotlineNumber->delete();
 
         return response([]);

@@ -3,12 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\ReportLog;
+use App\Events\Notification;
 use Illuminate\Http\Request;
+use App\Events\IncidentReport;
 use App\Models\ResidentReport;
 use App\Models\ActivityUserLog;
 use Yajra\DataTables\DataTables;
-use App\Events\Notification;
-use App\Events\IncidentReport;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Controllers\ResidentReportController;
@@ -29,13 +29,11 @@ class IncidentReportController extends Controller
     {
         $incidentReports = $this->incidentReport->where('is_archive', $operation == "manage" ? 0 : 1);
 
-        if ($operation == "manage")
-            return response($incidentReports->where('type', 'Incident')->get());
-        else
-            return DataTables::of($incidentReports->where('type', $type)->whereYear('report_time', $year)->get())
-                ->addColumn('location', '<button class="btn-table-primary viewLocationBtn"><i class="bi bi-pin-map"></i> View</button>')
-                ->addColumn('photo', function ($report) {
-                    return '<div class="photo-container">
+        return $operation == "manage" ? response($incidentReports->where('type', 'Incident')->get()) :
+            DataTables::of($incidentReports->where('type', $type)->whereYear('report_time', $year)->get())
+            ->addColumn('location', '<button class="btn-table-primary viewLocationBtn"><i class="bi bi-pin-map"></i> View</button>')
+            ->addColumn('photo', function ($report) {
+                return '<div class="photo-container">
                     <div class="image-wrapper">
                         <img class="report-img" src="' . asset('reports_image/' . $report->photo) . '">
                         <div class="image-overlay">
@@ -43,7 +41,7 @@ class IncidentReportController extends Controller
                         </div>
                     </div>
                 </div>';
-                })->rawColumns(['location', 'photo'])->make(true);
+            })->rawColumns(['location', 'photo'])->make(true);
     }
 
     public function createIncidentReport(Request $request)
@@ -64,20 +62,16 @@ class IncidentReportController extends Controller
         $request->image->move(public_path('reports_image'), $reportPhotoPath);
 
         if ($resident) {
-            $reportTime      = $resident->report_time;
-            $residentAttempt = $resident->attempt;
+            $resident->increment('attempt');
 
-            if ($residentAttempt == 3) {
-                $isBlock = $this->residentReport->isBlocked($reportTime);
+            if ($resident->attempt == 3) {
+                $isBlock = $this->residentReport->isBlocked($resident->report_time);
 
-                if (!$isBlock) {
+                if (!$isBlock)
                     $resident->update(['attempt' => 0, 'report_time' => null]);
-                    $residentAttempt = 0;
-                } else
+                else
                     return response(['status' => 'blocked', 'message' => "You can report again after " . $isBlock . "."]);
             }
-
-            $resident->update(['attempt' => $residentAttempt + 1]);
 
             if ($resident->attempt == 3) $resident->update(['report_time' => Date::now()->addHour()]);
         } else {
@@ -107,7 +101,7 @@ class IncidentReportController extends Controller
     {
         $report = $this->incidentReport->find($reportId);
         $report->update(['status' => $report->status == "Pending" ? "Resolving" : "Resolved"]);
-        $this->logActivity->generateLog('Set the incident report(ID - ' . $reportId . ') status to resolving');
+        $this->logActivity->generateLog("Set the incident report(ID - $reportId) status to resolving");
         event(new IncidentReport());
         event(new Notification());
 
@@ -119,7 +113,7 @@ class IncidentReportController extends Controller
         $report = $this->incidentReport->find($reportId);
         $report->delete();
         unlink(public_path('reports_image/' . $report->photo));
-        $this->logActivity->generateLog('Removed incident report(ID - ' . $reportId . ')');
+        $this->logActivity->generateLog("Removed incident report(ID - $reportId)");
         event(new IncidentReport());
         event(new Notification());
 
@@ -129,7 +123,7 @@ class IncidentReportController extends Controller
     public function archiveIncidentReport($reportId)
     {
         $this->incidentReport->find($reportId)->update(['is_archive' => 1]);
-        $this->logActivity->generateLog('Archived incident report(ID - ' . $reportId . ')');
+        $this->logActivity->generateLog("Archived incident report(ID - $reportId)");
         event(new IncidentReport());
 
         return response([]);

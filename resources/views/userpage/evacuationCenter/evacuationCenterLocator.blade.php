@@ -970,7 +970,7 @@
                 ajaxRequest('reportArea');
             });
 
-            Echo.channel('evacuation-center-locator').listen('EvacuationCenterLocator', (e) => {
+            Echo.channel('evacuation-center').listen('EvacuationCenter', (e) => {
                 ajaxRequest().then(() => {
                     if (locating && (rowData != null || prevNearestEvacuationCenter != null)) {
                         const {

@@ -28,7 +28,7 @@
                                 <p>Evacuee (On Evacuation)</p>
                                 <i class="bi bi-people"></i>
                             </div>
-                            <p id="totalEvacuee">{{ $totalEvacuee }}</p>
+                            <p id="evacuated">{{ $evacuated }}</p>
                             <span>Total</span>
                         </div>
                     </div>
@@ -39,9 +39,45 @@
                             <div class="content-description">
                                 <div class="wigdet-header">
                                     <p>Evacuation Center (Active)</p>
+                                    <img src="{{ asset('assets/img/Active.png') }}" alt="icon">
+                                </div>
+                                <p id="activeEvacuation">{{ $activeEvacuation }}</p>
+                                <span>Total</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="widget">
+                        <div class="widget-content">
+                            <div class="content-description">
+                                <div class="wigdet-header">
+                                    <p>Evacuation Center (Inactive)</p>
+                                    <img src="{{ asset('assets/img/Inactive.png') }}" alt="icon">
+                                </div>
+                                <p id="inactiveEvacuation">{{ $inactiveEvacuation }}</p>
+                                <span>Total</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="widget">
+                        <div class="widget-content">
+                            <div class="content-description">
+                                <div class="wigdet-header">
+                                    <p>Evacuation Center (Full)</p>
+                                    <img src="{{ asset('assets/img/Full.png') }}" alt="icon">
+                                </div>
+                                <p id="fullEvacuation">{{ $fullEvacuation }}</p>
+                                <span>Total</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="widget">
+                        <div class="widget-content">
+                            <div class="content-description">
+                                <div class="wigdet-header">
+                                    <p>Evacuee (Returned Home)</p>
                                     <i class="bi bi-house-heart"></i>
                                 </div>
-                                <p>{{ $activeEvacuation }}</p>
+                                <p id="returnedHome">{{ $returnedHome }}</p>
                                 <span>Total</span>
                             </div>
                         </div>
@@ -52,9 +88,33 @@
                             <div class="content-description">
                                 <div class="wigdet-header">
                                     <p>Today's Reports</p>
+                                    <img src="{{ asset('assets/img/Reporting.png') }}" alt="icon">
+                                </div>
+                                <p id="todayReport">{{ $todayReport }}</p>
+                                <span>Total</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="widget">
+                        <div class="widget-content">
+                            <div class="content-description">
+                                <div class="wigdet-header">
+                                    <p>Resolving Reports</p>
                                     <i class="bi bi-megaphone"></i>
                                 </div>
-                                <p id="totalReport">{{ $residentReport }}</p>
+                                <p id="resolvingReport">{{ $resolvingReport }}</p>
+                                <span>Total</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="widget">
+                        <div class="widget-content">
+                            <div class="content-description">
+                                <div class="wigdet-header">
+                                    <p>Resolved Reports</p>
+                                    <i class="bi bi-megaphone"></i>
+                                </div>
+                                <p id="resolvedReport">{{ $resolvedReport }}</p>
                                 <span>Total</span>
                             </div>
                         </div>
@@ -188,7 +248,9 @@
                 reportData();
 
                 Echo.channel('incident-report').listen('IncidentReport', (e) => {
-                    $("#totalReport").text(e.totalReport);
+                    $("#todayReport").text(e.todayReport);
+                    $("#resolvingReport").text(e.resolvingReport);
+                    $("#resolvedReport").text(e.resolvedReport);
                 });
 
                 Echo.channel('notification').listen('Notification', (e) => {
@@ -199,10 +261,17 @@
 
                 initializeBarGraph();
 
-                Echo.channel('active-evacuees').listen('ActiveEvacuees', (e) => {
-                    $("#totalEvacuee").text(e.activeEvacuees);
+                Echo.channel('evacuees').listen('Evacuees', (e) => {
+                    $("#evacuated").text(e.evacuated);
+                    $("#returnedHome").text(e.returnedHome);
                     initializePieChart(false);
                     initializeBarGraph(false);
+                });
+
+                Echo.channel('evacuation-center-count').listen('EvacuationCenter', (e) => {
+                    $("#activeEvacuation").text(e.activeEvacuation);
+                    $("#inactiveEvacuation").text(e.inactiveEvacuation);
+                    $("#fullEvacuation").text(e.fullEvacuation);
                 });
             @endif
         });
@@ -386,7 +455,7 @@
                                     data: barangayData.map((barangay, count) => ({
                                         name: barangay.barangay,
                                         y: parseInt(barangay.individuals),
-                                        color: `hsl(${(count / barangayData.length) * 360}, 20%, 70%)`
+                                        color: `hsl(${(count / barangayData.length) * 360}, 40%, 70%)`
                                     }))
                                 }],
                                 exporting: false,

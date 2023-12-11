@@ -35,4 +35,12 @@ class Evacuee extends Model
     ];
 
     public $timestamps = false;
+
+    public function countEvacueesByStatus()
+    {
+        return [
+            'evacuated'    => strval($this->where('status', "Evacuated")->sum('individuals')),
+            'returnedHome' => strval($this->where('status', "Return Home")->sum('individuals'))
+        ];
+    }
 }

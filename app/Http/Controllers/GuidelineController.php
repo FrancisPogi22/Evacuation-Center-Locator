@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\Guide;
 use App\Models\Guideline;
-use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Models\ActivityUserLog;
 use Illuminate\Support\Facades\Validator;
@@ -45,11 +44,11 @@ class GuidelineController extends Controller
         }
 
         $guideline = $this->guideline->create([
-            'type'          => Str::upper(trim($request->type)),
+            'type'          => strtoupper(trim($request->type)),
             'organization'  => auth()->user()->organization,
             'guideline_img' => $guidelineImagePath
         ]);
-        $this->logActivity->generateLog('Created a new guideline(ID - ' . $guideline->id . ')');
+        $this->logActivity->generateLog("Created a new guideline(ID - $guideline->id)");
         $labels   = $request->label;
         $contents = $request->content;
 
@@ -58,7 +57,7 @@ class GuidelineController extends Controller
 
             foreach ($labels as $count => $label) {
                 $guideData = [
-                    'label'        => Str::upper(trim($label)),
+                    'label'        => strtoupper(trim($label)),
                     'content'      => trim($contents[$count]),
                     'guideline_id' => $guideline->id
                 ];
@@ -70,7 +69,7 @@ class GuidelineController extends Controller
                 }
 
                 $guide = $this->guide->create($guideData);
-                $this->logActivity->generateLog('Created a new guide(ID - ' . $guide->id . ')');
+                $this->logActivity->generateLog("Created a new guide(ID - $guide->id)");
             }
         }
 
@@ -95,9 +94,7 @@ class GuidelineController extends Controller
 
         $guideline       = $this->guideline->find($guidelineId);
         $guidelineImg    = $request->file('guidelineImg');
-        $guidelineData   = [
-            'type'    => Str::upper(trim($request->type)),
-        ];
+        $guidelineData   = ['type' => strtoupper(trim($request->type))];
 
         if ($guidelineImg) {
             $guidelineImgOld                = $guideline->guideline_img;
@@ -113,7 +110,7 @@ class GuidelineController extends Controller
         }
 
         $guideline->update($guidelineData);
-        $this->logActivity->generateLog('Updated ' . lcfirst($guideline->type) . ' guideline(ID - ' . $guideline->id . ')');
+        $this->logActivity->generateLog('Updated ' . lcfirst($guideline->type) . " guideline(ID - $guideline->id)");
         $labels   = $request->label;
         $contents = $request->content;
 
@@ -122,7 +119,7 @@ class GuidelineController extends Controller
 
             foreach ($labels as $count => $label) {
                 $guideData = [
-                    'label'        => Str::upper(trim($label)),
+                    'label'        => strtoupper(trim($label)),
                     'content'      => $contents[$count],
                     'guideline_id' => $guideline->id
                 ];
@@ -134,7 +131,7 @@ class GuidelineController extends Controller
                 }
 
                 $guide = $this->guide->create($guideData);
-                $this->logActivity->generateLog('Updated a guide(ID - ' . $guide->id . ')');
+                $this->logActivity->generateLog("Updated a guide(ID - $guide->id)");
             }
         }
 
@@ -157,7 +154,7 @@ class GuidelineController extends Controller
             if (file_exists($guidelineImgPath)) unlink($guidelineImgPath);
         }
 
-        $this->logActivity->generateLog('Removed ' . lcfirst($guideline->type) . ' guideline(ID - ' . $guidelineId . ')');
+        $this->logActivity->generateLog('Removed ' . lcfirst($guideline->type) . " guideline(ID - $guidelineId)");
         $guideline->delete();
 
         return response([]);
@@ -176,8 +173,8 @@ class GuidelineController extends Controller
         $guide     = $this->guide->find($guideId);
         $guideImg  = $request->file('guidePhoto');
         $guideData = [
-            'label'   => Str::upper(trim($request->label)),
-            'content' => Str::ucfirst(trim($request->content)),
+            'label'   => strtoupper(trim($request->label)),
+            'content' => ucfirst(trim($request->content)),
         ];
 
         if ($guideImg) {
@@ -194,7 +191,7 @@ class GuidelineController extends Controller
         }
 
         $guide->update($guideData);
-        $this->logActivity->generateLog('Updated a guide(ID - ' . $guideId . ')');
+        $this->logActivity->generateLog("Updated a guide(ID - $guideId)");
 
         return response(['label' => $guide->label, 'content' => $guide->content, 'guide_photo' => $guide->guide_photo]);
     }
@@ -204,7 +201,7 @@ class GuidelineController extends Controller
         $guide      = $this->guide->find($guideId);
         $guideImage = $guide->guide_photo;
         $this->removeGuideImage($guideImage);
-        $this->logActivity->generateLog('Removed a guide(ID - ' . $guideId . ')');
+        $this->logActivity->generateLog("Removed a guide(ID - $guideId)");
         $guide->delete();
 
         return response([]);

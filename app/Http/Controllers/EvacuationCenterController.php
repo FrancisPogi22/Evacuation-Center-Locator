@@ -2,9 +2,8 @@
 
 namespace App\Http\Controllers;
 
-
+use App\Events\EvacuationCenter as EventsEvacuationCenter;
 use App\Models\Evacuee;
-use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Models\ActivityUserLog;
 use Yajra\DataTables\DataTables;
@@ -18,9 +17,9 @@ class EvacuationCenterController extends Controller
 
     function __construct()
     {
+        $this->evacuee          = new Evacuee;
         $this->logActivity      = new ActivityUserLog;
         $this->evacuationCenter = new EvacuationCenter;
-        $this->evacuee          = new Evacuee;
     }
 
     public function getEvacuationData($operation, $type)
@@ -31,16 +30,13 @@ class EvacuationCenterController extends Controller
             ->addColumn('evacuees', function ($evacuation) use ($operation) {
                 return $operation == "locator" ? $this->evacuee->where('evacuation_id', $evacuation->id)->sum('individuals') : '';
             })->addColumn('action', function ($evacuation) use ($operation, $type) {
-                if ($operation == "locator")
-                    return '<button class="btn-table-primary locateEvacuationCenter"><i class="bi bi-search"></i>Locate</button>';
+                if ($operation == "locator") return '<button class="btn-table-primary locateEvacuationCenter"><i class="bi bi-search"></i>Locate</button>';
 
                 $selectOption = $updateBtn = $archiveBtn = "";
 
                 if ($type == "active") {
                     $evacuees = $this->evacuee->where('evacuation_id', $evacuation->id)->where('status', 'Evacuated')->count();
-
                     $optionsArray = $evacuees > 0 ? ['Active', 'Full'] : ($evacuation->status == 'Inactive' ? ['Active', 'Inactive'] : ['Active', 'Inactive', 'Full']);
-
                     $statusOptions = implode('', array_map(function ($status) use ($evacuation) {
                         return $evacuation->status != $status ? '<option value="' . $status . '">' . $status . '</option>' : '';
                     }, $optionsArray));
@@ -49,7 +45,6 @@ class EvacuationCenterController extends Controller
                     $selectOption =  '<select class="form-select changeEvacuationStatus">' .
                         '<option value="" disabled selected hidden>Change Status</option>' . $statusOptions . '</select>';
                 } else {
-                    $updateBtn = '';
                     $archiveBtn = '<button class="btn-table-remove" id="unArchiveEvacuationCenter"><i class="bi bi-box-arrow-up-left"></i>Unarchive</button>';
                 }
 
@@ -69,13 +64,13 @@ class EvacuationCenterController extends Controller
         if ($evacuationCenterValidation->fails()) return response(['status' => 'warning', 'message' => implode('<br>', $evacuationCenterValidation->errors()->all())]);
 
         $evacuationCenter =  $this->evacuationCenter->create([
-            'name'          => Str::title(trim($request->name)),
+            'name'          => ucwords(trim($request->name)),
             'latitude'      => $request->latitude,
             'longitude'     => $request->longitude,
             'barangay_name' => $request->barangayName
         ]);
-        $this->logActivity->generateLog('Added a new evacuation center(ID - ' . $evacuationCenter->id . ')');
-        event(new EvacuationCenterLocator());
+        $this->logActivity->generateLog("Added a new evacuation center(ID - $evacuationCenter->id)");
+        event(new EventsEvacuationCenter());
 
         return response([]);
     }
@@ -92,13 +87,13 @@ class EvacuationCenterController extends Controller
         if ($evacuationCenterValidation->fails()) return response(['status' => 'warning', 'message' => implode('<br>', $evacuationCenterValidation->errors()->all())]);
 
         $this->evacuationCenter->find($evacuationId)->update([
-            'name'          => Str::title(trim($request->name)),
+            'name'          => ucwords(trim($request->name)),
             'latitude'      => $request->latitude,
             'longitude'     => $request->longitude,
             'barangay_name' => $request->barangayName
         ]);
-        $this->logActivity->generateLog('Updated a evacuation center(ID - ' . $evacuationId . ')');
-        event(new EvacuationCenterLocator());
+        $this->logActivity->generateLog("Updated a evacuation center(ID - $evacuationId)");
+        event(new EventsEvacuationCenter());
 
         return response([]);
     }
@@ -109,19 +104,17 @@ class EvacuationCenterController extends Controller
             'status'     => $operation == "archive" ? "Inactive" : "Active",
             'is_archive' => $operation == "archive" ? 1 : 0
         ]);
-        $this->logActivity->generateLog(Str::ucfirst($operation) . ' evacuation center(ID - ' . $evacuationId . ')');
-        event(new EvacuationCenterLocator());
+        $this->logActivity->generateLog(ucfirst($operation) . " evacuation center(ID - $evacuationId)");
+        event(new EventsEvacuationCenter());
 
         return response([]);
     }
 
     public function changeEvacuationStatus(Request $request, $evacuationId)
     {
-        $this->evacuationCenter->find($evacuationId)->update([
-            'status'  => $request->status
-        ]);
-        $this->logActivity->generateLog('Changed a evacuation center(ID - ' . $evacuationId . ') status to ' . $request->status);
-        event(new EvacuationCenterLocator());
+        $this->evacuationCenter->find($evacuationId)->update(['status'  => $request->status]);
+        $this->logActivity->generateLog("Changed a evacuation center(ID - $evacuationId) status to $request->status");
+        event(new EventsEvacuationCenter());
 
         return response([]);
     }
