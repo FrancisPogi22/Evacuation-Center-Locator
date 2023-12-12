@@ -1,6 +1,6 @@
 <div class="report-container">
     <p>Current Disaster:
-        <span>{{ $onGoingDisasters->isEmpty() ? 'No Disaster' : implode(' | ', $onGoingDisasters->pluck('name')->toArray()) }}</span>
+        <span id="ongoingDisaster">{{ $onGoingDisasters->isEmpty() ? 'No Disaster' : implode(' | ', $onGoingDisasters->pluck('name')->toArray()) }}</span>
     </p>
     @if (auth()->user()->position == 'President' || (auth()->user()->position == 'Focal' && !$disaster->isEmpty()))
         <div class="generate-button-container">

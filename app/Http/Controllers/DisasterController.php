@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\Disaster as EventsDisaster;
 use App\Models\Evacuee;
 use App\Models\Disaster;
 use Illuminate\Http\Request;
@@ -57,6 +58,7 @@ class DisasterController extends Controller
             'year'    => date('Y')
         ]);
         $this->logActivity->generateLog("Added a new disaster(ID - $disasterData->id)");
+        event(new EventsDisaster());
 
         return response([]);
     }
@@ -69,6 +71,7 @@ class DisasterController extends Controller
 
         $this->disaster->find($disasterId)->update(['name' => ucwords(trim($request->name))]);
         $this->logActivity->generateLog("Updated info of disaster(ID - $disasterId-)");
+        event(new EventsDisaster());
 
         return response([]);
     }
@@ -82,16 +85,16 @@ class DisasterController extends Controller
         ]);
         $this->evacuee->where('disaster_id', $disasterId)->update(['is_archive' => $archiveValue]);
         $this->logActivity->generateLog(ucwords($operation) . " Added a new disaster(ID - $disasterId)");
+        event(new EventsDisaster());
 
         return response([]);
     }
 
     public function changeDisasterStatus(Request $request, $disasterId)
     {
-        $this->disaster->find($disasterId)->update([
-            'status'  => $request->status
-        ]);
+        $this->disaster->find($disasterId)->update(['status'  => $request->status]);
         $this->logActivity->generateLog("Changed a disaster(ID - $disasterId) status to $request->status");
+        event(new EventsDisaster());
 
         return response([]);
     }
