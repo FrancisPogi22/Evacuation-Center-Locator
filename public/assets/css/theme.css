@@ -273,7 +273,7 @@ textarea::placeholder {
 }
 
 .type-img {
-    border: solid 1px;
+    border: solid 1px var(--color-light-gray);
     border-radius: 5px;
     width: 100%;
     height: 351.33px;
@@ -1248,7 +1248,7 @@ text {
     width: 250px;
     height: 38px;
     font-size: 14px;
-    border: solid 1px var(--color-light-gray) !important;
+    border: solid 1px var(--color-light-gray);
     border-radius: 5px 0 0 5px;
     filter: drop-shadow(0 1px 1px rgb(0 0 0 / 0.05));
 }
@@ -1277,7 +1277,7 @@ text {
 }
 
 .guideline-header .search-container .search-icon i {
-    font-size: 20px;
+    font-size: 17px;
 }
 
 .content-item {
@@ -1305,7 +1305,7 @@ text {
 
 .guide-item-section {
     display: flex;
-    gap: 10px;
+    gap: 15px;
 }
 
 .guide-container {
@@ -1395,7 +1395,6 @@ text {
 }
 
 .header-title {
-    font-size: 20px;
     line-height: 2rem;
     padding: 10px;
     color: var(--color-black);
@@ -1408,7 +1407,7 @@ text {
 
 .header-title span {
     font-weight: 800;
-    font-size: 18px;
+    font-size: 20px;
 }
 
 .map-section {
@@ -1433,7 +1432,7 @@ text {
     align-items: center;
     justify-content: center;
     transition: visibility 0.3s ease;
-    background-color: var(--color-light-gray);
+    background-color: var(--color-text);
     flex-direction: column;
 }
 
@@ -2069,7 +2068,7 @@ select {
 select,
 input,
 textarea {
-    border-color: var(--color-gray) !important;
+    border-color: var(--color-light-gray) !important;
     box-shadow: none !important;
 }
 
@@ -2708,6 +2707,10 @@ html[data-theme="dark"] ::-webkit-scrollbar-thumb {
     background: #55657e !important;
 }
 
+html[data-theme="dark"] #loader {
+    background: var(--color-gray) !important;
+}
+
 html[data-theme="dark"] #loader-inner {
     border-top-color: var(--color-light-gray);
 }
@@ -2962,14 +2965,8 @@ html[data-theme="dark"] #incident-report-header #searchPlace {
     color: var(--color-d-text);
 }
 
-html[data-theme="dark"] #search_guideline {
-    border: none !important;
-
-}
-
 html[data-theme="dark"] .guideline-header .search-container .search-icon {
     border-color: var(--color-d-sub-text);
-    border: none;
 }
 
 html[data-theme="dark"] .weather-section,
@@ -3473,8 +3470,12 @@ html[data-theme="dark"] button.changeTheme {
     }
 
     .form-button-container .modalBtn,
-    #archivedReportForm #imageBtn {
-        padding: 6px 10px;
+    #submitGuidelineBtn,
+    #resetPasswordBtn,
+    #archivedReportForm #imageBtn,
+    #cover-img-container button,
+    #content-img-container button {
+        padding: 6px 10px !important;
     }
 
     .modalBtn #btn-loader #loader-inner {
@@ -3547,7 +3548,6 @@ html[data-theme="dark"] button.changeTheme {
         padding: 8px;
     }
 
-    .header-title span,
     .location-section .text-center p,
     .telephone-section .text-center p,
     .social-section .text-center p {
@@ -3799,10 +3799,11 @@ html[data-theme="dark"] button.changeTheme {
         font-size: 12px !important;
     }
 
-    .dropdown button,
     .modal-label,
+    .dropdown button,
+    .header-title span,
     .change-modal-label,
-    .modal-content header i {
+    .modal-content header i   {
         font-size: 16px;
     }
 
@@ -3997,7 +3998,7 @@ html[data-theme="dark"] button.changeTheme {
     }
 
     .hotline-logo-container {
-        margin-bottom: -10px;
+        margin-bottom: 5px;
     }
 
     .hotline-logo-container button {
@@ -4041,6 +4042,7 @@ html[data-theme="dark"] button.changeTheme {
     .guideline-header .search-icon,
     .guideline-header #search_guideline {
         height: 32px !important;
+        border: 1px solid var(--color-text);
     }
 
     .guideline-header #search_guideline {
