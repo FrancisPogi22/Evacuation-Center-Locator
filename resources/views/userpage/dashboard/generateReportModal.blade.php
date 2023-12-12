@@ -7,7 +7,7 @@
             <button type="button" data-bs-toggle="modal" data-bs-target="#generateReportModal"
                 class="btn-submit generateBtn">
                 <i class="bi bi-printer"></i>
-                Generate Disaster Data
+                Generate Evacuees Data
             </button>
             <div class="modal fade" id="generateReportModal" data-bs-backdrop="static" aria-hidden="true">
                 <div class="modal-dialog">
