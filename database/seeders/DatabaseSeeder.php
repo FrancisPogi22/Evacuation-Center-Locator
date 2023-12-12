@@ -32,6 +32,17 @@ class DatabaseSeeder extends Seeder
             'is_archive' => 0
         ]);
 
+        User::insert([
+            "name"=> "Stephen Margallo",
+            'email' => ('margallostephen78@gmail.com'),
+            'password' => Hash::make('capstone'),
+            'organization' => 'CDRRMO',
+            'position' => 'Vice President',
+            'status' => 'Active',
+            'is_disable' => 0,
+            'is_archive' => 0
+        ]);
+
         $this->call(DisasterSeeder::class);
         $this->call(EvacuationCenterSeeder::class);
     }
