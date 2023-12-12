@@ -233,7 +233,7 @@
     $(document).on('click', '.changeTheme', () =>
         html.attr('data-theme') == 'dark' ? disableDarkMode() : enableDarkMode());
 
-    @guest $('#emergencyBtn').on('click', () => {
+    @guest$('#emergencyBtn').on('click', () => {
         if (!navigator.geolocation) return showInfoMessage('Geolocation is not supported by this browser.');
 
         confirmModal('Are you in need of help or rescue?').then((result) => {
@@ -246,28 +246,29 @@
                 (position) => {
                     if (position.coords.accuracy <= 500) {
                         navigator.geolocation.clearWatch(emergencyWatchID);
-                        $.post("{{ route('resident.emergency.report') }}", {
-                            _token: "{{ csrf_token() }}",
-                            latitude: position.coords.latitude,
-                            longitude: position.coords.longitude
-                        }, function(response) {
-                            if (response.status == "blocked")
-                                showWarningMessage(response.message);
-                            else {
-                                requestSuccess = 1;
-
-                                Swal.fire({
-                                    title: 'Message',
-                                    text: response.status == "duplicate" ?
-                                        response.message :
-                                        "A rescue request has been sent. If it's safe, please remain where you are and try to stay calm. Your safety is our priority.",
-                                    icon: 'info',
-                                    iconColor: '#1d4ed8',
-                                    showDenyButton: false,
-                                    confirmButtonText: 'Close',
-                                    confirmButtonColor: '#2682fa',
-                                    allowOutsideClick: false
-                                });
+                        $.post({
+                            url: "{{ route('resident.emergency.report') }}",
+                            data: {
+                                _token: "{{ csrf_token() }}",
+                                latitude: position.coords.latitude,
+                                longitude: position.coords.longitude
+                            },
+                            beforeSend: function() {
+                                $('#emergencyBtn').prop('disabled', true);
+                            },
+                            success: function(response) {
+                                if (response.status == "blocked")
+                                    showWarningMessage(response.message);
+                                else {
+                                    requestSuccess = 1;
+                                    showAlertMessage(response.status ==
+                                        "duplicate" ? response.message :
+                                        "A rescue request has been sent. If it's safe, please remain where you are and try to stay calm. Your safety is our priority."
+                                    );
+                                }
+                            },
+                            complete: function() {
+                                $('#emergencyBtn').prop('disabled', false);
                             }
                         });
                     } else {
@@ -276,7 +277,8 @@
                         if (attempt == 2)
                             setTimeout(() => {
                                 if (requestSuccess == 0) {
-                                    showWarningMessage('Cannot get your current location.');
+                                    showAlertMessage('Cannot get your current location.',
+                                        'error', '#dc2626', '#ef4444');
                                     navigator.geolocation.clearWatch(emergencyWatchID);
                                 }
                             }, 5000);
@@ -304,6 +306,19 @@
             );
         });
     });
+
+    function showAlertMessage(text, icon = 'info', iconColor = '#1d4ed8', confirmButtonColor = '#2682fa') {
+        return Swal.fire({
+            title: 'Message',
+            text,
+            icon,
+            iconColor,
+            showDenyButton: false,
+            confirmButtonText: 'Close',
+            confirmButtonColor,
+            allowOutsideClick: false
+        });
+    }
     @endguest
     });
 
