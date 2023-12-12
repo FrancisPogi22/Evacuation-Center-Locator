@@ -126,7 +126,7 @@
 
                         return operation == "update" && guidelineType == $('#type')
                             .val() && !guidelineImageChanged ?
-                            showWarningMessage() :
+                            (showWarningMessage(), modal.modal('hide')) :
                             $.ajax({
                                 data: formData,
                                 url: operation == 'create' ?

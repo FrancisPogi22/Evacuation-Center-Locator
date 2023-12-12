@@ -103,7 +103,7 @@
         defer></script>
     @include('partials.toastr')
     <script>
-        let map, reportMarker, reportWindow, userMarker, userBounds, activeInfoWindow,
+        let map, reportMarker, reportWindow, userMarker, userBounds, userInfoWindow,
             geolocationDenied = false,
             isClicked = false,
             reportSubmitting = false,
@@ -145,6 +145,8 @@
 
             map.addListener("click", (event) => {
                 if (reportSubmitting) return;
+
+                userInfoWindow?.close();
 
                 $('.stop-btn-container').show();
                 let coordinates = event.latLng;
@@ -209,10 +211,8 @@
                             className: 'report-marker-label'
                         }
                     });
-                    reportMarker.addListener('click', () => (reportWindow.open(map, reportMarker),
-                        activeInfoWindow = reportWindow));
+                    reportMarker.addListener('click', () => reportWindow.open(map, reportMarker));
                     reportWindow.open(map, reportMarker);
-                    activeInfoWindow = reportWindow;
                     reportMarker.addListener('drag', () => reportWindow.close());
                     reportMarker.addListener('dragend', () => {
                         reportWindow.open(map, reportMarker);
@@ -235,6 +235,7 @@
                     map.setZoom(16);
                     scrollToElement('.area-map');
                     $('#searchPlace').val('');
+                    userInfoWindow?.close();
                 }
             });
         }
@@ -287,21 +288,19 @@
                             }
                         });
 
-                        let infoWindow = new google.maps.InfoWindow({
+                        userInfoWindow = new google.maps.InfoWindow({
                             content: `<div class="info-window-container">
                                     <center>You are here.</center>
                                 </div>`
                         });
 
                         userMarker.addListener('click', () => {
-                            activeInfoWindow?.close();
-                            infoWindow.open(map, userMarker);
+                            userInfoWindow.open(map, userMarker);
                             map.panTo(userMarker.getPosition());
                             map.setZoom(19);
                         });
 
-                        infoWindow.open(map, userMarker);
-                        activeInfoWindow = infoWindow;
+                        userInfoWindow.open(map, userMarker);
 
                         let color = localStorage.getItem('theme') == 'dark' ? "#ffffff" : "#557ed8";
 

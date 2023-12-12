@@ -54,7 +54,7 @@
                                         {{ $hotlineNumber->number }}
                                     </div>
                                     <div class="hotline-form-button-container-list">
-                                        <a href="tel:+{{ preg_replace('/\D/', '', $hotlineNumber->number) }}"
+                                        <a href="tel:{{ preg_replace('/\D/', '', $hotlineNumber->number) }}"
                                             class="btn-submit">
                                             <i class="bi bi-telephone-outbound"></i>Call
                                         </a>
@@ -128,7 +128,7 @@
 
                                 operation == "update" && hotlineLabel == $('#hotlineLabel').val() &&
                                     hotlineNumber == $('#hotlineNumber').val() && !hotlineLogoChanged ?
-                                    showWarningMessage() :
+                                    (showWarningMessage(), $('#closeFormBtn').click()) :
                                     $.ajax({
                                         data: formData,
                                         url: operation == 'add' ? "{{ route('hotline.add') }}" :

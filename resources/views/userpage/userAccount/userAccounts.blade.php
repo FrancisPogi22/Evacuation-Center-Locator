@@ -146,7 +146,7 @@
                         let formData = $(form).serialize();
 
                         return operation == 'update' && defaultFormData == formData ?
-                            showWarningMessage() :
+                            (showWarningMessage(), modal.modal('hide')) :
                             $.ajax({
                                 data: formData,
                                 url: operation == 'create' ?

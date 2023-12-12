@@ -80,7 +80,8 @@
                 confirmModal('Do you want to change your password?').then((result) => {
                     if (!result.isConfirmed) return;
 
-                    return currentPassword.val() == password.val() ? showWarningMessage() :
+                    return currentPassword.val() == password.val() ? (showWarningMessage(),
+                            modal.modal('hide')) :
                         $.ajax({
                             method: "PUT",
                             url: $('#changePasswordRoute').data('route'),

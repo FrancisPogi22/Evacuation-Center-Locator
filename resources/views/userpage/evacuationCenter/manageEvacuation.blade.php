@@ -164,9 +164,14 @@
                 marker = new google.maps.Marker({
                     position: coordinates,
                     map: map,
+                    draggable: true,
                     icon: {
                         url: "{{ asset('assets/img/Default.png') }}",
                         scaledSize: new google.maps.Size(35, 35)
+                    },
+                    label: {
+                        text: 'Evacuation Location',
+                        className: 'report-marker-label'
                     }
                 });
             }
@@ -214,7 +219,7 @@
                         let formData = $(form).serialize();
 
                         return operation == 'update' && defaultFormData == formData ?
-                            showWarningMessage() :
+                            (showWarningMessage(), modal.modal('hide')) :
                             $.ajax({
                                 data: formData,
                                 url: operation == 'add' ?

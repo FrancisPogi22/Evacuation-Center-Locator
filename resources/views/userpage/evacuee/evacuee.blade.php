@@ -407,7 +407,7 @@
                             return showWarningMessage("Number of members isn't correct.");
 
                         return operation == 'update' && defaultFormData == formData ?
-                            showWarningMessage() :
+                            (showWarningMessage(), modal.modal('hide')) :
                             $.ajax({
                                 data: formData,
                                 url: operation == 'record' ?

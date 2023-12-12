@@ -126,7 +126,7 @@
                         if (!result.isConfirmed) return;
 
                         return operation == 'update' && defaultFormData == formData ?
-                            showWarningMessage() :
+                            (showWarningMessage(), modal.modal('hide')) :
                             $.ajax({
                                 data: formData,
                                 url: operation == 'add' ? "{{ route('disaster.create') }}" :
@@ -154,7 +154,9 @@
                                 error: showErrorMessage,
                                 complete() {
                                     $('#btn-loader').prop('hidden', 1);
-                                    $('#btn-text').text(`${operation[0].toUpperCase()}${operation.slice(1)}`);
+                                    $('#btn-text').text(
+                                        `${operation[0].toUpperCase()}${operation.slice(1)}`
+                                    );
                                     $('input, #submitDisasterBtn, #closeModalBtn')
                                         .prop('disabled', 0);
                                 }
@@ -239,7 +241,7 @@
                     if (!result.isConfirmed) return;
 
                     return operation == 'update' && defaultFormData == formData ?
-                        showWarningMessage() :
+                        (showWarningMessage(), modal.modal('hide')) :
                         $.ajax({
                             data: formData,
                             url: operation == 'add' ? "{{ route('disaster.create') }}" :

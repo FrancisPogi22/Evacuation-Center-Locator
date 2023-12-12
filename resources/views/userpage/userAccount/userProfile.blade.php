@@ -109,7 +109,7 @@
                         if (!result.isConfirmed) return;
 
                         return operation == 'update' && defaultFormData == formData ?
-                            showWarningMessage() :
+                            (showWarningMessage(), modal.modal('hide')) :
                             $.ajax({
                                 url: "{{ route('account.update', 'accountId') }}".replace(
                                     'accountId', accountId),
