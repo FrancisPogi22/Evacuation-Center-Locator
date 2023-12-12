@@ -26,3 +26,8 @@ Broadcast::channel('evacuation-center', function () {
     return true;
 });
 
+Broadcast::channel('disaster', function () {
+    return true;
+});
+
+
