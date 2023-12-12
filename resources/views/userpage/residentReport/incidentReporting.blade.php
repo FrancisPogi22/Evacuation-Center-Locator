@@ -42,7 +42,6 @@
                     </div>
                 </div>
             </div>
-
             <div class="map-info-container retry-location" hidden>
                 <div class="map-info">
                     <i class="bi bi-exclamation-circle"></i>
@@ -59,6 +58,19 @@
                         <i class="bi bi-dot"></i> If attempting to retry geolocation is unsuccessful, utilize the nearby
                         place search functionality. Enter a nearby place or establishment, and upon selection, the map
                         will navigate to it.
+                    </div>
+                </div>
+            </div>
+            <div class="map-info-container denied" hidden>
+                <div class="map-info">
+                    <i class="bi bi-geo-alt"></i>
+                    <div class="map-info-text denied">
+                        <b>Browser location turned off. Cannot get your location.</b>
+                    </div>
+                </div>
+                <div id="map-info-list-container">
+                    <div class="map-info-list">
+                        <i class="bi bi-dot"></i> Use the search nearby place to navigate the map to your location.
                     </div>
                 </div>
             </div>
@@ -91,7 +103,8 @@
         defer></script>
     @include('partials.toastr')
     <script>
-        let map, reportMarker, reportWindow, userMarker, userBounds,
+        let map, reportMarker, reportWindow, userMarker, userBounds, activeInfoWindow,
+            geolocationDenied = false,
             isClicked = false,
             reportSubmitting = false,
             btnContainer = $('#incident-report-header');
@@ -196,8 +209,10 @@
                             className: 'report-marker-label'
                         }
                     });
-                    reportMarker.addListener('click', () => reportWindow.open(map, reportMarker));
+                    reportMarker.addListener('click', () => (reportWindow.open(map, reportMarker),
+                        activeInfoWindow = reportWindow));
                     reportWindow.open(map, reportMarker);
+                    activeInfoWindow = reportWindow;
                     reportMarker.addListener('drag', () => reportWindow.close());
                     reportMarker.addListener('dragend', () => {
                         reportWindow.open(map, reportMarker);
@@ -218,7 +233,7 @@
                         lng: selectedPlace.geometry.location.lng()
                     });
                     map.setZoom(16);
-
+                    scrollToElement('.area-map');
                     $('#searchPlace').val('');
                 }
             });
@@ -227,11 +242,13 @@
         function setReportingMap(coords, zoom, success, error) {
             initMap(coords, zoom);
             $('#loader').removeClass('show');
-            success && btnContainer.prop('hidden', error ? 0 : 1);
+            btnContainer.prop('hidden', (error || geolocationDenied) ? 0 : 1);
             error && $('#retryGeolocation').prop('disabled', 0);
-            $('.map-info-container.retry-location').prop('hidden', error ? 0 : 1)
-            $('.map-info-container.reporting').prop('hidden', error ? 1 : 0)
-            scrollToElement(success ? '.map-info-container.reporting' : '.map-info-container.retry-location');
+            geolocationDenied && ($('#retryGeolocation').prop('hidden', 1), $('.map-info-container.denied').prop('hidden', 0));
+            $('.map-info-container.retry-location').prop('hidden', (error && !geolocationDenied) ? 0 : 1);
+            $('.map-info-container.reporting').prop('hidden', (error || geolocationDenied) ? 1 : 0);
+            scrollToElement(geolocationDenied ? '#incident-report-header' : (success ? '.map-info-container.reporting' :
+                '.map-info-container.retry-location'));
         }
 
         function resetMapView() {
@@ -277,12 +294,14 @@
                         });
 
                         userMarker.addListener('click', () => {
+                            activeInfoWindow?.close();
                             infoWindow.open(map, userMarker);
                             map.panTo(userMarker.getPosition());
                             map.setZoom(19);
                         });
 
                         infoWindow.open(map, userMarker);
+                        activeInfoWindow = infoWindow;
 
                         let color = localStorage.getItem('theme') == 'dark' ? "#ffffff" : "#557ed8";
 
@@ -311,6 +330,7 @@
                         case error.PERMISSION_DENIED:
                             message =
                                 'Request for geolocation denied.';
+                            geolocationDenied = true;
                             break;
                         case error.TIMEOUT:
                         case error.POSITION_UNAVAILABLE:
