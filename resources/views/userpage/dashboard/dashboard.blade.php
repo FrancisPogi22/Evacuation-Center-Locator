@@ -268,7 +268,22 @@
                     initializeBarGraph(false);
                 });
 
-                Echo.channel('evacuation-center-count').listen('EvacuationCenter', (e) => {
+                Echo.channel('disaster').listen('Disaster', (e) => {
+                    let ongoingDisaster = $("#ongoingDisaster");
+                    ongoingDisaster.text("");
+
+                    if (e.onGoingDisaster.length == 0)
+                        ongoingDisaster.text("No disaster.");
+                    else
+                        e.onGoingDisaster.forEach((disaster, index) => {
+                            ongoingDisaster.append(disaster.name);
+
+                            if (index < e.onGoingDisaster.length - 1)
+                                ongoingDisaster.append(' | ');
+                        });
+                });
+
+                Echo.channel('evacuation-center').listen('EvacuationCenter', (e) => {
                     $("#activeEvacuation").text(e.activeEvacuation);
                     $("#inactiveEvacuation").text(e.inactiveEvacuation);
                     $("#fullEvacuation").text(e.fullEvacuation);

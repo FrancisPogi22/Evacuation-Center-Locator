@@ -103,8 +103,7 @@ textarea::placeholder {
     font-weight: 600;
     border-radius: 4px;
     padding: 8px 16px;
-    filter: drop-shadow(0 4px 3px rgb(0 0 0 / 0.07))
-        drop-shadow(0 2px 2px rgb(0 0 0 / 0.06));
+    filter: drop-shadow(0 1px 2px rgb(0 0 0 / 0.1)) drop-shadow(0 1px 1px rgb(0 0 0 / 0.06));
     border: none;
 }
 
@@ -202,8 +201,7 @@ textarea::placeholder {
 .btn-update,
 .btn-remove,
 #pinpointCurrentLocationBtn {
-    filter: drop-shadow(0 4px 3px rgb(0 0 0 / 0.07))
-        drop-shadow(0 2px 2px rgb(0 0 0 / 0.06));
+    filter: drop-shadow(0 1px 2px rgb(0 0 0 / 0.1)) drop-shadow(0 1px 1px rgb(0 0 0 / 0.06));
 }
 
 .sendUpdateBtn,
@@ -291,8 +289,7 @@ textarea::placeholder {
     height: max-content;
     background: inherit;
     transition: 0.1s all ease-in-out;
-    filter: drop-shadow(0 10px 8px rgb(0 0 0 / 0.04))
-        drop-shadow(0 4px 3px rgb(0 0 0 / 0.1));
+    filter: drop-shadow(0 1px 2px rgb(0 0 0 / 0.1)) drop-shadow(0 1px 1px rgb(0 0 0 / 0.06));
 }
 
 .guideline-box:hover {
@@ -366,8 +363,7 @@ textarea::placeholder {
     height: 60px;
     background: var(--color-text);
     z-index: 1;
-    filter: drop-shadow(0 10px 8px rgb(0 0 0 / 0.04))
-        drop-shadow(0 4px 3px rgb(0 0 0 / 0.1));
+    filter: drop-shadow(0 1px 2px rgb(0 0 0 / 0.1)) drop-shadow(0 1px 1px rgb(0 0 0 / 0.06));
 }
 
 .header-section .container-fluid {
@@ -590,8 +586,7 @@ button.changeTheme:hover {
     z-index: 100;
     left: 0;
     top: 0;
-    filter: drop-shadow(0 10px 8px rgb(0 0 0 / 0.04))
-        drop-shadow(0 4px 3px rgb(0 0 0 / 0.1));
+    filter: drop-shadow(0 1px 2px rgb(0 0 0 / 0.1)) drop-shadow(0 1px 1px rgb(0 0 0 / 0.06));
     overflow: hidden;
     transition: 0.2s all ease;
 }
@@ -824,8 +819,7 @@ div.flatpickr-rContainer::-webkit-scrollbar,
     width: 100%;
     max-width: 430px;
     border-radius: 6px;
-    filter: drop-shadow(0 10px 8px rgb(0 0 0 / 0.04))
-        drop-shadow(0 4px 3px rgb(0 0 0 / 0.1));
+    filter: drop-shadow(0 10px 8px rgb(0 0 0 / 0.04)) drop-shadow(0 4px 3px rgb(0 0 0 / 0.1));
 }
 
 .auth-form-section form {
@@ -924,8 +918,7 @@ div.flatpickr-rContainer::-webkit-scrollbar,
     width: 100%;
     max-width: 500px;
     border-radius: 6px;
-    filter: drop-shadow(0 10px 8px rgb(0 0 0 / 0.04))
-        drop-shadow(0 4px 3px rgb(0 0 0 / 0.1));
+    filter: drop-shadow(0 10px 8px rgb(0 0 0 / 0.04)) drop-shadow(0 4px 3px rgb(0 0 0 / 0.1));
 }
 
 .recover-form form label,
@@ -1120,8 +1113,7 @@ div.flatpickr-rContainer::-webkit-scrollbar,
 .pie-chart {
     height: 600px;
     padding: 15px 10px 20px;
-    filter: drop-shadow(0 10px 8px rgb(0 0 0 / 0.04))
-        drop-shadow(0 4px 3px rgb(0 0 0 / 0.1));
+    filter: drop-shadow(0 10px 8px rgb(0 0 0 / 0.04)) drop-shadow(0 4px 3px rgb(0 0 0 / 0.1));
 }
 
 .pie-container .highcharts-background {
@@ -1169,7 +1161,6 @@ div.flatpickr-rContainer::-webkit-scrollbar,
     margin: 20px 0;
     height: 400px;
     border-radius: 8px;
-    border: 1px solid var(--color-light-gray);
     filter: drop-shadow(0 1px 2px rgb(0 0 0 / 0.1)) drop-shadow(0 1px 1px rgb(0 0 0 / 0.06));
 }
 
@@ -1223,8 +1214,7 @@ text {
 
 .guide-container {
     background: var(--color-text);
-    filter: drop-shadow(0 10px 8px rgb(0 0 0 / 0.04))
-        drop-shadow(0 4px 3px rgb(0 0 0 / 0.1));
+    filter: drop-shadow(0 10px 8px rgb(0 0 0 / 0.04)) drop-shadow(0 4px 3px rgb(0 0 0 / 0.1));
 }
 
 .guide-image-container {
@@ -1257,9 +1247,9 @@ text {
     width: 250px;
     height: 38px;
     font-size: 15px;
-    border: solid 1px var(--color-light-gray);
+    border: solid 1px var(--color-light-gray) !important;
     border-radius: 5px 0 0 5px;
-    filter: drop-shadow(0 1px 1px rgb(0 0 0 / 0.05));
+    filter: drop-shadow(0 1px 2px rgb(0 0 0 / 0.1)) drop-shadow(0 1px 1px rgb(0 0 0 / 0.06));
 }
 
 #search_guideline:placeholder-shown {
@@ -1284,9 +1274,9 @@ text {
     border-top-right-radius: 5px;
     border-bottom-right-radius: 5px;
     cursor: pointer;
-    border: 1px solid;
+    border: solid 1px var(--color-light-gray);
     border-left: 0;
-    filter: drop-shadow(0 1px 1px rgb(0 0 0 / 0.05));
+    filter: drop-shadow(0 1px 2px rgb(0 0 0 / 0.1)) drop-shadow(0 1px 1px rgb(0 0 0 / 0.06));
 }
 
 .guideline-header .search-container .search-icon i {
@@ -1337,8 +1327,7 @@ text {
     text-align: center;
     background: var(--color-text);
     border-radius: 10px;
-    filter: drop-shadow(0 20px 13px rgb(0 0 0 / 0.03))
-        drop-shadow(0 8px 5px rgb(0 0 0 / 0.08));
+    filter: drop-shadow(0 20px 13px rgb(0 0 0 / 0.03)) drop-shadow(0 8px 5px rgb(0 0 0 / 0.08));
 }
 
 .weather-section h4 {
@@ -1422,6 +1411,7 @@ text {
 
 .header-title span {
     font-weight: 800;
+    font-size: 18px;
 }
 
 .map-section {
@@ -1466,6 +1456,7 @@ text {
     align-items: center;
     justify-content: center;
     gap: 7px;
+    filter: drop-shadow(0 1px 2px rgb(0 0 0 / 0.1)) drop-shadow(0 1px 1px rgb(0 0 0 / 0.06));
 }
 
 #defaultBtnText,
@@ -1623,9 +1614,8 @@ div.gm-style-iw.gm-style-iw-c {
     display: flex;
     align-items: center;
     border-radius: 4px;
-    border: 2px solid var(--color-light-gray);
-    filter: drop-shadow(0 4px 3px rgb(0 0 0 / 0.07))
-        drop-shadow(0 2px 2px rgb(0 0 0 / 0.06));
+    border: 1px solid var(--color-light-gray);
+    filter: drop-shadow(0 1px 2px rgb(0 0 0 / 0.1)) drop-shadow(0 1px 1px rgb(0 0 0 / 0.06));
     white-space: nowrap;
     -ms-overflow-style: none;
     scrollbar-width: none;
@@ -1842,8 +1832,7 @@ html[data-theme="dark"] .gmnoprint button span {
     margin: 10px 0;
     background: var(--color-text);
     border-radius: 4px;
-    filter: drop-shadow(0 20px 13px rgb(0 0 0 / 0.03))
-        drop-shadow(0 8px 5px rgb(0 0 0 / 0.08));
+    filter: drop-shadow(0 1px 2px rgb(0 0 0 / 0.1)) drop-shadow(0 1px 1px rgb(0 0 0 / 0.06));
 }
 
 .hotline-container .id-container {
@@ -1975,8 +1964,7 @@ html[data-theme="dark"] .gmnoprint button span {
     margin-top: 18px;
     margin-bottom: 10px;
     border-radius: 4px;
-    filter: drop-shadow(0 10px 8px rgb(0 0 0 / 0.04))
-        drop-shadow(0 4px 3px rgb(0 0 0 / 0.1));
+    filter: drop-shadow(0 10px 8px rgb(0 0 0 / 0.04)) drop-shadow(0 4px 3px rgb(0 0 0 / 0.1));
 }
 
 .user-profile-container hr {
@@ -2049,8 +2037,7 @@ html[data-theme="dark"] .gmnoprint button span {
     height: max-content;
     padding: 10px;
     font-weight: 700;
-    filter: drop-shadow(0 10px 8px rgb(0 0 0 / 0.04))
-        drop-shadow(0 4px 3px rgb(0 0 0 / 0.1));
+    filter: drop-shadow(0 10px 8px rgb(0 0 0 / 0.04)) drop-shadow(0 4px 3px rgb(0 0 0 / 0.1));
     border-bottom-right-radius: 0.25rem;
     border-bottom-left-radius: 0.25rem;
 }
@@ -2398,10 +2385,10 @@ input::-ms-clear {
     background: var(--color-yellow);
 }
 
-.map-info-container.reporting,
-.map-info-container.reporting .map-info i {
-    background: var(--color-primary);
-    color: var(--color-text);
+.map-info-container.reporting {
+    background: var(--color-text);
+    color: var(--color-black);
+    border: 1px solid var(--color-light-gray);
 }
 
 .map-info-container.retry-location,
@@ -2502,8 +2489,8 @@ span.error {
 .table-container {
     padding: 12px;
     background: var(--color-text);
-    filter: drop-shadow(0 10px 8px rgb(0 0 0 / 0.04))
-        drop-shadow(0 4px 3px rgb(0 0 0 / 0.1));
+    filter: drop-shadow(0 1px 2px rgb(0 0 0 / 0.1)) drop-shadow(0 1px 1px rgb(0 0 0 / 0.06));
+    border: 1px solid var(--color-light-gray);
     border-radius: 8px;
     overflow: hidden;
 }
@@ -2658,6 +2645,7 @@ html[data-theme="dark"] .sidebar .active-link {
 html[data-theme="dark"] .user-details {
     background: var(--color-gray);
     color: var(--color-d-text);
+    border: none;
 }
 
 html[data-theme="dark"] .content-description p {
@@ -2693,6 +2681,7 @@ html[data-theme="dark"] .hotline-form-container,
 html[data-theme="dark"] .pac-container,
 html[data-theme="dark"] .widget {
     background: var(--color-d-bg-container) !important;
+    border: none;
 }
 
 html[data-theme="dark"] .social-section p,
@@ -2727,10 +2716,6 @@ html[data-theme="dark"] ::-webkit-scrollbar-thumb {
     background: #55657e !important;
 }
 
-html[data-theme="dark"] #loader {
-    background: var(--color-d-bg-container);
-}
-
 html[data-theme="dark"] #loader-inner {
     border-top-color: var(--color-light-gray);
 }
@@ -2753,14 +2738,8 @@ html[data-theme="dark"] .dropdown-menu .dropdown-item.changeTheme:active {
 }
 
 html[data-theme="dark"] .flatpickr-day:hover,
-html[data-theme="dark"]
-    .dropdown-menu
-    .dropdown-item.changeTheme:active
-    #themeText,
-html[data-theme="dark"]
-    .dropdown-menu
-    .dropdown-item.changeTheme:active
-    #themeIcon {
+html[data-theme="dark"] .dropdown-menu .dropdown-item.changeTheme:active #themeText,
+html[data-theme="dark"] .dropdown-menu .dropdown-item.changeTheme:active #themeIcon {
     color: var(--color-black);
 }
 
@@ -2947,18 +2926,9 @@ html[data-theme="dark"] .table-container select option {
     color: var(--color-black);
 }
 
-html[data-theme="dark"]
-    .dataTables_wrapper
-    .dataTables_paginate
-    .paginate_button.disabled,
-html[data-theme="dark"]
-    .dataTables_wrapper
-    .dataTables_paginate
-    .paginate_button.disabled:hover,
-html[data-theme="dark"]
-    .dataTables_wrapper
-    .dataTables_paginate
-    .paginate_button.disabled:active {
+html[data-theme="dark"] .dataTables_wrapper .dataTables_paginate .paginate_button.disabled,
+html[data-theme="dark"] .dataTables_wrapper .dataTables_paginate .paginate_button.disabled:hover,
+html[data-theme="dark"] .dataTables_wrapper .dataTables_paginate .paginate_button.disabled:active {
     color: var(--color-d-sub-text) !important;
 }
 
@@ -2996,8 +2966,14 @@ html[data-theme="dark"] #incident-report-header #searchPlace {
     color: var(--color-d-text);
 }
 
+html[data-theme="dark"] #search_guideline {
+    border: none !important;
+
+}
+
 html[data-theme="dark"] .guideline-header .search-container .search-icon {
     border-color: var(--color-d-sub-text);
+    border: none;
 }
 
 html[data-theme="dark"] .weather-section,
@@ -3118,6 +3094,7 @@ html[data-theme="dark"] button.changeTheme {
 }
 
 @media only screen and (max-width: 1150px) {
+
     .auth-container,
     .recover-content,
     .res-password-content {
@@ -3378,7 +3355,7 @@ html[data-theme="dark"] button.changeTheme {
         word-wrap: break-word;
     }
 
-    #toast-container > .toast-warning {
+    #toast-container>.toast-warning {
         width: 15em;
         background-size: 20px;
     }
@@ -4128,6 +4105,7 @@ html[data-theme="dark"] button.changeTheme {
 }
 
 @media only screen and (max-width: 300px) {
+
     .flatpickr-months,
     .flatpickr-month {
         height: 70px !important;
