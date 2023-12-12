@@ -173,7 +173,8 @@ textarea::placeholder {
 .btn-table-primary,
 .viewGuidelineBtn,
 #downloadGuideBtn,
-#pinpointCurrentLocationBtn {
+#pinpointCurrentLocationBtn,
+#archivedReportForm #imageBtn {
     background: var(--color-primary);
     font-size: 14px;
     font-weight: 600;
@@ -788,7 +789,7 @@ div.flatpickr-rContainer::-webkit-scrollbar,
 .auth-header-desc h1 {
     color: #475569;
     letter-spacing: 0.025em;
-    font-weight: 800;
+    font-weight: 900;
 }
 
 .auth-header-desc p {
@@ -1256,14 +1257,10 @@ text {
 #search_guideline {
     width: 250px;
     height: 38px;
-    font-size: 15px;
+    font-size: 14px;
     border: solid 1px var(--color-light-gray);
     border-radius: 5px 0 0 5px;
     filter: drop-shadow(0 1px 1px rgb(0 0 0 / 0.05));
-}
-
-#search_guideline:placeholder-shown {
-    font-size: 14px;
 }
 
 #incident-report-header #searchPlace {
@@ -1623,7 +1620,7 @@ div.gm-style-iw.gm-style-iw-c {
     display: flex;
     align-items: center;
     border-radius: 4px;
-    border: 2px solid var(--color-light-gray);
+    border: 1px solid var(--color-light-gray);
     filter: drop-shadow(0 4px 3px rgb(0 0 0 / 0.07))
         drop-shadow(0 2px 2px rgb(0 0 0 / 0.06));
     white-space: nowrap;
@@ -1806,7 +1803,7 @@ html[data-theme="dark"] .gmnoprint button span {
 
 .image-wrapper {
     position: relative;
-    border: 2px solid var(--color-light-gray);
+    border: 1px solid var(--color-light-gray);
     border-radius: 2px;
     overflow: hidden;
 }
@@ -2310,14 +2307,14 @@ input::-ms-clear {
 .info-description.photo img,
 #selectedReportImage {
     height: auto;
-    border: 2px solid var(--color-black);
+    border: 1px solid var(--color-black);
 }
 
 .info-window-details-container,
 .info-window-update-container {
     max-height: 250px;
     overflow: auto;
-    border: 2px solid var(--color-black);
+    border: 1px solid var(--color-black);
     border-radius: 4px;
     padding: 0 10px 10px 10px;
     margin-top: 5px;
@@ -2365,19 +2362,13 @@ input::-ms-clear {
 .map-info i {
     font-size: 20px;
     margin-right: 8px;
-    color: var(--color-black);
 }
 
 .map-info.pending {
-    background: var(--color-yellow);
     border-radius: 4px;
     margin-bottom: 10px;
     text-align: center;
-}
-
-.map-info.pending div,
-.map-info.pending i {
-    color: var(--color-black);
+    background: var(--color-text);
 }
 
 .map-info-text,
@@ -2395,19 +2386,7 @@ input::-ms-clear {
 .map-info-container {
     margin-bottom: 10px;
     border-radius: 5px;
-    background: var(--color-yellow);
-}
-
-.map-info-container.reporting,
-.map-info-container.reporting .map-info i {
-    background: var(--color-primary);
-    color: var(--color-text);
-}
-
-.map-info-container.retry-location,
-.map-info-container.retry-location .map-info i {
-    background: var(--color-red);
-    color: var(--color-text);
+    background: var(--color-text);
 }
 
 .count-container {
@@ -2444,13 +2423,25 @@ input::-ms-clear {
 
 .form-map {
     height: 384px;
-    border: 2px solid var(--color-gray);
+    border: 1px solid var(--color-gray);
     border-radius: 6px;
 }
 
 .pac-container {
     margin-top: 5px;
     z-index: 10000 !important;
+}
+
+.pac-container:after,
+.pac-container:before {
+    background-image: none !important;
+    height: 0;
+    padding: 0;
+    margin: 0;
+}
+
+.pac-container .pac-item {
+    cursor: pointer;
 }
 
 .checkPassword {
@@ -2680,9 +2671,10 @@ html[data-theme="dark"] .evacuation-markers {
 }
 
 html[data-theme="dark"] .markers-header,
-html[data-theme="dark"] .pac-item:hover,
-html[data-theme="dark"] .pac-item:focus {
-    background: var(--color-gray) !important;
+html[data-theme="dark"] .pac-container .pac-item:hover,
+html[data-theme="dark"] .pac-container .pac-item:focus,
+html[data-theme="dark"] .pac-container .pac-item-selected {
+    background-color: var(--color-gray);
 }
 
 html[data-theme="dark"] .location-section,
@@ -2907,7 +2899,11 @@ html[data-theme="dark"] .profile-details {
     background: var(--color-d-bg-container);
 }
 
-html[data-theme="dark"] .table-container {
+html[data-theme="dark"] .table-container,
+html[data-theme="dark"] .map-info.pending,
+html[data-theme="dark"] .map-info-container.reporting,
+html[data-theme="dark"] .map-info-container.retry-location,
+html[data-theme="dark"] .map-info-container.denied {
     background: var(--color-d-bg-container);
     border: none;
 }
@@ -3499,7 +3495,8 @@ html[data-theme="dark"] button.changeTheme {
         font-size: 11px;
     }
 
-    .form-button-container .modalBtn {
+    .form-button-container .modalBtn,
+    #archivedReportForm #imageBtn {
         padding: 6px 10px;
     }
 
@@ -3610,6 +3607,7 @@ html[data-theme="dark"] button.changeTheme {
     #locateNearestBtn,
     #changeEvacueeDataBtn,
     #pinpointCurrentLocationBtn,
+    #archivedReportForm #imageBtn ,
     #download-guide-container button,
     .guideline-header button,
     .guide-header a,
