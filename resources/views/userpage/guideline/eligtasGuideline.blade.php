@@ -42,7 +42,7 @@
                             <img src="{{ asset('guide_image/' . $guidelineItem->content_image) }}" class="content-image"
                                 hidden>
                             <div class="guideline-body">
-                                <div class="guideline-id">@auth{{ '(ID - ' . $guidelineItem->id . ')' }}@endauth
+                                <div class="guideline-id" {{ !auth()->user() ? 'hidden' : '' }}>{{ '(ID - ' . $guidelineItem->id . ')' }}
                                 </div>
                                 <div class="guideline-title">{{ $guidelineItem->type }}</div>
                                 <div class="guideline-action-container">
@@ -170,7 +170,7 @@
                                             <img src="{{ asset('${cover}') }}" class="cover-image">
                                             <img src="{{ asset('${content}') }}" class="content-image" hidden>
                                             <div class="guideline-body">
-                                                <div class="guideline-id">@auth${'(ID - ' + id + ')'}@endauth</div>
+                                                <div class="guideline-id" {{ !auth()->user() ? 'hidden' : '' }}>${'(ID - ' + id + ')'}</div>
                                                 <h5 class="guideline-title">${type}</h5>
                                                 <div class="guideline-action-container">
                                                     <button aria-id='${id}' class="viewGuidelineBtn">
@@ -345,10 +345,10 @@
                     response.guidelineData.forEach(guideline => {
                         var guidelineId = guideline.id;
 
-                        $(".guideline-box:has(.guideline-id:contains('" + guidelineId + "'))")
-                            .toggle(false);
-                        $(".guideline-box:not(:has(.guideline-id:contains('" + guidelineId +
-                            "')))").toggle(true);
+                        console.log(guidelineId);
+
+                        $(".guideline-box:has(.guideline-id:contains('" + guidelineId + "'))").toggle(true);
+                        $(".guideline-box:not(:has(.guideline-id:contains('" + guidelineId + "')))").toggle(false);
                     });
                 },
                 error: showErrorMessage
