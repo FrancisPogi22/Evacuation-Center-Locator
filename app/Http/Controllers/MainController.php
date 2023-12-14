@@ -84,9 +84,12 @@ class MainController extends Controller
     public function eligtasGuideline()
     {
         $prefix = basename(trim(request()->route()->getPrefix(), '/'));
-        $guidelineData = !auth()->check() ? $this->guideline->all() : $this->guideline->where('organization', auth()->user()->organization)->get();
 
-        return view('userpage.guideline.eligtasGuideline', compact('guidelineData', 'prefix'));
+        if (!request()->ajax()) return view('userpage.guideline.eligtasGuideline', compact('prefix'));
+
+        $guidelineData = auth()->check() ? $this->guideline->where('organization', auth()->user()->organization)->get() : $this->guideline->all();
+
+        return response(['guidelineData' => $guidelineData, 'prefix' => $prefix]);
     }
 
     public function searchGuideline(Request $request)
