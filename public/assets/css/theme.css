@@ -293,6 +293,16 @@ textarea::placeholder {
     filter: drop-shadow(0 1px 2px rgb(0 0 0 / 0.1)) drop-shadow(0 1px 1px rgb(0 0 0 / 0.06));
 }
 
+.updateGuidelineBtn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.guideline-action-container button i {
+    padding-right: 0 !important;
+}
+
 .guideline-box:hover {
     transform: scale(1.05);
 }
@@ -1198,6 +1208,10 @@ text {
     grid-row-gap: 15px;
     grid-column-gap: 15px;
     border-radius: 8px;
+}
+
+.guideline-container #loader{
+    background: transparent;
 }
 
 #map-info-list-container {
@@ -2725,7 +2739,7 @@ html[data-theme="dark"] .action-container select {
 
 html[data-theme="dark"] .dropdown-menu {
     background: var(--color-d-bg-container);
-    border-color: var(--color-d-text);
+    border-color: var(--color-d-sub-text);
 }
 
 html[data-theme="dark"] .dropdown-menu .dropdown-item.changeTheme:active {
@@ -3340,7 +3354,36 @@ html[data-theme="dark"] button.changeTheme {
 
 @media only screen and (max-width: 375px) {
     .main-content {
-        margin: 81px 0 20px;
+        margin: 70px 0 20px;
+    }
+
+    .sidebar-header {
+        height: 50px;
+    }
+
+    .sidebar.active #logo,
+    .sidebar:hover #logo {
+        width: 80px
+    }
+
+    #btn-sidebar-mobile,
+    #btn-sidebar-close {
+        font-size: 20px;
+    }
+
+    .type-img {
+        height: 200px;
+    }
+
+    .modal-label,
+    .dropdown button,
+    .details-content span,
+    .guideline-title,
+    .guideline-header .search-icon i,
+    .sidebar .navigation-item i,
+    .change-modal-label,
+    .field-container i {
+        font-size: 14px !important;
     }
 
     .label-container {
@@ -3440,7 +3483,10 @@ html[data-theme="dark"] button.changeTheme {
         font-size: 14px;
     }
 
-    .sidebar.active .links_name {
+    .guideline-id,
+    .sidebar .links_name,
+    .sidebar.active .links_name,
+    .modal-content label {
         font-size: 12px;
     }
 
@@ -3471,11 +3517,21 @@ html[data-theme="dark"] button.changeTheme {
 
     .form-button-container .modalBtn,
     #submitGuidelineBtn,
-    #resetPasswordBtn,
     #archivedReportForm #imageBtn,
     #cover-img-container button,
     #content-img-container button {
         padding: 6px 10px !important;
+    }
+
+    #resetPasswordBtn {
+        font-size: 11px !important;
+        padding: 6px 10px !important;
+    }
+
+    #cover-img-container,
+    #content-img-container {
+        padding: 10px;
+        margin: 0;
     }
 
     .modalBtn #btn-loader #loader-inner {
@@ -3525,7 +3581,7 @@ html[data-theme="dark"] button.changeTheme {
     }
 
     .label-container i {
-        font-size: 20px;
+        font-size: 18px;
     }
 
     .label-container span {
@@ -3584,7 +3640,7 @@ html[data-theme="dark"] button.changeTheme {
     #locateNearestBtn,
     #changeEvacueeDataBtn,
     #pinpointCurrentLocationBtn,
-    #archivedReportForm #imageBtn ,
+    #archivedReportForm #imageBtn,
     #download-guide-container button,
     .guideline-header button,
     .guide-header a,
@@ -3803,12 +3859,14 @@ html[data-theme="dark"] button.changeTheme {
     .dropdown button,
     .header-title span,
     .change-modal-label,
-    .modal-content header i   {
+    .modal-content header i {
         font-size: 16px;
     }
 
-    .checkPassword {
-        margin-top: -2px;
+    .checkPassword,
+    #changePasswordModal .toggle-password {
+        top: 19px;
+        right: 24px;
     }
 
     .change-modal-label-container {
@@ -3831,11 +3889,6 @@ html[data-theme="dark"] button.changeTheme {
 
     .marker-container span.fw-bold {
         margin-top: 6px;
-    }
-
-    #changePasswordModal .toggle-password {
-        margin-top: -2px;
-        font-size: 14px;
     }
 
     #searchResults li,
@@ -3928,6 +3981,10 @@ html[data-theme="dark"] button.changeTheme {
         width: 100%;
     }
 
+    .guideline-body {
+        padding: 10px;
+    }
+
     .report-time {
         font-size: 9px;
     }
@@ -3944,13 +4001,19 @@ html[data-theme="dark"] button.changeTheme {
         font-size: 11px;
     }
 
-    #closeModalBtn {
-        font-size: 16px !important;
+    #btn-loader #loader-inner {
+        width: 17px;
+        height: 17px;
+    }
+
+    #closeModalBtn,
+    #closeChangePasswordBtn {
+        font-size: 19px !important;
     }
 
     .hotline-container .id-container,
     .guideline-id {
-        font-size: 15px;
+        font-size: 11px;
     }
 
     .empty-data-container {
@@ -3962,8 +4025,7 @@ html[data-theme="dark"] button.changeTheme {
         height: fit-content;
     }
 
-    .empty-data-container p,
-    .guideline-header #search_guideline {
+    .empty-data-container p {
         font-size: 12px;
     }
 
@@ -4039,18 +4101,25 @@ html[data-theme="dark"] button.changeTheme {
         height: 45px;
     }
 
-    .guideline-header .search-icon,
+    .guideline-header .search-icon {
+        height: 32px !important;
+        border: 1px solid var(--color-text);
+        padding: 4px 10px !important;
+    }
+
     .guideline-header #search_guideline {
         height: 32px !important;
         border: 1px solid var(--color-text);
-    }
-
-    .guideline-header #search_guideline {
         width: 100%;
+        font-size: 12px;
     }
 
-    .guideline-header .search-icon {
-        padding: 4px 10px !important;
+    .icon-content {
+        font-size: 18px;
+    }
+
+    .icon-content i {
+        padding: 8px;
     }
 
     .guideline-header .search-icon i {
@@ -4101,6 +4170,10 @@ html[data-theme="dark"] button.changeTheme {
     #sunrise,
     #sunset {
         font-size: 20px;
+    }
+
+    .header-section {
+        height: 50px;
     }
 }
 

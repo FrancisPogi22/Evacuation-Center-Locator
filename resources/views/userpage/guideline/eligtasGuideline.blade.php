@@ -35,37 +35,10 @@
                     @endauth
                 </div>
                 <div class="guideline-container">
-                    @forelse ($guidelineData as $guidelineItem)
-                        <div class="guideline-box">
-                            <img src="{{ $guidelineItem->cover_image ? asset('guideline_image/' . $guidelineItem->cover_image) : asset('assets/img/Guideline-Cover.svg') }}"
-                                class="cover-image">
-                            <img src="{{ asset('guide_image/' . $guidelineItem->content_image) }}" class="content-image"
-                                hidden>
-                            <div class="guideline-body">
-                                <div class="guideline-id" {{ !auth()->user() ? 'hidden' : '' }}>{{ '(ID - ' . $guidelineItem->id . ')' }}
-                                </div>
-                                <div class="guideline-title">{{ $guidelineItem->type }}</div>
-                                <div class="guideline-action-container">
-                                    <button aria-id='{{ $guidelineItem->id }}' class="viewGuidelineBtn">
-                                        <i class="bi bi-file-text"></i>View
-                                    </button>
-                                    @auth
-                                        <button class="updateGuidelineBtn btn-update">
-                                            <i class="bi bi-pencil-square"></i>Update
-                                        </button>
-                                        <button class="removeGuidelineBtn btn-remove">
-                                            <i class="bi bi-journal-minus"></i>Remove
-                                        </button>
-                                    @endauth
-                                </div>
-                            </div>
-                        </div>
-                    @empty
-                        <div class="empty-data-container">
-                            <img src="{{ asset('assets/img/Empty-Guideline.svg') }}" alt="Picture">
-                            <p>No guidelines uploaded.</p>
-                        </div>
-                    @endforelse
+                    <div id="loader" class="show">
+                        <div id="loading-text">Getting Guidelines...</div>
+                        <div id="loader-inner"></div>
+                    </div>
                 </div>
             </section>
             @include('userpage.changePasswordModal')
@@ -84,6 +57,10 @@
     @endauth
     <script>
         $(document).ready(() => {
+            let guidelineContainer = $('.guideline-container');
+
+            initGuidelines();
+
             @auth
             let validator, guidelineId, guidelineItem, guidelineType, operation,
                 guidelineImageChanged = false,
@@ -93,125 +70,99 @@
                 modalLabel = $('.modal-label'),
                 modalDialog = $('.modal-dialog'),
                 contentImage = $('#contentImage'),
+                coverImage = $('#coverImage'),
                 formBtn = $('#submitGuidelineBtn'),
                 guidelineForm = $("#guidelineForm"),
                 selectCoverImage = $('#selectCoverImage'),
                 selectContentImage = $('#selectContentImage'),
-                guidelineContainer = $('.guideline-container'),
                 modalLabelContainer = $('.modal-label-container');
 
             validator = guidelineForm.validate({
                 rules: {
-                    type: 'required'
+                    type: 'required',
                 },
                 messages: {
-                    type: 'Please Enter Guideline Type.'
+                    type: 'Please Enter Guideline Type.',
                 },
                 errorElement: 'span',
                 showErrors() {
                     this.defaultShowErrors();
-
-                    contentImage.nextAll('span:first').text('Please select an image.')
+                    contentImage.nextAll('span').text('Please select an image.')
                         .prop('style', `display: ${contentImage.val() == '' &&
-                        guidelineImageChanged ?
-                        'block' : 'none'} !important`);
+                        guidelineImageChanged ? 'block' : 'none'} !important`);
                 },
                 submitHandler(form) {
-                    if ($('#contentImage').val() == "") return;
+                    if ($('#coverImage').val() == "") {
+                        showError(coverImage);
+                    } else if ($('#contentImage').val() == "") {
+                        showError(contentImage);
+                    } else {
+                        let formData = new FormData(form);
 
-                    let formData = new FormData(form);
+                        confirmModal(`Do you want to ${operation} this guideline?`).then((result) => {
+                            if (!result.isConfirmed) return;
 
-                    confirmModal(`Do you want to ${operation} this guideline?`).then((result) => {
-                        if (!result.isConfirmed) return;
+                            return operation == "update" && guidelineType == $('#type')
+                                .val() && !guidelineImageChanged ?
+                                (showWarningMessage(), modal.modal('hide')) :
+                                $.ajax({
+                                    data: formData,
+                                    url: operation == 'create' ?
+                                        "{{ route('guideline.create') }}" :
+                                        "{{ route('guideline.update', 'guidelineId') }}"
+                                        .replace('guidelineId', guidelineId),
+                                    method: "POST",
+                                    cache: false,
+                                    contentType: false,
+                                    processData: false,
+                                    beforeSend() {
+                                        btnLoader.prop('hidden', 0);
+                                        btnText.text(operation == 'create' ? 'Creating' :
+                                            'Updating');
+                                        $('input, #selectCoverImage, #selectContentImage, #submitGuidelineBtn, #closeModalBtn')
+                                            .prop('disabled', 1);
+                                    },
+                                    success(response) {
+                                        if (response.status == 'warning')
+                                            return showWarningMessage(response.message);
 
-                        return operation == "update" && guidelineType == $('#type')
-                            .val() && !guidelineImageChanged ?
-                            (showWarningMessage(), modal.modal('hide')) :
-                            $.ajax({
-                                data: formData,
-                                url: operation == 'create' ?
-                                    "{{ route('guideline.create') }}" :
-                                    "{{ route('guideline.update', 'guidelineId') }}"
-                                    .replace('guidelineId', guidelineId),
-                                method: "POST",
-                                cache: false,
-                                contentType: false,
-                                processData: false,
-                                beforeSend() {
-                                    btnLoader.prop('hidden', 0);
-                                    btnText.text(operation == 'create' ?
-                                        'Creating' : 'Updating');
-                                    $('input, #selectCoverImage, #selectContentImage, #submitGuidelineBtn, #closeModalBtn')
-                                        .prop('disabled', 1);
-                                },
-                                success(response) {
-                                    if (response.status == 'warning')
-                                        return showWarningMessage(response.message);
+                                        let emptyGuideline = $('.empty-data-container'),
+                                            {
+                                                id,
+                                                type,
+                                                cover,
+                                                content
+                                            } = response;
 
-                                    let emptyGuideline = $('.empty-data-container'),
-                                        {
-                                            id,
-                                            type,
-                                            cover,
-                                            content
-                                        } = response;
+                                        cover = cover ? cover :
+                                            'assets/img/Guideline-Cover.svg';
 
-                                    cover = cover ?
-                                        `guideline_image/${cover}` :
-                                        'assets/img/Guideline-Cover.svg';
-
-                                    content = `guide_image/${content}`;
-
-                                    if (operation == 'create') {
-                                        if (guidelineContainer.find(emptyGuideline)
-                                            .length > 0) emptyGuideline.remove();
-
-                                        guidelineContainer.append(`<div class="guideline-box">
-                                            <img src="{{ asset('${cover}') }}" class="cover-image">
-                                            <img src="{{ asset('${content}') }}" class="content-image" hidden>
-                                            <div class="guideline-body">
-                                                <div class="guideline-id" {{ !auth()->user() ? 'hidden' : '' }}>${'(ID - ' + id + ')'}</div>
-                                                <h5 class="guideline-title">${type}</h5>
-                                                <div class="guideline-action-container">
-                                                    <button aria-id='${id}' class="viewGuidelineBtn">
-                                                        <i class="bi bi-file-text"></i>View
-                                                    </button>
-                                                    @auth
-                                                    <button class="updateGuidelineBtn btn-update">
-                                                        <i class="bi bi-pencil-square"></i>Update
-                                                    </button>
-                                                    <button class="removeGuidelineBtn btn-remove">
-                                                        <i class="bi bi-journal-minus"></i>Remove
-                                                    </button>
-                                                    @endauth
-                                                </div>
-                                            </div>
-                                        </div>`);
-                                    } else {
-                                        guidelineItem.find('.guideline-title')
-                                            .text(type);
-
-                                        guidelineItem.find('.cover-image')
-                                            .attr('src', cover);
-
-                                        guidelineItem.find('.content-image')
-                                            .attr('src', content);
+                                        if (operation == 'create') {
+                                            emptyGuideline.length > 0 && emptyGuideline
+                                                .remove();
+                                            createGuidelineObject(cover, content, type, id);
+                                        } else {
+                                            guidelineItem.find('.guideline-title').text(type)
+                                                .end().find('.cover-image').attr('src', cover)
+                                                .end().find('.content-image').attr('src',
+                                                    content);
+                                        }
+                                        modal.modal('hide');
+                                        showSuccessMessage(
+                                            `Guideline successfully ${operation}d.`);
+                                    },
+                                    error: showErrorMessage,
+                                    complete() {
+                                        btnLoader.prop('hidden', 1);
+                                        btnText.text(
+                                            `${operation[0].toUpperCase()}${operation.slice(1)}`
+                                        );
+                                        $('input, #selectCoverImage, #selectContentImage, #submitGuidelineBtn, #closeModalBtn')
+                                            .prop('disabled', 0);
                                     }
-                                    modal.modal('hide');
-                                    showSuccessMessage(
-                                        `Guideline successfully ${operation}d.`);
-                                },
-                                error: showErrorMessage,
-                                complete() {
-                                    btnLoader.prop('hidden', 1);
-                                    btnText.text(
-                                        `${operation[0].toUpperCase()}${operation.slice(1)}`
-                                    );
-                                    $('input, #selectCoverImage, #selectContentImage, #submitGuidelineBtn, #closeModalBtn')
-                                        .prop('disabled', 0);
-                                }
-                            });
-                    });
+                                });
+                        });
+                    }
                 }
             });
 
@@ -237,6 +188,8 @@
                 $('#type').val(guidelineLabel);
                 guidelineType = guidelineLabel;
                 operation = "update";
+                changeButton(selectCoverImage, 'Cover Image', true);
+                changeButton(selectContentImage, 'Content Image', true);
                 modal.modal('show');
             });
 
@@ -261,12 +214,8 @@
                             showSuccessMessage('Guideline removed successfully.');
                             guidelineItem.remove();
 
-                            if (guidelineContainer.text().trim() == "") {
-                                guidelineContainer.append(`<div class="empty-data-container">
-                                        <img src="{{ asset('assets/img/Empty-Guideline.svg') }}" alt="Picture">
-                                        <p>No guidelines uploaded.</p>
-                                    </div>`);
-                            }
+                            if (guidelineContainer.find('.guideline-box').length == 0)
+                                showEmptyData();
                         },
                         error: showErrorMessage
                     });
@@ -282,12 +231,12 @@
 
             selectCoverImage.click((e) => {
                 e.preventDefault();
-                $('#coverImage').click()
+                $('#coverImage').click();
             });
 
             selectContentImage.click((e) => {
                 e.preventDefault();
-                contentImage.click()
+                contentImage.click();
             });
 
             $('#coverImage, #contentImage').change(function() {
@@ -303,14 +252,16 @@
                             imageInput.next('img').attr('src', guidelineImageChanged ?
                                 guidelineItem.find('.cover-image').attr('src') :
                                 '/assets/img/Select-Image.svg');
+
                             if (guidelineImageChanged) guidelineImageChanged = false;
                         }
-                        imageInput.nextAll('span:first').text('Please select an image file.')
-                            .prop('style', 'display: block !important');
-                        changeButton(changeImageBtn, buttonText, operation !== 'update');
+                        showError(imageInput);
+                        changeButton(changeImageBtn, buttonText, operation != 'update');
                         return;
                     }
+
                     const reader = new FileReader();
+
                     reader.onload = function(e) {
                         imageInput.next('img').attr('src', e.target.result);
                     };
@@ -319,14 +270,19 @@
                     imageInput.nextAll('span:first').prop('style', 'display: none !important');
                     changeButton(changeImageBtn, buttonText);
                 } else {
-                    imageInput.attr('id') == 'contentImage' &&
-                        imageInput.nextAll('span:first').text('Please select an image file.')
-                        .prop('style', 'display: block !important');
+                    let id = imageInput.attr('id'),
+                        span = id == 'contentImage' ? imageInput.nextAll('span') : id == 'coverImage' &&
+                        imageInput.nextAll('span');
 
+                    span && span.text('Please select an image.').prop('style', 'display: block !important');
                     imageInput.next('img').attr('src', '/assets/img/Select-Image.svg');
                     changeButton(changeImageBtn, buttonText, true);
                 }
             });
+
+            function showError(obj) {
+                obj.nextAll('span').text('Please select an image.').prop('style', 'display: block !important');
+            }
         @endauth
 
         $('#searchGuidelineForm').on('submit', (e) => {
@@ -343,12 +299,12 @@
                         return showWarningMessage('No guidelines uploaded.');
 
                     response.guidelineData.forEach(guideline => {
-                        var guidelineId = guideline.id;
+                        let guidelineId = guideline.id;
 
-                        console.log(guidelineId);
-
-                        $(".guideline-box:has(.guideline-id:contains('" + guidelineId + "'))").toggle(true);
-                        $(".guideline-box:not(:has(.guideline-id:contains('" + guidelineId + "')))").toggle(false);
+                        $(".guideline-box:has(.guideline-id:contains('" + guidelineId + "'))")
+                            .toggle(true);
+                        $(".guideline-box:not(:has(.guideline-id:contains('" + guidelineId +
+                            "')))").toggle(false);
                     });
                 },
                 error: showErrorMessage
@@ -358,17 +314,67 @@
         $('#search_guideline').on('keyup', function() {
             let searchValue = $(this).val().trim();
 
-            if (searchValue == "") $('.guideline-box').toggle(searchValue === "").filter(':visible').removeAttr(
+            if (searchValue == "") $('.guideline-box').toggle(searchValue == "").filter(':visible').removeAttr(
                 'hidden');
         });
 
-        $(document).on('click', '.viewGuidelineBtn', function() {
-            let id = $(this).attr('aria-id');
+        function initGuidelines() {
+            $.ajax({
+                url: `{{ $prefix == 'resident' || $prefix == '' ? route('resident.eligtas.guideline') : route('eligtas.guideline') }}`,
+                type: 'GET',
+                beforeSend() {
+                    $('#loader').prop('hidden', 0);
+                },
+                success(response) {
+                    $('#loader').prop('hidden', 1);
 
-            window.location.href = '{{ $prefix }}' != 'resident' ?
-                `{{ route('eligtas.guide', '') }}/${id}` : `{{ route('resident.eligtas.guide', '') }}/${id}`;
-        });
+                    if (response.guidelineData.length == 0) {
+                        showEmptyData();
+                    } else {
+                        response.guidelineData.forEach(guideline => {
+                            createGuidelineObject(guideline.cover_image, guideline
+                                .content_image, guideline.type, guideline.id);
+                        });
+                    }
+                },
+                error: showErrorMessage
+            });
+        }
 
+        function showEmptyData() {
+            guidelineContainer.append(`<div class="empty-data-container">
+                <img src="{{ asset('assets/img/Empty-Guideline.svg') }}" alt="Picture">
+                <p>No guidelines uploaded.</p>
+            </div>`);
+        }
+
+        function createGuidelineObject(cover, content, type, id) {
+            guidelineContainer.append(`<div class="guideline-box">
+                <img src="{{ asset('guideline_image/${cover}') }}" class="cover-image">
+                <img src="{{ asset('guide_image/${content}') }}" class="content-image" hidden>
+                <div class="guideline-body">
+                    <div class="guideline-id" {{ !auth()->user() ? 'hidden' : '' }}>${'(ID - ' + id + ')'}</div>
+                    <h5 class="guideline-title">${type}</h5>
+                    <div class="guideline-action-container">
+                        <button aria-id="${id}" class="viewGuidelineBtn" onclick="window.location.href = '{{ $prefix }}' != 'resident' ?
+                            '{{ route('eligtas.guide', '') }}/${id}' : '{{ route('resident.eligtas.guide', '') }}/${id}'">
+                            <i class="bi bi-file-text"></i>
+                            <span>View</span>
+                        </button>
+                        @auth
+                            <button class="updateGuidelineBtn btn-update">
+                                <i class="bi bi-pencil-square"></i>
+                                <span>Update</span>
+                            </button>
+                            <button class="removeGuidelineBtn btn-remove">
+                                <i class="bi bi-journal-minus"></i>
+                                <span>Remove</span>
+                            </button>
+                        @endauth
+                    </div>
+                </div>
+            </div>`);
+        }
         });
     </script>
 </body>
