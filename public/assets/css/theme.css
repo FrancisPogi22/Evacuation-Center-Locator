@@ -1210,7 +1210,7 @@ text {
     border-radius: 8px;
 }
 
-.guideline-container #loader{
+.guideline-container #loader {
     background: transparent;
 }
 
@@ -4209,4 +4209,62 @@ html[data-theme="dark"] button.changeTheme {
         opacity: 1;
         transform: scale(1);
     }
+}
+
+.mng-marker-container {
+    display: grid;
+    grid-auto-flow: row;
+    gap: 20px;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    margin: 22px 0;
+}
+
+.marker-widget {
+    background: var(--color-text);
+    display: flex;
+    width: 100%;
+    border-radius: 6px;
+    border: 1px solid var(--color-light-gray);
+    filter: drop-shadow(0 1px 2px rgb(0 0 0 / 0.1)) drop-shadow(0 1px 1px rgb(0 0 0 / 0.06));
+}
+
+.marker-image-container {
+    background: #fde047;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0 20px;
+}
+
+.marker-image-container img {
+    width: 100px;
+    height: 100px;
+}
+
+.marker-label {
+    margin: 0;
+    font-weight: 800;
+}
+
+.marker-name,
+.marker-desc {
+    font-size: 14px;
+}
+
+.marker-widget .widget-desc-container {
+    display: flex;
+    justify-content: space-between;
+    flex-direction: column;
+    width: 100%;
+    background: var(--color-text);
+    border-left: 1px solid var(--color-light-gray);
+    filter: drop-shadow(0 1px 2px rgb(0 0 0 / 0.1)) drop-shadow(0 1px 1px rgb(0 0 0 / 0.06));
+    padding: 10px;
+    border-top-right-radius: 6px;
+    border-bottom-right-radius: 6px;
+}
+
+.marker-btn-container button {
+    padding: 6px 14px;
+    font-size: 13px;
 }

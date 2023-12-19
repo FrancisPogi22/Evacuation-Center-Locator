@@ -71,6 +71,10 @@
                                     <i class="bi bi-journal-bookmark-fill"></i>
                                     <span class="links_name">Archived Report</span>
                                 </a>
+                                <a href="{{ route('marker.display') }}" class="menu-link">
+                                    <i class="bi bi-geo-alt"></i>
+                                    <span class="links_name">Manage Markers</span>
+                                </a>
                             </div>
                         </div>
                         <div class="navigation-item">
