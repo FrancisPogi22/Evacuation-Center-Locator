@@ -23,7 +23,7 @@
                 <button class="btn-submit" id="addMarker">
                     <i class="bi bi-plus-lg"></i>Add Marker
                 </button>
-                @include('userpage.residentReport.markersModal')
+                @include('userpage.markers.markersModal')
             </div>
             <div id="loader" class="show">
                 <div id="loading-text">Getting Markers...</div>
@@ -45,7 +45,8 @@
     @include('partials.toastr')
     <script>
         $(document).ready(() => {
-            let disasterId, defaultFormData, operation, validator,
+            let disasterId, defaultFormData, operation, validator, markerName, markerDescription, markerId,
+                markerItem,
                 markerImageChanged = false,
                 form = $("#markerForm"),
                 modalLabelContainer = $('.modal-label-container'),
@@ -54,7 +55,10 @@
                 modal = $('#markerModal'),
                 selectMarkerImage = $('#imageBtn'),
                 markerImage = $('#markerImagePreview'),
-                error = ('#image-error');
+                error = ('#image-error'),
+                btnText = $('#btn-text'),
+                btnLoader = $('#btn-loader'),
+                markerContainer = $('.mng-marker-container');
 
             initMarkers();
 
@@ -75,32 +79,31 @@
                 },
                 errorElement: 'span',
                 submitHandler(form) {
-                    if ($('#markerImage').val() == "") {
-                        $(error).text('Please select an image.').prop('style',
-                            'display: block !important');
+                    if ($('#markerImage').val() == "" && checkOperation()) {
+                        toggleError();
                     } else {
                         let formData = new FormData(form);
 
                         confirmModal(`Do you want to ${operation} this marker?`).then((result) => {
                             if (!result.isConfirmed) return;
 
-                            return operation == 'update' && defaultFormData == formData ?
+                            return markerName == $('#name').val() && markerDescription == $(
+                                    '#description').val() && !markerImageChanged ?
                                 (showWarningMessage(), modal.modal('hide')) :
                                 $.ajax({
                                     data: formData,
-                                    url: operation == 'add' ? "{{ route('marker.add') }}" :
-                                        "{{ route('disaster.update', 'disasterId') }}".replace(
-                                            'disasterId', disasterId),
+                                    url: checkOperation() ? "{{ route('marker.add') }}" :
+                                        "{{ route('marker.update', 'markerId') }}".replace(
+                                            'markerId', markerId),
                                     method: "POST",
                                     cache: false,
                                     contentType: false,
                                     processData: false,
                                     beforeSend() {
-                                        $('#btn-loader').prop('hidden', 0);
-                                        $('#btn-text').text(operation == 'add' ?
-                                            'Adding' : 'Updating');
-                                        $('input, #submitMarkerBtn, #closeModalBtn')
-                                            .prop('disabled', 1);
+                                        toggleBtnLoader(0);
+                                        $('#btn-text').text(checkOperation() ? 'Adding' :
+                                            'Updating');
+                                        toggleModalProperty(1);
                                     },
                                     success(response) {
                                         if (response.status == 'warning')
@@ -114,27 +117,35 @@
                                                 image
                                             } = response;
 
-                                        $('#btn-loader').removeClass('show');
+                                        btnLoader.removeClass('show');
                                         formButton.prop('disabled', 0);
 
-                                        if (operation == 'add') {
-                                            emptyGuideline.length > 0 && emptyGuideline
-                                                .remove();
-                                            showSuccessMessage(
-                                                `Marker successfully ${operation == "add" ? "added" : "updated"}.`
-                                            )
-                                            createMarkerWidget(id, image, name, description)
-                                            modal.modal('hide')
+                                        if (checkOperation()) {
+                                            emptyGuideline.length > 0 && (emptyGuideline
+                                                .remove(), markerContainer.css('display',
+                                                    'grid'));
+                                            createMarkerWidget(id, image, name, description);
+                                        } else {
+                                            markerItem.find('.marker-name, .marker-desc').text((
+                                                name, description));
+
+                                            markerImageChanged && markerItem.find(
+                                                '.marker-image').attr('src',
+                                                `{{ asset('markers/${image}') }}`);
                                         }
+
+                                        modal.modal('hide');
+                                        showSuccessMessage(
+                                            `Marker successfully ${checkOperation() ? 'added' : 'updated'}.`
+                                        );
                                     },
                                     error: showErrorMessage,
                                     complete() {
-                                        $('#btn-loader').prop('hidden', 1);
+                                        toggleBtnLoader(1);
                                         $('#btn-text').text(
                                             `${operation[0].toUpperCase()}${operation.slice(1)}`
                                         );
-                                        $('input, #submitMarkerBtn, #closeModalBtn')
-                                            .prop('disabled', 0);
+                                        toggleModalProperty(0);
                                     }
                                 });
                         });
@@ -148,6 +159,49 @@
                 formButton.addClass('btn-submit').removeClass('btn-update').find('#btn-text').text('Add');
                 operation = "add";
                 modal.modal('show');
+            });
+
+            $(document).on('click', '.markerEdit', function() {
+                setMarkerItem($(this));
+
+                let name = markerItem.find('.marker-name').text(),
+                    description = markerItem.find('.marker-desc').text().trim();
+
+                $('#markerImagePreview').attr('src', markerItem.find('.marker-image').attr('src'));
+                modalLabelContainer.addClass('bg-warning');
+                modalLabel.text('Update Guideline');
+                formButton.addClass('btn-update').removeClass('btn-submit');
+                btnText.text('Update');
+                $('#name').val(name);
+                $('#description').val(description);
+                markerName = name;
+                markerDescription = description;
+                operation = "update";
+                modal.modal('show');
+            });
+
+            $(document).on('click', '.markerRemove', function() {
+                setMarkerItem($(this));
+                confirmModal('Do you want to remove this marker?').then((result) => {
+                    if (!result.isConfirmed) return;
+
+                    $.ajax({
+                        url: "{{ route('marker.remove', 'markerId') }}"
+                            .replace('markerId', markerId),
+                        method: "DELETE",
+                        success(response) {
+                            if (response.status == 'warning')
+                                showWarningMessage(response.message)
+
+                            showSuccessMessage('Marker removed successfully.');
+                            markerItem.remove();
+
+                            if (checkMarkersData(markerContainer.find('.marker-widget')))
+                                showEmptyData();
+                        },
+                        error: showErrorMessage
+                    });
+                });
             });
 
             $('#markerImage').change(function() {
@@ -174,8 +228,7 @@
                     markerImageChanged = true;
                     $(error).prop('style', 'display: none !important');
                 } else {
-                    $(error).text('Please select an image.').prop('style',
-                        'display: block !important');
+                    toggleError();
                     markerImage.attr('src', '/assets/img/Select-Image.svg');
                 }
             });
@@ -185,17 +238,50 @@
                 $('#markerImage').click();
             });
 
+            modal.on('hidden.bs.modal', () => {
+                validator.resetForm();
+                form[0].reset();
+                markerImageChanged = false;
+                $('#markerImagePreview').attr('src', '/assets/img/Select-Image.svg');
+            });
+
+            function checkMarkersData(object) {
+                return object.length == 0;
+            }
+
+            function toggleError() {
+                $(error).text('Please select an image.').prop('style',
+                    'display: block !important');
+            }
+
+            function checkOperation() {
+                return operation == 'add';
+            }
+
+            function toggleModalProperty(isDisable) {
+                $('input, #submitMarkerBtn, #closeModalBtn')
+                    .prop('disabled', isDisable);
+            }
+
+            function setMarkerItem(item) {
+                markerItem = item.closest('.marker-widget');
+                markerId = markerItem.find('#markerId').val();
+            }
+
+            function toggleBtnLoader(isHidden) {
+                $('#btn-loader').prop('hidden', isHidden);
+            }
+
             function initMarkers() {
                 $.ajax({
                     url: "{{ route('marker.display') }}",
                     type: 'GET',
                     beforeSend() {
-                        $('#loader').prop('hidden', 0);
+                        toggleLoader(0);
                     },
                     success(response) {
-                        $('#loader').prop('hidden', 1);
-
-                        if (response.markerData.length == 0) {
+                        toggleLoader(1);
+                        if (checkMarkersData(response.markerData)) {
                             showEmptyData();
                         } else {
                             response.markerData.forEach(marker => {
@@ -208,15 +294,20 @@
                 });
             }
 
+            function toggleLoader(isHidden) {
+                $('#loader').prop('hidden', isHidden);
+            }
+
             function showEmptyData() {
-                $('.marker-container').append(`<div class="empty-data-container">
+                markerContainer.css('display', 'contents');
+                markerContainer.append(`<div class="empty-data-container">
                     <img src="{{ asset('assets/img/Empty-Guideline.svg') }}" alt="Picture">
                     <p>No markers created.</p>
                 </div>`);
             }
 
             function createMarkerWidget(id, image, name, description) {
-                $('.mng-marker-container').append(`<div class="marker-widget">
+                markerContainer.append(`<div class="marker-widget">
                     <div class="marker-image-container">
                         <img class="marker-image" src="{{ asset('markers/${image}') }}" alt="Image">
                     </div>

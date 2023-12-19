@@ -120,6 +120,8 @@ Route::middleware(['auth', 'check.status'])->group(function () {
         Route::prefix('manageMarkers')->name('marker.')->controller(MarkerController::class)->group(function () {
             Route::get('/', 'manageReportMarkers')->name('display');
             Route::post('/addMarker', 'addMarker')->name('add');
+            Route::post('/updateMarker/{markerId}', 'updateMarker')->name('update');
+            Route::delete('/removeMarker/{markerId}', 'removeMarker')->name('remove');
         });
 
         Route::prefix('emergencyReport')->name('emergency.')->controller(EmergencyReportController::class)->group(function () {

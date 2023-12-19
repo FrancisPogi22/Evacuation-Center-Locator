@@ -13,13 +13,13 @@
                     <div class="form-content">
                         <div class="field-container">
                             <label>Marker Name</label>
-                            <input type="text" class="form-control" name="name" placeholder="Enter Marker Name"
-                                autocomplete="off">
+                            <input type="text" class="form-control" name="name" id="name"
+                                placeholder="Enter Marker Name" autocomplete="off">
                         </div>
                         <div class="field-container">
                             <label>Marker Description</label>
-                            <textarea type="text" class="form-control" name="description" rows="3" placeholder="Enter Marker Description"
-                                autocomplete="off"></textarea>
+                            <textarea type="text" class="form-control" name="description" id="description" rows="3"
+                                placeholder="Enter Marker Description" autocomplete="off"></textarea>
                         </div>
                         <div class="field-container">
                             <label>Marker Image</label>
