@@ -1437,6 +1437,63 @@ text {
     height: 600px;
 }
 
+.mng-marker-container {
+    display: grid;
+    grid-auto-flow: row;
+    gap: 20px;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    margin: 22px 0;
+}
+
+.marker-widget {
+    background: var(--color-text);
+    display: flex;
+    width: 100%;
+    border-radius: 6px;
+    border: 1px solid var(--color-light-gray);
+    filter: drop-shadow(0 1px 2px rgb(0 0 0 / 0.1)) drop-shadow(0 1px 1px rgb(0 0 0 / 0.06));
+}
+
+.marker-image-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0 20px;
+}
+
+.marker-image-container img {
+    width: 100px;
+    height: 100px;
+}
+
+.marker-label {
+    margin: 0;
+    font-weight: 800;
+}
+
+.marker-name,
+.marker-desc {
+    font-size: 14px;
+}
+
+.marker-widget .widget-desc-container {
+    display: flex;
+    justify-content: space-between;
+    flex-direction: column;
+    width: 100%;
+    background: var(--color-text);
+    border-left: 1px solid var(--color-light-gray);
+    filter: drop-shadow(0 1px 2px rgb(0 0 0 / 0.1)) drop-shadow(0 1px 1px rgb(0 0 0 / 0.06));
+    padding: 10px;
+    border-top-right-radius: 6px;
+    border-bottom-right-radius: 6px;
+}
+
+.marker-btn-container button {
+    padding: 6px 14px;
+    font-size: 13px;
+}
+
 #loader {
     width: 100%;
     height: 100%;
@@ -1446,7 +1503,6 @@ text {
     align-items: center;
     justify-content: center;
     transition: visibility 0.3s ease;
-    background-color: var(--color-text);
     flex-direction: column;
 }
 
@@ -2721,10 +2777,6 @@ html[data-theme="dark"] ::-webkit-scrollbar-thumb {
     background: #55657e !important;
 }
 
-html[data-theme="dark"] #loader {
-    background: var(--color-gray) !important;
-}
-
 html[data-theme="dark"] #loader-inner {
     border-top-color: var(--color-light-gray);
 }
@@ -2883,16 +2935,25 @@ html[data-theme="dark"] #report-chart .highcharts-tick {
     stroke: var(--color-d-text);
 }
 
-html[data-theme="dark"] .highcharts-bar-series highcharts-tracker-line {
-    background: var(--color-d-bg-container);
-}
-
+html[data-theme="dark"] .highcharts-bar-series .highcharts-tracker-line,
+html[data-theme="dark"] .profile-details,
 html[data-theme="dark"] .user-profile-container {
     background: var(--color-d-bg-container);
 }
 
-html[data-theme="dark"] .profile-details {
+html[data-theme="dark"] .marker-image-container {
     background: var(--color-d-bg-container);
+    border-top-left-radius: 6px;
+    border-bottom-left-radius: 6px;
+}
+
+html[data-theme="dark"] .marker-widget {
+    border: none;
+}
+
+html[data-theme="dark"] .marker-widget .widget-desc-container {
+    border: none;
+    background: var(--color-gray);
 }
 
 html[data-theme="dark"] .table-container,
@@ -3141,6 +3202,10 @@ html[data-theme="dark"] button.changeTheme {
         grid-template-columns: repeat(3, minmax(0, 1fr));
     }
 
+    .mng-marker-container {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
     .chart-container {
         display: contents;
         margin: 30px 0;
@@ -3287,6 +3352,10 @@ html[data-theme="dark"] button.changeTheme {
 @media only screen and (max-width: 594px) {
     #incident-report-header {
         flex-direction: column;
+    }
+
+    .mng-marker-container {
+        grid-template-columns: repeat(1, minmax(0, 1fr));
     }
 }
 
@@ -4209,62 +4278,4 @@ html[data-theme="dark"] button.changeTheme {
         opacity: 1;
         transform: scale(1);
     }
-}
-
-.mng-marker-container {
-    display: grid;
-    grid-auto-flow: row;
-    gap: 20px;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-    margin: 22px 0;
-}
-
-.marker-widget {
-    background: var(--color-text);
-    display: flex;
-    width: 100%;
-    border-radius: 6px;
-    border: 1px solid var(--color-light-gray);
-    filter: drop-shadow(0 1px 2px rgb(0 0 0 / 0.1)) drop-shadow(0 1px 1px rgb(0 0 0 / 0.06));
-}
-
-.marker-image-container {
-    background: #fde047;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 0 20px;
-}
-
-.marker-image-container img {
-    width: 100px;
-    height: 100px;
-}
-
-.marker-label {
-    margin: 0;
-    font-weight: 800;
-}
-
-.marker-name,
-.marker-desc {
-    font-size: 14px;
-}
-
-.marker-widget .widget-desc-container {
-    display: flex;
-    justify-content: space-between;
-    flex-direction: column;
-    width: 100%;
-    background: var(--color-text);
-    border-left: 1px solid var(--color-light-gray);
-    filter: drop-shadow(0 1px 2px rgb(0 0 0 / 0.1)) drop-shadow(0 1px 1px rgb(0 0 0 / 0.06));
-    padding: 10px;
-    border-top-right-radius: 6px;
-    border-bottom-right-radius: 6px;
-}
-
-.marker-btn-container button {
-    padding: 6px 14px;
-    font-size: 13px;
 }

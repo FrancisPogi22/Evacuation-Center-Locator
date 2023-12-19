@@ -47,7 +47,7 @@ class GuidelineController extends Controller
             'content_image' => $contentImagePath
         ]);
 
-        $this->logActivity->generateLog('Created a new guideline(ID - ' . $guideline->id . ')');
+        $this->logActivity->generateLog("Created a new guideline(ID - $guideline->id)");
 
         return response(['id' =>  $guideline->id, 'type' => $guideline->type, 'cover' => $guideline->cover_image, 'content' => $guideline->content_image]);
     }
@@ -92,7 +92,7 @@ class GuidelineController extends Controller
             }
         }
 
-        $this->logActivity->generateLog('Updated ' . lcfirst($guideline->type) . ' guideline(ID - ' . $guideline->id . ')');
+        $this->logActivity->generateLog('Updated ' . lcfirst($guideline->type) . " guideline(ID - $guideline->id)");
         $newData = [
             'type'          => strtoupper(trim($request->type)),
             'cover_image'   => $coverImagePath,
