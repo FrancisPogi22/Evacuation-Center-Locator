@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\MainController;
+use App\Http\Controllers\MarkerController;
 use App\Http\Controllers\EvacueeController;
 use App\Http\Controllers\DisasterController;
 use App\Http\Controllers\GuidelineController;
@@ -114,6 +115,11 @@ Route::middleware(['auth', 'check.status'])->group(function () {
             Route::patch('/changeIncidentReportStatus/{reportId}', 'changeIncidentReportStatus')->name('change.status');
             Route::delete('/removeIncidentReport/{reportId}', 'removeIncidentReport')->name('remove');
             Route::patch('/archiveIncidentReport/{reportId}', 'archiveIncidentReport')->name('archive');
+        });
+
+        Route::prefix('manageMarkers')->name('marker.')->controller(MarkerController::class)->group(function () {
+            Route::get('/', 'manageReportMarkers')->name('display');
+            Route::post('/addMarker', 'addMarker')->name('add');
         });
 
         Route::prefix('emergencyReport')->name('emergency.')->controller(EmergencyReportController::class)->group(function () {

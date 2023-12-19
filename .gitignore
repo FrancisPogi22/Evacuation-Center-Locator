@@ -6,6 +6,7 @@
 /public/guideline_image
 /public/hotline_logo
 /public/guide_image
+/public/markers
 /storage/*.key
 /vendor
 .phpunit.result.cache
