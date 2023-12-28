@@ -45,8 +45,7 @@
     @include('partials.toastr')
     <script>
         $(document).ready(() => {
-            let disasterId, defaultFormData, operation, validator, markerName, markerDescription, markerId,
-                markerItem,
+            let disasterId, operation, validator, markerName, markerDescription, markerId, markerItem,
                 markerImageChanged = false,
                 form = $("#markerForm"),
                 modalLabelContainer = $('.modal-label-container'),
@@ -55,6 +54,7 @@
                 modal = $('#markerModal'),
                 selectMarkerImage = $('#imageBtn'),
                 markerImage = $('#markerImagePreview'),
+                imageBtnPreview = $('.preview-button-text'),
                 error = ('#image-error'),
                 btnText = $('#btn-text'),
                 btnLoader = $('#btn-loader'),
@@ -157,6 +157,7 @@
                 modalLabelContainer.removeClass('bg-warning');
                 modalLabel.text('Add Marker');
                 formButton.addClass('btn-submit').removeClass('btn-update').find('#btn-text').text('Add');
+                imageBtnPreview.text("Select Marker Image");
                 operation = "add";
                 modal.modal('show');
             });
@@ -221,14 +222,17 @@
                     }
 
                     const reader = new FileReader();
+
                     reader.onload = function(e) {
                         markerImage.attr('src', e.target.result);
                     };
                     reader.readAsDataURL(this.files[0]);
                     markerImageChanged = true;
                     $(error).prop('style', 'display: none !important');
+                    changeimagePreviewBtn(true);
                 } else {
                     toggleError();
+                    changeimagePreviewBtn(false);
                     markerImage.attr('src', '/assets/img/Select-Image.svg');
                 }
             });
@@ -244,6 +248,12 @@
                 markerImageChanged = false;
                 $('#markerImagePreview').attr('src', '/assets/img/Select-Image.svg');
             });
+
+            function changeimagePreviewBtn(isChange) {
+                selectMarkerImage.removeClass(isChange ? 'btn-table-primary' : 'btn-update').addClass(isChange ?
+                    'btn-update' : 'btn-table-primary').find(imageBtnPreview).text(isChange ?
+                    'Change Marker Image' : 'Select Marker Image');
+            }
 
             function checkMarkersData(object) {
                 return object.length == 0;

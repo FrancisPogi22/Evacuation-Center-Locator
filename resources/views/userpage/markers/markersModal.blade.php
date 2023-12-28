@@ -11,25 +11,28 @@
                 <form id="markerForm">
                     @csrf
                     <div class="form-content">
-                        <div class="field-container">
-                            <label>Marker Name</label>
-                            <input type="text" class="form-control" name="name" id="name"
-                                placeholder="Enter Marker Name" autocomplete="off">
-                        </div>
-                        <div class="field-container">
-                            <label>Marker Description</label>
-                            <textarea type="text" class="form-control" name="description" id="description" rows="3"
-                                placeholder="Enter Marker Description" autocomplete="off"></textarea>
-                        </div>
-                        <div class="field-container">
-                            <label>Marker Image</label>
-                            <input type="file" class="form-control" id="markerImage" name="image"
-                                accept=".jpeg, .jpg, .png" hidden>
-                            <img src="/assets/img/Select-Image.svg" class="form-control" id="markerImagePreview">
-                            <span id="image-error" class="error" hidden>Please select an image file.</span>
-                            <button class="btn btn-sm btn-primary" id="imageBtn">
-                                <i class="bi bi-image"></i>Select Marker Image
-                            </button>
+                        <div class="marker-field-container">
+                            <div class="marker-preview-container">
+                                <input type="file" class="form-control" id="markerImage" name="image"
+                                    accept=".jpeg, .jpg, .png" hidden>
+                                <img src="/assets/img/Select-Image.svg" class="form-control" id="markerImagePreview">
+                                <span id="image-error" class="error" hidden>Please select an image file.</span>
+                                <button class="btn-table-primary" id="imageBtn">
+                                    <i class="bi bi-image"></i><span class="preview-button-text"></span>
+                                </button>
+                            </div>
+                            <div class="marker-details-container">
+                                <div class="field-container">
+                                    <label>Marker Name</label>
+                                    <input type="text" class="form-control" name="name" id="name"
+                                        placeholder="Enter Marker Name" autocomplete="off">
+                                </div>
+                                <div class="field-container">
+                                    <label>Marker Description</label>
+                                    <textarea type="text" class="form-control" name="description" id="description" rows="3"
+                                        placeholder="Enter Marker Description" autocomplete="off"></textarea>
+                                </div>
+                            </div>
                         </div>
                         <div class="form-button-container">
                             <button id="submitMarkerBtn" class="btn-submit modalBtn">
