@@ -1037,6 +1037,29 @@ div.flatpickr-rContainer::-webkit-scrollbar,
     font-size: 14px;
 }
 
+#markerForm #markerImagePreview{
+    margin: 10px 0;
+    width: 200px;
+}
+
+.marker-field-container {
+    display: flex;
+    width: 100%;
+}
+
+.marker-preview-container {
+    margin-left: 20px;
+}
+
+.marker-preview-container button {
+    width: 100%;
+    padding: 8px 16px;
+}
+
+.marker-details-container {
+    flex: 1;
+}
+
 .report-container p {
     margin: 0;
     font-weight: 600;
