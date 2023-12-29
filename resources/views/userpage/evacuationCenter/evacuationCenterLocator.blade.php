@@ -78,7 +78,8 @@
                     </div>
                 </div>
                 <div class="locator-button-container">
-                    <button type="button" id="locateNearestBtn" {{ $onGoingDisasters->isEmpty() ? 'hidden' : '' }} disabled>
+                    <button type="button" id="locateNearestBtn"
+                        {{ $onGoingDisasters->isEmpty() ? 'hidden' : 'disabled' }}>
                         <i class="bi bi-search"></i>Locate Nearest Active Evacuation</button>
                     <button type="button" id="pinpointCurrentLocationBtn">
                         <i class="bi bi-geo"></i>Pinpoint Current Location</button>
@@ -122,7 +123,7 @@
     @include('partials.toastr')
     <script>
         let map, activeInfoWindow, userMarker, userBounds, directionDisplay, evacuationCentersData, rowData,
-            prevNearestEvacuationCenter, evacuationCenterTable, findNearestActive, reportMarker, reportWindow,
+            prevNearestEvacuationCenter, evacuationCenterTable, findNearestActive, reportMarker, reportWindow, radius,
             watchId = null,
             locating = false,
             pinClicked = false,
@@ -185,7 +186,6 @@
                     style: google.maps.MapTypeControlStyle.DROPDOWN_MENU
                 }
             });
-
             directionDisplay = new google.maps.DirectionsRenderer({
                 map,
                 suppressMarkers: true,
@@ -198,108 +198,94 @@
                 }
             });
 
-            const stopBtnContainer = document.createElement('div');
-            stopBtnContainer.className = 'stop-btn-container';
-            stopBtnContainer.innerHTML =
-                `<button id="stopLocatingBtn" class="btn-remove">
-                    <i class="bi bi-stop-circle"></i>Stop Locating
-                </button>`;
-            map.controls[google.maps.ControlPosition.TOP_RIGHT].push(stopBtnContainer);
+            map.controls[google.maps.ControlPosition.TOP_RIGHT].push(Object.assign(document.createElement('div'), {
+                className: 'stop-btn-container',
+                innerHTML: `<button id="stopLocatingBtn" class="btn-remove"><i class="bi bi-stop-circle"></i>Stop Locating</button>`
+            }));
+            map.controls[google.maps.ControlPosition.CENTER].push(Object.assign(document.createElement('div'), {
+                id: 'loader',
+                innerHTML: `<div id="loader-inner"></div><div id="loading-text"></div>`
+            }));
 
-            if ('{{ $prefix }}' == 'resident') {
-                const reportBtnContainer = document.createElement('div');
-                reportBtnContainer.className = 'report-btn-container';
-                reportBtnContainer.innerHTML =
-                    `<button id="reportAreaBtn" class="btn-update">
-                        <i class="bi bi-megaphone"></i>Report Area
-                    </button>`;
-                map.controls[google.maps.ControlPosition.BOTTOM_RIGHT].push(reportBtnContainer);
-            }
-
-            const loader = document.createElement('div');
-            loader.id = 'loader';
-            loader.innerHTML = '<div id="loader-inner"></div><div id="loading-text"></div>';
-            map.controls[google.maps.ControlPosition.CENTER].push(loader);
+            if ('{{ $prefix }}' == 'resident') 
+                map.controls[google.maps.ControlPosition.BOTTOM_RIGHT].push(Object.assign(document.createElement('div'), {
+                    className: 'report-btn-container',
+                    innerHTML: `<button id="reportAreaBtn" class="btn-update"><i class="bi bi-megaphone"></i>Report Area</button>`
+                }));
         }
 
         function initMarkers(markersData, type, markersArray) {
             while (markersArray.length) markersArray.pop().setMap(null);
 
             markersData.forEach((data) => {
-                let picture = type == "evacuationCenter" ? data.status : data.type;
-
-                let marker = generateMarker({
-                    lat: parseFloat(data.latitude),
-                    lng: parseFloat(data.longitude)
-                }, "{{ asset('assets/img/picture.png') }}".replace('picture', picture));
+                let picture = type == "evacuationCenter" ? data.status : data.type,
+                    marker = generateMarker({
+                        lat: parseFloat(data.latitude),
+                        lng: parseFloat(data.longitude)
+                    }, "{{ asset('assets/img/picture.png') }}".replace('picture', picture));
 
                 markersArray.push(marker);
 
                 let content = `
                     <div class="areaReportContainer">
                         ${type == "evacuationCenter" ?
-                        `<div class="info-description">
-                            <span>Name:</span> ${data.name}
-                        </div>
-                        <div class="info-description">
-                            <span>Barangay:</span> ${data.barangay_name}
-                        </div>
-                        <div class="info-description">
-                            <span>No. of evacuees:</span> ${data.evacuees}
-                        </div>
-                        <div class="info-description status">
-                            <span>Status:</span>
-                            <span class="status-content bg-${getStatusColor(data.status)}">
-                                ${data.status}
-                            </span>
-                        </div>` :
-                        `<div class="info-description">
-                            <span>Report Date:</span> ${formatDateTime(data.report_time)}
-                        </div>
-                        <div class="info-description">
-                            <span>
-                                ${data.type == "Flooded" ? `${data.type} Area` : data.type }
-                            </span>
-                        </div>
-                        <div class="info-description details">
-                            <span>Details: </span>
-                            <div class="info-window-details-container">
-                                ${data.details}
+                            `<div class="info-description">
+                                <span>Name:</span> ${data.name}
                             </div>
-                        </div>
-                        <div class="info-description photo">
-                            <span>Image: </span>
-                            <div hidden>
-                                ${data.latitude}, ${data.longitude}
+                            <div class="info-description">
+                                <span>Barangay:</span> ${data.barangay_name}
                             </div>
-                            <button class="btn btn-sm btn-primary toggleImageBtn">
-                                <i class="bi bi-chevron-expand"></i>View
-                            </button>
-                            <img src="/reports_image/${data.photo}" class="form-control" hidden>
-                        </div>
-                        <div class="info-description update" ${data.update.length == 0 && "hidden"}>
-                            <span>Updates Today: </span>
-                            <div class="info-window-update-container">
-                                <div class="update-date">
-                                    ${data.update.length > 0 ? formatDateTime(data.update[0].update_time, 'date') : ''}
+                            <div class="info-description">
+                                <span>No. of evacuees:</span> ${data.evacuees}
+                            </div>
+                            <div class="info-description status">
+                                <span>Status:</span>
+                                <span class="status-content bg-${getStatusColor(data.status)}">
+                                    ${data.status}
+                                </span>
+                            </div>` :
+                            `<div class="info-description">
+                                <span>Report Date:</span> ${formatDateTime(data.report_time)}
+                            </div>
+                            <div class="info-description">
+                                <span>${data.type == "Flooded" ? `${data.type} Area` : data.type}</span>
+                            </div>
+                            <div class="info-description details">
+                                <span>Details: </span>
+                                <div class="info-window-details-container">
+                                    ${data.details}
                                 </div>
-                                ${
-                                    data.update.length > 0 ?
+                            </div>
+                            <div class="info-description photo">
+                                <span>Image: </span>
+                                <div hidden>
+                                    ${data.latitude}, ${data.longitude}
+                                </div>
+                                <button class="btn btn-sm btn-primary toggleImageBtn">
+                                    <i class="bi bi-chevron-expand"></i>View
+                                </button>
+                                <img src="/reports_image/${data.photo}" class="form-control" hidden>
+                            </div>
+                            <div class="info-description update" ${data.update.length == 0 ? 'hidden' : ''}>
+                                <span>Updates Today: </span>
+                                <div class="info-window-update-container">
+                                    <div class="update-date">
+                                        ${data.update.length > 0 ? formatDateTime(data.update[0].update_time, 'date') : ''}
+                                    </div>
+                                    ${data.update.length > 0 ?
                                         data.update.map((update) => {
-                                            return `<p class="update-details-container">
+                                        return `<p class="update-details-container">
                                                 <small>
                                                     as of ${formatDateTime(update.update_time, 'time')}
                                                 </small><br>
                                                 <span class="update-details">
                                                     ${update.update_details}
                                                 </span>
-                                            </p>`
-                                        }).join('') : ''
-                                }
-                            </div>
-                        </div>`}
+                                            </p>`}).join('') : ''
+                                    }
+                                </div>
+                            </div>`}
                     </div>`;
-
                 generateInfoWindow(marker, content);
             });
         }
@@ -337,7 +323,7 @@
                 draggable,
                 icon: {
                     url: icon,
-                    scaledSize: new google.maps.Size(35, 35),
+                    scaledSize: new google.maps.Size(35, 35)
                 },
                 label: reportLabel
             });
@@ -346,16 +332,18 @@
         function generateCircle(center) {
             const color = localStorage.getItem('theme') == 'dark' ? "#ffffff" : "#557ed8";
 
-            return new google.maps.Circle({
+            radius = new google.maps.Circle({
                 map,
                 center,
-                radius: 14,
+                radius: 12,
                 fillColor: color,
                 fillOpacity: 0.3,
                 strokeColor: color,
                 strokeOpacity: 0.8,
                 strokeWeight: 2
             });
+
+            return radius;
         }
 
         function openInfoWindow(infoWindow, marker) {
@@ -416,7 +404,7 @@
                     } else {
                         attempt = attempt + 1;
 
-                        if (attempt == 2 )
+                        if (attempt == 2)
                             setTimeout(() => {
                                 pinClicked = false;
                                 $('#loader').removeClass('show');
@@ -439,6 +427,134 @@
                 (userMarker = generateMarker(userlocation,
                         "{{ asset('assets/img/User.png') }}"),
                     userBounds = generateCircle(userMarker.getPosition()));
+        }
+
+        function stickMarkerToRadius(position, userBound) {
+            let center = userBound.getCenter();
+
+            return google.maps.geometry.spherical.computeOffset(center, userBound.getRadius(),
+                google.maps.geometry.spherical.computeHeading(center, position));
+        }
+
+        function checkReportLocation(location, userBound) {
+            return google.maps.geometry.spherical.computeDistanceBetween(userBound.getCenter(), location) <=
+                userBound.getRadius();
+        }
+
+        function resetMarker() {
+            reportMarker?.setMap(null);
+            reportMarker = null;
+        }
+
+        function reportEvent() {
+            map.setOptions({
+                draggableCursor: 'pointer',
+                clickableIcons: false
+            });
+            showInfoMessage(
+                'Click on the map to pinpoint the area. You can drag the marker to adjust location. Click the button again to cancel.'
+            );
+            $('#reportAreaBtn').html(
+                '<i class="bi bi-stop-circle"></i>Cancel Reporting'
+            ).addClass('btn-remove');
+            google.maps.event.addListener(radius, 'click', (e) => {
+                if (reportButtonClicked) {
+                    if (reportSubmitting) return;
+
+                    let coordinates = e.latLng;
+
+                    if (reportMarker) {
+                        reportMarker.setPosition(coordinates);
+                        openInfoWindow(reportWindow, reportMarker);
+                        $('[name="latitude"]').val(coordinates.lat());
+                        $('[name="longitude"]').val(coordinates.lng());
+                    } else {
+                        let lastValidPosition;
+
+                        generateInfoWindow(
+                            generateMarker(
+                                coordinates,
+                                "{{ asset('assets/img/Reporting.png') }}",
+                                true, {
+                                    text: 'Report Location',
+                                    className: 'report-marker-label'
+                                }
+                            ),
+                            `<form id="reportAreaForm">
+                                @csrf
+                                <input type="text" name="latitude" value="${coordinates.lat()}" hidden>
+                                <input type="text" name="longitude" value="${coordinates.lng()}" hidden>
+                                <div id="reportAreaFormContainer">
+                                    <label>Report Type</label>
+                                    <select name="type" class="form-select">
+                                        <option value="" hidden selected disabled>Select Report Type</option>
+                                        <option value="Flooded">Flooded</option>
+                                        <option value="Roadblocked">Roadblocked</option>
+                                    </select>
+                                    <div class="mt-2">
+                                        <label>Details</label>
+                                        <textarea type="text" name="details" class="form-control" cols="50" rows="10"></textarea>
+                                    </div>
+                                    <div class="mt-2">
+                                        <label>Image</label>
+                                        <input type="file" name="image" class="form-control" id="inputImage" accept=".jpeg, .jpg, .png" hidden>
+                                        <div class="info-window-action-container report-area">
+                                            <button class="btn btn-sm btn-primary" id="imageBtn">
+                                                <i class="bi bi-image"></i>Select
+                                            </button>
+                                        </div>
+                                        <img id="selectedReportImage" src="" class="form-control" hidden>
+                                        <span id="image-error" class="error" hidden>Please select an image file.</span>
+                                    </div>
+                                    <center>
+                                        <button id="submitAreaBtn" class="modalBtn">
+                                            <div id="defaultBtnText">
+                                                <i class="bi bi-send"></i>
+                                                Submit
+                                            </div>
+                                            <div id="loadingBtnText" hidden>
+                                                <div id="btn-loader">
+                                                    <div id="loader-inner"></div>
+                                                </div>
+                                                Submitting
+                                            </div>
+                                        </button>
+                                    <center>
+                                </div>
+                            </form>`
+                        );
+                        reportMarker.addListener('drag', (e) => {
+                            let newPosition = e.latLng;
+
+                            if (checkReportLocation(newPosition, userBounds))
+                                lastValidPosition = newPosition;
+
+                            reportWindow.close();
+                            reportMarker.setPosition(checkReportLocation(newPosition,
+                                userBounds) ? newPosition : stickMarkerToRadius(
+                                newPosition, userBounds));
+                        });
+                        reportMarker.addListener('dragend', () => {
+                            let newPosition = reportMarker.getPosition(),
+                                snappedPosition = stickMarkerToRadius(newPosition, userBounds);
+
+                            if (!checkReportLocation(newPosition, userBounds)) {
+                                reportMarker.setPosition(snappedPosition);
+                                openInfoWindow(reportWindow, reportMarker);
+                                $('[name="latitude"]').val(snappedPosition.lat());
+                                $('[name="longitude"]').val(snappedPosition.lng());
+                            } else {
+                                openInfoWindow(reportWindow, reportMarker);
+                                $('[name="latitude"]').val(lastValidPosition.lat());
+                                $('[name="longitude"]').val(lastValidPosition.lng());
+                            }
+                        });
+                    }
+                }
+            });
+            google.maps.event.addListener(map, 'click', (e) => {
+                if (!checkReportLocation(e.latLng, userBounds)) return;
+            });
         }
 
         async function getEvacuationCentersDistance() {
@@ -512,7 +628,8 @@
         }
 
         function locateEvacuationCenter() {
-            let status = false, attempt = 0;
+            let status = false,
+                attempt = 0;
 
             watchId = navigator.geolocation.watchPosition(async (position) => {
                 if (position.coords.accuracy <= 500) {
@@ -532,9 +649,8 @@
                         latitude,
                         longitude
                     } = findNearestActive ?
-                        evacuationCenterJson[0] : rowData;
-
-                    const directionService = new google.maps.DirectionsService();
+                        evacuationCenterJson[0] : rowData,
+                        directionService = new google.maps.DirectionsService();
 
                     directionService.route(
                         request(
@@ -550,9 +666,7 @@
                                         <center>You are here.</center>
                                         <center class="info-description">
                                             <span>Pathway distance to evacuation: </span>
-                                            ${getKilometers(
-                                                response
-                                            )} km
+                                            ${getKilometers(response)} km
                                         </center>
                                     </div>`
                                 );
@@ -562,7 +676,9 @@
                                     $('#reportAreaBtn').prop('hidden', 0);
                                     $('#loader').removeClass('show');
                                     directionDisplay.setMap(map);
-                                    var bounds = new google.maps.LatLngBounds();
+
+                                    let bounds = new google.maps.LatLngBounds();
+
                                     response.routes[0].legs.forEach(({
                                             steps
                                         }) =>
@@ -580,6 +696,7 @@
                                 }
 
                                 directionDisplay.setDirections(response);
+
                                 if (findNearestActive)
                                     prevNearestEvacuationCenter = evacuationCenterJson[0];
                             }
@@ -611,13 +728,13 @@
                 '{{ $prefix }}' == 'resident' ?
                 "{{ route('resident.area.get', ['locator', 'null', 'null']) }}" :
                 ('{{ $prefix }}' == 'cswd' ?
-                "{{ route('cswd.area.get', ['locator', 'null', 'null']) }}" :
-                "{{ route('area.get', ['locator', 'null', 'null']) }}") :
+                    "{{ route('cswd.area.get', ['locator', 'null', 'null']) }}" :
+                    "{{ route('area.get', ['locator', 'null', 'null']) }}") :
                 '{{ $prefix }}' == 'resident' ?
                 "{{ route('resident.evacuation.center.get', ['locator', 'active']) }}" :
                 ('{{ $prefix }}' == 'cswd' ?
-                "{{ route('evacuation.center.get', ['locator', 'active']) }}" :
-                "{{ route('cdrrmo.evacuation.center.get', ['locator', 'active']) }}");
+                    "{{ route('evacuation.center.get', ['locator', 'active']) }}" :
+                    "{{ route('cdrrmo.evacuation.center.get', ['locator', 'active']) }}");
 
             return new Promise((resolve, reject) => {
                 $.ajax({
@@ -742,9 +859,7 @@
                         $('#reportAreaBtn').prop('hidden', 1);
                         $("#loading-text").text("Getting your location...");
                     }
-
                     pinClicked = true;
-
                     getUserLocation().then((position) => {
                         if (position != -1) {
                             pinClicked = false;
@@ -754,10 +869,10 @@
                                 .longitude));
                             generateInfoWindow(userMarker,
                                 `<div class="info-window-container">
-                                    <div class="info-description">
-                                        <center>You are here.</center>
-                                    </div>
-                                </div>`);
+                                        <div class="info-description">
+                                            <center>You are here.</center>
+                                        </div>
+                                    </div>`);
                             scrollToElement('.locator-content');
                             zoomToUserLocation();
                             scrollMarkers();
@@ -797,105 +912,44 @@
 
             $(document).on("click", "#reportAreaBtn", function() {
                 if (this.textContent == 'Report Area' || !reportButtonClicked) {
-                    map.setOptions({
-                        draggableCursor: 'pointer',
-                        clickableIcons: false,
-                    });
-                    showInfoMessage(
-                        'Click on the map to pinpoint the area. You can drag the marker to adjust location. Click the button again to cancel.'
-                    );
-                    $('#reportAreaBtn').html(
-                        '<i class="bi bi-stop-circle"></i>Cancel Reporting'
-                    ).addClass('btn-remove');
-                    google.maps.event.addListener(map, 'click', function(event) {
-                        if (reportSubmitting) return;
-
-                        const coordinates = event.latLng;
-
-                        if (reportMarker) {
-                            reportMarker.setPosition(coordinates);
-                            openInfoWindow(reportWindow, reportMarker);
-                            $('[name="latitude"]').val(coordinates.lat());
-                            $('[name="longitude"]').val(coordinates.lng());
-                        } else {
-                            generateInfoWindow(
-                                generateMarker(
-                                    coordinates,
-                                    "{{ asset('assets/img/Reporting.png') }}", true,
-                                    {
-                                        text: 'Report Location',
-                                        className: 'report-marker-label'
-                                    }
-                                ),
-                                `<form id="reportAreaForm">
-                                    @csrf
-                                    <input type="text" name="latitude" value="${coordinates.lat()}" hidden>
-                                    <input type="text" name="longitude" value="${coordinates.lng()}" hidden>
-                                    <div id="reportAreaFormContainer">
-                                        <label>Report Type</label>
-                                        <select name="type" class="form-select">
-                                            <option value="" hidden selected disabled>Select Report Type</option>
-                                            <option value="Flooded">Flooded</option>
-                                            <option value="Roadblocked">Roadblocked</option>
-                                        </select>
-                                        <div class="mt-2">
-                                            <label>Details</label>
-                                            <textarea type="text" name="details" class="form-control" cols="50" rows="10"></textarea>
+                    reportButtonClicked = true;
+                    
+                    if (locating) {
+                        reportEvent();
+                    } else {
+                        getUserLocation().then((position) => {
+                            if (position != -1) {
+                                setMarker(newLatLng(position.coords.latitude, position.coords
+                                    .longitude));
+                                generateInfoWindow(userMarker,
+                                    `<div class="info-window-container">
+                                        <div class="info-description">
+                                            <center>You are here.</center>
                                         </div>
-                                        <div class="mt-2">
-                                            <label>Image</label>
-                                            <input type="file" name="image" class="form-control" id="inputImage" accept=".jpeg, .jpg, .png" hidden>
-                                            <div class="info-window-action-container report-area">
-                                                <button class="btn btn-sm btn-primary" id="imageBtn">
-                                                    <i class="bi bi-image"></i>Select
-                                                </button>
-                                            </div>
-                                            <img id="selectedReportImage" src="" class="form-control" hidden>
-                                            <span id="image-error" class="error" hidden>Please select an image file.</span>
-                                        </div>
-                                        <center>
-                                            <button id="submitAreaBtn" class="modalBtn">
-                                                <div id="defaultBtnText">
-                                                    <i class="bi bi-send"></i>
-                                                    Submit
-                                                </div>
-                                                <div id="loadingBtnText" hidden>
-                                                    <div id="btn-loader">
-                                                        <div id="loader-inner"></div>
-                                                    </div>
-                                                    Submitting
-                                                </div>
-                                            </button>
-                                        <center>
-                                    </div>
-                                </form>`
-                            );
-
-                            reportMarker.addListener('drag', () => reportWindow.close());
-
-                            reportMarker.addListener('dragend', () => {
-                                openInfoWindow(reportWindow, reportMarker);
-                                $('[name="latitude"]').val(reportMarker.getPosition()
-                                    .lat());
-                                $('[name="longitude"]').val(reportMarker.getPosition()
-                                    .lng());
-                            });
-                        }
-                    });
+                                    </div>`);
+                                scrollToElement('.locator-content');
+                                zoomToUserLocation();
+                                scrollMarkers();
+                                reportEvent();
+                            }
+                        });
+                    }
                 } else {
                     map.setOptions({
                         draggableCursor: 'default',
                         clickableIcons: true
                     });
+                    resetMarker();
                     $('#reportAreaBtn').html(
                         '<i class="bi bi-megaphone"></i>Report Area'
                     ).removeClass('btn-remove');
-                    reportMarker?.setMap(null);
-                    reportMarker = null;
+                    reportButtonClicked = false;
                     google.maps.event.clearListeners(map, 'click');
                 }
+            });
 
-                if (!reportButtonClicked) reportButtonClicked = true;
+            $(document).on('click', '.gm-ui-hover-effect', () => {
+                resetMarker();
             });
 
             $(document).on('click', '#submitAreaBtn', function() {
@@ -946,7 +1000,8 @@
                                         showSuccessMessage(
                                             'Report submitted successfully');
 
-                                    status != "warning" && ($('#reportAreaBtn').prop('disabled', 0),
+                                    status != "warning" && ($('#reportAreaBtn')
+                                        .prop('disabled', 0),
                                         $('#reportAreaBtn').click());
                                 },
                                 error: showErrorMessage,
@@ -967,11 +1022,18 @@
                 toggleShowImageBtn($(this), $(this).next(), areaMarkers);
             });
 
-            Echo.channel('area-report').listen('AreaReport', (e) => {
+            Echo.channel('area-report').listen('AreaReport', () => {
                 ajaxRequest('reportArea');
             });
 
-            Echo.channel('evacuation-center').listen('EvacuationCenter', (e) => {
+            Echo.channel('disaster').listen('Disaster', (e) => {
+                $('#locateNearestBtn').prop({
+                    'disabled': e.onGoingDisaster == 0,
+                    'hidden': e.onGoingDisaster == 0
+                });
+            });
+
+            Echo.channel('evacuation-center').listen('EvacuationCenter', () => {
                 ajaxRequest().then(() => {
                     if (locating && (rowData != null || prevNearestEvacuationCenter != null)) {
                         const {

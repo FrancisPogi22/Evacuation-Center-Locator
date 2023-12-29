@@ -29,7 +29,7 @@ class AreaReportController extends Controller
 
     public function getAreaReport($operation, $year, $type)
     {
-        $areaReport = $this->areaReport->where('is_archive', $operation === 'archived');
+        $areaReport = $this->areaReport->where('is_archive', $operation == 'archived');
 
         if ($operation != "archived") {
             $prefix = basename(trim(request()->route()->getPrefix(), '/'));
