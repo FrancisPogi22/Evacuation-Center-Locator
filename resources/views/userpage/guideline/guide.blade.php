@@ -27,13 +27,14 @@
             <section class="guide-item-section">
                 <div class="guide-container">
                     <div class="guide-image-container">
-                        <img src="{{ asset('guide_image/' . $guideline->content_image) }}" id="guide-image"
-                            alt="Picture">
                         <div id="download-guide-container">
                             <button id="downloadGuideBtn">
                                 <i class="bi bi-download"></i> Download
                             </button>
                         </div>
+                        <img src="{{ asset('guide_image/' . $guideline->content_image) }}" id="guide-image"
+                            alt="Picture">
+                        
                     </div>
                 </div>
                 <div class="weather-section">

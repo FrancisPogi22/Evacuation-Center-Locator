@@ -243,10 +243,6 @@ textarea::placeholder {
     gap: 15px;
 }
 
-#download-guide-container {
-    margin: 15px 0 0 15px;
-}
-
 .page-button-container.manage-evacuee-table {
     display: flex;
     margin: 0;
@@ -1262,8 +1258,9 @@ text {
 }
 
 #guide-image {
-    width: 100%;
-    border-radius: 4px;
+    display: flex;
+    margin: 0 auto;
+    width: 70%;
 }
 
 #incident-report-header,
@@ -3717,7 +3714,7 @@ html[data-theme="dark"] button.changeTheme {
     }
 
     #download-guide-container {
-        margin: 10px 0 0 10px;
+        margin-bottom: 10px;
     }
 
     table td,

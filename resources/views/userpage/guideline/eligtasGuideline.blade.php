@@ -180,7 +180,9 @@
             $(document).on('click', '.updateGuidelineBtn', function() {
                 guidelineItem = $(this).closest('div.guideline-box');
                 guidelineId = $(this).prev().attr('aria-id');
+
                 let guidelineLabel = guidelineItem.find('.guideline-title').text();
+                
                 modalLabelContainer.addClass('bg-warning');
                 modalLabel.text('Update Guideline');
                 formBtn.addClass('btn-update').removeClass('btn-submit');
@@ -231,7 +233,7 @@
 
             selectCoverImage.click((e) => {
                 e.preventDefault();
-                $('#coverImage').click();
+                coverImage.click();
             });
 
             selectContentImage.click((e) => {
@@ -320,7 +322,7 @@
 
         function initGuidelines() {
             $.ajax({
-                url: `{{ $prefix == 'resident' || $prefix == '' ? route('resident.eligtas.guideline') : route('eligtas.guideline') }}`,
+                url: `{{ $prefix == 'resident' || $prefix == '' && !auth()->user() ? route('resident.eligtas.guideline') : route('eligtas.guideline') }}`,
                 type: 'GET',
                 beforeSend() {
                     $('#loader').prop('hidden', 0);
