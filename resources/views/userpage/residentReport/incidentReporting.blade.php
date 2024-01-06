@@ -143,85 +143,6 @@
             map.controls[google.maps.ControlPosition.TOP_RIGHT].push(stopBtnContainer);
             map.controls[google.maps.ControlPosition.CENTER].push(loader);
 
-            map.addListener("click", (event) => {
-                if (reportSubmitting) return;
-
-                userInfoWindow?.close();
-
-                $('.stop-btn-container').show();
-                let coordinates = event.latLng;
-
-                if (reportMarker) {
-                    reportMarker.setPosition(coordinates);
-                    reportWindow.open(map, reportMarker);
-                    $('[name="latitude"]').val(coordinates.lat());
-                    $('[name="longitude"]').val(coordinates.lng());
-                } else {
-                    if (!isClicked) showInfoMessage('You can drag the marker to adjust the location.');
-
-                    isClicked = true;
-                    reportWindow = new google.maps.InfoWindow({
-                        content: `<form id="reportAreaForm">
-                            @csrf
-                            <input type="text" name="latitude" value="${coordinates.lat()}" hidden>
-                            <input type="text" name="longitude" value="${coordinates.lng()}" hidden>
-                            <div id="reportAreaFormContainer">
-                                <div>
-                                    <label>Details</label>
-                                    <textarea type="text" name="details" class="form-control" cols="50" rows="10"></textarea>
-                                </div>
-                                <div class="mt-2">
-                                    <label>Image</label>
-                                    <input type="file" name="image" class="form-control" id="inputImage" accept=".jpeg, .jpg, .png" hidden>
-                                    <div class="info-window-action-container report-area">
-                                        <button class="btn btn-sm btn-primary" id="imageBtn">
-                                            <i class="bi bi-image"></i>Select
-                                        </button>
-                                    </div>
-                                    <img id="selectedReportImage" src="" class="form-control" hidden>
-                                    <span id="image-error" class="error" hidden>Please select an image file.</span>
-                                </div>
-                                <center>
-                                    <button id="submitReportBtn" class="modalBtn">
-                                        <div id="defaultBtnText">
-                                            <i class="bi bi-send"></i>
-                                            Submit
-                                        </div>
-                                        <div id="loadingBtnText" hidden>
-                                            <div id="btn-loader">
-                                                <div id="loader-inner"></div>
-                                            </div>
-                                            Submitting
-                                        </div>
-                                    </button>
-                                <center>
-                            </div>
-                        </form>`
-                    });
-                    reportMarker = new google.maps.Marker({
-                        position: coordinates,
-                        map: map,
-                        draggable: true,
-                        icon: {
-                            url: "{{ asset('assets/img/Reporting.png') }}",
-                            scaledSize: new google.maps.Size(35, 35)
-                        },
-                        label: {
-                            text: 'Report Location',
-                            className: 'report-marker-label'
-                        }
-                    });
-                    reportMarker.addListener('click', () => reportWindow.open(map, reportMarker));
-                    reportWindow.open(map, reportMarker);
-                    reportMarker.addListener('drag', () => reportWindow.close());
-                    reportMarker.addListener('dragend', () => {
-                        reportWindow.open(map, reportMarker);
-                        $('[name="latitude"]').val(reportMarker.getPosition().lat());
-                        $('[name="longitude"]').val(reportMarker.getPosition().lng());
-                    });
-                }
-            });
-
             const autocomplete = new google.maps.places.Autocomplete(document.getElementById('searchPlace'));
 
             autocomplete.addListener('place_changed', function() {
@@ -245,7 +166,8 @@
             $('#loader').removeClass('show');
             btnContainer.prop('hidden', (error || geolocationDenied) ? 0 : 1);
             error && $('#retryGeolocation').prop('disabled', 0);
-            geolocationDenied && ($('#retryGeolocation').prop('hidden', 1), $('.map-info-container.denied').prop('hidden', 0));
+            geolocationDenied && ($('#retryGeolocation').prop('hidden', 1), $('.map-info-container.denied').prop('hidden',
+                0));
             $('.map-info-container.retry-location').prop('hidden', (error && !geolocationDenied) ? 0 : 1);
             $('.map-info-container.reporting').prop('hidden', (error || geolocationDenied) ? 1 : 0);
             scrollToElement(geolocationDenied ? '#incident-report-header' : (success ? '.map-info-container.reporting' :
@@ -258,6 +180,18 @@
                 lng: userMarker ? userMarker.getPosition().lng() : 121.12772
             });
             map.setZoom(userMarker ? 18 : 13);
+        }
+
+        function stickMarkerToRadius(position, userBound) {
+            let center = userBound.getCenter();
+
+            return google.maps.geometry.spherical.computeOffset(center, userBound.getRadius(),
+                google.maps.geometry.spherical.computeHeading(center, position));
+        }
+
+        function checkReportLocation(location, userBound) {
+            return google.maps.geometry.spherical.computeDistanceBetween(userBound.getCenter(), location) <=
+                userBound.getRadius();
         }
 
         function getCurrentPosition() {
@@ -307,12 +241,117 @@
                         userBounds = new google.maps.Circle({
                             map,
                             center: userMarker.getPosition(),
-                            radius: 14,
+                            radius: 50,
                             fillColor: color,
                             fillOpacity: 0.3,
                             strokeColor: color,
                             strokeOpacity: 0.8,
                             strokeWeight: 2
+                        });
+
+                        userBounds.addListener("click", (event) => {
+                            if (reportSubmitting) return;
+
+                            userInfoWindow?.close();
+
+                            $('.stop-btn-container').show();
+                            let coordinates = event.latLng;
+
+                            if (reportMarker) {
+                                reportMarker.setPosition(coordinates);
+                                reportWindow.open(map, reportMarker);
+                                $('[name="latitude"]').val(coordinates.lat());
+                                $('[name="longitude"]').val(coordinates.lng());
+                            } else {
+                                if (!isClicked) showInfoMessage(
+                                    'You can drag the marker to adjust the location.');
+
+                                isClicked = true;
+                                reportWindow = new google.maps.InfoWindow({
+                                    content: `<form id="reportAreaForm">
+                                                @csrf
+                                                <input type="text" name="latitude" value="${coordinates.lat()}" hidden>
+                                                <input type="text" name="longitude" value="${coordinates.lng()}" hidden>
+                                                <div id="reportAreaFormContainer">
+                                                    <div>
+                                                        <label>Details</label>
+                                                        <textarea type="text" name="details" class="form-control" cols="50" rows="10"></textarea>
+                                                    </div>
+                                                    <div class="mt-2">
+                                                        <label>Image</label>
+                                                        <input type="file" name="image" class="form-control" id="inputImage" accept=".jpeg, .jpg, .png" hidden>
+                                                        <div class="info-window-action-container report-area">
+                                                            <button class="btn btn-sm btn-primary" id="imageBtn">
+                                                                <i class="bi bi-image"></i>Select
+                                                            </button>
+                                                        </div>
+                                                        <img id="selectedReportImage" src="" class="form-control" hidden>
+                                                        <span id="image-error" class="error" hidden>Please select an image file.</span>
+                                                    </div>
+                                                    <center>
+                                                        <button id="submitReportBtn" class="modalBtn">
+                                                            <div id="defaultBtnText">
+                                                                <i class="bi bi-send"></i>
+                                                                Submit
+                                                            </div>
+                                                            <div id="loadingBtnText" hidden>
+                                                                <div id="btn-loader">
+                                                                    <div id="loader-inner"></div>
+                                                                </div>
+                                                                Submitting
+                                                            </div>
+                                                        </button>
+                                                    <center>
+                                                </div>
+                                            </form>`
+                                });
+                                reportMarker = new google.maps.Marker({
+                                    position: coordinates,
+                                    map: map,
+                                    draggable: true,
+                                    icon: {
+                                        url: "{{ asset('assets/img/Reporting.png') }}",
+                                        scaledSize: new google.maps.Size(35, 35)
+                                    },
+                                    label: {
+                                        text: 'Report Location',
+                                        className: 'report-marker-label'
+                                    }
+                                });
+                                reportMarker.addListener('click', () => reportWindow.open(map, reportMarker));
+                                reportWindow.open(map, reportMarker);
+                                reportMarker.addListener('drag', (e) => {
+                                    let newPosition = e.latLng;
+
+                                    if (checkReportLocation(newPosition, userBounds))
+                                        lastValidPosition = newPosition;
+
+                                    reportWindow.close();
+                                    reportMarker.setPosition(checkReportLocation(newPosition,
+                                        userBounds) ? newPosition : stickMarkerToRadius(
+                                        newPosition, userBounds));
+                                });
+                                reportMarker.addListener('dragend', () => {
+                                    let newPosition = reportMarker.getPosition(),
+                                        snappedPosition = stickMarkerToRadius(newPosition, userBounds);
+
+                                    if (!checkReportLocation(newPosition, userBounds)) {
+                                        reportMarker.setPosition(snappedPosition);
+                                        $('[name="latitude"]').val(snappedPosition.lat());
+                                        $('[name="longitude"]').val(snappedPosition.lng());
+                                    } else {
+                                        $('[name="latitude"]').val(lastValidPosition.lat());
+                                        $('[name="longitude"]').val(lastValidPosition.lng());
+                                    }
+
+                                    reportWindow.open(map, reportMarker);
+                                });
+                                reportMarker.addListener('drag', () => reportWindow.close());
+                                reportMarker.addListener('dragend', () => {
+                                    $('[name="latitude"]').val(reportMarker.getPosition().lat());
+                                    $('[name="longitude"]').val(reportMarker.getPosition().lng());
+                                });
+                            }
                         });
                     } else {
                         setTimeout(() => {

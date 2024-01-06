@@ -207,7 +207,7 @@
                 innerHTML: `<div id="loader-inner"></div><div id="loading-text"></div>`
             }));
 
-            if ('{{ $prefix }}' == 'resident') 
+            if ('{{ $prefix }}' == 'resident')
                 map.controls[google.maps.ControlPosition.BOTTOM_RIGHT].push(Object.assign(document.createElement('div'), {
                     className: 'report-btn-container',
                     innerHTML: `<button id="reportAreaBtn" class="btn-update"><i class="bi bi-megaphone"></i>Report Area</button>`
@@ -335,7 +335,7 @@
             radius = new google.maps.Circle({
                 map,
                 center,
-                radius: 12,
+                radius: 50,
                 fillColor: color,
                 fillOpacity: 0.3,
                 strokeColor: color,
@@ -913,7 +913,7 @@
             $(document).on("click", "#reportAreaBtn", function() {
                 if (this.textContent == 'Report Area' || !reportButtonClicked) {
                     reportButtonClicked = true;
-                    
+
                     if (locating) {
                         reportEvent();
                     } else {
