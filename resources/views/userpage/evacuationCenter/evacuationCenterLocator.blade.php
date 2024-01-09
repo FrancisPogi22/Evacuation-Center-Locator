@@ -91,8 +91,7 @@
                     <table class="table" id="evacuationCenterTable" width="100%">
                         <thead>
                             <tr>
-                                <th>Id</th>
-                                <th>Name</th>
+                                <th colspan="2">Name</th>
                                 <th>Barangay</th>
                                 <th>Latitude</th>
                                 <th>Longitude</th>
@@ -104,6 +103,7 @@
                     </table>
                 </div>
             </div>
+            @include('userpage.evacuationCenter.feedbackForm')
         </div>
         @include('userpage.changePasswordModal')
     </div>
@@ -230,51 +230,51 @@
                     <div class="areaReportContainer">
                         ${type == "evacuationCenter" ?
                             `<div class="info-description">
-                                <span>Name:</span> ${data.name}
-                            </div>
-                            <div class="info-description">
-                                <span>Barangay:</span> ${data.barangay_name}
-                            </div>
-                            <div class="info-description">
-                                <span>No. of evacuees:</span> ${data.evacuees}
-                            </div>
-                            <div class="info-description status">
-                                <span>Status:</span>
-                                <span class="status-content bg-${getStatusColor(data.status)}">
-                                    ${data.status}
-                                </span>
-                            </div>` :
-                            `<div class="info-description">
-                                <span>Report Date:</span> ${formatDateTime(data.report_time)}
-                            </div>
-                            <div class="info-description">
-                                <span>${data.type == "Flooded" ? `${data.type} Area` : data.type}</span>
-                            </div>
-                            <div class="info-description details">
-                                <span>Details: </span>
-                                <div class="info-window-details-container">
-                                    ${data.details}
-                                </div>
-                            </div>
-                            <div class="info-description photo">
-                                <span>Image: </span>
-                                <div hidden>
-                                    ${data.latitude}, ${data.longitude}
-                                </div>
-                                <button class="btn btn-sm btn-primary toggleImageBtn">
-                                    <i class="bi bi-chevron-expand"></i>View
-                                </button>
-                                <img src="/reports_image/${data.photo}" class="form-control" hidden>
-                            </div>
-                            <div class="info-description update" ${data.update.length == 0 ? 'hidden' : ''}>
-                                <span>Updates Today: </span>
-                                <div class="info-window-update-container">
-                                    <div class="update-date">
-                                        ${data.update.length > 0 ? formatDateTime(data.update[0].update_time, 'date') : ''}
+                                        <span>Name:</span> ${data.name}
                                     </div>
-                                    ${data.update.length > 0 ?
-                                        data.update.map((update) => {
-                                        return `<p class="update-details-container">
+                                    <div class="info-description">
+                                        <span>Barangay:</span> ${data.barangay_name}
+                                    </div>
+                                    <div class="info-description">
+                                        <span>No. of evacuees:</span> ${data.evacuees}
+                                    </div>
+                                    <div class="info-description status">
+                                        <span>Status:</span>
+                                        <span class="status-content bg-${getStatusColor(data.status)}">
+                                            ${data.status}
+                                        </span>
+                                    </div>` :
+                            `<div class="info-description">
+                                        <span>Report Date:</span> ${formatDateTime(data.report_time)}
+                                    </div>
+                                    <div class="info-description">
+                                        <span>${data.type == "Flooded" ? `${data.type} Area` : data.type}</span>
+                                    </div>
+                                    <div class="info-description details">
+                                        <span>Details: </span>
+                                        <div class="info-window-details-container">
+                                            ${data.details}
+                                        </div>
+                                    </div>
+                                    <div class="info-description photo">
+                                        <span>Image: </span>
+                                        <div hidden>
+                                            ${data.latitude}, ${data.longitude}
+                                        </div>
+                                        <button class="btn btn-sm btn-primary toggleImageBtn">
+                                            <i class="bi bi-chevron-expand"></i>View
+                                        </button>
+                                        <img src="/reports_image/${data.photo}" class="form-control" hidden>
+                                    </div>
+                                    <div class="info-description update" ${data.update.length == 0 ? 'hidden' : ''}>
+                                        <span>Updates Today: </span>
+                                        <div class="info-window-update-container">
+                                            <div class="update-date">
+                                                ${data.update.length > 0 ? formatDateTime(data.update[0].update_time, 'date') : ''}
+                                            </div>
+                                            ${data.update.length > 0 ?
+                                                data.update.map((update) => {
+                                                return `<p class="update-details-container">
                                                 <small>
                                                     as of ${formatDateTime(update.update_time, 'time')}
                                                 </small><br>
@@ -282,9 +282,9 @@
                                                     ${update.update_details}
                                                 </span>
                                             </p>`}).join('') : ''
-                                    }
-                                </div>
-                            </div>`}
+                                            }
+                                        </div>
+                                    </div>`}
                     </div>`;
                 generateInfoWindow(marker, content);
             });
@@ -785,6 +785,52 @@
         }
 
         $(document).ready(() => {
+            let validator = $('#feedbackForm').validate({
+                rules: {
+                    feedback: 'required'
+                },
+                messages: {
+                    feedback: 'Please Enter Your Feedback.'
+                },
+                errorElement: 'span',
+                submitHandler(form) {
+                    confirmModal(`Do you want to share this feedback?`).then((result) => {
+                        if (!result.isConfirmed) return;
+                        
+                        $.ajax({
+                            data: $(form).serialize(),
+                            url: "{{ route('resident.evacuation.center.add.feedback') }}",
+                            method: "POST",
+                            beforeSend() {
+                                $('#btn-loader').prop('hidden', 0);
+                                $('#btn-text').text('Sending');
+                                $('input, #sendFeedbackBtn, #closeModalBtn')
+                                    .prop('disabled', 1);
+                            },
+                            success(response) {
+                                $('#btn-loader').removeClass('show');
+                                $('#sendFeedbackBtn').prop('disabled', 0);
+
+                                response.status == 'warning' ? showWarningMessage(
+                                    response.message) : (
+                                    showSuccessMessage(
+                                        `Feedback successfully submitted.`
+                                    ), $('#feedbackModal').modal('hide'));
+                            },
+                            error: showErrorMessage,
+                            complete() {
+                                $('#btn-loader').prop('hidden', 1);
+                                $('#btn-text').text(
+                                    `${operation[0].toUpperCase()}${operation.slice(1)}`
+                                );
+                                $('input, #sendFeedbackBtn, #closeModalBtn')
+                                    .prop('disabled', 0);
+                            }
+                        });
+                    });
+                }
+            });
+
             ajaxRequest('reportArea');
             ajaxRequest().then(() => {
                 evacuationCenterTable = $('#evacuationCenterTable').DataTable({
@@ -828,7 +874,7 @@
                         },
                         {
                             data: 'action',
-                            width: '1rem',
+                            width: '20%',
                             orderable: false,
                             searchable: false
                         }
@@ -946,6 +992,11 @@
                     reportButtonClicked = false;
                     google.maps.event.clearListeners(map, 'click');
                 }
+            });
+
+            $(document).on("click", ".sendFeedback", function() {
+                $('#evacuationId').val(getRowData(this, evacuationCenterTable).id);
+                $('#feedbackModal').modal('show');
             });
 
             $(document).on('click', '.gm-ui-hover-effect', () => {

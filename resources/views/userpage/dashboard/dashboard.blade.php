@@ -135,10 +135,40 @@
                         <div id="loading-text">Getting Evacuees Data...</div>
                         <div id="loader-inner"></div>
                     </div>
-                    <div class="pie-container" hidden>
-                        <div class="pie-label"><span>Total of Evacuees per Barangay</span></div>
-                        <div class="pie-content">
-                            <div class="pie-figure"></div>
+                    <div class="static-graph">
+                        <div class="evac-list">
+                            <div class="list-header">
+                                <p>Most Evacuation Center Used</p>
+                                <select class="form-control disasterName">
+                                    <option value="" hidden selected disabled>Select Disaster</option>
+                                    @foreach ($disaster as $disaster)
+                                        <option value="{{ $disaster->id }}">{{ $disaster->name }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="evac-list-container">
+                                @forelse ($mostUsedEvacuation as $evacuation)
+                                    <div class="evac-widget">
+                                        <input type="text" value="{{ $evacuation->evacuation_id }}"
+                                            class="evacuationId" hidden>
+                                        <div class="evac-details">
+                                            <p>{{ $evacuation->name }}</p>
+                                            <p>{{ $evacuation->total_affected }}</p>
+                                            <span>Total Evacuees Affected</span>
+                                        </div>
+                                        <button class="btn-submit" id="viewFeedback">See Remarks</button>
+                                        <div class="evac-remarks" hidden>
+                                        </div>
+                                    </div>
+                                @empty
+                                @endforelse
+                            </div>
+                        </div>
+                        <div class="pie-container" hidden>
+                            <div class="pie-label"><span>Total of Evacuees per Barangay</span></div>
+                            <div class="pie-content">
+                                <div class="pie-figure"></div>
+                            </div>
                         </div>
                     </div>
                     <div class="bar-container">
@@ -165,6 +195,74 @@
     @include('partials.toastr')
     <script>
         $(document).ready(() => {
+            $(document).on('click', '#viewFeedback', function() {
+                let evacuationItem = $(this).closest('.evac-widget');
+
+                $.ajax({
+                    type: "GET",
+                    url: "{{ route('get.feedback', 'evacuationId') }}".replace('evacuationId',
+                        evacuationItem.find('.evacuationId').val()),
+                    success(response) {
+                        evacuationItem.find('.evac-remarks').empty();
+                        evacuationItem.find('.evac-remarks').prop('hidden', 0);
+
+                        if (response.feedback == 0) {
+                            evacuationItem.find('.evac-remarks').append(`
+                                <div class="empty-data">
+                                    <p>No Data Found.</p>
+                                </div>
+                            `);
+                            return;
+                        }
+
+                        response.feedback.forEach(feedback => {
+                            $('.evac-remarks').append(`
+                                <div class="evac-widget">
+                                    <div class="evac-details">
+                                        <p>${feedback.feedback}</p>
+                                    </div>
+                                </div>
+                            `);
+                        });
+                    },
+                    error: showErrorMessage
+                });
+            });
+
+            $(document).on('change', '.disasterName', function() {
+                $.ajax({
+                    type: "GET",
+                    url: "{{ route('get.affected', 'disasterId') }}".replace('disasterId',
+                        $('.disasterName').val()),
+                    success(response) {
+                        $('.evac-list-container').empty();
+
+                        if (response.mostUsedEvacuation == 0) {
+                            $('.evac-list-container').append(`
+                                <div class="empty-data">
+                                    <p>No Data Found.</p>
+                                </div>
+                            `);
+                            return;
+                        }
+
+                        response.mostUsedEvacuation.forEach(evacuation => {
+                            $('.evac-list-container').append(`
+                                <div class="evac-widget">
+                                    <div class="evac-details">
+                                        <p>${evacuation.name}</p>
+                                        <p>${evacuation.total_affected}</p>
+                                        <span>Total Evacuees Affected</span>
+                                    </div>
+                                    <button class="btn-submit" id="viewFeedback">See Remarks</button>
+                                </div>
+                            `);
+                        });
+                    },
+                    error: showErrorMessage
+                });
+            });
+
             let validator, modal = $("#generateReportModal"),
                 form = $('#generateReportForm'),
                 disasterList = $('#disaster-list'),

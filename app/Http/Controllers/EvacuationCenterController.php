@@ -8,16 +8,17 @@ use Illuminate\Http\Request;
 use App\Models\ActivityUserLog;
 use Yajra\DataTables\DataTables;
 use App\Models\EvacuationCenter;
-use App\Events\EvacuationCenterLocator;
+use App\Models\FeedBack;
 use Illuminate\Support\Facades\Validator;
 
 class EvacuationCenterController extends Controller
 {
-    private $evacuationCenter, $logActivity, $evacuee;
+    private $evacuationCenter, $logActivity, $evacuee, $feedback;
 
     function __construct()
     {
         $this->evacuee          = new Evacuee;
+        $this->feedback          = new FeedBack;
         $this->logActivity      = new ActivityUserLog;
         $this->evacuationCenter = new EvacuationCenter;
     }
@@ -30,7 +31,8 @@ class EvacuationCenterController extends Controller
             ->addColumn('evacuees', function ($evacuation) use ($operation) {
                 return $operation == "locator" ? $this->evacuee->where('evacuation_id', $evacuation->id)->sum('individuals') : '';
             })->addColumn('action', function ($evacuation) use ($operation, $type) {
-                if ($operation == "locator") return '<button class="btn-table-primary locateEvacuationCenter"><i class="bi bi-search"></i>Locate</button>';
+                if ($operation == "locator") return '<div class="action-container"><button class="btn-table-primary locateEvacuationCenter"><i class="bi bi-search"></i>Locate</button>
+                    <button class="btn-table-update sendFeedback"><i class="bi bi-send"></i>Send Feedback</button></div>';
 
                 $selectOption = $updateBtn = $archiveBtn = "";
 
@@ -52,6 +54,22 @@ class EvacuationCenterController extends Controller
             })->rawColumns(['evacuees', 'action'])->make(true);
     }
 
+    public function addFeedback(Request $request) {
+        $feedbackValidation = Validator::make($request->all(), [
+            'feedback' => 'required',
+            'evacuationId'=> 'required'
+        ]);
+
+        if ($feedbackValidation->fails()) return response(['status' => 'warning', 'message' => implode('<br>', $feedbackValidation->errors()->all())]);
+
+        $this->feedback->create([
+            'feedback' => ucfirst(trim($request->feedback)),
+            'evacuation_center_id'=> $request->evacuationId
+        ]);
+
+        return response([]);
+    }
+
     public function createEvacuationCenter(Request $request)
     {
         $evacuationCenterValidation = Validator::make($request->all(), [
@@ -63,7 +81,7 @@ class EvacuationCenterController extends Controller
 
         if ($evacuationCenterValidation->fails()) return response(['status' => 'warning', 'message' => implode('<br>', $evacuationCenterValidation->errors()->all())]);
 
-        $evacuationCenter =  $this->evacuationCenter->create([
+        $evacuationCenter = $this->evacuationCenter->create([
             'name'          => ucwords(trim($request->name)),
             'latitude'      => $request->latitude,
             'longitude'     => $request->longitude,
