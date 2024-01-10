@@ -43,9 +43,13 @@ Route::prefix('resident')->middleware('guest')->group(function () {
             Route::get('/getAreaReport/{operation}/{year}/{type}', 'getAreaReport')->name('get');
         });
 
+        Route::name('evacuation.center.')->controller(EvacuationCenterController::class)->group(function () {
+            Route::get('/viewEvacuationCenter/{operation}/{type}', 'getEvacuationData')->name('get');
+            Route::post('/addFeedback', 'addFeedback')->name('add.feedback');
+        });
+
         Route::post('/createIncidentReport', IncidentReportController::class . '@createIncidentReport')->name('incident.report');
         Route::post('/createEmergencyReport', EmergencyReportController::class . '@createEmergencyReport')->name('emergency.report');
-        Route::get('/viewEvacuationCenter/{operation}/{type}', EvacuationCenterController::class . '@getEvacuationData')->name('evacuation.center.get');
     });
 });
 
@@ -59,6 +63,8 @@ Route::middleware(['auth', 'check.status'])->group(function () {
             Route::get('/dangerAreaReport/{operation}', 'dangerAreaReport')->name('danger.area.report');
             Route::get('/userActivityLog', 'userActivityLog')->name('activity.log');
             Route::get('/disasterInformation/{operation}', 'disasterInformation')->name('disaster.information');
+            Route::get('/mostUsedEvacuation/{disasterId}', 'mostUsedEvacuation')->name('get.affected');
+            Route::get('/fetchFeedback/{evacuationId}', 'fetchFeedback')->name('get.feedback');
         });
 
         Route::prefix('disaster')->name('disaster.')->controller(DisasterController::class)->group(function () {

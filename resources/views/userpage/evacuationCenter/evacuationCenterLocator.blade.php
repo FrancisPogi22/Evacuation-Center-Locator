@@ -91,8 +91,7 @@
                     <table class="table" id="evacuationCenterTable" width="100%">
                         <thead>
                             <tr>
-                                <th>Id</th>
-                                <th>Name</th>
+                                <th colspan="2">Name</th>
                                 <th>Barangay</th>
                                 <th>Latitude</th>
                                 <th>Longitude</th>
@@ -104,6 +103,7 @@
                     </table>
                 </div>
             </div>
+            @include('userpage.evacuationCenter.feedbackForm')
         </div>
         @include('userpage.changePasswordModal')
     </div>
@@ -780,6 +780,52 @@
         }
 
         $(document).ready(() => {
+            let validator = $('#feedbackForm').validate({
+                rules: {
+                    feedback: 'required'
+                },
+                messages: {
+                    feedback: 'Please Enter Your Feedback.'
+                },
+                errorElement: 'span',
+                submitHandler(form) {
+                    confirmModal(`Do you want to share this feedback?`).then((result) => {
+                        if (!result.isConfirmed) return;
+
+                        $.ajax({
+                            data: $(form).serialize(),
+                            url: "{{ route('resident.evacuation.center.add.feedback') }}",
+                            method: "POST",
+                            beforeSend() {
+                                $('#btn-loader').prop('hidden', 0);
+                                $('#btn-text').text('Sending');
+                                $('input, #sendFeedbackBtn, #closeModalBtn')
+                                    .prop('disabled', 1);
+                            },
+                            success(response) {
+                                $('#btn-loader').removeClass('show');
+                                $('#sendFeedbackBtn').prop('disabled', 0);
+
+                                response.status == 'warning' ? showWarningMessage(
+                                    response.message) : (
+                                    showSuccessMessage(
+                                        `Feedback successfully submitted.`
+                                    ), $('#feedbackModal').modal('hide'));
+                            },
+                            error: showErrorMessage,
+                            complete() {
+                                $('#btn-loader').prop('hidden', 1);
+                                $('#btn-text').text(
+                                    `${operation[0].toUpperCase()}${operation.slice(1)}`
+                                );
+                                $('input, #sendFeedbackBtn, #closeModalBtn')
+                                    .prop('disabled', 0);
+                            }
+                        });
+                    });
+                }
+            });
+
             ajaxRequest('reportArea');
             ajaxRequest().then(() => {
                 evacuationCenterTable = $('#evacuationCenterTable').DataTable({
@@ -823,7 +869,7 @@
                         },
                         {
                             data: 'action',
-                            width: '1rem',
+                            width: '20%',
                             orderable: false,
                             searchable: false
                         }
@@ -942,6 +988,11 @@
                     reportButtonClicked = false;
                     google.maps.event.clearListeners(map, 'click');
                 }
+            });
+
+            $(document).on("click", ".sendFeedback", function() {
+                $('#evacuationId').val(getRowData(this, evacuationCenterTable).id);
+                $('#feedbackModal').modal('show');
             });
 
             $(document).on('click', '#submitAreaBtn', function() {

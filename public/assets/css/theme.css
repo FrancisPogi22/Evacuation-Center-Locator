@@ -1110,7 +1110,8 @@ div.flatpickr-rContainer::-webkit-scrollbar,
     font-weight: 600;
 }
 
-.content-description span {
+.content-description span, 
+.evac-widget span {
     color: var(--color-d-sub-text);
 }
 
@@ -1129,13 +1130,13 @@ div.flatpickr-rContainer::-webkit-scrollbar,
 }
 
 .pie-container {
+    pointer-events: none;
     width: 100%;
 }
 
 .pie-figure {
     border: 1px solid var(--color-light-gray);
     filter: drop-shadow(0 1px 2px rgb(0 0 0 / 0.1)) drop-shadow(0 1px 1px rgb(0 0 0 / 0.06));
-    height: 100%;
 }
 
 .pie-chart {
@@ -1149,6 +1150,7 @@ div.flatpickr-rContainer::-webkit-scrollbar,
 }
 
 .pie-label {
+    pointer-events:all;
     text-align: center;
     padding: 10px;
     font-size: 16px;
@@ -1170,7 +1172,7 @@ div.flatpickr-rContainer::-webkit-scrollbar,
 }
 
 .pie-container.active .pie-content {
-    height: 100%;
+    height: inherit;
 }
 
 .pie-container.active .pie-label {
@@ -1906,6 +1908,73 @@ html[data-theme="dark"] .gmnoprint button span {
 
 .overlay-text:hover {
     transform: scale(1.05);
+}
+
+.static-graph{
+    display: flex;
+    gap: 20px;
+}
+
+.evac-list{
+    height: 100%;
+    width: 50%;
+    border-radius: 8px;
+    border: 1px solid var(--color-light-gray);
+    background: var(--color-text);
+    filter: drop-shadow(0 1px 2px rgb(0 0 0 / 0.1)) drop-shadow(0 1px 1px rgb(0 0 0 / 0.06));
+    padding: 10px;
+}
+
+.list-header{
+    display: flex;
+    margin-bottom: 10px;
+    gap: 20px;
+}
+
+.list-header select {
+    flex: 0.7;
+}
+
+.list-header p{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex: 1;
+    margin: 0;
+}
+
+.evac-details p {
+    margin: 0;
+}
+
+.evac-details p:nth-child(2) {
+    font-size: 34px;
+}
+
+#viewFeedback{
+    margin: 6px 0;
+}
+
+.evac-list p{
+    color: var(--color-black);
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.empty-data{
+    padding: 20px;
+    text-align: center;
+}
+
+.evac-widget{
+    margin-bottom: 10px;
+    padding: 20px;
+    padding-bottom: 10px;
+    background: var(--color-text);
+    border-radius: 8px;
+    border: 1px solid var(--color-light-gray);
+    background: var(--color-text);
+    filter: drop-shadow(0 1px 2px rgb(0 0 0 / 0.1)) drop-shadow(0 1px 1px rgb(0 0 0 / 0.06));
 }
 
 .hotline-container,
