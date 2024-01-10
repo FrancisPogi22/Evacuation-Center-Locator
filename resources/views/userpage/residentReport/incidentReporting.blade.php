@@ -28,14 +28,20 @@
                     </div>
                 </div>
                 <div id="map-info-list-container">
+                    <div class="map-info-list userMarker" hidden>
+                        <i class="bi bi-dot"></i> You can drag the user location marker to adjust its location within
+                        the map.
+                    </div>
                     <div class="map-info-list">
-                        <i class="bi bi-dot"></i> Click the map to pin the location of your report.
+                        <i class="bi bi-dot"></i> Click inside the radius to pin the location of your report.
                     </div>
                     <div class="map-info-list">
                         <i class="bi bi-dot"></i> Fill up the report details and upload image.
                     </div>
                     <div class="map-info-list">
-                        <i class="bi bi-dot"></i> You can drag the marker to adjust the location.
+                        <i class="bi bi-dot"></i> You can drag the report marker to adjust its location within the
+                        specified
+                        radius.
                     </div>
                     <div class="map-info-list">
                         <i class="bi bi-dot"></i> Click the submit button.
@@ -55,8 +61,8 @@
                         again.
                     </div>
                     <div class="map-info-list">
-                        <i class="bi bi-dot"></i> If attempting to retry geolocation is unsuccessful, utilize the nearby
-                        place search functionality. Enter a nearby place or establishment, and upon selection, the map
+                        <i class="bi bi-dot"></i> If attempting to retry geolocation is unsuccessful, use the nearby
+                        place search bar. Enter a nearby place or establishment, and upon selection, the map
                         will navigate to it.
                     </div>
                 </div>
@@ -149,14 +155,19 @@
                 const selectedPlace = autocomplete.getPlace();
 
                 if (selectedPlace.geometry) {
-                    map.panTo({
+                    let coords = {
                         lat: selectedPlace.geometry.location.lat(),
                         lng: selectedPlace.geometry.location.lng()
-                    });
-                    map.setZoom(16);
+                    }
+
+                    map.panTo(coords);
+                    pinLocation(true, coords);
+                    map.setZoom(18);
                     scrollToElement('.area-map');
                     $('#searchPlace').val('');
                     userInfoWindow?.close();
+                    $('.map-info-container').prop('hidden', 1);
+                    $('.map-info-container.reporting, .map-info-list.userMarker').prop('hidden', 0);
                 }
             });
         }
@@ -166,10 +177,11 @@
             $('#loader').removeClass('show');
             btnContainer.prop('hidden', (error || geolocationDenied) ? 0 : 1);
             error && $('#retryGeolocation').prop('disabled', 0);
-            geolocationDenied && ($('#retryGeolocation').prop('hidden', 1), $('.map-info-container.denied').prop('hidden',
-                0));
+            geolocationDenied && ($('#retryGeolocation').prop('hidden', 1),
+                $('.map-info-container.denied').prop('hidden', 0));
             $('.map-info-container.retry-location').prop('hidden', (error && !geolocationDenied) ? 0 : 1);
             $('.map-info-container.reporting').prop('hidden', (error || geolocationDenied) ? 1 : 0);
+            $('.map-info-list.userMarker').prop('hidden', success ? 1 : 0);
             scrollToElement(geolocationDenied ? '#incident-report-header' : (success ? '.map-info-container.reporting' :
                 '.map-info-container.retry-location'));
         }
@@ -211,148 +223,8 @@
                         };
 
                         setReportingMap(coords, 18, true, null);
-                        showInfoMessage('Click on the map to pinpoint the location of the incident.');
-
-                        userMarker = new google.maps.Marker({
-                            position: coords,
-                            map,
-                            icon: {
-                                url: "{{ asset('assets/img/User.png') }}",
-                                scaledSize: new google.maps.Size(35, 35),
-                            }
-                        });
-
-                        userInfoWindow = new google.maps.InfoWindow({
-                            content: `<div class="info-window-container">
-                                    <center>You are here.</center>
-                                </div>`
-                        });
-
-                        userMarker.addListener('click', () => {
-                            userInfoWindow.open(map, userMarker);
-                            map.panTo(userMarker.getPosition());
-                            map.setZoom(19);
-                        });
-
-                        userInfoWindow.open(map, userMarker);
-
-                        let color = localStorage.getItem('theme') == 'dark' ? "#ffffff" : "#557ed8";
-
-                        userBounds = new google.maps.Circle({
-                            map,
-                            center: userMarker.getPosition(),
-                            radius: 50,
-                            fillColor: color,
-                            fillOpacity: 0.3,
-                            strokeColor: color,
-                            strokeOpacity: 0.8,
-                            strokeWeight: 2
-                        });
-
-                        userBounds.addListener("click", (event) => {
-                            if (reportSubmitting) return;
-
-                            userInfoWindow?.close();
-
-                            $('.stop-btn-container').show();
-                            let coordinates = event.latLng;
-
-                            if (reportMarker) {
-                                reportMarker.setPosition(coordinates);
-                                reportWindow.open(map, reportMarker);
-                                $('[name="latitude"]').val(coordinates.lat());
-                                $('[name="longitude"]').val(coordinates.lng());
-                            } else {
-                                if (!isClicked) showInfoMessage(
-                                    'You can drag the marker to adjust the location.');
-
-                                isClicked = true;
-                                reportWindow = new google.maps.InfoWindow({
-                                    content: `<form id="reportAreaForm">
-                                                @csrf
-                                                <input type="text" name="latitude" value="${coordinates.lat()}" hidden>
-                                                <input type="text" name="longitude" value="${coordinates.lng()}" hidden>
-                                                <div id="reportAreaFormContainer">
-                                                    <div>
-                                                        <label>Details</label>
-                                                        <textarea type="text" name="details" class="form-control" cols="50" rows="10"></textarea>
-                                                    </div>
-                                                    <div class="mt-2">
-                                                        <label>Image</label>
-                                                        <input type="file" name="image" class="form-control" id="inputImage" accept=".jpeg, .jpg, .png" hidden>
-                                                        <div class="info-window-action-container report-area">
-                                                            <button class="btn btn-sm btn-primary" id="imageBtn">
-                                                                <i class="bi bi-image"></i>Select
-                                                            </button>
-                                                        </div>
-                                                        <img id="selectedReportImage" src="" class="form-control" hidden>
-                                                        <span id="image-error" class="error" hidden>Please select an image file.</span>
-                                                    </div>
-                                                    <center>
-                                                        <button id="submitReportBtn" class="modalBtn">
-                                                            <div id="defaultBtnText">
-                                                                <i class="bi bi-send"></i>
-                                                                Submit
-                                                            </div>
-                                                            <div id="loadingBtnText" hidden>
-                                                                <div id="btn-loader">
-                                                                    <div id="loader-inner"></div>
-                                                                </div>
-                                                                Submitting
-                                                            </div>
-                                                        </button>
-                                                    <center>
-                                                </div>
-                                            </form>`
-                                });
-                                reportMarker = new google.maps.Marker({
-                                    position: coordinates,
-                                    map: map,
-                                    draggable: true,
-                                    icon: {
-                                        url: "{{ asset('assets/img/Reporting.png') }}",
-                                        scaledSize: new google.maps.Size(35, 35)
-                                    },
-                                    label: {
-                                        text: 'Report Location',
-                                        className: 'report-marker-label'
-                                    }
-                                });
-                                reportMarker.addListener('click', () => reportWindow.open(map, reportMarker));
-                                reportWindow.open(map, reportMarker);
-                                reportMarker.addListener('drag', (e) => {
-                                    let newPosition = e.latLng;
-
-                                    if (checkReportLocation(newPosition, userBounds))
-                                        lastValidPosition = newPosition;
-
-                                    reportWindow.close();
-                                    reportMarker.setPosition(checkReportLocation(newPosition,
-                                        userBounds) ? newPosition : stickMarkerToRadius(
-                                        newPosition, userBounds));
-                                });
-                                reportMarker.addListener('dragend', () => {
-                                    let newPosition = reportMarker.getPosition(),
-                                        snappedPosition = stickMarkerToRadius(newPosition, userBounds);
-
-                                    if (!checkReportLocation(newPosition, userBounds)) {
-                                        reportMarker.setPosition(snappedPosition);
-                                        $('[name="latitude"]').val(snappedPosition.lat());
-                                        $('[name="longitude"]').val(snappedPosition.lng());
-                                    } else {
-                                        $('[name="latitude"]').val(lastValidPosition.lat());
-                                        $('[name="longitude"]').val(lastValidPosition.lng());
-                                    }
-
-                                    reportWindow.open(map, reportMarker);
-                                });
-                                reportMarker.addListener('drag', () => reportWindow.close());
-                                reportMarker.addListener('dragend', () => {
-                                    $('[name="latitude"]').val(reportMarker.getPosition().lat());
-                                    $('[name="longitude"]').val(reportMarker.getPosition().lng());
-                                });
-                            }
-                        });
+                        showInfoMessage('Click within the radius to pinpoint the location of the incident.');
+                        pinLocation(false, coords);
                     } else {
                         setTimeout(() => {
                             setReportingMap(null, 13, true, true);
@@ -386,6 +258,171 @@
                     maximumAge: 0
                 }
             );
+        }
+
+        function pinLocation(draggable, coords) {
+            if (userMarker) {
+                userMarker.setPosition(coords);
+                userBounds.setCenter(coords);
+                return
+            }
+
+            userMarker = new google.maps.Marker({
+                position: coords,
+                map,
+                draggable: draggable,
+                icon: {
+                    url: "{{ asset('assets/img/User.png') }}",
+                    scaledSize: new google.maps.Size(35, 35),
+                }
+            });
+
+            userInfoWindow = new google.maps.InfoWindow({
+                content: `<div class="info-window-container">
+                        <center>You are here.</center>
+                    </div>`
+            });
+
+            userMarker.addListener('click', () => {
+                userInfoWindow.open(map, userMarker);
+                map.panTo(userMarker.getPosition());
+                map.setZoom(19);
+            });
+
+            userInfoWindow.open(map, userMarker);
+
+            let color = localStorage.getItem('theme') == 'dark' ? "#ffffff" : "#557ed8";
+
+            userBounds = new google.maps.Circle({
+                map,
+                center: userMarker.getPosition(),
+                radius: 50,
+                fillColor: color,
+                fillOpacity: 0.3,
+                strokeColor: color,
+                strokeOpacity: 0.8,
+                strokeWeight: 2
+            });
+
+            if (draggable) {
+                google.maps.event.addListener(userMarker, 'drag', function() {
+                    userBounds.setCenter(userMarker.getPosition());
+                    resetReportMarker();
+                });
+            }
+
+            userBounds.addListener("click", (event) => {
+                if (reportSubmitting) return;
+
+                userInfoWindow?.close();
+
+                $('.stop-btn-container').show();
+                let coordinates = event.latLng;
+
+                if (reportMarker) {
+                    reportMarker.setPosition(coordinates);
+                    reportWindow.open(map, reportMarker);
+                    $('[name="latitude"]').val(coordinates.lat());
+                    $('[name="longitude"]').val(coordinates.lng());
+                } else {
+                    if (!isClicked) showInfoMessage(
+                        'You can drag the report marker to adjust the location.');
+
+                    isClicked = true;
+                    reportWindow = new google.maps.InfoWindow({
+                        content: `<form id="reportAreaForm">
+                                @csrf
+                                <input type="text" name="latitude" value="${coordinates.lat()}" hidden>
+                                <input type="text" name="longitude" value="${coordinates.lng()}" hidden>
+                                <div id="reportAreaFormContainer">
+                                    <div>
+                                        <label>Details</label>
+                                        <textarea type="text" name="details" class="form-control" cols="50" rows="10"></textarea>
+                                    </div>
+                                    <div class="mt-2">
+                                        <label>Image</label>
+                                        <input type="file" name="image" class="form-control" id="inputImage" accept=".jpeg, .jpg, .png" hidden>
+                                        <div class="info-window-action-container report-area">
+                                            <button class="btn btn-sm btn-primary" id="imageBtn">
+                                                <i class="bi bi-image"></i>Select
+                                            </button>
+                                        </div>
+                                        <img id="selectedReportImage" src="" class="form-control" hidden>
+                                        <span id="image-error" class="error" hidden>Please select an image file.</span>
+                                    </div>
+                                    <center>
+                                        <button id="submitReportBtn" class="modalBtn">
+                                            <div id="defaultBtnText">
+                                                <i class="bi bi-send"></i>
+                                                Submit
+                                            </div>
+                                            <div id="loadingBtnText" hidden>
+                                                <div id="btn-loader">
+                                                    <div id="loader-inner"></div>
+                                                </div>
+                                                Submitting
+                                            </div>
+                                        </button>
+                                    <center>
+                                </div>
+                            </form>`
+                    });
+                    reportMarker = new google.maps.Marker({
+                        position: coordinates,
+                        map: map,
+                        draggable: true,
+                        icon: {
+                            url: "{{ asset('assets/img/Reporting.png') }}",
+                            scaledSize: new google.maps.Size(35, 35)
+                        },
+                        label: {
+                            text: 'Report Location',
+                            className: 'report-marker-label'
+                        }
+                    });
+                    reportMarker.addListener('click', () => reportWindow.open(map, reportMarker));
+                    reportWindow.open(map, reportMarker);
+                    reportMarker.addListener('drag', (e) => {
+                        let newPosition = e.latLng;
+
+                        if (checkReportLocation(newPosition, userBounds))
+                            lastValidPosition = newPosition;
+
+                        reportWindow.close();
+                        reportMarker.setPosition(checkReportLocation(newPosition,
+                            userBounds) ? newPosition : stickMarkerToRadius(
+                            newPosition, userBounds));
+                    });
+                    reportMarker.addListener('dragend', () => {
+                        let newPosition = reportMarker.getPosition(),
+                            snappedPosition = stickMarkerToRadius(newPosition, userBounds);
+
+                        if (!checkReportLocation(newPosition, userBounds)) {
+                            reportMarker.setPosition(snappedPosition);
+                            $('[name="latitude"]').val(snappedPosition.lat());
+                            $('[name="longitude"]').val(snappedPosition.lng());
+                        } else {
+                            $('[name="latitude"]').val(lastValidPosition.lat());
+                            $('[name="longitude"]').val(lastValidPosition.lng());
+                        }
+
+                        reportWindow.open(map, reportMarker);
+                    });
+                    reportMarker.addListener('drag', () => reportWindow.close());
+                    reportMarker.addListener('dragend', () => {
+                        $('[name="latitude"]').val(reportMarker.getPosition().lat());
+                        $('[name="longitude"]').val(reportMarker.getPosition().lng());
+                    });
+                }
+            });
+        }
+
+        function resetReportMarker() {
+            if (reportMarker) {
+                reportMarker.setMap(null);
+                reportMarker = null;
+                reportWindow = null;
+            }
         }
 
         $(document).ready(() => {
@@ -460,6 +497,10 @@
                 $('.stop-btn-container').hide();
                 $('#loader').addClass('show');
                 resetMapView();
+                userMarker?.setMap(null);
+                userMarker = null;
+                userInfoWindow = null;
+                userBounds = null;
                 reportMarker?.setMap(null);
                 getCurrentPosition();
                 $(this).prop('disabled', 1);
@@ -467,9 +508,7 @@
 
             $(document).on('click', '#cancelReportingBtn', function() {
                 resetMapView();
-                reportMarker.setMap(null);
-                reportMarker = null;
-                reportWindow = null;
+                resetReportMarker();
                 $('.stop-btn-container').hide();
             });
         });

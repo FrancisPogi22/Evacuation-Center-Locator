@@ -268,6 +268,10 @@ textarea::placeholder {
     margin: 0 15px 15px 15px;
 }
 
+#guideline-img-container img {
+    background-color: var(--color-text);
+}
+
 .type-img {
     border: solid 1px var(--color-light-gray);
     border-radius: 5px;
@@ -287,12 +291,6 @@ textarea::placeholder {
     background: inherit;
     transition: 0.1s all ease-in-out;
     filter: drop-shadow(0 1px 2px rgb(0 0 0 / 0.1)) drop-shadow(0 1px 1px rgb(0 0 0 / 0.06));
-}
-
-.updateGuidelineBtn {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
 }
 
 .guideline-action-container button i {
@@ -1229,10 +1227,6 @@ text {
     border-radius: 8px;
 }
 
-.guideline-container #loader {
-    background: transparent;
-}
-
 #map-info-list-container {
     margin-left: 38px;
     padding-bottom: 15px;
@@ -1258,9 +1252,8 @@ text {
 }
 
 #guide-image {
-    display: flex;
-    margin: 0 auto;
-    width: 70%;
+    width:100%;
+    border-radius: 4px;
 }
 
 #incident-report-header,
@@ -1567,13 +1560,15 @@ text {
     height: 15px;
 }
 
+.guideline-container #loader,
 .dasboard-content #loader,
 .chart-container #loader {
-    background-color: transparent;
+    background-color: transparent !important;
 }
 
 #loader.show {
     visibility: visible;
+    background-color: var(--color-text);
 }
 
 #loader #loader-inner {
@@ -2978,9 +2973,7 @@ html[data-theme="dark"] .marker-widget .widget-desc-container {
 
 html[data-theme="dark"] .table-container,
 html[data-theme="dark"] .map-info.pending,
-html[data-theme="dark"] .map-info-container.reporting,
-html[data-theme="dark"] .map-info-container.retry-location,
-html[data-theme="dark"] .map-info-container.denied {
+html[data-theme="dark"] .map-info-container {
     background: var(--color-d-bg-container);
     border: none;
 }
@@ -3065,7 +3058,9 @@ html[data-theme="dark"] .guideline-header .search-container .search-icon {
 }
 
 html[data-theme="dark"] .weather-section,
-html[data-theme="dark"] .guide-container {
+html[data-theme="dark"] .guide-container,
+html[data-theme="dark"] #loader.show,
+html[data-theme="dark"] #guideline-img-container img {
     background: var(--color-d-bg-container);
 }
 

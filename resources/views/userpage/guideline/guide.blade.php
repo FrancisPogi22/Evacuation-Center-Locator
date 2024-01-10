@@ -34,7 +34,7 @@
                         </div>
                         <img src="{{ asset('guide_image/' . $guideline->content_image) }}" id="guide-image"
                             alt="Picture">
-                        
+
                     </div>
                 </div>
                 <div class="weather-section">
@@ -114,8 +114,9 @@
                 });
 
             $('#downloadGuideBtn').click(function() {
-                let imageSrc = $(this).parent().prev().attr('src');
-                
+                $(this).prop('disabled', 1);
+                let imageSrc = $(this).parent().next().attr('src');
+
                 fetch(imageSrc)
                     .then(response => response.blob())
                     .then(blob => {
@@ -127,6 +128,8 @@
                         document.body.appendChild(downloadLink).click();
                         document.body.removeChild(downloadLink);
                         URL.revokeObjectURL(blobUrl);
+                        showSuccessMessage(`${downloadLink.download} has been downloaded`);
+                        setTimeout(() => $(this).prop('disabled', 0), 5000);
                     });
             });
 

@@ -182,7 +182,7 @@
                 guidelineId = $(this).prev().attr('aria-id');
 
                 let guidelineLabel = guidelineItem.find('.guideline-title').text();
-                
+
                 modalLabelContainer.addClass('bg-warning');
                 modalLabel.text('Update Guideline');
                 formBtn.addClass('btn-update').removeClass('btn-submit');
@@ -297,16 +297,14 @@
                 },
                 method: "GET",
                 success(response) {
-                    if (response.guidelineData == null)
-                        return showWarningMessage('No guidelines uploaded.');
+                    if (response.guidelineData.length == 0)
+                        return showWarningMessage('Sorry, we couldn\'t find any result.');
+
+                    $(".guideline-box").hide();
 
                     response.guidelineData.forEach(guideline => {
-                        let guidelineId = guideline.id;
-
-                        $(".guideline-box:has(.guideline-id:contains('" + guidelineId + "'))")
-                            .toggle(true);
-                        $(".guideline-box:not(:has(.guideline-id:contains('" + guidelineId +
-                            "')))").toggle(false);
+                        $(".guideline-box:has(.guideline-id:contains('" + guideline.id + "'))")
+                            .show();
                     });
                 },
                 error: showErrorMessage
@@ -322,7 +320,7 @@
 
         function initGuidelines() {
             $.ajax({
-                url: `{{ $prefix == 'resident' || $prefix == '' && !auth()->user() ? route('resident.eligtas.guideline') : route('eligtas.guideline') }}`,
+                url: `{{ $prefix == 'resident' || ($prefix == '' && !auth()->user()) ? route('resident.eligtas.guideline') : route('eligtas.guideline') }}`,
                 type: 'GET',
                 beforeSend() {
                     $('#loader').prop('hidden', 0);

@@ -106,9 +106,7 @@ class MainController extends Controller
             ->where('type', 'LIKE', "%{$request->guideline_name}%")
             ->get();
 
-        return $guidelineData->isEmpty()
-            ? back()->with('warning', "Sorry, we couldn't find any result.")
-            : response(['guidelineData' => $guidelineData]);
+        return response(['guidelineData' => $guidelineData]);
     }
 
     public function guide($guidelineId)

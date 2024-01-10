@@ -229,62 +229,62 @@
                 let content = `
                     <div class="areaReportContainer">
                         ${type == "evacuationCenter" ?
-                            `<div class="info-description">
-                                <span>Name:</span> ${data.name}
+                        `<div class="info-description">
+                            <span>Name:</span> ${data.name}
+                        </div>
+                        <div class="info-description">
+                            <span>Barangay:</span> ${data.barangay_name}
+                        </div>
+                        <div class="info-description">
+                            <span>No. of evacuees:</span> ${data.evacuees}
+                        </div>
+                        <div class="info-description status">
+                            <span>Status:</span>
+                            <span class="status-content bg-${getStatusColor(data.status)}">
+                                ${data.status}
+                            </span>
+                        </div>` :
+                        `<div class="info-description">
+                            <span>Report Date:</span> ${formatDateTime(data.report_time)}
+                        </div>
+                        <div class="info-description">
+                            <span>${data.type == "Flooded" ? `${data.type} Area` : data.type}</span>
+                        </div>
+                        <div class="info-description details">
+                            <span>Details: </span>
+                            <div class="info-window-details-container">
+                                ${data.details}
                             </div>
-                            <div class="info-description">
-                                <span>Barangay:</span> ${data.barangay_name}
+                        </div>
+                        <div class="info-description photo">
+                            <span>Image: </span>
+                            <div hidden>
+                                ${data.latitude}, ${data.longitude}
                             </div>
-                            <div class="info-description">
-                                <span>No. of evacuees:</span> ${data.evacuees}
-                            </div>
-                            <div class="info-description status">
-                                <span>Status:</span>
-                                <span class="status-content bg-${getStatusColor(data.status)}">
-                                    ${data.status}
-                                </span>
-                            </div>` :
-                            `<div class="info-description">
-                                <span>Report Date:</span> ${formatDateTime(data.report_time)}
-                            </div>
-                            <div class="info-description">
-                                <span>${data.type == "Flooded" ? `${data.type} Area` : data.type}</span>
-                            </div>
-                            <div class="info-description details">
-                                <span>Details: </span>
-                                <div class="info-window-details-container">
-                                    ${data.details}
+                            <button class="btn btn-sm btn-primary toggleImageBtn">
+                                <i class="bi bi-chevron-expand"></i>View
+                            </button>
+                            <img src="/reports_image/${data.photo}" class="form-control" hidden>
+                        </div>
+                        <div class="info-description update" ${data.update.length == 0 ? 'hidden' : ''}>
+                            <span>Updates Today: </span>
+                            <div class="info-window-update-container">
+                                <div class="update-date">
+                                    ${data.update.length > 0 ? formatDateTime(data.update[0].update_time, 'date') : ''}
                                 </div>
+                                ${data.update.length > 0 ?
+                                    data.update.map((update) => {
+                                    return `<p class="update-details-container">
+                                        <small>
+                                            as of ${formatDateTime(update.update_time, 'time')}
+                                        </small><br>
+                                        <span class="update-details">
+                                            ${update.update_details}
+                                        </span>
+                                    </p>`}).join('') : ''
+                                }
                             </div>
-                            <div class="info-description photo">
-                                <span>Image: </span>
-                                <div hidden>
-                                    ${data.latitude}, ${data.longitude}
-                                </div>
-                                <button class="btn btn-sm btn-primary toggleImageBtn">
-                                    <i class="bi bi-chevron-expand"></i>View
-                                </button>
-                                <img src="/reports_image/${data.photo}" class="form-control" hidden>
-                            </div>
-                            <div class="info-description update" ${data.update.length == 0 ? 'hidden' : ''}>
-                                <span>Updates Today: </span>
-                                <div class="info-window-update-container">
-                                    <div class="update-date">
-                                        ${data.update.length > 0 ? formatDateTime(data.update[0].update_time, 'date') : ''}
-                                    </div>
-                                    ${data.update.length > 0 ?
-                                        data.update.map((update) => {
-                                        return `<p class="update-details-container">
-                                                <small>
-                                                    as of ${formatDateTime(update.update_time, 'time')}
-                                                </small><br>
-                                                <span class="update-details">
-                                                    ${update.update_details}
-                                                </span>
-                                            </p>`}).join('') : ''
-                                    }
-                                </div>
-                            </div>`}
+                        </div>`}
                     </div>`;
                 generateInfoWindow(marker, content);
             });
@@ -439,11 +439,6 @@
         function checkReportLocation(location, userBound) {
             return google.maps.geometry.spherical.computeDistanceBetween(userBound.getCenter(), location) <=
                 userBound.getRadius();
-        }
-
-        function resetMarker() {
-            reportMarker?.setMap(null);
-            reportMarker = null;
         }
 
         function reportEvent() {
@@ -939,17 +934,14 @@
                         draggableCursor: 'default',
                         clickableIcons: true
                     });
-                    resetMarker();
+                    reportMarker?.setMap(null);
+                    reportMarker = null;
                     $('#reportAreaBtn').html(
                         '<i class="bi bi-megaphone"></i>Report Area'
                     ).removeClass('btn-remove');
                     reportButtonClicked = false;
                     google.maps.event.clearListeners(map, 'click');
                 }
-            });
-
-            $(document).on('click', '.gm-ui-hover-effect', () => {
-                resetMarker();
             });
 
             $(document).on('click', '#submitAreaBtn', function() {
