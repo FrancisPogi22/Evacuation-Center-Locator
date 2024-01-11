@@ -25,17 +25,12 @@ class EvacuationCenterController extends Controller
 
     public function getEvacuationData($operation, $type)
     {
-        $evacuationCenterList = $this->evacuationCenter->where('is_archive', $type == "active" ? 0 : 1)->orderBy('name', 'asc')->get();
-
-        return DataTables::of($evacuationCenterList)
+        return DataTables::of($this->evacuationCenter->where('is_archive', $type == "active" ? 0 : 1)->orderBy('name', 'asc')->get())
             ->addColumn('evacuees', function ($evacuation) use ($operation) {
                 return $operation == "locator" ? $this->evacuee->where('evacuation_id', $evacuation->id)->sum('individuals') : '';
             })->addColumn('action', function ($evacuation) use ($operation, $type) {
-                if ($operation == "locator") {
-                    $prefix = basename(trim(request()->route()->getPrefix(), '/'));
-
-                    return '<div class="action-container"><button class="btn-table-primary locateEvacuationCenter"><i class="bi bi-search"></i>Locate</button>' . ($prefix == "resident" ? '<button class="btn-table-update sendFeedback"><i class="bi bi-send"></i>Send Feedback</button>' : '') . '</div>';
-                }
+                if ($operation == "locator")
+                    return '<div class="action-container"><button class="btn-table-primary locateEvacuationCenter"><i class="bi bi-search"></i>Locate</button>' . (basename(trim(request()->route()->getPrefix(), '/')) == "resident" ? '<button class="btn-table-update sendFeedback"><i class="bi bi-send"></i>Send Feedback</button>' : '') . '</div>';
 
                 $selectOption = $updateBtn = $archiveBtn = "";
 
@@ -49,11 +44,10 @@ class EvacuationCenterController extends Controller
                     $archiveBtn =  $evacuees == 0 ? '<button class="btn-table-remove" id="archiveEvacuationCenter"><i class="bi bi-box-arrow-in-down-right"></i>Archive</button>' : '';
                     $selectOption =  '<select class="form-select changeEvacuationStatus">' .
                         '<option value="" disabled selected hidden>Change Status</option>' . $statusOptions . '</select>';
-                } else {
+                } else 
                     $archiveBtn = '<button class="btn-table-remove" id="unArchiveEvacuationCenter"><i class="bi bi-box-arrow-up-left"></i>Unarchive</button>';
-                }
 
-                return '<div class="action-container">' . $updateBtn . $archiveBtn . $selectOption . '</div>';
+                return '<div class="action-container">' . $updateBtn . $archiveBtn . '<button class="btn-table-submit checkFacilities">Check Facilities</button>' . $selectOption . '</div>';
             })->rawColumns(['evacuees', 'action'])->make(true);
     }
 
@@ -69,15 +63,18 @@ class EvacuationCenterController extends Controller
                     (!collect($checkboxes)->contains(fn ($checkbox) => $request->filled($checkbox)) ? 'Please select at least one option.' : '')
             ];
 
-        $this->feedback->create([
-            'evacuation_center_id'    => $request->evacuationId,
-            'responsive_aid'          => $request->filled('responsive_aid'),
-            'safe_evacuation'         => $request->filled('safe_evacuation'),
-            'clean_facilities'        => $request->filled('clean_facilities'),
-            'sufficient_food_supply'  => $request->filled('sufficient_food_supply'),
-            'comfortable_evacuation'  => $request->filled('comfortable_evacuation'),
-            'well_managed_evacuation' => $request->filled('well_managed_evacuation'),
-        ]);
+        $feedback = $this->feedback->where('evacuation_center_id', $request->evacuationId)->first();
+        $this->feedback->updateOrCreate(
+            ['evacuation_center_id' => $request->evacuationId],
+            [
+                'responsive_aid'          => optional($feedback)->responsive_aid + $request->filled('responsive_aid'),
+                'safe_evacuation'         => optional($feedback)->safe_evacuation + $request->filled('safe_evacuation'),
+                'clean_facilities'        => optional($feedback)->clean_facilities + $request->filled('clean_facilities'),
+                'sufficient_food_supply'  => optional($feedback)->sufficient_food_supply + $request->filled('sufficient_food_supply'),
+                'comfortable_evacuation'  => optional($feedback)->comfortable_evacuation + $request->filled('comfortable_evacuation'),
+                'well_managed_evacuation' => optional($feedback)->well_managed_evacuation + $request->filled('well_managed_evacuation'),
+            ]
+        );
 
         return response([]);
     }

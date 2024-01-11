@@ -12,7 +12,7 @@ return new class extends Migration
             $table->id();
             $table->boolean('clean_facilities');
             $table->boolean('responsive_aid');
-            $table->boolean('safe_evacutaion');
+            $table->boolean('safe_evacuation');
             $table->boolean('sufficient_food_supply');
             $table->boolean('comfortable_evacuation');
             $table->boolean('well_managed_evacuation');
