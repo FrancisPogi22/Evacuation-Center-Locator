@@ -143,7 +143,7 @@
                                     <option value="" hidden selected disabled>Select Feedback</option>
                                     <option value="clean_facilities">Clean Facilities</option>
                                     <option value="responsive_aid">Responsive Aid</option>
-                                    <option value="safe_evacutaion">Safe Evacutaion</option>
+                                    <option value="safe_evacuation">Safe Evacuation</option>
                                     <option value="sufficient_food_supply">Sufficient Food Supply</option>
                                     <option value="comfortable_evacuation">Comfortable Evacuation</option>
                                     <option value="well_managed_evacuation">Well Managed Evacuation</option>
@@ -196,45 +196,6 @@
     @include('partials.toastr')
     <script>
         $(document).ready(() => {
-            $(document).on('change', '.feedBackOptions', function() {
-                if ($('.feedBackOptions').val() == '') return;
-
-                $.ajax({
-                    type: "GET",
-                    url: "{{ route('get.top.evac', 'feedBackType') }}".replace('feedBackType',
-                        $('.feedBackOptions').val()),
-                    success(response) {
-                        let noFeedback = 1;
-                        $('tbody').empty();
-
-                        response.topEvacList.forEach(evacuation => {
-                            if (evacuation.feedback_total > 0) {
-                                $('.empty-data').prop('hidden', 1);
-                                $('#feedbackTable').prop('hidden', 0);
-                                $('tbody').append(`
-                                    <tr>
-                                        <td>
-                                            ${evacuation.name}
-                                        </td>
-                                        <td>
-                                            ${evacuation.feedback_total}
-                                        </td>
-                                    </tr>
-                                `);
-
-                                noFeedback = 0;
-                            }
-                        });
-
-                        if (noFeedback) {
-                            $('#feedbackTable').prop('hidden', 1);
-                            $('.empty-data').prop('hidden', 0);
-                        }
-                    },
-                    error: showErrorMessage
-                });
-            });
-
             let validator, modal = $("#generateReportModal"),
                 form = $('#generateReportForm'),
                 disasterList = $('#disaster-list'),
@@ -266,6 +227,44 @@
                     disaster_year: 'Please select year.'
                 },
                 errorElement: 'span'
+            });
+
+            $(document).on('change', '.feedBackOptions', function() {
+                if ($('.feedBackOptions').val() == '') return;
+
+                $.ajax({
+                    type: "GET",
+                    url: "{{ route('get.top.evac', 'feedBackType') }}".replace('feedBackType',
+                        $('.feedBackOptions').val()),
+                    success(response) {
+                        let noFeedback = 1;
+
+                        $('tbody').empty();
+                        response.topEvacList.forEach(evacuation => {
+                            if (evacuation.feedback_total > 0) {
+                                $('.empty-data').prop('hidden', 1);
+                                $('#feedbackTable').prop('hidden', 0);
+                                $('tbody').append(`
+                                    <tr>
+                                        <td>
+                                            ${evacuation.name}
+                                        </td>
+                                        <td>
+                                            ${evacuation.feedback_total}
+                                        </td>
+                                    </tr>
+                                `);
+                                noFeedback = 0;
+                            }
+                        });
+
+                        if (noFeedback) {
+                            $('#feedbackTable').prop('hidden', 1);
+                            $('.empty-data').prop('hidden', 0);
+                        }
+                    },
+                    error: showErrorMessage
+                });
             });
 
             generateBtn.click(() => {
