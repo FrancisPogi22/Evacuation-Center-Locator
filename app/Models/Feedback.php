@@ -14,7 +14,12 @@ class Feedback extends Model
     protected $primaryKey = 'id';
 
     protected $fillable = [
-        'feedback',
+        'clean_facilities',
+        'responsive_aid',
+        'safe_evacutaion',
+        'sufficient_food_supply',
+        'comfortable_evacuation',
+        'well_managed_evacuation',
         'evacuation_center_id'
     ];
 

@@ -103,7 +103,8 @@ textarea::placeholder {
     font-weight: 600;
     border-radius: 4px;
     padding: 8px 16px;
-    filter: drop-shadow(0 1px 2px rgb(0 0 0 / 0.1)) drop-shadow(0 1px 1px rgb(0 0 0 / 0.06));
+    filter: drop-shadow(0 1px 2px rgb(0 0 0 / 0.1))
+        drop-shadow(0 1px 1px rgb(0 0 0 / 0.06));
     border: none;
 }
 
@@ -182,7 +183,8 @@ textarea::placeholder {
     padding: 8px 16px;
     width: max-content;
     border: none;
-    filter: drop-shadow(0 1px 2px rgb(0 0 0 / 0.1)) drop-shadow(0 1px 1px rgb(0 0 0 / 0.06));
+    filter: drop-shadow(0 1px 2px rgb(0 0 0 / 0.1))
+        drop-shadow(0 1px 1px rgb(0 0 0 / 0.06));
 }
 
 #downloadGuideBtn:hover,
@@ -202,7 +204,8 @@ textarea::placeholder {
 .btn-update,
 .btn-remove,
 #pinpointCurrentLocationBtn {
-    filter: drop-shadow(0 1px 2px rgb(0 0 0 / 0.1)) drop-shadow(0 1px 1px rgb(0 0 0 / 0.06));
+    filter: drop-shadow(0 1px 2px rgb(0 0 0 / 0.1))
+        drop-shadow(0 1px 1px rgb(0 0 0 / 0.06));
 }
 
 .sendUpdateBtn,
@@ -290,7 +293,8 @@ textarea::placeholder {
     height: max-content;
     background: inherit;
     transition: 0.1s all ease-in-out;
-    filter: drop-shadow(0 1px 2px rgb(0 0 0 / 0.1)) drop-shadow(0 1px 1px rgb(0 0 0 / 0.06));
+    filter: drop-shadow(0 1px 2px rgb(0 0 0 / 0.1))
+        drop-shadow(0 1px 1px rgb(0 0 0 / 0.06));
 }
 
 .guideline-action-container button i {
@@ -368,7 +372,8 @@ textarea::placeholder {
     height: 60px;
     background: var(--color-text);
     z-index: 1;
-    filter: drop-shadow(0 1px 2px rgb(0 0 0 / 0.1)) drop-shadow(0 1px 1px rgb(0 0 0 / 0.06));
+    filter: drop-shadow(0 1px 2px rgb(0 0 0 / 0.1))
+        drop-shadow(0 1px 1px rgb(0 0 0 / 0.06));
 }
 
 .header-section .container-fluid {
@@ -576,7 +581,8 @@ button.changeTheme:hover {
     padding: 10px;
     border-radius: 4px;
     background-color: var(--color-text);
-    filter: drop-shadow(0 1px 2px rgb(0 0 0 / 0.1)) drop-shadow(0 1px 1px rgb(0 0 0 / 0.06));
+    filter: drop-shadow(0 1px 2px rgb(0 0 0 / 0.1))
+        drop-shadow(0 1px 1px rgb(0 0 0 / 0.06));
 }
 
 .label-container span {
@@ -591,7 +597,8 @@ button.changeTheme:hover {
     z-index: 100;
     left: 0;
     top: 0;
-    filter: drop-shadow(0 1px 2px rgb(0 0 0 / 0.1)) drop-shadow(0 1px 1px rgb(0 0 0 / 0.06));
+    filter: drop-shadow(0 1px 2px rgb(0 0 0 / 0.1))
+        drop-shadow(0 1px 1px rgb(0 0 0 / 0.06));
     overflow: hidden;
     transition: 0.2s all ease;
 }
@@ -824,7 +831,8 @@ div.flatpickr-rContainer::-webkit-scrollbar,
     width: 100%;
     max-width: 430px;
     border-radius: 6px;
-    filter: drop-shadow(0 10px 8px rgb(0 0 0 / 0.04)) drop-shadow(0 4px 3px rgb(0 0 0 / 0.1));
+    filter: drop-shadow(0 10px 8px rgb(0 0 0 / 0.04))
+        drop-shadow(0 4px 3px rgb(0 0 0 / 0.1));
 }
 
 .auth-form-section form {
@@ -923,7 +931,8 @@ div.flatpickr-rContainer::-webkit-scrollbar,
     width: 100%;
     max-width: 500px;
     border-radius: 6px;
-    filter: drop-shadow(0 10px 8px rgb(0 0 0 / 0.04)) drop-shadow(0 4px 3px rgb(0 0 0 / 0.1));
+    filter: drop-shadow(0 10px 8px rgb(0 0 0 / 0.04))
+        drop-shadow(0 4px 3px rgb(0 0 0 / 0.1));
 }
 
 .recover-form form label,
@@ -1031,7 +1040,7 @@ div.flatpickr-rContainer::-webkit-scrollbar,
     font-size: 14px;
 }
 
-#markerForm #markerImagePreview{
+#markerForm #markerImagePreview {
     margin: 10px 0;
     width: 200px;
 }
@@ -1088,7 +1097,8 @@ div.flatpickr-rContainer::-webkit-scrollbar,
     overflow: hidden;
     border-radius: 8px;
     border: 1px solid var(--color-light-gray);
-    filter: drop-shadow(0 1px 2px rgb(0 0 0 / 0.1)) drop-shadow(0 1px 1px rgb(0 0 0 / 0.06));
+    filter: drop-shadow(0 1px 2px rgb(0 0 0 / 0.1))
+        drop-shadow(0 1px 1px rgb(0 0 0 / 0.06));
     -webkit-animation: scaleIn 0.5s;
     animation: scaleIn 0.5s;
 }
@@ -1110,8 +1120,7 @@ div.flatpickr-rContainer::-webkit-scrollbar,
     font-weight: 600;
 }
 
-.content-description span, 
-.evac-widget span {
+.content-description span {
     color: var(--color-d-sub-text);
 }
 
@@ -1131,18 +1140,22 @@ div.flatpickr-rContainer::-webkit-scrollbar,
 
 .pie-container {
     pointer-events: none;
-    width: 100%;
+    width: 50%;
 }
 
 .pie-figure {
-    border: 1px solid var(--color-light-gray);
-    filter: drop-shadow(0 1px 2px rgb(0 0 0 / 0.1)) drop-shadow(0 1px 1px rgb(0 0 0 / 0.06));
+    border: 0.1px solid var(--color-light-gray);
+    background-color: transparent;
+    padding-top: 4px;
+    filter: drop-shadow(0 1px 2px rgb(0 0 0 / 0.1))
+        drop-shadow(0 1px 1px rgb(0 0 0 / 0.06));
 }
 
 .pie-chart {
     height: 600px;
     padding: 15px 10px 20px;
-    filter: drop-shadow(0 10px 8px rgb(0 0 0 / 0.04)) drop-shadow(0 4px 3px rgb(0 0 0 / 0.1));
+    filter: drop-shadow(0 10px 8px rgb(0 0 0 / 0.04))
+        drop-shadow(0 4px 3px rgb(0 0 0 / 0.1));
 }
 
 .pie-container .highcharts-background {
@@ -1150,21 +1163,22 @@ div.flatpickr-rContainer::-webkit-scrollbar,
 }
 
 .pie-label {
-    pointer-events:all;
+    pointer-events: all;
     text-align: center;
-    padding: 10px;
-    font-size: 16px;
+    padding: 16px;
+    font-size: 18px;
     background: var(--color-text);
     border-radius: 8px;
     border: 1px solid var(--color-light-gray);
-    filter: drop-shadow(0 1px 2px rgb(0 0 0 / 0.1)) drop-shadow(0 1px 1px rgb(0 0 0 / 0.06));
+    filter: drop-shadow(0 1px 2px rgb(0 0 0 / 0.1))
+        drop-shadow(0 1px 1px rgb(0 0 0 / 0.06));
     font-weight: 700;
     cursor: pointer;
 }
 
 .pie-content {
     overflow: hidden;
-    background: var(--color-text);
+    background: transparent;
     height: 0;
     border-bottom-left-radius: 8px;
     border-bottom-right-radius: 8px;
@@ -1191,7 +1205,8 @@ div.flatpickr-rContainer::-webkit-scrollbar,
     margin: 20px 0;
     height: 400px;
     border-radius: 8px;
-    filter: drop-shadow(0 1px 2px rgb(0 0 0 / 0.1)) drop-shadow(0 1px 1px rgb(0 0 0 / 0.06));
+    filter: drop-shadow(0 1px 2px rgb(0 0 0 / 0.1))
+        drop-shadow(0 1px 1px rgb(0 0 0 / 0.06));
 }
 
 .highcharts-label path {
@@ -1244,7 +1259,8 @@ text {
 
 .guide-container {
     background: var(--color-text);
-    filter: drop-shadow(0 10px 8px rgb(0 0 0 / 0.04)) drop-shadow(0 4px 3px rgb(0 0 0 / 0.1));
+    filter: drop-shadow(0 10px 8px rgb(0 0 0 / 0.04))
+        drop-shadow(0 4px 3px rgb(0 0 0 / 0.1));
 }
 
 .guide-image-container {
@@ -1254,7 +1270,7 @@ text {
 }
 
 #guide-image {
-    width:100%;
+    width: 100%;
     border-radius: 4px;
 }
 
@@ -1302,7 +1318,8 @@ text {
     cursor: pointer;
     border: solid 1px var(--color-light-gray);
     border-left: 0;
-    filter: drop-shadow(0 1px 2px rgb(0 0 0 / 0.1)) drop-shadow(0 1px 1px rgb(0 0 0 / 0.06));
+    filter: drop-shadow(0 1px 2px rgb(0 0 0 / 0.1))
+        drop-shadow(0 1px 1px rgb(0 0 0 / 0.06));
 }
 
 .guideline-header .search-container .search-icon i {
@@ -1353,7 +1370,8 @@ text {
     text-align: center;
     background: var(--color-text);
     border-radius: 10px;
-    filter: drop-shadow(0 20px 13px rgb(0 0 0 / 0.03)) drop-shadow(0 8px 5px rgb(0 0 0 / 0.08));
+    filter: drop-shadow(0 20px 13px rgb(0 0 0 / 0.03))
+        drop-shadow(0 8px 5px rgb(0 0 0 / 0.08));
 }
 
 .weather-section h4 {
@@ -1413,7 +1431,8 @@ text {
 }
 
 .locator-content {
-    filter: drop-shadow(0 1px 2px rgb(0 0 0 / 0.1)) drop-shadow(0 1px 1px rgb(0 0 0 / 0.06));
+    filter: drop-shadow(0 1px 2px rgb(0 0 0 / 0.1))
+        drop-shadow(0 1px 1px rgb(0 0 0 / 0.06));
 }
 
 .locator-header {
@@ -1466,7 +1485,8 @@ text {
     width: 100%;
     border-radius: 6px;
     border: 1px solid var(--color-light-gray);
-    filter: drop-shadow(0 1px 2px rgb(0 0 0 / 0.1)) drop-shadow(0 1px 1px rgb(0 0 0 / 0.06));
+    filter: drop-shadow(0 1px 2px rgb(0 0 0 / 0.1))
+        drop-shadow(0 1px 1px rgb(0 0 0 / 0.06));
 }
 
 .marker-image-container {
@@ -1498,7 +1518,8 @@ text {
     width: 100%;
     background: var(--color-text);
     border-left: 1px solid var(--color-light-gray);
-    filter: drop-shadow(0 1px 2px rgb(0 0 0 / 0.1)) drop-shadow(0 1px 1px rgb(0 0 0 / 0.06));
+    filter: drop-shadow(0 1px 2px rgb(0 0 0 / 0.1))
+        drop-shadow(0 1px 1px rgb(0 0 0 / 0.06));
     padding: 10px;
     border-top-right-radius: 6px;
     border-bottom-right-radius: 6px;
@@ -1537,7 +1558,8 @@ text {
     align-items: center;
     justify-content: center;
     gap: 7px;
-    filter: drop-shadow(0 1px 2px rgb(0 0 0 / 0.1)) drop-shadow(0 1px 1px rgb(0 0 0 / 0.06));
+    filter: drop-shadow(0 1px 2px rgb(0 0 0 / 0.1))
+        drop-shadow(0 1px 1px rgb(0 0 0 / 0.06));
 }
 
 #defaultBtnText,
@@ -1565,6 +1587,7 @@ text {
 .guideline-container #loader,
 .dasboard-content #loader,
 .chart-container #loader {
+    padding: 40px;
     background-color: transparent !important;
 }
 
@@ -1597,6 +1620,28 @@ text {
     100% {
         transform: rotate(360deg);
     }
+}
+
+#checkbox-input-container {
+    display: flex;
+    margin-left: -5px;
+    flex-direction: column;
+}
+
+.checkbox-container {
+    margin: 0 10px 5px 10px;
+    display: flex;
+}
+
+.checkbox-container .checkbox {
+    transform: scale(1.4);
+    margin-right: 10px;
+    cursor: pointer;
+}
+
+.checkbox-container label {
+    margin: 0;
+    cursor: pointer;
 }
 
 .reportContainer,
@@ -1698,7 +1743,8 @@ div.gm-style-iw.gm-style-iw-c {
     align-items: center;
     border-radius: 4px;
     border: 1px solid var(--color-light-gray);
-    filter: drop-shadow(0 1px 2px rgb(0 0 0 / 0.1)) drop-shadow(0 1px 1px rgb(0 0 0 / 0.06));
+    filter: drop-shadow(0 1px 2px rgb(0 0 0 / 0.1))
+        drop-shadow(0 1px 1px rgb(0 0 0 / 0.06));
     white-space: nowrap;
     -ms-overflow-style: none;
     scrollbar-width: none;
@@ -1743,7 +1789,8 @@ html[data-theme="dark"] .gmnoprint button span {
 .info-window-update-container::-webkit-scrollbar,
 .report-markers::-webkit-scrollbar,
 .marker-container::-webkit-scrollbar,
-.evacuation-markers::-webkit-scrollbar {
+.evacuation-markers::-webkit-scrollbar,
+.evac-list-container::-webkit-scrollbar {
     height: 7px !important;
 }
 
@@ -1910,32 +1957,33 @@ html[data-theme="dark"] .gmnoprint button span {
     transform: scale(1.05);
 }
 
-.static-graph{
+.static-graph {
     display: flex;
     gap: 20px;
 }
 
-.evac-list{
+.evac-list {
     height: 100%;
     width: 50%;
     border-radius: 8px;
     border: 1px solid var(--color-light-gray);
     background: var(--color-text);
-    filter: drop-shadow(0 1px 2px rgb(0 0 0 / 0.1)) drop-shadow(0 1px 1px rgb(0 0 0 / 0.06));
+    filter: drop-shadow(0 1px 2px rgb(0 0 0 / 0.1))
+        drop-shadow(0 1px 1px rgb(0 0 0 / 0.06));
     padding: 10px;
 }
 
-.list-header{
+.list-header {
     display: flex;
-    margin-bottom: 10px;
     gap: 20px;
+    font-weight: bold;
 }
 
 .list-header select {
     flex: 0.7;
 }
 
-.list-header p{
+.list-header p {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -1943,38 +1991,25 @@ html[data-theme="dark"] .gmnoprint button span {
     margin: 0;
 }
 
-.evac-details p {
-    margin: 0;
-}
-
-.evac-details p:nth-child(2) {
-    font-size: 34px;
-}
-
-#viewFeedback{
-    margin: 6px 0;
-}
-
-.evac-list p{
-    color: var(--color-black);
+.feedBackOptions,
+.feedBackOptions option {
+    width: 100px;
     font-size: 16px;
-    font-weight: 600;
 }
 
-.empty-data{
-    padding: 20px;
+.empty-data {
+    margin-top: 28px;
     text-align: center;
+    font-size: 15px;
 }
 
-.evac-widget{
-    margin-bottom: 10px;
-    padding: 20px;
-    padding-bottom: 10px;
-    background: var(--color-text);
-    border-radius: 8px;
-    border: 1px solid var(--color-light-gray);
-    background: var(--color-text);
-    filter: drop-shadow(0 1px 2px rgb(0 0 0 / 0.1)) drop-shadow(0 1px 1px rgb(0 0 0 / 0.06));
+#feedbackTable {
+    margin-top: 10px;
+    margin-bottom: 0px;
+}
+
+#feedbackTable th {
+    font-size: 16px;
 }
 
 .hotline-container,
@@ -1982,7 +2017,8 @@ html[data-theme="dark"] .gmnoprint button span {
     margin: 10px 0;
     background: var(--color-text);
     border-radius: 4px;
-    filter: drop-shadow(0 1px 2px rgb(0 0 0 / 0.1)) drop-shadow(0 1px 1px rgb(0 0 0 / 0.06));
+    filter: drop-shadow(0 1px 2px rgb(0 0 0 / 0.1))
+        drop-shadow(0 1px 1px rgb(0 0 0 / 0.06));
 }
 
 .hotline-container .id-container {
@@ -2114,7 +2150,8 @@ html[data-theme="dark"] .gmnoprint button span {
     margin-top: 18px;
     margin-bottom: 10px;
     border-radius: 4px;
-    filter: drop-shadow(0 10px 8px rgb(0 0 0 / 0.04)) drop-shadow(0 4px 3px rgb(0 0 0 / 0.1));
+    filter: drop-shadow(0 10px 8px rgb(0 0 0 / 0.04))
+        drop-shadow(0 4px 3px rgb(0 0 0 / 0.1));
 }
 
 .user-profile-container hr {
@@ -2187,7 +2224,8 @@ html[data-theme="dark"] .gmnoprint button span {
     height: max-content;
     padding: 10px;
     font-weight: 700;
-    filter: drop-shadow(0 10px 8px rgb(0 0 0 / 0.04)) drop-shadow(0 4px 3px rgb(0 0 0 / 0.1));
+    filter: drop-shadow(0 10px 8px rgb(0 0 0 / 0.04))
+        drop-shadow(0 4px 3px rgb(0 0 0 / 0.1));
     border-bottom-right-radius: 0.25rem;
     border-bottom-left-radius: 0.25rem;
 }
@@ -2415,7 +2453,8 @@ input::-ms-clear {
     width: 262px;
     height: 38px;
     border: 1px solid var(--color-light-gray) !important;
-    filter: drop-shadow(0 1px 2px rgb(0 0 0 / 0.1)) drop-shadow(0 1px 1px rgb(0 0 0 / 0.06));
+    filter: drop-shadow(0 1px 2px rgb(0 0 0 / 0.1))
+        drop-shadow(0 1px 1px rgb(0 0 0 / 0.06));
 }
 
 #reportForm textarea,
@@ -2633,7 +2672,8 @@ span.error {
 .table-container {
     padding: 12px;
     background: var(--color-text);
-    filter: drop-shadow(0 1px 2px rgb(0 0 0 / 0.1)) drop-shadow(0 1px 1px rgb(0 0 0 / 0.06));
+    filter: drop-shadow(0 1px 2px rgb(0 0 0 / 0.1))
+        drop-shadow(0 1px 1px rgb(0 0 0 / 0.06));
     border: 1px solid var(--color-light-gray);
     border-radius: 8px;
     overflow: hidden;
@@ -2883,8 +2923,14 @@ html[data-theme="dark"] .dropdown-menu .dropdown-item.changeTheme:active {
 }
 
 html[data-theme="dark"] .flatpickr-day:hover,
-html[data-theme="dark"] .dropdown-menu .dropdown-item.changeTheme:active #themeText,
-html[data-theme="dark"] .dropdown-menu .dropdown-item.changeTheme:active #themeIcon {
+html[data-theme="dark"]
+    .dropdown-menu
+    .dropdown-item.changeTheme:active
+    #themeText,
+html[data-theme="dark"]
+    .dropdown-menu
+    .dropdown-item.changeTheme:active
+    #themeIcon {
     color: var(--color-black);
 }
 
@@ -3040,6 +3086,7 @@ html[data-theme="dark"] .marker-widget .widget-desc-container {
     background: var(--color-gray);
 }
 
+html[data-theme="dark"] .evac-list,
 html[data-theme="dark"] .table-container,
 html[data-theme="dark"] .map-info.pending,
 html[data-theme="dark"] .map-info-container {
@@ -3057,7 +3104,8 @@ html[data-theme="dark"] th {
 
 html[data-theme="dark"] table,
 html[data-theme="dark"] th,
-html[data-theme="dark"] td {
+html[data-theme="dark"] td,
+html[data-theme="dark"] .pie-figure {
     border-color: var(--color-d-sub-text) !important;
 }
 
@@ -3070,10 +3118,6 @@ html[data-theme="dark"] .pie-label {
     border: none;
 }
 
-html[data-theme="dark"] .pie-content {
-    background: var(--color-d-sub-text);
-}
-
 html[data-theme="dark"] tr.selectedRow {
     background: var(--color-gray) !important;
 }
@@ -3082,9 +3126,18 @@ html[data-theme="dark"] .table-container select option {
     color: var(--color-black);
 }
 
-html[data-theme="dark"] .dataTables_wrapper .dataTables_paginate .paginate_button.disabled,
-html[data-theme="dark"] .dataTables_wrapper .dataTables_paginate .paginate_button.disabled:hover,
-html[data-theme="dark"] .dataTables_wrapper .dataTables_paginate .paginate_button.disabled:active {
+html[data-theme="dark"]
+    .dataTables_wrapper
+    .dataTables_paginate
+    .paginate_button.disabled,
+html[data-theme="dark"]
+    .dataTables_wrapper
+    .dataTables_paginate
+    .paginate_button.disabled:hover,
+html[data-theme="dark"]
+    .dataTables_wrapper
+    .dataTables_paginate
+    .paginate_button.disabled:active {
     color: var(--color-d-sub-text) !important;
 }
 
@@ -3117,7 +3170,8 @@ html[data-theme="dark"] #changeArchiveEvacueeDataSelect,
 html[data-theme="dark"] .field-container select,
 html[data-theme="dark"] #reportAreaForm select,
 html[data-theme="dark"] #search_guideline,
-html[data-theme="dark"] #incident-report-header #searchPlace {
+html[data-theme="dark"] #incident-report-header #searchPlace,
+html[data-theme="dark"] .feedBackOptions {
     background: var(--color-d-bg-container);
     color: var(--color-d-text);
 }
@@ -3157,7 +3211,8 @@ html[data-theme="dark"] .flatpickr-monthDropdown-months {
 html[data-theme="dark"] .flatpickr-monthDropdown-months option,
 html[data-theme="dark"] #changeEvacueeDataSelect option,
 html[data-theme="dark"] .dataTables_length select option,
-html[data-theme="dark"] select.form-select option {
+html[data-theme="dark"] select.form-select option,
+html[data-theme="dark"] .feedBackOptions option {
     background: var(--color-d-background) !important;
     color: var(--color-d-text) !important;
 }
@@ -3245,8 +3300,20 @@ html[data-theme="dark"] button.changeTheme {
     }
 }
 
-@media only screen and (max-width: 1150px) {
+@media only screen and (max-width: 1300px) {
+    .static-graph {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+    }
 
+    .evac-list,
+    .pie-container {
+        width: 100%;
+    }
+}
+
+@media only screen and (max-width: 1150px) {
     .auth-container,
     .recover-content,
     .res-password-content {
@@ -3516,7 +3583,7 @@ html[data-theme="dark"] button.changeTheme {
 
     .sidebar.active #logo,
     .sidebar:hover #logo {
-        width: 80px
+        width: 80px;
     }
 
     #btn-sidebar-mobile,
@@ -3544,7 +3611,7 @@ html[data-theme="dark"] button.changeTheme {
         word-wrap: break-word;
     }
 
-    #toast-container>.toast-warning {
+    #toast-container > .toast-warning {
         width: 15em;
         background-size: 20px;
     }
@@ -3799,7 +3866,8 @@ html[data-theme="dark"] button.changeTheme {
     .guide-header a,
     .page-button-container button,
     .generate-button-container button,
-    #map-info-list-container .map-info-list {
+    #map-info-list-container .map-info-list,
+    #feedbackTable td {
         font-size: 11px !important;
     }
 
@@ -3946,7 +4014,9 @@ html[data-theme="dark"] button.changeTheme {
     .hotline-form-container button,
     .hotline-container button,
     .guideline-action-container button,
-    table td {
+    table td,
+    .hotline-container .id-container,
+    .guideline-id {
         font-size: 11px !important;
     }
 
@@ -3969,17 +4039,20 @@ html[data-theme="dark"] button.changeTheme {
         padding: 2px 10px !important;
     }
 
+    span.error,
+    .pac-item span,
+    #searchResults li,
+    .flatpickr-calendar,
+    .flatpickr-monthDropdown-months option,
+    .modal-content select option,
     #changeYearSelect option,
     #reportAreaForm textarea,
     .reportUpdateForm textarea,
     #changeArchivedReportType option,
     #changeEvacueeDataSelect option,
     #changeArchiveEvacueeDataSelect option,
-    #reportAreaForm select.form-select option {
-        font-size: 10px !important;
-    }
-
-    span.error {
+    #reportAreaForm select.form-select option,
+    .feedBackOptions option {
         font-size: 10px !important;
     }
 
@@ -4044,14 +4117,6 @@ html[data-theme="dark"] button.changeTheme {
         margin-top: 6px;
     }
 
-    #searchResults li,
-    .flatpickr-calendar,
-    .flatpickr-monthDropdown-months option,
-    .modal-content select option,
-    .pac-item span {
-        font-size: 10px !important;
-    }
-
     .swal2-icon {
         width: 50px !important;
         height: 50px !important;
@@ -4066,7 +4131,8 @@ html[data-theme="dark"] button.changeTheme {
     }
 
     .swal2-html-container,
-    .guideline-title {
+    .guideline-title,
+    .list-header p {
         font-size: 14px !important;
     }
 
@@ -4164,11 +4230,6 @@ html[data-theme="dark"] button.changeTheme {
         font-size: 19px !important;
     }
 
-    .hotline-container .id-container,
-    .guideline-id {
-        font-size: 11px;
-    }
-
     .empty-data-container {
         margin: 50px 0 !important;
     }
@@ -4178,8 +4239,18 @@ html[data-theme="dark"] button.changeTheme {
         height: fit-content;
     }
 
-    .empty-data-container p {
+    .empty-data-container p,
+    .feedBackOptions,
+    #feedbackTable th {
         font-size: 12px;
+    }
+
+    .feedBackOptions {
+        width: 100%;
+    }
+
+    .evac-list-container {
+        overflow: auto;
     }
 
     .hotline-form-container,
@@ -4275,7 +4346,8 @@ html[data-theme="dark"] button.changeTheme {
         padding: 8px;
     }
 
-    .guideline-header .search-icon i {
+    .guideline-header .search-icon i,
+    .pie-label {
         font-size: 14px !important;
     }
 
@@ -4312,6 +4384,10 @@ html[data-theme="dark"] button.changeTheme {
         font-size: 35px;
     }
 
+    .content-description p {
+        font-size: 24px;
+    }
+
     .weather-header {
         padding: 0;
     }
@@ -4328,10 +4404,29 @@ html[data-theme="dark"] button.changeTheme {
     .header-section {
         height: 50px;
     }
+
+    .checkbox-container .checkbox {
+        transform: scale(1.1);
+        margin-top: 3px;
+        margin-left: -5px;
+        margin-right: 5px;
+    }
+
+    #feedback-error {
+        margin-top: -8px;
+    }
+
+    .empty-data {
+        font-size: 12px;
+        margin-top: 15px;
+    }
+
+    .empty-data p {
+        margin-bottom: 5px;
+    }
 }
 
 @media only screen and (max-width: 300px) {
-
     .flatpickr-months,
     .flatpickr-month {
         height: 70px !important;

@@ -18,7 +18,7 @@ class EvacuationCenterController extends Controller
     function __construct()
     {
         $this->evacuee          = new Evacuee;
-        $this->feedback          = new FeedBack;
+        $this->feedback         = new FeedBack;
         $this->logActivity      = new ActivityUserLog;
         $this->evacuationCenter = new EvacuationCenter;
     }
@@ -31,8 +31,11 @@ class EvacuationCenterController extends Controller
             ->addColumn('evacuees', function ($evacuation) use ($operation) {
                 return $operation == "locator" ? $this->evacuee->where('evacuation_id', $evacuation->id)->sum('individuals') : '';
             })->addColumn('action', function ($evacuation) use ($operation, $type) {
-                if ($operation == "locator") return '<div class="action-container"><button class="btn-table-primary locateEvacuationCenter"><i class="bi bi-search"></i>Locate</button>
-                    <button class="btn-table-update sendFeedback"><i class="bi bi-send"></i>Send Feedback</button></div>';
+                if ($operation == "locator") {
+                    $prefix = basename(trim(request()->route()->getPrefix(), '/'));
+
+                    return '<div class="action-container"><button class="btn-table-primary locateEvacuationCenter"><i class="bi bi-search"></i>Locate</button>' . ($prefix == "resident" ? '<button class="btn-table-update sendFeedback"><i class="bi bi-send"></i>Send Feedback</button>' : '') . '</div>';
+                }
 
                 $selectOption = $updateBtn = $archiveBtn = "";
 
@@ -54,17 +57,26 @@ class EvacuationCenterController extends Controller
             })->rawColumns(['evacuees', 'action'])->make(true);
     }
 
-    public function addFeedback(Request $request) {
-        $feedbackValidation = Validator::make($request->all(), [
-            'feedback' => 'required',
-            'evacuationId'=> 'required'
-        ]);
+    public function addFeedback(Request $request)
+    {
+        $idValidation = Validator::make($request->all(), ['evacuationId' => 'required']);
+        $checkboxes = ['clean_facilities', 'responsive_aid', 'safe_evacuation', 'sufficient_food_supply', 'comfortable_evacuation', 'well_managed_evacuation'];
 
-        if ($feedbackValidation->fails()) return response(['status' => 'warning', 'message' => implode('<br>', $feedbackValidation->errors()->all())]);
+        if ($idValidation->fails() || !collect($checkboxes)->contains(fn ($checkbox) => $request->filled($checkbox)))
+            return [
+                'status'  => 'warning',
+                'message' => ($idValidation->fails() ? $idValidation->errors()->first() . '<br>' : '') .
+                    (!collect($checkboxes)->contains(fn ($checkbox) => $request->filled($checkbox)) ? 'Please select at least one option.' : '')
+            ];
 
         $this->feedback->create([
-            'feedback' => ucfirst(trim($request->feedback)),
-            'evacuation_center_id'=> $request->evacuationId
+            'evacuation_center_id'    => $request->evacuationId,
+            'responsive_aid'          => $request->filled('responsive_aid'),
+            'safe_evacuation'         => $request->filled('safe_evacuation'),
+            'clean_facilities'        => $request->filled('clean_facilities'),
+            'sufficient_food_supply'  => $request->filled('sufficient_food_supply'),
+            'comfortable_evacuation'  => $request->filled('comfortable_evacuation'),
+            'well_managed_evacuation' => $request->filled('well_managed_evacuation'),
         ]);
 
         return response([]);

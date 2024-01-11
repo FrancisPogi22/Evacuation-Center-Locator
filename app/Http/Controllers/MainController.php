@@ -48,7 +48,6 @@ class MainController extends Controller
                 'returnedHome' => $evacuees['returnedHome'],
                 'onGoingDisasters' => $onGoingDisasters,
                 'disaster' => $disaster,
-                'mostUsedEvacuation' => $this->checkMostUsedEvacuation()
             ]);
         } else {
             $residentReport = $this->residentReport->getReportCount();
@@ -68,13 +67,6 @@ class MainController extends Controller
     public function searchDisaster($year)
     {
         return $this->disaster->where('year', $year)->get();
-    }
-
-    public function mostUsedEvacuation($disasterId)
-    {
-        return response([
-            'mostUsedEvacuation' => $this->checkMostUsedEvacuation($disasterId)
-        ]);
     }
 
     public function generateExcelEvacueeData(Request $request)
@@ -267,25 +259,17 @@ class MainController extends Controller
         return view('userpage.hotlineNumber.hotlineNumbers', compact('hotlineNumbers', 'operation'));
     }
 
-    public function fetchFeedback($evacuationId)
+    public function getTopEvacuation($feedBackType)
     {
-        $feedback = $this->feedback->where('id', $evacuationId)->get();
-
-        return response(['feedback' => $feedback]);
-    }
-
-    private function checkMostUsedEvacuation($disasterId = null)
-    {
-        return $this->evacuee
-            ->selectRaw('evacuation_center.name as name, evacuation_id, COUNT(*) as total_affected')
-            ->join('evacuation_center', 'evacuation_center.id', '=', 'evacuee.evacuation_id')
-            ->when(
-                $disasterId != null,
-                fn ($query) => $query->where('evacuee.disaster_id', $disasterId)
-            )
-            ->groupBy('evacuee.evacuation_id', 'evacuation_center.name')
-            ->orderByDesc('total_affected')
+        $topEvacList = $this->feedback
+            ->selectRaw("evacuation_center.id as id, evacuation_center.name as name, SUM($feedBackType) as feedback_total")
+            ->join('evacuation_center', 'evacuation_center.id', '=', 'feedback.evacuation_center_id')
+            ->groupBy('evacuation_center_id')
+            ->latest('feedback_total')
             ->limit(3)
             ->get();
+
+
+        return response(['topEvacList' => $topEvacList]);
     }
 }

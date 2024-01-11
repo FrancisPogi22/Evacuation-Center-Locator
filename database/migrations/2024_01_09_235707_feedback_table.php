@@ -10,7 +10,12 @@ return new class extends Migration
     {
         Schema::create('feedback', function (Blueprint $table) {
             $table->id();
-            $table->longText('feedback');
+            $table->boolean('clean_facilities');
+            $table->boolean('responsive_aid');
+            $table->boolean('safe_evacutaion');
+            $table->boolean('sufficient_food_supply');
+            $table->boolean('comfortable_evacuation');
+            $table->boolean('well_managed_evacuation');
             $table->foreignId('evacuation_center_id')->references('id')->on('evacuation_center')->cascadeOnUpdate();
         });
     }

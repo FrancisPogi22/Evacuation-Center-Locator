@@ -63,8 +63,7 @@ Route::middleware(['auth', 'check.status'])->group(function () {
             Route::get('/dangerAreaReport/{operation}', 'dangerAreaReport')->name('danger.area.report');
             Route::get('/userActivityLog', 'userActivityLog')->name('activity.log');
             Route::get('/disasterInformation/{operation}', 'disasterInformation')->name('disaster.information');
-            Route::get('/mostUsedEvacuation/{disasterId}', 'mostUsedEvacuation')->name('get.affected');
-            Route::get('/fetchFeedback/{evacuationId}', 'fetchFeedback')->name('get.feedback');
+            Route::get('/getTopEvacuation/{feedbackType}', 'getTopEvacuation')->name('get.top.evac');
         });
 
         Route::prefix('disaster')->name('disaster.')->controller(DisasterController::class)->group(function () {
