@@ -174,8 +174,7 @@ textarea::placeholder {
 .viewGuidelineBtn,
 #downloadGuideBtn,
 #pinpointCurrentLocationBtn,
-#archivedReportForm #imageBtn,
-#addFacilityBtn {
+#archivedReportForm #imageBtn {
     background: var(--color-primary);
     font-size: 14px;
     font-weight: 600;
@@ -1029,8 +1028,7 @@ div.flatpickr-rContainer::-webkit-scrollbar,
 .field-container #imageBtn,
 #guidelineForm button,
 .guideline-box button,
-.guideline-box a,
-#cancelFacilityUpdateBtn {
+.guideline-box a {
     padding: 8px 16px;
 }
 
@@ -1792,10 +1790,7 @@ html[data-theme="dark"] .gmnoprint button span {
 .report-markers::-webkit-scrollbar,
 .marker-container::-webkit-scrollbar,
 .evacuation-markers::-webkit-scrollbar,
-.evac-list-container::-webkit-scrollbar,
-.common-facility-table-container::-webkit-scrollbar,
-.facility-item::-webkit-scrollbar,
-.facilitiy-label::-webkit-scrollbar {
+.evac-list-container::-webkit-scrollbar {
     height: 7px !important;
 }
 
@@ -2333,43 +2328,6 @@ input::-webkit-inner-spin-button {
     border-radius: 4px;
 }
 
-.facility-list-container {
-    background-color: var(--color-background);
-    padding: 12px;
-    border-radius: 4px;
-}
-
-.facility-list-container hr {
-    margin: 10px 0;
-}
-
-.evac-facility-label {
-    font-weight: bold;
-    font-size: 16px;
-}
-
-.facilitiy-list {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-
-.facilitiy-label {
-    border: 1px solid var(--color-light-gray);
-    border-radius: 4px;
-    background: var(--color-text);
-    padding: 5px;
-    font-size: 15px;
-    display: flex;
-    align-items: center;
-    gap: 5px;
-    overflow: auto;
-}
-
-.facilitiy-label i {
-    font-size: 8px;
-}
-
 .custom-dropdown {
     width: 100%;
     position: relative;
@@ -2645,7 +2603,7 @@ input::-ms-clear {
 
 .form-map {
     height: 384px;
-    border: 1px solid var(--color-light-gray);
+    border: 1px solid var(--color-gray);
     border-radius: 6px;
 }
 
@@ -2692,61 +2650,6 @@ input::-ms-clear {
 .form-button-container {
     width: 100%;
     padding: 8px 15px 20px;
-}
-
-.common-facility-table-container {
-    height: fit-content;
-}
-
-.facility-input-container {
-    margin-top: 10px;
-    display: flex;
-    gap: 10px;
-    align-items: center;
-}
-
-#facility-button-container {
-    width: fit-content;
-    display: flex;
-    justify-content: center;
-    gap: 10px;
-}
-
-.facility-item-container {
-    display: flex;
-    justify-content: space-evenly;
-    align-items: center;
-    width: 100%;
-    gap: 10px;
-    flex-wrap: wrap;
-}
-
-.facility-item-label {
-    font-weight: bold;
-    font-size: 16px;
-    margin-top: 10px;
-}
-
-.facility-item {
-    border: 1px solid var(--color-light-gray);
-    border-radius: 4px;
-    background: var(--color-text);
-    font-size: 14px;
-    padding: 5px;
-    display: flex;
-    width: 100%;
-    justify-content: space-between;
-    align-items: center;
-    gap: 10px;
-}
-
-.facility-item-btn-container {
-    display: flex;
-    gap: 5px;
-}
-
-.facility-item button {
-    padding: 4px 8px;
 }
 
 #change-button-container button,
@@ -2808,26 +2711,6 @@ table td {
 
 table td {
     font-size: 16px;
-}
-
-#commonFacilityTable {
-    margin: 0;
-}
-
-#commonFacilityTable thead {
-    padding: 8px;
-    font-size: 16px;
-    border-bottom-width: 0.1px !important;
-}
-
-#commonFacilityTable td {
-    padding: 0;
-}
-
-#commonFacilityTable .checkbox-container {
-    align-items: center;
-    margin: 0;
-    margin-left: 5px;
 }
 
 #selectAllCheckBox,
@@ -2972,8 +2855,7 @@ html[data-theme="dark"] .evacuation-markers {
 html[data-theme="dark"] .markers-header,
 html[data-theme="dark"] .pac-container .pac-item:hover,
 html[data-theme="dark"] .pac-container .pac-item:focus,
-html[data-theme="dark"] .pac-container .pac-item-selected,
-html[data-theme="dark"] .facility-item {
+html[data-theme="dark"] .pac-container .pac-item-selected {
     background-color: var(--color-gray);
 }
 
@@ -3032,8 +2914,7 @@ html[data-theme="dark"] .action-container select {
     border: none;
 }
 
-html[data-theme="dark"] .dropdown-menu,
-html[data-theme="dark"] .facilitiy-label {
+html[data-theme="dark"] .dropdown-menu {
     background: var(--color-d-bg-container);
     border-color: var(--color-d-sub-text);
 }
@@ -3266,8 +3147,7 @@ html[data-theme="dark"] .modal-content {
     border-color: var(--color-background);
 }
 
-html[data-theme="dark"] .form-content,
-html[data-theme="dark"] .facility-list-container {
+html[data-theme="dark"] .form-content {
     background: var(--color-d-bg-container);
 }
 
@@ -3820,9 +3700,7 @@ html[data-theme="dark"] button.changeTheme {
     .sunset-header,
     .sunrise-header,
     .location-description,
-    .field-container i,
-    #commonFacilityTable th,
-    .facility-item-label {
+    .field-container i {
         font-size: 14px;
     }
 
@@ -4331,19 +4209,6 @@ html[data-theme="dark"] button.changeTheme {
         font-size: 9px;
     }
 
-    #commonFacilityTable td {
-        padding: 2.5px;
-    }
-
-    #commonFacilityTable input {
-        margin-top: 0px;
-    }
-
-    #commonFacilityTable .checkbox-container label,
-    .evac-facility-label {
-        font-size: 13px !important;
-    }
-
     .dropdown-menu.notification {
         width: 200px;
     }
@@ -4377,8 +4242,7 @@ html[data-theme="dark"] button.changeTheme {
 
     .empty-data-container p,
     .feedBackOptions,
-    #feedbackTable th,
-    .facilitiy-label {
+    #feedbackTable th {
         font-size: 12px;
     }
 
@@ -4560,46 +4424,6 @@ html[data-theme="dark"] button.changeTheme {
 
     .empty-data p {
         margin-bottom: 5px;
-    }
-
-    .facility-input-container {
-        flex-direction: column;
-        align-items: flex-end;
-    }
-
-    #facility-button-container {
-        width: fit-content;
-    }
-
-    #addFacilityBtn,
-    #cancelFacilityUpdateBtn {
-        padding: 6px 10px;
-        width: 100%;
-    }
-
-    .common-facility-table-container {
-        overflow: scroll;
-    }
-
-    .facility-item {
-        overflow: auto;
-        font-size: 12px;
-    }
-
-    .facility-item-btn-container {
-        flex-direction: column;
-    }
-
-    .facility-list-container hr {
-        margin: 7.5px 0;
-    }
-
-    .facilitiy-label {
-        padding: 5px;
-    }
-
-    .facilitiy-label i {
-        font-size: 6px;
     }
 }
 

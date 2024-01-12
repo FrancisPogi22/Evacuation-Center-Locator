@@ -19,8 +19,7 @@ class EvacuationCenter extends Model
         'latitude',
         'longitude',
         'status',
-        'is_archive',
-        'facilities'
+        'is_archive'
     ];
 
     public $timestamps = false;

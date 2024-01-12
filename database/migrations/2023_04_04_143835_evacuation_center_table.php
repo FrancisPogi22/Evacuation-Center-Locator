@@ -13,7 +13,6 @@ return new class extends Migration
             $table->string('barangay_name');
             $table->string('latitude');
             $table->string('longitude');
-            $table->longText('facilities');
             $table->string('status')->default('Active');
             $table->boolean('is_archive')->default(0);
         });
