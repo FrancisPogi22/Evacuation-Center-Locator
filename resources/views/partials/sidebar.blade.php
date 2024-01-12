@@ -177,6 +177,27 @@
                             </div>
                         @endif
                         <div class="navigation-item">
+                            <a class="sub-btn">
+                                <i class="bi bi-megaphone"></i>
+                                <span class="links_name">Resident Report</span>
+                                <i class="bi bi-caret-right-fill dropdown"></i>
+                            </a>
+                            <div class="sub-menu">
+                                <a href="{{ route('manage.report', 'manage') }}" class="menu-link">
+                                    <i class="bi bi-flag"></i>
+                                    <span class="links_name">Manage Report</span>
+                                </a>
+                                <a href="{{ route('manage.report', 'archived') }}" class="menu-link">
+                                    <i class="bi bi-journal-bookmark-fill"></i>
+                                    <span class="links_name">Archived Report</span>
+                                </a>
+                                <a href="{{ route('marker.display') }}" class="menu-link">
+                                    <i class="bi bi-geo-alt"></i>
+                                    <span class="links_name">Manage Markers</span>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="navigation-item">
                             <a href="{{ route('hotline.number', 'view') }}" class="menu-link">
                                 <i class="bi bi-telephone"></i>
                                 <span class="links_name">Hotline Numbers</span>
