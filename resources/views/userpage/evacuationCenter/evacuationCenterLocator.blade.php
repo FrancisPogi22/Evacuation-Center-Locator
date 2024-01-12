@@ -1063,7 +1063,7 @@
                     });
             });
 
-            $('#closeFeedbackModalBtn').on('hidden.bs.modal', () => {
+            $('#feedbackModal').on('hidden.bs.modal', () => {
                 $('.checkbox').prop('checked', false);
             });
 
