@@ -16,7 +16,7 @@ class Feedback extends Model
     protected $fillable = [
         'clean_facilities',
         'responsive_aid',
-        'safe_evacuation',
+        'safe_evacutaion',
         'sufficient_food_supply',
         'comfortable_evacuation',
         'well_managed_evacuation',

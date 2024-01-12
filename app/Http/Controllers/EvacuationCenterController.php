@@ -25,15 +25,17 @@ class EvacuationCenterController extends Controller
 
     public function getEvacuationData($operation, $type)
     {
-        return DataTables::of($this->evacuationCenter->where('is_archive', $type == "active" ? 0 : 1)->orderBy('name', 'asc')->get())
+        $evacuationCenterList = $this->evacuationCenter->where('is_archive', $type == "active" ? 0 : 1)->orderBy('name', 'asc')->get();
+
+        return DataTables::of($evacuationCenterList)
             ->addColumn('evacuees', function ($evacuation) use ($operation) {
                 return $operation == "locator" ? $this->evacuee->where('evacuation_id', $evacuation->id)->sum('individuals') : '';
             })->addColumn('action', function ($evacuation) use ($operation, $type) {
-                $facilityBtn = '<button class="btn-table-submit checkFacilities"><i class="bi bi-building-gear"></i>Facilities</button>';
+                if ($operation == "locator") {
+                    $prefix = basename(trim(request()->route()->getPrefix(), '/'));
 
-                if ($operation == "locator")
-                    return '<div class="action-container"><button class="btn-table-primary locateEvacuationCenter"><i class="bi bi-search"></i>Locate</button>' . $facilityBtn .
-                        (basename(trim(request()->route()->getPrefix(), '/')) == "resident" ? '<button class="btn-table-update sendFeedback"><i class="bi bi-send"></i>Send Feedback</button>' : '') . '</div>';
+                    return '<div class="action-container"><button class="btn-table-primary locateEvacuationCenter"><i class="bi bi-search"></i>Locate</button>' . ($prefix == "resident" ? '<button class="btn-table-update sendFeedback"><i class="bi bi-send"></i>Send Feedback</button>' : '') . '</div>';
+                }
 
                 $selectOption = $updateBtn = $archiveBtn = "";
 
@@ -47,10 +49,11 @@ class EvacuationCenterController extends Controller
                     $archiveBtn =  $evacuees == 0 ? '<button class="btn-table-remove" id="archiveEvacuationCenter"><i class="bi bi-box-arrow-in-down-right"></i>Archive</button>' : '';
                     $selectOption =  '<select class="form-select changeEvacuationStatus">' .
                         '<option value="" disabled selected hidden>Change Status</option>' . $statusOptions . '</select>';
-                } else
+                } else {
                     $archiveBtn = '<button class="btn-table-remove" id="unArchiveEvacuationCenter"><i class="bi bi-box-arrow-up-left"></i>Unarchive</button>';
+                }
 
-                return '<div class="action-container">' . $updateBtn . $archiveBtn . $facilityBtn . $selectOption . '</div>';
+                return '<div class="action-container">' . $updateBtn . $archiveBtn . $selectOption . '</div>';
             })->rawColumns(['evacuees', 'action'])->make(true);
     }
 
@@ -66,7 +69,15 @@ class EvacuationCenterController extends Controller
                     (!collect($checkboxes)->contains(fn ($checkbox) => $request->filled($checkbox)) ? 'Please select at least one option.' : '')
             ];
 
-        $this->feedback->create($request->all());
+        $this->feedback->create([
+            'evacuation_center_id'    => $request->evacuationId,
+            'responsive_aid'          => $request->filled('responsive_aid'),
+            'safe_evacuation'         => $request->filled('safe_evacuation'),
+            'clean_facilities'        => $request->filled('clean_facilities'),
+            'sufficient_food_supply'  => $request->filled('sufficient_food_supply'),
+            'comfortable_evacuation'  => $request->filled('comfortable_evacuation'),
+            'well_managed_evacuation' => $request->filled('well_managed_evacuation'),
+        ]);
 
         return response([]);
     }
@@ -77,8 +88,7 @@ class EvacuationCenterController extends Controller
             'name'         => 'required',
             'latitude'     => 'required',
             'longitude'    => 'required',
-            'barangayName' => 'required',
-            'facilities' => 'required|array',
+            'barangayName' => 'required'
         ]);
 
         if ($evacuationCenterValidation->fails()) return response(['status' => 'warning', 'message' => implode('<br>', $evacuationCenterValidation->errors()->all())]);
@@ -87,8 +97,7 @@ class EvacuationCenterController extends Controller
             'name'          => ucwords(trim($request->name)),
             'latitude'      => $request->latitude,
             'longitude'     => $request->longitude,
-            'facilities'    => implode(',', $request->facilities),
-            'barangay_name' => $request->barangayName,
+            'barangay_name' => $request->barangayName
         ]);
         $this->logActivity->generateLog("Added a new evacuation center(ID - $evacuationCenter->id)");
         event(new EventsEvacuationCenter());
@@ -102,8 +111,7 @@ class EvacuationCenterController extends Controller
             'name'         => 'required',
             'latitude'     => 'required',
             'longitude'    => 'required',
-            'barangayName' => 'required',
-            'facilities' => 'required|array',
+            'barangayName' => 'required'
         ]);
 
         if ($evacuationCenterValidation->fails()) return response(['status' => 'warning', 'message' => implode('<br>', $evacuationCenterValidation->errors()->all())]);
@@ -112,7 +120,6 @@ class EvacuationCenterController extends Controller
             'name'          => ucwords(trim($request->name)),
             'latitude'      => $request->latitude,
             'longitude'     => $request->longitude,
-            'facilities'    => implode(',', $request->facilities),
             'barangay_name' => $request->barangayName
         ]);
         $this->logActivity->generateLog("Updated a evacuation center(ID - $evacuationId)");

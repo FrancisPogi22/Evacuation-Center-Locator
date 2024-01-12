@@ -143,7 +143,7 @@
                                     <option value="" hidden selected disabled>Select Feedback</option>
                                     <option value="clean_facilities">Clean Facilities</option>
                                     <option value="responsive_aid">Responsive Aid</option>
-                                    <option value="safe_evacuation">Safe Evacutaion</option>
+                                    <option value="safe_evacutaion">Safe Evacutaion</option>
                                     <option value="sufficient_food_supply">Sufficient Food Supply</option>
                                     <option value="comfortable_evacuation">Comfortable Evacuation</option>
                                     <option value="well_managed_evacuation">Well Managed Evacuation</option>
@@ -196,39 +196,6 @@
     @include('partials.toastr')
     <script>
         $(document).ready(() => {
-            let validator, modal = $("#generateReportModal"),
-                form = $('#generateReportForm'),
-                disasterList = $('#disaster-list'),
-                generateBtn = $("#btnSubmit"),
-                searchResults = $('#disaster_id'),
-                btnLoader = $('#btn-loader'),
-                btnText = $('#btn-text');
-
-            $('#disaster_year').change(function() {
-                $.get(`{{ route('searchDisaster', 'disasterYear') }}`
-                        .replace('disasterYear', $(this).val()))
-                    .done(response => {
-                        searchResults.empty().append(response.map(disaster =>
-                            `<option class="searchResult" value="${disaster.id}">${disaster.name}</option>`
-                        ));
-                        disasterList.prop('hidden', 0);
-                    }).fail(showErrorMessage);
-            });
-
-            $('.pie-container').click(function() {
-                this.classList.toggle('active');
-            });
-
-            validator = form.validate({
-                rules: {
-                    disaster_year: 'required'
-                },
-                messages: {
-                    disaster_year: 'Please select year.'
-                },
-                errorElement: 'span'
-            });
-
             $(document).on('change', '.feedBackOptions', function() {
                 if ($('.feedBackOptions').val() == '') return;
 
@@ -266,6 +233,39 @@
                     },
                     error: showErrorMessage
                 });
+            });
+
+            let validator, modal = $("#generateReportModal"),
+                form = $('#generateReportForm'),
+                disasterList = $('#disaster-list'),
+                generateBtn = $("#btnSubmit"),
+                searchResults = $('#disaster_id'),
+                btnLoader = $('#btn-loader'),
+                btnText = $('#btn-text');
+
+            $('#disaster_year').change(function() {
+                $.get(`{{ route('searchDisaster', 'disasterYear') }}`
+                        .replace('disasterYear', $(this).val()))
+                    .done(response => {
+                        searchResults.empty().append(response.map(disaster =>
+                            `<option class="searchResult" value="${disaster.id}">${disaster.name}</option>`
+                        ));
+                        disasterList.prop('hidden', 0);
+                    }).fail(showErrorMessage);
+            });
+
+            $('.pie-container').click(function() {
+                this.classList.toggle('active');
+            });
+
+            validator = form.validate({
+                rules: {
+                    disaster_year: 'required'
+                },
+                messages: {
+                    disaster_year: 'Please select year.'
+                },
+                errorElement: 'span'
             });
 
             generateBtn.click(() => {
