@@ -66,7 +66,18 @@ class EvacuationCenterController extends Controller
                     (!collect($checkboxes)->contains(fn ($checkbox) => $request->filled($checkbox)) ? 'Please select at least one option.' : '')
             ];
 
-        $this->feedback->create($request->all());
+        $feedback = $this->feedback->where('evacuation_center_id', $request->evacuationId)->first();
+        $this->feedback->updateOrCreate(
+            ['evacuation_center_id' => $request->evacuationId],
+            [
+                'responsive_aid'          => optional($feedback)->responsive_aid + $request->filled('responsive_aid'),
+                'safe_evacuation'         => optional($feedback)->safe_evacuation + $request->filled('safe_evacuation'),
+                'clean_facilities'        => optional($feedback)->clean_facilities + $request->filled('clean_facilities'),
+                'sufficient_food_supply'  => optional($feedback)->sufficient_food_supply + $request->filled('sufficient_food_supply'),
+                'comfortable_evacuation'  => optional($feedback)->comfortable_evacuation + $request->filled('comfortable_evacuation'),
+                'well_managed_evacuation' => optional($feedback)->well_managed_evacuation + $request->filled('well_managed_evacuation')
+            ]
+        );
 
         return response([]);
     }
@@ -78,7 +89,7 @@ class EvacuationCenterController extends Controller
             'latitude'     => 'required',
             'longitude'    => 'required',
             'barangayName' => 'required',
-            'facilities' => 'required|array',
+            'facilities'   => 'required|array'
         ]);
 
         if ($evacuationCenterValidation->fails()) return response(['status' => 'warning', 'message' => implode('<br>', $evacuationCenterValidation->errors()->all())]);
@@ -88,7 +99,7 @@ class EvacuationCenterController extends Controller
             'latitude'      => $request->latitude,
             'longitude'     => $request->longitude,
             'facilities'    => implode(',', $request->facilities),
-            'barangay_name' => $request->barangayName,
+            'barangay_name' => $request->barangayName
         ]);
         $this->logActivity->generateLog("Added a new evacuation center(ID - $evacuationCenter->id)");
         event(new EventsEvacuationCenter());
@@ -103,7 +114,7 @@ class EvacuationCenterController extends Controller
             'latitude'     => 'required',
             'longitude'    => 'required',
             'barangayName' => 'required',
-            'facilities' => 'required|array',
+            'facilities'   => 'required|array'
         ]);
 
         if ($evacuationCenterValidation->fails()) return response(['status' => 'warning', 'message' => implode('<br>', $evacuationCenterValidation->errors()->all())]);
