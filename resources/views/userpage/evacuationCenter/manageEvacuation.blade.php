@@ -41,6 +41,7 @@
                                 <th colspan="3">Barangay</th>
                                 <th>Status</th>
                                 <th>Action</th>
+                                <th>Facilities</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -49,6 +50,7 @@
                 </div>
             </section>
             @include('userpage.evacuationCenter.evacuationCenterModal')
+            @include('userpage.evacuationCenter.facilitiesModal')
             @include('userpage.changePasswordModal')
         </main>
     </div>
@@ -68,6 +70,8 @@
     @include('partials.toastr')
     <script type="text/javascript">
         let map, marker, reportSubmitting = false,
+            facilityList = [],
+            prevFacilityItem,
             evacuationCenterTable = $('#evacuationCenterTable').DataTable({
                 ordering: false,
                 responsive: true,
@@ -106,6 +110,11 @@
                         width: '1rem',
                         orderable: false,
                         searchable: false
+                    },
+                    {
+                        data: 'facilities',
+                        name: 'facilities',
+                        visible: false
                     }
                 ],
                 columnDefs: [{
@@ -191,6 +200,8 @@
                 modal = $('#evacuationCenterModal'),
                 btnLoader = $('#btn-loader'),
                 btnText = $('#btn-text'),
+                facilityItemContainer = $('.facility-item-container'),
+                facilityError = $('#new-facility-error'),
                 saveBtnClicked = false;
 
             validator = $("#evacuationCenterForm").validate({
@@ -206,17 +217,26 @@
                     this.defaultShowErrors();
 
                     if (!marker && saveBtnClicked)
-                        $('#location-error').text('Please select a location.').
-                    prop('style', 'display: block !important');
+                        $('#location-error').text('Please select a location.')
+                        .prop('style', 'display: block !important')
+                        .prop('hidden', 0);
+
+                    if (facilityList.length == 0 && saveBtnClicked) facilityError
+                        .text('Please add a facility.')
+                        .prop('style', 'display: block !important')
+                        .prop('hidden', 0);
                 },
                 errorElement: 'span',
                 submitHandler(form) {
-                    if (!marker || $('#searchPlace').is(':focus')) return;
+                    if (!marker || $('#searchPlace').is(':focus') || facilityList.length == 0) return;
 
                     confirmModal(`Do you want to ${operation} this evacuation center?`).then((result) => {
                         if (!result.isConfirmed) return;
 
                         let formData = $(form).serialize();
+                        $.each(facilityList, function(index, value) {
+                            formData += '&facilities[]=' + encodeURIComponent(value);
+                        });
 
                         return operation == 'update' && defaultFormData == formData ?
                             (showWarningMessage(), modal.modal('hide')) :
@@ -238,11 +258,10 @@
                                 success(response) {
                                     $('#btn-loader').addClass('show');
                                     formButton.prop('disabled', 0);
-                                    response.status == "warning" ? showWarningMessage(response
-                                        .message) : (showSuccessMessage(
-                                        `Successfully ${operation == 'add' ? 'added' : 'updated'} evacuation center.`
-                                    ), evacuationCenterTable.draw(), modal.modal(
-                                        'hide'));
+                                    response.status == "warning" ? showWarningMessage(
+                                        response.message) : (showSuccessMessage(`Successfully
+                                            ${operation == 'add' ? 'added' : 'updated'} evacuation center.`),
+                                        evacuationCenterTable.draw(), modal.modal('hide'));
                                 },
                                 error: showErrorMessage,
                                 complete() {
@@ -275,8 +294,12 @@
                     latitude,
                     longitude,
                     capacity,
-                    barangay_name
-                } = getRowData(this, evacuationCenterTable);
+                    barangay_name,
+                    facilities
+                } = getRowData(this, evacuationCenterTable),
+                    checkboxValues = $('.checkbox-container input.checkbox').map((index, element) =>
+                        $(element).attr('value')).get();
+
                 evacuationCenterId = id;
                 modalLabelContainer.addClass('bg-warning');
                 modalLabel.text('Update Evacuation Center');
@@ -287,6 +310,22 @@
                 $('#latitude').val(latitude);
                 $('#longitude').val(longitude);
                 $(`#barangayName, option[value="${barangay_name}"`).prop('selected', 1);
+                facilityList = facilities.split(',');
+                facilityList.forEach(facility => {
+                    $(':checkbox[value="' + facility + '"]').prop('checked', true);
+
+                    facilityItemContainer.append(checkboxValues.includes(facility) ?
+                        `<div class="facility-item">${facility}</div>` :
+                        `<div class="facility-item" value="${facility}">
+                            <span>${facility}</span>
+                            <div class="facility-item-btn-container">
+                                <button class="updateFacilityBtn btn-update"><i class="bi bi-pencil-square"></i></button>
+                                <button class="removeFacilityBtn btn-remove"><i class="bi bi-x-lg"></i></button>
+                            </div>
+                        </div>`);
+                });
+
+                facilityItemContainer.prop('hidden', 0)
 
                 marker = new google.maps.Marker({
                     position: {
@@ -296,12 +335,15 @@
                     map: map,
                     icon: {
                         url: "{{ asset('assets/img/Default.png') }}",
-                        scaledSize: new google.maps.Size(35, 35),
+                        scaledSize: new google.maps.Size(35, 35)
                     },
                 });
 
                 modal.modal('show');
                 defaultFormData = $('#evacuationCenterForm').serialize();
+                $.each(facilityList, function(index, value) {
+                    defaultFormData += '&facilities[]=' + encodeURIComponent(value);
+                });
             });
 
             $(document).on('click', '#archiveEvacuationCenter', function() {
@@ -326,6 +368,127 @@
                 alterEvacuationCenter(url, 'PATCH', 'change');
             })
 
+            $(document).on('click', '.checkFacilities', function() {
+                let {
+                    name,
+                    facilities
+                } = getRowData(this, evacuationCenterTable);
+
+                modalLabelContainer.removeClass('bg-warning');
+                modalLabel.text('Facilities List');
+                $('.evac-facility-label').text(name);
+                $('.facilitiy-label').remove();
+                facilities = facilities.split(',');
+                facilities.forEach(facility => {
+                    $('.facilitiy-list').append(`
+                        <div class="facilitiy-label">
+                            <i class="bi bi-circle-fill"></i>${facility}
+                        </div>
+                    `);
+                });
+                $('#facilitiesModal').modal('show');
+            });
+
+            $('.checkbox').on('click', function() {
+                let checkbox = $(this),
+                    value = checkbox.attr('value');
+
+                if (checkbox.prop("checked")) {
+                    facilityList.push(value);
+                    facilityItemContainer.prop('hidden', 0)
+                        .append(`<div class="facility-item">${value}</div>`);
+                    facilityError.prop('style', 'display: none').prop('hidden', 1);
+                } else {
+                    facilityList.splice(facilityList.indexOf(value), 1);
+                    $('.facility-item:contains("' + value + '")').remove();
+                    if ($('.facility-item').length == 0 && saveBtnClicked)
+                        facilityError.prop('style', 'display: block !important').prop('hidden', 0);
+                    hideFacilitiesList();
+                }
+            });
+
+            $('#addFacilityBtn').on('click', function(e) {
+                e.preventDefault();
+
+                if (!$.trim($("#newFacility").val()))
+                    return facilityError.text('Please enter a facility.')
+                        .prop('style', 'display: block !important')
+                        .prop('hidden', 0);
+                else
+                    facilityError.prop('style', 'display: none').prop('hidden', 1);
+
+                let facilityInput = $("#newFacility").val().split(' ').map(w => w.charAt(0)
+                    .toUpperCase() + w.slice(1).toLowerCase()).join(' ');
+
+                if ($(this).text().includes('Add')) {
+
+                    if (checkDuplicateValue(facilityList, facilityInput)) return;
+
+                    facilityList.push(facilityInput);
+                    $("#newFacility").val('');
+
+                    facilityItemContainer.prop('hidden', 0).append(`
+                        <div class="facility-item" value="${facilityInput}">
+                            <span>${facilityInput}</span>
+                            <div class="facility-item-btn-container">
+                                <button class="updateFacilityBtn btn-update"><i class="bi bi-pencil-square"></i></button>
+                                <button class="removeFacilityBtn btn-remove"><i class="bi bi-x-lg"></i></button>
+                            </div>
+                        </div>
+                    `);
+                } else {
+                    if (facilityInput == prevFacilityItem.attr('value'))
+                        return facilityError
+                            .text('Value should not be identical to the one you are currently updating.')
+                            .prop('style', 'display: block !important')
+                            .prop('hidden', 0);
+
+                    let facilitySaved = facilityList.filter(value =>
+                        value != prevFacilityItem.attr('value'));
+
+                    if (checkDuplicateValue(facilityList, facilityInput)) return;
+
+                    facilityList[facilityList.indexOf(prevFacilityItem.attr('value'))] = facilityInput;
+                    prevFacilityItem.attr('value', facilityInput);
+                    prevFacilityItem.find('span').text(facilityInput);
+                    $('#cancelFacilityUpdateBtn').click();
+                }
+            });
+
+            $(document).on('click', '.removeFacilityBtn', function(e) {
+                e.preventDefault();
+                let facilityItem = $(this).parent().parent();
+
+                facilityList.splice(facilityList.indexOf(facilityItem.attr('value')), 1);
+                facilityItem.remove();
+                hideFacilitiesList();
+            });
+
+            $(document).on('click', '.updateFacilityBtn', function(e) {
+                e.preventDefault();
+                let facilityItem = $(this).parent().parent();
+                if (prevFacilityItem) prevFacilityItem.show();
+                prevFacilityItem = facilityItem;
+
+                $("#newFacility").val(facilityItem.attr('value'));
+                $('#addFacilityBtn').text('Save').css('background', '#ffcb2f');
+                $('#cancelFacilityUpdateBtn').prop('hidden', 0);
+                facilityItem.hide();
+                hideFacilitiesList();
+            });
+
+            $('#cancelFacilityUpdateBtn').click(function(e) {
+                e.preventDefault();
+
+                $("#newFacility").val('');
+                $('#addFacilityBtn').text('Add Facility').css('background', '#2682fa');
+                $('#cancelFacilityUpdateBtn, #new-facility-error').prop('hidden', 1);
+                facilityItemContainer.prop('hidden', !$('.facility-item').length > 0);
+                facilityError.prop('style', 'display: none').prop('hidden', 1);
+                if (prevFacilityItem) prevFacilityItem.show();
+                prevFacilityItem = '';
+            });
+
             modal.on('hidden.bs.modal', () => {
                 validator && validator.resetForm();
                 $('#evacuationCenterForm')[0].reset();
@@ -339,6 +502,10 @@
                 });
                 map.setZoom(13);
                 saveBtnClicked = false;
+                facilityList = [];
+                prevFacilityItem = '';
+                $('.facility-item').remove();
+                $('#cancelFacilityUpdateBtn').click();
             });
 
             formButton.click(() => saveBtnClicked = true);
@@ -372,6 +539,23 @@
                             error: showErrorMessage
                         });
                 });
+            }
+
+            function checkDuplicateValue(list, value) {
+                if (list.includes(value)) {
+                    facilityError.text('This facility is already added.')
+                        .prop('style', 'display: block !important')
+                        .prop('hidden', 0);
+
+                    return true;
+                }
+
+                return false;
+            }
+
+            function hideFacilitiesList() {
+                if ($('.facility-item:visible').length == 0)
+                    facilityItemContainer.prop('hidden', 1);
             }
         });
     </script>

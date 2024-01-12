@@ -103,6 +103,7 @@
                     </table>
                 </div>
             </div>
+            @include('userpage.evacuationCenter.facilitiesModal')
             @include('userpage.evacuationCenter.feedbackForm')
         </div>
         @include('userpage.changePasswordModal')
@@ -1064,6 +1065,27 @@
 
             $('#feedbackModal').on('hidden.bs.modal', () => {
                 $('.checkbox').prop('checked', false);
+            });
+
+            $(document).on('click', '.checkFacilities', function() {
+                let {
+                    name,
+                    facilities
+                } = getRowData(this, evacuationCenterTable);
+
+                $('.modalLabelContainer').removeClass('bg-warning');
+                $('.modalLabel').text('Facilities List');
+                $('.evac-facility-label').text(name);
+                $('.facilitiy-label').remove();
+                facilities = facilities.split(',');
+                facilities.forEach(facility => {
+                    $('.facilitiy-list').append(`
+                        <div class="facilitiy-label">
+                            <i class="bi bi-circle-fill"></i>${facility}
+                        </div>
+                    `);
+                });
+                $('#facilitiesModal').modal('show');
             });
 
             Echo.channel('area-report').listen('AreaReport', () => {
