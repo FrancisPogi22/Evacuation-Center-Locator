@@ -26,14 +26,12 @@ class EvacueeController extends Controller
 
     public function getEvacueeData($operation, $disasterId, $status = null)
     {
-        $evacueeInfo = $this->evacuee::join('evacuation_center', 'evacuee.evacuation_id', '=', 'evacuation_center.id')
+        return DataTables::of($this->evacuee::join('evacuation_center', 'evacuee.evacuation_id', '=', 'evacuation_center.id')
             ->select('evacuee.*', 'evacuation_center.name as evacuation_assigned')
             ->when($operation == "manage", fn ($query) => $query->where('evacuee.status', $status))
             ->when($operation == "archived", fn ($query) => $query->where('evacuee.is_archive', 1))
             ->where('evacuee.disaster_id', $disasterId)
-            ->get();
-
-        return DataTables::of($evacueeInfo)
+            ->get())
             ->addColumn('select', function ($row) {
                 return '<input type="checkbox" class="rowCheckBox" value="' . $row->id . '">';
             })
@@ -143,7 +141,7 @@ class EvacueeController extends Controller
 
         $this->logActivity->generateLog('Updated evacuee(ID - ' . implode(', ', $familyIds) . ') status to return home');
         event(new Evacuees());
-        
+
         return response([]);
     }
 }
