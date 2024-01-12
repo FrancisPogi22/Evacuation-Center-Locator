@@ -264,11 +264,10 @@ class MainController extends Controller
         $topEvacList = $this->feedback
             ->selectRaw("evacuation_center.id as id, evacuation_center.name as name, SUM($feedBackType) as feedback_total")
             ->join('evacuation_center', 'evacuation_center.id', '=', 'feedback.evacuation_center_id')
-            ->groupBy('evacuation_center_id')
+            ->groupBy('evacuation_center.id', 'evacuation_center.name')
             ->latest('feedback_total')
             ->limit(3)
             ->get();
-
 
         return response(['topEvacList' => $topEvacList]);
     }

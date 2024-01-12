@@ -107,7 +107,7 @@
                     {
                         data: 'action',
                         name: 'action',
-                        width: '1rem',
+                        width: '35%',
                         orderable: false,
                         searchable: false
                     },
@@ -279,12 +279,28 @@
             });
 
             $(document).on('click', '#addEvacuationCenter', () => {
+                facilitesForm.prop('hidden', 1);
+                manageForm.prop('hidden', 0);
                 modalLabelContainer.removeClass('bg-warning');
                 modalLabel.text('Add Evacuation Center');
                 formButton.addClass('btn-submit').removeClass('btn-update');
                 btnText.text('Add');
                 operation = "add";
                 modal.modal('show');
+            });
+
+            $(document).on('click', '.checkFacilities', () => {
+                facilitesForm.prop('hidden', 0);
+                modalLabelContainer.removeClass('bg-warning');
+                modalLabel.text('Evacuation Facilities');
+                formButton.addClass('btn-submit').removeClass('btn-update');
+                btnText.text('Add');
+                operation = "add";
+                modal.modal('show');
+            });
+
+            $(document).on('click', '.viewFacilities', () => {
+                $('#feedbackModal').modal('show');
             });
 
             $(document).on('click', '#updateEvacuationCenter', function() {
@@ -351,7 +367,7 @@
                     .replace(
                         'evacuationCenterId', getRowData(this, evacuationCenterTable).id);
                 alterEvacuationCenter(url, 'PATCH', 'archive');
-            })
+            });
 
             $(document).on('click', '#unArchiveEvacuationCenter', function() {
                 let url =
@@ -359,7 +375,7 @@
                     .replace(
                         'evacuationCenterId', getRowData(this, evacuationCenterTable).id);
                 alterEvacuationCenter(url, 'PATCH', 'unarchive');
-            })
+            });
 
             $(document).on('change', '.changeEvacuationStatus', function() {
                 status = $(this).val();
@@ -490,6 +506,7 @@
             });
 
             modal.on('hidden.bs.modal', () => {
+                manageForm.prop('hidden', 1);
                 validator && validator.resetForm();
                 $('#evacuationCenterForm')[0].reset();
                 if (marker) {

@@ -10,7 +10,20 @@
             <div class="modal-body">
                 <form id="evacuationCenterForm">
                     @csrf
-                    <div class="form-content">
+                    <div class="form-content facilities" hidden>
+                        <div id="checkbox-input-container">
+                            <div class="add-facilities-btn">
+                                <button class="btn-submit viewFacilities">View Facilities</button>
+                                @include('userpage.evacuationCenter.feedbackForm')
+                            </div>
+                            <div class="checkbox-container">
+                                <input type="checkbox" id="comfort_room" name="comfort_room" class="checkbox">
+                                <label for="comfort_room">Comfort Room</label>
+                            </div>
+                        </div>
+                        <span id="facilities-error" class="error" hidden></span>
+                    </div>
+                    <div class="form-content manage" hidden>
                         <div class="field-container">
                             <label for="name">Evacuation Center Name</label>
                             <input type="text" name="name" class="form-control" autocomplete="off"

@@ -2299,6 +2299,7 @@ input::-webkit-inner-spin-button {
     font-size: 19.2px;
 }
 
+#closeFeedbackModalBtn,
 #closeModalBtn,
 #closeChangePasswordBtn {
     font-weight: 900;
