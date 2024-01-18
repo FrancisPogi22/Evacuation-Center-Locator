@@ -54,8 +54,9 @@ class DisasterController extends Controller
         if ($validatedDisasterValidation->fails()) return response(['status' => 'warning', 'message' => $validatedDisasterValidation->errors()->first()]);
 
         $disasterData = $this->disaster->create([
-            'name'    => ucwords(trim($request->name)),
-            'year'    => date('Y')
+            'name' => ucwords(trim($request->name)),
+            'type' => $request->type,
+            'year' => date('Y')
         ]);
         $this->logActivity->generateLog("Added a new disaster(ID - $disasterData->id)");
         event(new EventsDisaster());
@@ -65,7 +66,10 @@ class DisasterController extends Controller
 
     public function updateDisasterData(Request $request, $disasterId)
     {
-        $validatedDisasterValidation = Validator::make($request->all(), ['name' => 'required']);
+        $validatedDisasterValidation = Validator::make($request->all(), [
+            'name' => 'required',
+            'type' => $request->type
+        ]);
 
         if ($validatedDisasterValidation->fails()) return response(['status' => 'warning', 'message' => $validatedDisasterValidation->errors()->first()]);
 

@@ -824,7 +824,7 @@
                         },
                         {
                             data: 'action',
-                            width: '20%',
+                            width: '1rem',
                             orderable: false,
                             searchable: false
                         }

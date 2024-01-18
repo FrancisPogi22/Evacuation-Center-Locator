@@ -38,6 +38,7 @@
                             <tr>
                                 <th>ID</th>
                                 <th>Disaster Name</th>
+                                <th>Type</th>
                                 <th>Year</th>
                                 <th>Status</th>
                                 <th>Action</th>
@@ -77,6 +78,11 @@
                     {
                         data: 'name',
                         name: 'name'
+                    },
+                    {
+                        data: 'type',
+                        name: 'type',
+                        width: '10%'
                     },
                     {
                         data: 'year',
@@ -176,10 +182,12 @@
             $(document).on('click', '#updateDisaster', function() {
                 let {
                     id,
+                    type,
                     name
                 } = getRowData(this, disasterTable);
                 disasterId = id;
                 $('#disasterName').val(name);
+                $(`#type, option[value="${type}"`).prop('selected', 1);
                 modalLabelContainer.addClass('bg-warning');
                 modalLabel.text('Update Disaster');
                 formButton.addClass('btn-update').removeClass('btn-submit')

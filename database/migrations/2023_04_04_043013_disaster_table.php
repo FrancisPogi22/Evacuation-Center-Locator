@@ -12,6 +12,7 @@ return new class extends Migration
         Schema::create('disaster', function (Blueprint $table) {
             $table->id();
             $table->string('name');
+            $table->string('type');
             $table->string('year');
             $table->string('status')->default('On Going');
             $table->boolean('is_archive')->default(0);
