@@ -29,7 +29,7 @@ class EvacuationCenterController extends Controller
             ->addColumn('evacuees', function ($evacuation) use ($operation) {
                 return $operation == "locator" ? $this->evacuee->where('evacuation_id', $evacuation->id)->sum('individuals') : '';
             })->addColumn('action', function ($evacuation) use ($operation, $type) {
-                $facilityBtn = '<button class="btn-table-submit checkFacilities"><i class="bi bi-building-gear"></i>Facilities</button>';
+                $facilityBtn = '<button class="btn-table-submit checkFacilities"><i class="bi bi-building-gear"></i>View Facilities</button>';
 
                 if ($operation == "locator")
                     return '<div class="action-container"><button class="btn-table-primary locateEvacuationCenter"><i class="bi bi-search"></i>Locate</button>' . $facilityBtn .

@@ -16,6 +16,22 @@
                             <input type="text" name="name" class="form-control" autocomplete="off"
                                 placeholder="e.g. Ondoy" id="disasterName">
                         </div>
+                        <div class="field-container">
+                            <label for="type">Type</label>
+                            <select name="type" class="form-select" id="type">
+                                <option value="" hidden selected disabled>Select Type</option>
+                                <option value="Typhoon">Typhoon</option>
+                                <option value="Flood">Flood</option>
+                                <option value="Wildfire">Wildfire</option>
+                                <option value="Volcanic Eruption">Volcanic Eruption</option>
+                                <option value="Structure Fire">Structure Fire</option>
+                                <option value="Tsunami">Tsunami</option>
+                                <option value="Landslide">Landslide</option>
+                                <option value="Sinkhole">Sinkhole</option>
+                                <option value="Pandemic">Pandemic</option>
+                                <option value="Epidemic">Epidemic</option>
+                            </select>
+                        </div>
                         <div class="form-button-container">
                             <button id="submitDisasterBtn" class="modalBtn">
                                 <div id="btn-loader" hidden>
