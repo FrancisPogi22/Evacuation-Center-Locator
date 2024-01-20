@@ -10,7 +10,7 @@ return new class extends Migration
     {
         Schema::create('disaster_damage', function (Blueprint $table) {
             $table->id();
-            $table->integer('description');
+            $table->string('description');
             $table->integer('quantity');
             $table->integer('cost');
             $table->string('barangay');

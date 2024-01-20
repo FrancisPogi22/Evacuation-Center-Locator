@@ -72,6 +72,7 @@ Route::middleware(['auth', 'check.status'])->group(function () {
             Route::patch('/updateDisaster/{disasterId}', 'updateDisasterData')->name('update');
             Route::patch('/archiveDisasterData/{disasterId}/{operation}', 'archiveDisasterData')->name('archive');
             Route::patch('/changeDisasterStatus/{disasterId}', 'changeDisasterStatus')->name('change.status');
+            Route::get('/getDisasterDamages/{operation}', 'getDisasterDamages')->name('get.damages');
         });
 
         Route::prefix('evacuee')->name('evacuee.info.')->controller(EvacueeController::class)->group(function () {

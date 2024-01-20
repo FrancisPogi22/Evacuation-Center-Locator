@@ -50,6 +50,7 @@
                 </div>
             </section>
             @include('userpage.changePasswordModal')
+            @include('userpage.disaster.damagesModal')
         </main>
     </div>
 
@@ -104,12 +105,13 @@
                 ]
             });
 
-            let disasterId, defaultFormData, operation, validator,
+            let disasterId, defaultFormData, operation, validator, archiveId,
                 form = $("#disasterForm"),
                 modalLabelContainer = $('.modal-label-container'),
                 modalLabel = $('.modal-label'),
                 formButton = $('#submitDisasterBtn'),
-                modal = $('#disasterModal');
+                modal = $('#disasterModal'),
+                damageList = [];
 
             $.ajaxSetup({
                 headers: {
@@ -119,14 +121,18 @@
 
             validator = form.validate({
                 rules: {
-                    name: 'required'
+                    name: 'required',
+                    type: 'required',
                 },
                 messages: {
-                    name: 'Please Enter Disaster Name.'
+                    name: 'Please Enter Disaster Name.',
+                    type: 'Please Select Disaster Type.'
                 },
                 errorElement: 'span',
                 submitHandler(form) {
                     let formData = $(form).serialize();
+
+                    if ($("#submitDisasterBtn").text().includes("Archive")) return;
 
                     confirmModal(`Do you want to ${operation} this disaster?`).then((result) => {
                         if (!result.isConfirmed) return;
@@ -143,7 +149,7 @@
                                     $('#btn-loader').prop('hidden', 0);
                                     $('#btn-text').text(operation == 'add' ?
                                         'Adding' : 'Updating');
-                                    $('input, #submitDisasterBtn, #closeModalBtn')
+                                    $('input, select, #submitDisasterBtn, #closeModalBtn')
                                         .prop('disabled', 1);
                                 },
                                 success(response) {
@@ -163,7 +169,7 @@
                                     $('#btn-text').text(
                                         `${operation[0].toUpperCase()}${operation.slice(1)}`
                                     );
-                                    $('input, #submitDisasterBtn, #closeModalBtn')
+                                    $('input, select, #submitDisasterBtn, #closeModalBtn')
                                         .prop('disabled', 0);
                                 }
                             });
@@ -172,6 +178,8 @@
             });
 
             $('#addDisasterData').click(() => {
+                $("#disasterFormContainer").prop("hidden", 0);
+                $("#archiveDamageContainer").prop("hidden", 1);
                 modalLabelContainer.removeClass('bg-warning');
                 modalLabel.text('Add Disaster');
                 formButton.addClass('btn-submit').removeClass('btn-update').find('#btn-text').text('Add');
@@ -180,10 +188,12 @@
             });
 
             $(document).on('click', '#updateDisaster', function() {
+                $("#disasterFormContainer").prop("hidden", 0);
+                $("#archiveDamageContainer").prop("hidden", 1);
                 let {
                     id,
-                    type,
-                    name
+                    name,
+                    type
                 } = getRowData(this, disasterTable);
                 disasterId = id;
                 $('#disasterName').val(name);
@@ -197,9 +207,27 @@
                 defaultFormData = form.serialize();
             });
 
+            $(document).on('click', '#unArchiveDisaster', function() {
+                alterDisasterData('unarchive',
+                    "{{ route('disaster.archive', ['disasterId', 'unarchive']) }}", this);
+            });
+
             $(document).on('click', '#archiveDisaster', function() {
+                archiveId = getRowData(this, disasterTable).id;
+
+                $("#archiveDamageContainer").prop("hidden", 0);
+                $("#disasterFormContainer").prop("hidden", 1);
+                modalLabelContainer.addClass('bg-warning');
+                modalLabel.text('Add Disaster Damages');
+                formButton.addClass('btn-update').removeClass('btn-submit')
+                    .find('#btn-text').text('Archive');
+                operation = "update";
+                modal.modal('show');
+            });
+
+            $("#submitDisasterBtn").on('click', function() {
                 alterDisasterData('archive',
-                    "{{ route('disaster.archive', ['disasterId', 'archive']) }}", this);
+                    "{{ route('disaster.archive', ['disasterId', 'archive']) }}", archiveId);
             });
 
             $(document).on('click', '#unArchiveDisaster', function() {
@@ -212,9 +240,88 @@
                     "{{ route('disaster.change.status', 'disasterId') }}", this, $(this).val());
             });
 
+            $(document).on('click', '.viewDamages', function() {
+                let {
+                    id,
+                    name
+                } = getRowData(this, disasterTable);
+
+                $.ajax({
+                    method: 'GET',
+                    url: "{{ route('disaster.get.damages', 'disasterId') }}".replace('disasterId',
+                        id),
+                    success: function(response) {
+                        console.log(response.damages)
+
+                        var damagesContainer = $('.damage-list-container');
+
+                        $(".damage-disaster-label").text(name);
+                        damagesContainer.html(response.damages.length > 0 ?
+                            response.damages.map(damage => {
+                                // Check if barangay is new
+                                var displayBarangay = damage.barangay !== $("#barangay")
+                                    .val();
+
+                                return `<div class="damage-item bg-white border rounded mt-2">
+                                            <div class="m-2 border p-2 rounded">
+                                                ${displayBarangay ? "Barangay: " + damage.barangay : ''}
+                                            </div>
+                                            <div class="m-2 border p-2 rounded">
+                                                Description: ${damage.description}
+                                            </div>
+                                            <div class="m-2 border p-2 rounded">
+                                                Quantity: ${damage.total_quantity}
+                                            </div>
+                                            <div class="m-2 border p-2 rounded">
+                                                Cost: ${damage.total_cost}
+                                            </div>
+                                        </div>`;
+                            }).join('') : '<p>No damages found.</p>');
+                        $("#damagesModal").modal('show');
+                    }
+                });
+
+            });
+
+            $('#addDamageBtn').on('click', function(e) {
+                e.preventDefault();
+
+                if (["#description", "#barangay", "#quantity", "#cost"]
+                    .some(selector => $(selector).val() === "")) return;
+
+                $('#damage_list').append(`
+                        <div class="damage-item bg-white border rounded mt-2">
+                            <div class="m-2 border p-2 rounded">
+                                ${$("#barangay").val()}
+                            </div>
+                            <div class="m-2 border p-2 rounded">
+                                ${$("#description").val()}
+                            </div>
+                            <div class="m-2 border p-2 rounded">
+                                ${$("#quantity").val()}
+
+                            </div>
+                            <div class="m-2 border p-2 rounded">
+                                ${$("#cost").val()}
+                            </div
+                        </div>
+                    `);
+
+                damageList.push({
+                    "description": $("#description").val(),
+                    "quantity": $("#quantity").val(),
+                    "cost": $("#cost").val(),
+                    "barangay": $("#barangay").val(),
+                    "disaster_id": archiveId
+                });
+
+                $("#description, #barangay, #quantity, #cost").val('');
+            });
+
             modal.on('hidden.bs.modal', () => {
                 validator && validator.resetForm();
                 form[0].reset();
+                $('.damage_item').remove();
             });
 
             function alterDisasterData(operation, url, btn, status = null) {
@@ -226,16 +333,17 @@
                             $.ajax({
                                 method: 'PATCH',
                                 data: {
-                                    status: status
+                                    status: status,
+                                    damages: damageList
                                 },
-                                url: url.replace('disasterId',
-                                    getRowData(btn, disasterTable).id),
+                                url: operation == "archive" ? url.replace('disasterId', btn) : url.replace(
+                                    'disasterId', getRowData(btn, disasterTable).id),
                                 success(response) {
                                     response.status == 'warning' ?
                                         showWarningMessage(response.message) :
                                         (disasterTable.draw(), showSuccessMessage(
                                             `Disaster successfully ${operation == "change" ? "changed status" : operation}.`
-                                        ));
+                                        ), modal.modal('hide'));
                                 },
                                 error: showErrorMessage
                             });

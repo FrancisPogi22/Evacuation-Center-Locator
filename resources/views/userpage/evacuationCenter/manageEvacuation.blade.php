@@ -313,7 +313,7 @@
                 facilityList = facilities.split(',');
                 facilityList.forEach(facility => {
                     $(':checkbox[value="' + facility + '"]').prop('checked', true);
-
+                    
                     facilityItemContainer.append(checkboxValues.includes(facility) ?
                         `<div class="facility-item">${facility}</div>` :
                         `<div class="facility-item" value="${facility}">

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Events\Disaster as EventsDisaster;
 use App\Models\Evacuee;
 use App\Models\Disaster;
+use App\Models\DisasterDamage;
 use Illuminate\Http\Request;
 use App\Models\ActivityUserLog;
 use Yajra\DataTables\DataTables;
@@ -12,13 +13,14 @@ use Illuminate\Support\Facades\Validator;
 
 class DisasterController extends Controller
 {
-    private $disaster, $evacuee, $logActivity;
+    private $disaster, $evacuee, $logActivity, $disasterDamage;
 
     public function __construct()
     {
-        $this->evacuee     = new Evacuee;
-        $this->disaster    = new Disaster;
-        $this->logActivity = new ActivityUserLog;
+        $this->evacuee        = new Evacuee;
+        $this->disaster       = new Disaster;
+        $this->logActivity    = new ActivityUserLog;
+        $this->disasterDamage = new DisasterDamage;
     }
 
     public function displayDisasterInformation($operation, $year)
@@ -42,7 +44,7 @@ class DisasterController extends Controller
                             '<button class="btn-table-remove" id="archiveDisaster"><i class="bi bi-box-arrow-in-down-right"></i>Archive</button>' : '') .
                         '<select class="form-select changeDisasterStatus"><option value="" disabled selected hidden>Change Status</option>' .
                         ($disaster->status == 'On Going' ? '<option value="Inactive">Inactive</option>' : '<option value="On Going">On Going</option>') .
-                        '</select>' : '<button class="btn-table-remove" id="unArchiveDisaster"><i class="bi bi-box-arrow-up-left"></i>Unarchive</button>'
+                        '</select>' : '<button class="btn-table-remove" id="unArchiveDisaster"><i class="bi bi-box-arrow-up-left"></i>Unarchive</button><button class="btn-table-submit viewDamages"><i class="bi bi-exclamation-diamond"></i>View Damages</button>'
                     ) . '</div>';
             })->rawColumns(['status', 'action'])->make(true);
     }
@@ -68,25 +70,33 @@ class DisasterController extends Controller
     {
         $validatedDisasterValidation = Validator::make($request->all(), [
             'name' => 'required',
-            'type' => $request->type
+            'type' => 'required'
         ]);
 
         if ($validatedDisasterValidation->fails()) return response(['status' => 'warning', 'message' => $validatedDisasterValidation->errors()->first()]);
 
-        $this->disaster->find($disasterId)->update(['name' => ucwords(trim($request->name))]);
+        $this->disaster->find($disasterId)->update([
+            'name' => ucwords(trim($request->name)),
+            'type' => $request->type
+        ]);
         $this->logActivity->generateLog("Updated info of disaster(ID - $disasterId-)");
         event(new EventsDisaster());
 
         return response([]);
     }
 
-    public function archiveDisasterData($disasterId, $operation)
+    public function archiveDisasterData(Request $request, $disasterId, $operation)
     {
         $archiveValue = $operation == 'archive' ? 1 : 0;
         $this->disaster->find($disasterId)->update([
             'status'     => 'Inactive',
             'is_archive' => $archiveValue
         ]);
+
+        foreach (($request->damages ?? []) as $damageData) {
+            $this->disasterDamage->create($damageData);
+        }
+
         $this->evacuee->where('disaster_id', $disasterId)->update(['is_archive' => $archiveValue]);
         $this->logActivity->generateLog(ucwords($operation) . " Added a new disaster(ID - $disasterId)");
         event(new EventsDisaster());
@@ -101,5 +111,17 @@ class DisasterController extends Controller
         event(new EventsDisaster());
 
         return response([]);
+    }
+
+    public function getDisasterDamages($disasterId)
+    {
+        $damages = $this->disasterDamage
+            ->select('disaster_id', 'barangay', 'description')
+            ->selectRaw('SUM(quantity) as total_quantity, SUM(cost) as total_cost')
+            ->where('disaster_id', $disasterId)
+            ->groupBy('disaster_id', 'barangay', 'description')
+            ->get();
+
+        return response()->json(['damages' => $damages]);
     }
 }

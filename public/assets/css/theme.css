@@ -175,7 +175,8 @@ textarea::placeholder {
 #downloadGuideBtn,
 #pinpointCurrentLocationBtn,
 #archivedReportForm #imageBtn,
-#addFacilityBtn {
+#addFacilityBtn,
+#addDamageBtn {
     background: var(--color-primary);
     font-size: 14px;
     font-weight: 600;
@@ -2371,6 +2372,11 @@ input::-webkit-inner-spin-button {
 
 .facilitiy-label i {
     font-size: 8px;
+}
+
+#disasterFormContainer,
+#archiveDamageContainer {
+    width: 100%;
 }
 
 .custom-dropdown {
