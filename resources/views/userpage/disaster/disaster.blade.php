@@ -122,7 +122,7 @@
             validator = form.validate({
                 rules: {
                     name: 'required',
-                    type: 'required',
+                    type: 'required'
                 },
                 messages: {
                     name: 'Please Enter Disaster Name.',
@@ -155,10 +155,8 @@
                                 success(response) {
                                     $('#btn-loader').removeClass('show');
                                     formButton.prop('disabled', 0);
-
                                     response.status == 'warning' ? showWarningMessage(
-                                        response
-                                        .message) : (
+                                        response.message) : (
                                         showSuccessMessage(
                                             `Disaster successfully ${operation == "add" ? "added" : "updated"}.`
                                         ), modal.modal('hide'), disasterTable.draw());
@@ -178,8 +176,7 @@
             });
 
             $('#addDisasterData').click(() => {
-                $("#disasterFormContainer").prop("hidden", 0);
-                $("#archiveDamageContainer").prop("hidden", 1);
+                toggleContainer();
                 modalLabelContainer.removeClass('bg-warning');
                 modalLabel.text('Add Disaster');
                 formButton.addClass('btn-submit').removeClass('btn-update').find('#btn-text').text('Add');
@@ -188,8 +185,7 @@
             });
 
             $(document).on('click', '#updateDisaster', function() {
-                $("#disasterFormContainer").prop("hidden", 0);
-                $("#archiveDamageContainer").prop("hidden", 1);
+                toggleContainer();
                 let {
                     id,
                     name,
@@ -225,9 +221,14 @@
                 modal.modal('show');
             });
 
-            $("#submitDisasterBtn").on('click', function() {
-                alterDisasterData('archive',
-                    "{{ route('disaster.archive', ['disasterId', 'archive']) }}", archiveId);
+            $("#submitDisasterBtn").on('click', () => {
+                if ($("#submitDisasterBtn #btn-text").text() == "Archive") {
+                    return (["#description", "#barangay", "#quantity", "#cost"]
+                            .some(selector => $(selector).val() == "" && $.trim($('#damage_list').text()) ==
+                                "")) ? showWarningMessage('Please Fill Out All Fields.') :
+                        alterDisasterData('archive',
+                            "{{ route('disaster.archive', ['disasterId', 'archive']) }}", archiveId);
+                }
             });
 
             $(document).on('click', '#unArchiveDisaster', function() {
@@ -250,21 +251,14 @@
                     method: 'GET',
                     url: "{{ route('disaster.get.damages', 'disasterId') }}".replace('disasterId',
                         id),
-                    success: function(response) {
-                        console.log(response.damages)
-
-                        var damagesContainer = $('.damage-list-container');
-
+                    success(response) {
                         $(".damage-disaster-label").text(name);
-                        damagesContainer.html(response.damages.length > 0 ?
+                        $('.damage-list-container').html(response.damages.length > 0 ?
                             response.damages.map(damage => {
-                                // Check if barangay is new
-                                var displayBarangay = damage.barangay !== $("#barangay")
-                                    .val();
-
                                 return `<div class="damage-item bg-white border rounded mt-2">
                                             <div class="m-2 border p-2 rounded">
-                                                ${displayBarangay ? "Barangay: " + damage.barangay : ''}
+                                                ${damage.barangay !== $("#barangay")
+                                                .val() ? "Barangay: " + damage.barangay : ''}
                                             </div>
                                             <div class="m-2 border p-2 rounded">
                                                 Description: ${damage.description}
@@ -280,14 +274,14 @@
                         $("#damagesModal").modal('show');
                     }
                 });
-
             });
 
-            $('#addDamageBtn').on('click', function(e) {
+            $('#addDamageBtn').on('click', (e) => {
                 e.preventDefault();
 
                 if (["#description", "#barangay", "#quantity", "#cost"]
-                    .some(selector => $(selector).val() === "")) return;
+                    .some(selector => $(selector).val() == "")) return showWarningMessage(
+                    'Please Fill Out All Fields.');
 
                 $('#damage_list').append(`
                         <div class="damage-item bg-white border rounded mt-2">
@@ -299,14 +293,12 @@
                             </div>
                             <div class="m-2 border p-2 rounded">
                                 ${$("#quantity").val()}
-
                             </div>
                             <div class="m-2 border p-2 rounded">
                                 ${$("#cost").val()}
                             </div
                         </div>
                     `);
-
                 damageList.push({
                     "description": $("#description").val(),
                     "quantity": $("#quantity").val(),
@@ -314,15 +306,19 @@
                     "barangay": $("#barangay").val(),
                     "disaster_id": archiveId
                 });
-
                 $("#description, #barangay, #quantity, #cost").val('');
             });
 
             modal.on('hidden.bs.modal', () => {
                 validator && validator.resetForm();
                 form[0].reset();
-                $('.damage_item').remove();
+                $('.damage-item').remove();
             });
+
+            function toggleContainer() {
+                $("#disasterFormContainer").prop("hidden", 0);
+                $("#archiveDamageContainer").prop("hidden", 1);
+            }
 
             function alterDisasterData(operation, url, btn, status = null) {
                 confirmModal(

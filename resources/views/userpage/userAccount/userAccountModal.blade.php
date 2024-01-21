@@ -32,12 +32,12 @@
                         <div class="field-container" id="name-container" hidden>
                             <label for="name">Full Name</label>
                             <input type="text" name="name" class="form-control" id="name"
-                                placeholder="Enter Full Name">
+                                placeholder="e.g John Doe Dela Cruz">
                         </div>
                         <div class="field-container" id="email-container" hidden>
                             <label for="email">Email Address</label>
                             <input type="email" name="email" class="form-control" id="email"
-                                placeholder="Enter Email Address">
+                                placeholder="example@gmail.com">
                         </div>
                         <div class="form-button-container">
                             <button id="saveProfileDetails" class="modalBtn">

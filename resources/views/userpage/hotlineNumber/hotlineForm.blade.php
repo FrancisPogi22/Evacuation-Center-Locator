@@ -16,12 +16,12 @@
                 <div>
                     <label for="label">Label</label>
                     <input type="text" name="label" class="form-control" autocomplete="off"
-                        placeholder="Enter Label" id="hotlineLabel">
+                        placeholder="e.g Rescue 911" id="hotlineLabel">
                 </div>
                 <div>
                     <label for="label" class="last-label">Number</label>
                     <input type="text" name="number" id="hotlineNumber" class="form-control"
-                        placeholder="Enter Number" autocomplete="off">
+                        placeholder="e.g 01234567891" autocomplete="off">
                 </div>
                 <div class="hotline-form-button-container">
                     <button class="btn-submit modalBtn" id="addNumberBtn">

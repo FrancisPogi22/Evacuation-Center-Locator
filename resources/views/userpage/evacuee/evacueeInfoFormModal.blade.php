@@ -29,7 +29,7 @@
                             <div class="custom-dropdown">
                                 <label for="searchInput">Search Family Record</label>
                                 <input type="text" id="searchInput" class="form-control" autocomplete="off"
-                                    placeholder="Search Family Head">
+                                    placeholder="e.g Cristine Ann Ramirez">
                                 <div class="dropdown-options" hidden id="dropdownOptions">
                                     <ul id="searchResults"></ul>
                                 </div>
@@ -62,7 +62,7 @@
                         <div class="col-lg-6 field-container" hidden>
                             <label for="family_head">Family Head</label>
                             <input type="text" name="family_head" id="family_head" class="form-control"
-                                autocomplete="off" placeholder="Family Head">
+                                autocomplete="off" placeholder="e.g John Doe Corpuz">
                         </div>
                         <div class="col-lg-6 field-container" hidden id="birthDateContainer">
                             <label for="birth_date">Birth Date</label>
@@ -72,42 +72,42 @@
                         <div class="col-lg-6 field-container" hidden>
                             <label for="male">Male</label>
                             <input type="number" name="male" id="male" class="form-control" autocomplete="off"
-                                placeholder="Male">
+                                placeholder="e.g 8">
                         </div>
                         <div class="col-lg-6 field-container" hidden>
                             <label for="female">Female</label>
                             <input type="number" name="female" id="female" class="form-control" autocomplete="off"
-                                placeholder="Female">
+                                placeholder="e.g 6">
                         </div>
                         <div class="col-lg-4 field-container" hidden>
                             <label for="infants">Infants</label>
                             <input type="number" name="infants" id="infants" class="form-control"
-                                autocomplete="off" placeholder="Infants">
+                                autocomplete="off" placeholder="e.g 1">
                         </div>
                         <div class="col-lg-4 field-container" hidden>
                             <label for="minors">Minors</label>
                             <input type="number" name="minors" id="minors" class="form-control"
-                                autocomplete="off" placeholder="Minors">
+                                autocomplete="off" placeholder="e.g 3">
                         </div>
                         <div class="col-lg-4 field-container" hidden>
                             <label for="senior_citizen">Senior Citizen</label>
                             <input type="number" name="senior_citizen" id="senior_citizen" class="form-control"
-                                autocomplete="off" placeholder="Senior Citizen">
+                                autocomplete="off" placeholder="e.g 4">
                         </div>
                         <div class="col-lg-4 field-container" hidden>
                             <label for="pwd">PWD</label>
                             <input type="number" name="pwd" id="pwd" class="form-control"
-                                autocomplete="off" placeholder="PWD">
+                                autocomplete="off" placeholder="e.g 2">
                         </div>
                         <div class="col-lg-4 field-container" hidden>
                             <label for="pregnant">Pregnant</label>
                             <input type="number" name="pregnant" id="pregnant" class="form-control"
-                                autocomplete="off" placeholder="Pregnant">
+                                autocomplete="off" placeholder="e.g 1">
                         </div>
                         <div class="col-lg-4 field-container" hidden>
                             <label for="lactating">Lactating</label>
                             <input type="number" name="lactating" id="lactating" class="form-control"
-                                autocomplete="off" placeholder="Lactating">
+                                autocomplete="off" placeholder="e.g 3">
                         </div>
                         <div class="field-container" hidden>
                             <label for="disaster_id">Disaster</label>
