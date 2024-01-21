@@ -13,9 +13,9 @@
                         @csrf
                         <div class="form-content">
                             <div class="field-container">
-                                <label for="type">Type</label>
+                                <label for="type">Guideline Type</label>
                                 <input type="text" name="type" id="type" class="form-control" autocomplete="off"
-                                    placeholder="Enter Type">
+                                    placeholder="e.g Typhoon">
                             </div>
                             <div id="guideline-img-container">
                                 <div id="cover-img-container">

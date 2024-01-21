@@ -24,7 +24,7 @@
                     <form class="search-container" id="searchGuidelineForm">
                         @csrf
                         <input type="text" name="guideline_name" id="search_guideline" class="form-control"
-                            placeholder="Search Guideline" autocomplete="off" required>
+                            placeholder="e.g Typhoon" autocomplete="off" required>
                         <button type="submit" class="search-icon" title="Search"><i class="bi bi-search"></i></button>
                     </form>
                     @auth
@@ -356,7 +356,7 @@
                     <div class="guideline-id" {{ !auth()->user() ? 'hidden' : '' }}>${'(ID - ' + id + ')'}</div>
                     <h5 class="guideline-title">${type}</h5>
                     <div class="guideline-action-container">
-                        <button aria-id="${id}" class="viewGuidelineBtn" onclick="window.location.href = '{{ $prefix }}' != 'resident' ?
+                        <button aria-id="${id}" class="viewGuidelineBtn" onclick="window.location.href = '{{ $prefix }}' == 'resident' && '{{ $prefix }}' == ''?
                             '{{ route('eligtas.guide', '') }}/${id}' : '{{ route('resident.eligtas.guide', '') }}/${id}'">
                             <i class="bi bi-file-text"></i>
                             <span>View</span>

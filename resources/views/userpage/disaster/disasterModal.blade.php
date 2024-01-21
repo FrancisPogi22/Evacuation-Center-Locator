@@ -61,15 +61,15 @@
                             </div>
                             <div class="field-container">
                                 <input type="text" name="description" class="form-control" autocomplete="off"
-                                    placeholder="Description" id="description">
+                                    placeholder="Fallen Pole" id="description">
                             </div>
                             <div class="field-container">
                                 <input type="number" name="quantity" class="form-control" autocomplete="off"
-                                    placeholder="Quantity" id="quantity">
+                                    placeholder="e.g 10" id="quantity">
                             </div>
                             <div class="field-container">
                                 <input type="number" name="cost" class="form-control" autocomplete="off"
-                                    placeholder="Cost" id="cost">
+                                    placeholder="e.g 3500" id="cost">
                                 <button id="addDamageBtn" class="modalBtn mt-2">
                                     <span>Add Damage</span>
                                 </button>

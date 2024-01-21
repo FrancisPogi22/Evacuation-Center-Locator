@@ -14,7 +14,7 @@
                         <div class="field-container">
                             <label for="name">Evacuation Center Name</label>
                             <input type="text" name="name" class="form-control" autocomplete="off"
-                                placeholder="Enter Evacuation Center Name" id="name">
+                                placeholder="e.g Banay Banay Elementary School" id="name">
                         </div>
                         <div class="field-container">
                             <label for="barangayName">Barangay</label>
@@ -42,7 +42,7 @@
                         </div>
                         <div class="field-container">
                             <label>Search Place</label>
-                            <input type="text" id="searchPlace" class="form-control" placeholder="Enter Place">
+                            <input type="text" id="searchPlace" class="form-control" placeholder="e.g Marinig South Elementary School">
                         </div>
                         <div class="field-container">
                             <label>Location</label>
@@ -116,7 +116,7 @@
                             </div>
                             <div class="facility-input-container">
                                 <input type="text" id="newFacility" class="form-control"
-                                    placeholder="Enter Additional Facilitiy">
+                                    placeholder="e.g Lactating Room">
                                 <div id="facility-button-container">
                                     <button id="addFacilityBtn">
                                         Add Facility
